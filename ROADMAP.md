@@ -14,10 +14,10 @@
 | **P0** | Mise en ligne sécurisée (HTTPS, sauvegardes) | 🟡 | — |
 | **P0** | Mot de passe oublié + vérification de l'e-mail | 🟡 | service d'e-mail |
 | ~~**P0**~~ | ~~Synchro sans perte entre appareils~~ ✅ fait | 🟡 | — |
-| **P1** | Feedback de production par LLM | 🔴 | backend |
+| ~~**P1**~~ | ~~Feedback de production par LLM~~ ✅ fait | 🔴 | backend |
 | **P1** | Vraies voix (TTS neuronal / audio natif) | 🟡 | backend |
 | **P1** | Beaucoup plus de contenu (textes, dialogues) | 🔴 | — |
-| **P1** | Nouveaux types d'exercices | 🟡 | — |
+| **P1** | Nouveaux types d'exercices (5 faits, d'autres à venir) | 🟡 | — |
 | **P1** | Analyseur morphologique coréen côté serveur | 🟡 | backend |
 | **P1** | Génération de textes calibrés par LLM | 🔴 | LLM + analyseur |
 | **P2** | Liste d'amis | 🟡 | comptes |
@@ -63,7 +63,11 @@
 
 ## P1 : le cœur pédagogique
 
-### Feedback de production par LLM 🔴
+### ✅ Feedback de production par LLM (fait)
+Fait : `llm.js` + route `POST /api/feedback` (Claude Opus 5.5, sortie JSON structurée, modèle de secours en cas de refus), quota de 60 corrections par compte et par jour (`MOCHI_LLM_DAILY`), mode « Phrase libre », cartes ciblées créées à partir des particules corrigées, repli automatique sur le correcteur hors ligne. Activer avec `ANTHROPIC_API_KEY=… node server.js` (désactiver avec `MOCHI_LLM=off`).
+Reste : un cache des réponses, et un jeu d'évaluation (phrases d'apprenants + corrections attendues) pour mesurer la qualité du prompt.
+
+Spécification d'origine :
 Remplace l'heuristique actuelle (comparaison avec des réponses de référence) pour pouvoir proposer des **phrases libres** (§4).
 - Route serveur `POST /api/feedback` : la clé API ne doit jamais aller dans le navigateur.
 - Prompt système conforme au §4 :
@@ -91,12 +95,14 @@ La synthèse vocale du navigateur varie énormément d'un appareil à l'autre (�
 - Outil interne d'annotation : coller un texte, obtenir les lemmes et particules (analyseur, voir plus bas), corriger à la main.
 
 ### Nouveaux types d'exercices 🟡
+Faits (onglet « 🎯 Exercices », `exercises.js`) : ✅ dictée, ✅ remettre dans l'ordre, ✅ compréhension orale (audio → sens), ✅ choix du registre (coréen), ✅ faux amis (anglais).
+
 Tous en **rappel actif** (§1), avec une phrase de contexte et de l'audio (§2) :
-- **Dictée** : écouter une phrase, l'écrire (écoute + orthographe).
-- **Remettre les mots dans l'ordre** : très utile pour l'ordre Sujet-Objet-Verbe du coréen.
+- ~~**Dictée**~~ ✅
+- ~~**Remettre les mots dans l'ordre**~~ ✅
 - **Traduction FR → langue cible** avec feedback reformulé (après le LLM).
-- **Compréhension orale** : un dialogue audio, puis des questions.
-- **Choix du registre** (coréen) : « Tu parles à ta grand-mère : quelle phrase ? ».
+- **Compréhension orale** : ✅ phrase par phrase ; reste un dialogue entier suivi de questions.
+- ~~**Choix du registre** (coréen)~~ ✅
 - **Conjugaison et terminaisons** en contexte (-아요 / -어요, passé, futur).
 - **Paires minimales étendues** (§5) : davantage de sons, avec un score par son pour repérer les points faibles.
 - **Mini-conversations** guidées (avec le LLM) : un scénario (commander au café, se présenter) et un objectif.

@@ -108,3 +108,27 @@ html = viewProfile(); ok(html.includes("avatar-file") && html.includes('src="/av
 ok(state.history[today()] && state.history[today()].en.rev > 0 && state.history[today()].en.prod > 0, "suivi activité " + JSON.stringify(state.history));
 ok(activityCard().split('class="hm l').length - 1 >= 113, "heatmap cellules");
 console.log(fails ? `${fails} échec(s) (comptes)` : "OK : rendu comptes");
+// --- Exercices ---
+for (const lang of ["en", "ko"]) {
+  state.langs.ko.hangulDone = true;
+  for (const kind of Object.keys(EX_KINDS).filter((k) => EX_KINDS[k].langs.includes(lang))) {
+    newExercise(lang, kind);
+    location.hash = `#/lang/${lang}/exercices`; route();
+    const E = ui.ex, q = E.q;
+    let h = tabExercises(lang);
+    ok(h.includes("ex-card"), `exercice ${lang}/${kind} rendu`);
+    if (kind === "ordre") {
+      q.tiles.map((t, ti) => [t.i, ti]).sort((a, b) => a[0] - b[0]).forEach(([, ti]) => actions["ex-tile"]({ dataset: { t: String(ti) } }));
+      actions["ex-check"](); ok(E.result.ok, `ordre ${lang} correct`);
+    } else if (kind === "dictee") {
+      document.getElementById = (id) => (id === "ex-answer" ? { value: q.s.text.toUpperCase() === q.s.text ? q.s.text : q.s.text.toLowerCase() } : { value: "", innerHTML: "", classList: { add() {}, remove() {}, toggle() {} }, focus() {} });
+      actions["ex-check"](); ok(E.result.ok, `dictée ${lang} (casse ignorée)`);
+    } else {
+      ok(q.options.includes(q.answer) && new Set(q.options).size === q.options.length, `${kind} options valides`);
+      actions["ex-pick"]({ dataset: { o: q.answer } }); ok(E.picked === q.answer, `${kind} réponse`);
+    }
+    h = tabExercises(lang); ok(h.includes('data-act="ex-next"'), `${kind} : bouton suivant`);
+  }
+}
+ok(state.history[today()].en.ex > 0, "exercices comptés dans l'activité");
+console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");

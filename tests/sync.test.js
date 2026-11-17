@@ -30,7 +30,7 @@ function device(base, name) {
     }),
   };
   vm.createContext(ctx);
-  for (const f of ["content.js", "app.js"]) vm.runInContext(fs.readFileSync(path.join(APP, f), "utf8"), ctx, { filename: f });
+  for (const f of ["content.js", "app.js", "exercises.js"]) vm.runInContext(fs.readFileSync(path.join(APP, f), "utf8"), ctx, { filename: f });
   const run = (code) => vm.runInContext(code, ctx);
   return { run, ctx, name, store, wait: () => sleep(200) };
 }

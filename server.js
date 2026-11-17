@@ -8,6 +8,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const crypto = require("node:crypto");
 const { DatabaseSync } = require("node:sqlite");
+const llm = require("./llm.js");
 
 const PORT = Number(process.env.PORT) || 8000;
 const ROOT = __dirname;
@@ -17,6 +18,8 @@ const SECURE = process.env.COOKIE_SECURE === "1";
 const SESSION_DAYS = 30;
 const MAX_STATE = 8 * 1024 * 1024;
 const MAX_AVATAR = 1024 * 1024;
+const LLM_ON = process.env.MOCHI_LLM !== "off";
+const LLM_DAILY = Number(process.env.MOCHI_LLM_DAILY) || 60; // corrections par compte et par jour (coût)
 const EMOJIS = ["🐰", "🐱", "🐻", "🐼", "🦊", "🐥", "🐸", "🐨"];
 
 fs.mkdirSync(AVATAR_DIR, { recursive: true });
@@ -75,6 +78,12 @@ db.exec(`
     user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     key TEXT NOT NULL, value REAL NOT NULL, rev INTEGER NOT NULL,
     PRIMARY KEY (user_id, key)
+  );
+  -- Quota d'appels au correcteur LLM
+  CREATE TABLE IF NOT EXISTS llm_usage (
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    day TEXT NOT NULL, count INTEGER NOT NULL,
+    PRIMARY KEY (user_id, day)
   );
   CREATE INDEX IF NOT EXISTS sync_kv_rev ON sync_kv (user_id, rev);
   CREATE INDEX IF NOT EXISTS sync_cards_rev ON sync_cards (user_id, rev);
@@ -294,7 +303,7 @@ async function api(req, res, url) {
     if (db.prepare("SELECT 1 FROM users WHERE email = ?").get(email.trim())) return fail(res, 409, "Un compte existe déjà avec cette adresse.");
     const info = db.prepare("INSERT INTO users (email, pass, name, created_at) VALUES (?, ?, ?, ?)").run(email.trim(), await hashPassword(password), cleanName(name), now());
     createSession(res, Number(info.lastInsertRowid), req);
-    return send(res, 201, { user: publicUser(db.prepare("SELECT * FROM users WHERE id = ?").get(info.lastInsertRowid)), state: null });
+    return send(res, 201, { user: publicUser(db.prepare("SELECT * FROM users WHERE id = ?").get(info.lastInsertRowid)), legacy_state: null, features: { llm: LLM_ON } });
   }
 
   if (route === "POST /api/login") {
@@ -307,14 +316,14 @@ async function api(req, res, url) {
     if (!user || !good) { keys.forEach(recordFailure); return fail(res, 401, "E-mail ou mot de passe incorrect."); }
     keys.forEach((k) => attempts.delete(k));
     createSession(res, user.id, req);
-    return send(res, 200, `{"user":${JSON.stringify(publicUser({ ...user, last_login_at: now() }))},"legacy_state":${legacyState(user)}}`);
+    return send(res, 200, `{"user":${JSON.stringify(publicUser({ ...user, last_login_at: now() }))},"legacy_state":${legacyState(user)},"features":{"llm":${LLM_ON}}}`);
   }
 
   // --- Routes authentifiées ---
   const auth = currentSession(req);
   if (route === "GET /api/me") {
-    if (!auth) return send(res, 200, { user: null });
-    return send(res, 200, `{"user":${JSON.stringify(publicUser(auth.user))},"legacy_state":${legacyState(auth.user)}}`);
+    if (!auth) return send(res, 200, { user: null, features: { llm: false } });
+    return send(res, 200, `{"user":${JSON.stringify(publicUser(auth.user))},"legacy_state":${legacyState(auth.user)},"features":{"llm":${LLM_ON}}}`);
   }
   if (!auth) return fail(res, 401, "Connecte-toi d'abord.");
   const uid = auth.user.id;
@@ -322,6 +331,28 @@ async function api(req, res, url) {
   if (route === "POST /api/logout") {
     db.prepare("DELETE FROM sessions WHERE token_hash = ?").run(auth.session.token_hash);
     return send(res, 200, { ok: true }, { "Set-Cookie": sessionCookie("", 0) });
+  }
+  if (route === "POST /api/feedback") {
+    if (!LLM_ON) return fail(res, 503, "Correcteur désactivé.");
+    const b = await readJson(req);
+    const str = (v, max) => typeof v === "string" && v.length <= max;
+    if (!["en", "ko"].includes(b.lang) || !str(b.prompt, 300) || !str(b.text, 500) || !b.text.trim()
+      || (b.who != null && !str(b.who, 80)) || (b.register != null && !str(b.register, 30)) || (b.reference != null && !str(b.reference, 300))) {
+      return fail(res, 400, "Requête invalide.");
+    }
+    const day = now().slice(0, 10);
+    const used = db.prepare("SELECT count FROM llm_usage WHERE user_id = ? AND day = ?").get(uid, day)?.count || 0;
+    if (used >= LLM_DAILY) return fail(res, 429, `Tu as utilisé tes ${LLM_DAILY} corrections du jour. Reviens demain !`);
+    db.prepare("INSERT INTO llm_usage (user_id, day, count) VALUES (?, ?, 1) ON CONFLICT (user_id, day) DO UPDATE SET count = count + 1").run(uid, day);
+    try {
+      const feedback = await llm.getFeedback({ lang: b.lang, prompt: b.prompt, who: b.who || null, register: b.register || null, reference: b.reference || null, text: b.text.trim() });
+      return send(res, 200, { feedback, remaining: LLM_DAILY - used - 1 });
+    } catch (e) {
+      // Échec : on ne décompte pas la correction
+      db.prepare("UPDATE llm_usage SET count = count - 1 WHERE user_id = ? AND day = ?").run(uid, day);
+      if (e instanceof llm.LlmUnavailable) return fail(res, 503, e.message);
+      throw e;
+    }
   }
   if (route === "POST /api/sync") {
     let body;
@@ -388,6 +419,7 @@ const STATIC = {
   "/index.html": ["index.html", "text/html; charset=utf-8"],
   "/app.js": ["app.js", "text/javascript; charset=utf-8"],
   "/content.js": ["content.js", "text/javascript; charset=utf-8"],
+  "/exercises.js": ["exercises.js", "text/javascript; charset=utf-8"],
   "/styles.css": ["styles.css", "text/css; charset=utf-8"],
 };
 const IMG_TYPES = { jpg: "image/jpeg", png: "image/png", webp: "image/webp" };

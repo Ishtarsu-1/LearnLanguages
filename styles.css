@@ -468,6 +468,27 @@ del { color: var(--bad); text-decoration-thickness: 2px; }
 .auth-head p { margin: 4px 0 0; }
 code { background: var(--surface-2); padding: 2px 6px; border-radius: 6px; font-size: .9em; }
 
+/* Correcteur LLM & exercices */
+.mode-ctl { margin-bottom: 14px; }
+.mode-ctl button { padding: 10px 16px; }
+.feedback.loading { display: flex; align-items: center; gap: 14px; }
+.issue.reg { background: var(--particle-soft); }
+.encourage { margin: 12px 0 0; font-weight: 800; }
+.corrector { margin: 12px 0 0; }
+.ex-menu { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+.ex-card { align-items: stretch; }
+.audio-row { display: flex; align-items: center; justify-content: center; gap: 14px; }
+.ex-choices { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+.ex-choices .choice { text-align: left; }
+.ex-choices .choice.ko { font-size: 1.2rem; }
+.tile-line { min-height: 64px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 12px; border-radius: 16px; border: 2px dashed var(--line); }
+.tile-line.right { border-color: var(--ok); background: var(--ok-soft); }
+.tile-line.wrong { border-color: var(--bad); background: var(--bad-soft); }
+.tile-pool { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 6px; }
+.tile { padding: 10px 14px; border-radius: 14px; border: 2px solid var(--line); background: var(--surface); box-shadow: 0 4px 0 var(--line); font-weight: 800; font-size: 1.1rem; }
+.tile.used { visibility: hidden; }
+.ko .tile, .tile-line.ko .tile, .tile-pool.ko .tile { font-family: var(--font-ko); }
+
 /* ---------- Mobile ---------- */
 @media (max-width: 820px) {
   .dash-grid { grid-template-columns: 1fr; }

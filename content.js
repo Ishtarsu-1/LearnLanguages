@@ -363,3 +363,25 @@ const LEVEL_HOURS = {
   ko: { label: "Coréen", steps: [["B1", 800, "≈ 700–900 h"], ["Pro (FSI)", 2200, "≈ 2 200 h de cours"]] },
   en: { label: "Anglais", steps: [["B1", 375, "≈ 350–400 h guidées"], ["B2", 550, "≈ 500–600 h guidées"]] },
 };
+
+// ---------- Phrases libres (production ouverte, corrigée par le LLM, §4) ----------
+// En coréen : interlocuteur indiqué pour que le registre soit vérifié (§6).
+const FREE_PROMPTS = {
+  en: [
+    { prompt: "Raconte ce que tu as fait le week-end dernier." },
+    { prompt: "Décris un membre de ta famille." },
+    { prompt: "Dis ce que tu aimes manger, et pourquoi." },
+    { prompt: "Commande quelque chose dans un café." },
+    { prompt: "Présente-toi à un nouveau collègue." },
+    { prompt: "Explique où tu habites." },
+    { prompt: "Dis ce que tu vas faire demain." },
+  ],
+  ko: [
+    { prompt: "Présente-toi (prénom, nationalité, métier ou études).", who: "À un·e inconnu·e", register: "haeyo" },
+    { prompt: "Dis ce que tu as mangé aujourd'hui.", who: "À un·e collègue", register: "haeyo" },
+    { prompt: "Commande quelque chose au café.", who: "Au serveur", register: "haeyo" },
+    { prompt: "Dis ce que tu aimes faire le week-end.", who: "À un·e inconnu·e", register: "haeyo" },
+    { prompt: "Parle d'un membre de ta famille.", who: "À ta professeure", register: "haeyo" },
+    { prompt: "Dis où tu habites.", who: "À un·e collègue", register: "haeyo" },
+  ],
+};

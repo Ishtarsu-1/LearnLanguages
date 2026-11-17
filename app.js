@@ -53,6 +53,7 @@ let state = loadState();
 // ---------- Compte (nécessite server.js ; sinon mode invité) ----------
 let account = null;   // utilisateur connecté, ou null (invité : tout reste dans ce navigateur)
 let serverOn = false; // l'API répond-elle ?
+let features = { llm: false }; // fonctionnalités activées côté serveur
 const storeKey = () => (account ? `mochi-user-${account.id}` : STORE_KEY);
 
 async function api(method, url, body, raw) {
@@ -277,6 +278,7 @@ addEventListener("online", () => syncNow());
 setInterval(() => { if (account && !document.hidden) syncNow(); }, 60000); // récupère aussi les changements des autres appareils
 
 async function applyAuth(data, { isNew } = {}) {
+  if (data.features) features = data.features;
   attachAccount(data.user, { legacy: data.legacy_state, adoptGuest: isNew });
   if (isNew && state.avatar !== account.avatar_emoji) {
     try { account = (await api("PATCH", "/api/me", { avatar_emoji: state.avatar })).user; } catch {}
@@ -290,7 +292,8 @@ const displayAvatar = (cls = "") => (account?.avatar_url
 // Suivi d'activité par jour
 function track(lang, key, n = 1) {
   const day = (state.history[today()] ||= {});
-  const x = (day[lang] ||= { sec: 0, rev: 0, prod: 0, read: 0 });
+  const x = (day[lang] ||= { sec: 0, rev: 0, prod: 0, read: 0, ex: 0 });
+  x[key] ||= 0;
   x[key] += n;
 }
 
@@ -615,7 +618,7 @@ function recentLemmas(lang) {
   return new Set(state.cards.filter((c) => c.lang === lang).sort((a, b) => b.created.localeCompare(a.created)).slice(0, 30).flatMap((c) => c.lemma.split(" + ")));
 }
 function currentExercise(lang) {
-  if (!ui.prod || ui.prod.lang !== lang) ui.prod = { lang, ex: pickExercise(lang), text: "", result: null, why: false };
+  if (!ui.prod || ui.prod.lang !== lang) ui.prod = { lang, mode: "guided", ex: pickExercise(lang), free: pickFree(lang), text: "", result: null, why: false };
   return ui.prod.ex;
 }
 function pickExercise(lang, skipId) {
@@ -684,6 +687,9 @@ const TABS = {
   en: [["aujourdhui", "☀️ Aujourd'hui"], ["lire", "📖 Lire"], ["revisions", "🧠 Réviser"], ["produire", "💬 Produire"], ["mots", "📒 Mots"], ["oreille", "🎧 Oreille"], ["fauxamis", "🎭 Faux amis"]],
   ko: [["aujourdhui", "☀️ Aujourd'hui"], ["parcours", "🗺️ Parcours"], ["lire", "📖 Lire"], ["revisions", "🧠 Réviser"], ["produire", "💬 Produire"], ["mots", "📒 Mots"], ["oreille", "🎧 Oreille"]],
 };
+// Vues des onglets (d'autres fichiers, comme exercises.js, peuvent en ajouter)
+const TAB_VIEWS = {};
+const GATED_TABS = ["lire", "revisions", "produire", "mots"]; // coréen : après le Hangul
 const hangulGate = (lang) => isKo(lang) && !state.langs.ko.hangulDone;
 function gateCard() {
   const n = Object.keys(state.langs.ko.hangulDays).length;
@@ -698,11 +704,8 @@ function viewLanguage(lang, tab) {
   const l = LANGUAGES[lang];
   const L = state.langs[lang];
   const p = Math.min(100, Math.round((todayMin(L) / state.goal) * 100));
-  const gated = hangulGate(lang) && ["lire", "revisions", "produire", "mots"].includes(tab);
-  const body = gated ? gateCard() : ({
-    aujourdhui: tabToday, parcours: tabPath, lire: tabLibrary, revisions: tabReviews, produire: tabProduce,
-    mots: tabWords, oreille: tabEar, fauxamis: tabFauxAmis,
-  }[tab] || tabToday)(lang);
+  const gated = hangulGate(lang) && GATED_TABS.includes(tab);
+  const body = gated ? gateCard() : (TAB_VIEWS[tab] || tabToday)(lang);
   const hours = L.seconds / 3600;
   const lvl = LEVEL_HOURS[lang].steps[0];
 
@@ -749,6 +752,8 @@ function stepCard(n, icon, title, done, desc, action) {
     ${action || ""}
   </div>`;
 }
+
+Object.assign(TAB_VIEWS, { aujourdhui: (l) => tabToday(l), parcours: (l) => tabPath(l), lire: (l) => tabLibrary(l), revisions: (l) => tabReviews(l), produire: (l) => tabProduce(l), mots: (l) => tabWords(l), oreille: (l) => tabEar(l), fauxamis: (l) => tabFauxAmis(l) });
 
 function tabToday(lang) {
   if (hangulGate(lang)) {
@@ -1017,73 +1022,137 @@ function viewReviewSession(lang) {
 }
 
 // ---------- Production + recast (§4) ----------
+// Deux correcteurs : le LLM (compte connecté, serveur configuré) et, en secours,
+// la comparaison avec des réponses de référence (hors ligne, invité).
+const llmReady = () => !!(account && features.llm);
+
 function tabProduce(lang) {
   currentExercise(lang);
-  const P = ui.prod, ex = P.ex, k = koCls(lang);
+  const P = ui.prod, k = koCls(lang);
+  const ex = P.mode === "free" ? P.free : P.ex;
   const recent = [...recentLemmas(lang)].slice(0, 8);
+  const r = P.result;
   let fb = "";
-  if (P.result) {
-    const r = P.result;
+  if (P.loading) fb = `<div class="card feedback loading">${mochi("small")}<p><b>Mochi relit ta phrase…</b></p></div>`;
+  else if (r) {
+    const label = { grammaire: "Grammaire", vocabulaire: "Vocabulaire", registre: "Registre", orthographe: "Orthographe" };
+    const head = r.perfect
+      ? `<h3>✅ ${r.verdict === "acceptable" ? "C'est correct !" : "C'est naturel, bravo !"}</h3>${r.alt ? `<p class="muted">${r.verdict === "acceptable" ? "Un natif dirait plutôt" : "On dit aussi"} : <span class="${k}">${esc(r.alt)}</span></p>` : ""}`
+      : `<h3>Version naturelle</h3><p class="recast ${k}">${r.tHtml}</p><p class="muted">Ta phrase : <span class="${k}">${r.uHtml}</span></p>`;
+    const issues = r.llm
+      ? r.errors.map((e) => `<div class="issue ${e.type === "registre" ? "reg" : ""}"><b>${label[e.type]}</b> ${e.original ? `<span class="${k}"><del>${esc(e.original)}</del> → <ins>${esc(e.correction)}</ins></span>` : `<span class="${k}">+ <ins>${esc(e.correction)}</ins></span>`}${P.why ? `<br/><small>${esc(e.explanation)}</small>` : ""}</div>`).join("")
+      : r.issues.register.map((i) => `<div class="issue ${i.ok ? "soft" : "reg"}"><b>Registre</b> ${esc(i.msg)}</div>`).join("")
+        + r.issues.particles.map((i) => `<div class="issue"><b>Particule</b> <span class="ko">${esc(i.stem)}<del>${esc(i.got)}</del> → ${esc(i.stem)}<ins>${esc(i.want)}</ins></span> · ${esc(i.explain || "")}</div>`).join("");
+    const why = r.llm ? r.explanation : ex.why;
     fb = `<div class="card feedback">
-      ${r.perfect ? `<h3>✅ C'est naturel, bravo !</h3>${r.alt ? `<p class="muted">On dit aussi : <span class="${k}">${esc(r.alt)}</span></p>` : ""}`
-        : `<h3>Version naturelle</h3>
-           <p class="recast ${k}">${r.tHtml}</p>
-           <p class="muted">Ta phrase : <span class="${k}">${r.uHtml}</span></p>`}
-      ${r.issues.register.map((i) => `<div class="issue ${i.ok ? "soft" : ""}"><b>Registre</b> ${esc(i.msg)}</div>`).join("")}
-      ${r.issues.particles.map((i) => `<div class="issue"><b>Particule</b> <span class="ko">${esc(i.stem)}<del>${esc(i.got)}</del> → ${esc(i.stem)}<ins>${esc(i.want)}</ins></span> · ${esc(i.explain || "")}</div>`).join("")}
+      ${head}${issues}
+      ${r.encouragement ? `<p class="encourage">🍡 ${esc(r.encouragement)}</p>` : ""}
       <div class="wp-actions">
         <button class="btn ghost small" data-act="say" data-text="${esc(r.target)}" data-lang="${lang}">🔊 Écouter</button>
-        <button class="btn ghost small" data-act="why">${P.why ? "Masquer" : "Pourquoi ?"}</button>
-        <button class="btn small" data-act="next-ex">Exercice suivant →</button>
+        ${why ? `<button class="btn ghost small" data-act="why">${P.why ? "Masquer" : "Pourquoi ?"}</button>` : ""}
+        <button class="btn small" data-act="next-ex">Phrase suivante →</button>
       </div>
-      ${P.why ? `<p class="why">💡 ${esc(ex.why)}</p>` : ""}
+      ${P.why && why ? `<p class="why">💡 ${esc(why)}</p>` : ""}
+      <p class="muted corrector"><small>${r.llm ? `✨ Corrigé par Claude${P.remaining != null ? ` · ${P.remaining} correction(s) restante(s) aujourd'hui` : ""}` : `Correcteur hors ligne${P.llmError ? ` (${esc(P.llmError)})` : ""} : compare avec des réponses types.`}</small></p>
     </div>`;
   }
+  const modes = `<div class="seg-ctl mode-ctl">
+      <button class="${P.mode !== "free" ? "on" : ""}" data-act="prod-mode" data-v="guided">🎯 Guidé</button>
+      <button class="${P.mode === "free" ? "on" : ""}" data-act="prod-mode" data-v="free">✍️ Phrase libre</button>
+    </div>`;
+  if (P.mode === "free" && !llmReady()) {
+    return `${modes}<div class="card empty">${mochi("small", "sleepy")}<h2>Phrases libres</h2>
+      <p class="muted">Pour écrire ce que tu veux et être corrigé·e intelligemment, ${account ? "le correcteur doit être activé sur le serveur (clé API Claude)." : "connecte-toi : le correcteur Claude est réservé aux comptes."}</p>
+      ${account ? "" : `<a class="btn" href="#/connexion">Se connecter</a>`}</div>`;
+  }
   return `
+    ${modes}
     <div class="card prod">
-      ${ex.who ? `<div class="who"><span class="tag">👤 ${esc(ex.who)}</span><span class="tag">Registre : poli en -요</span></div>` : ""}
+      ${ex.who ? `<div class="who"><span class="tag">👤 ${esc(ex.who)}</span>${isKo(lang) ? `<span class="tag">Registre : poli en -요</span>` : ""}</div>` : ""}
       <h2 style="margin:10px 0 14px">${esc(ex.prompt)}</h2>
-      <textarea id="prod-text" class="input ${k}" rows="2" placeholder="${isKo(lang) ? "한국어로 써 보세요…" : "Write in English…"}" ${P.result ? "disabled" : ""}>${esc(P.text)}</textarea>
+      ${P.mode === "free" && recent.length ? `<p class="muted" style="margin:-6px 0 12px">Essaie de réutiliser un de tes mots récents 👇</p>` : ""}
+      <textarea id="prod-text" class="input ${k}" rows="${P.mode === "free" ? 3 : 2}" maxlength="500" placeholder="${isKo(lang) ? "한국어로 써 보세요…" : "Write in English…"}" ${r || P.loading ? "disabled" : ""}>${esc(P.text)}</textarea>
       ${recent.length ? `<p class="muted" style="margin:10px 0 0"><small>Tes mots récents : ${recent.map((w) => `<span class="tag ${k}">${esc(w)}</span>`).join(" ")}</small></p>` : ""}
-      ${P.result ? "" : `<div class="wp-actions"><button class="btn" data-act="check-prod">Vérifier</button><button class="btn ghost small" data-act="next-ex">Autre phrase</button></div>`}
+      ${r || P.loading ? "" : `<div class="wp-actions"><button class="btn" data-act="check-prod">Vérifier</button><button class="btn ghost small" data-act="next-ex">Autre phrase</button></div>`}
     </div>
     ${fb}
-    <p class="muted"><small>On te renvoie la phrase reformulée plutôt qu'un simple « faux ». ${isKo(lang) ? "Le registre est vérifié selon l'interlocuteur." : ""} Les variantes correctes sont acceptées.</small></p>`;
+    <p class="muted"><small>On te renvoie ta phrase reformulée plutôt qu'un simple « faux ». ${isKo(lang) ? "Le registre est vérifié selon l'interlocuteur. " : ""}Les variantes correctes sont acceptées.${llmReady() ? "" : account ? "" : " Connecte-toi pour le correcteur Claude."}</small></p>`;
 }
 
-function checkProduction(lang, text) {
+function pickFree(lang, skip) {
+  const list = FREE_PROMPTS[lang].filter((p) => p.prompt !== skip);
+  return list[Math.floor(Math.random() * list.length)];
+}
+
+// Comptabilise l'exercice (session, XP, activité) et les erreurs récurrentes
+function recordProduction(lang, exId, particleErrors) {
+  const L = state.langs[lang];
+  for (const pe of particleErrors) {
+    L.errors[pe.particle] = (L.errors[pe.particle] || 0) + 1;
+    if (L.errors[pe.particle] >= 2 && pe.before != null) {
+      if (addCard(lang, { type: "cloze", lemma: pe.particle, before: pe.before, surface: pe.particle, after: pe.after, contextFr: pe.contextFr, fr: LEXICON.ko[pe.particle]?.fr || pe.particle, source: exId })) toast(`🎯 Carte ciblée créée pour la particule ${pe.particle}`);
+    }
+  }
+  if (exId) L.prodDone[exId] = today();
+  L.xp += 5;
+  track(lang, "prod");
+  bumpSession(lang, "production");
+}
+
+async function checkProduction(lang, text) {
+  const P = ui.prod;
+  P.text = text;
+  if (llmReady()) {
+    const ex = P.mode === "free" ? P.free : P.ex;
+    P.loading = true; render();
+    try {
+      const reference = P.mode === "free" ? null : plain(parseSentence(ex.target, lang));
+      const { feedback: f, remaining } = await api("POST", "/api/feedback", { lang, prompt: ex.prompt, who: ex.who || null, register: ex.register || null, reference, text });
+      const perfect = f.verdict !== "errors";
+      const d = recast(text, f.recast, lang);
+      P.result = { llm: true, perfect, verdict: f.verdict, alt: perfect && norm(lang, f.recast) !== norm(lang, text) ? f.recast : "", target: f.recast, tHtml: d.tHtml, uHtml: d.uHtml, errors: f.errors, explanation: f.explanation, encouragement: f.encouragement };
+      P.remaining = remaining;
+      // Particules ratées → cartes ciblées, à partir de la phrase corrigée
+      const pes = isKo(lang) ? f.errors.filter((e) => e.particle && KO_PARTICLES.has(e.particle)).map((e) => {
+        const i = f.recast.indexOf(e.correction);
+        const end = i + e.correction.length;
+        const ok = i >= 0 && e.correction.endsWith(e.particle);
+        return { particle: e.particle, before: ok ? f.recast.slice(0, end - e.particle.length) : null, after: ok ? f.recast.slice(end) : null, contextFr: ex.prompt };
+      }) : [];
+      recordProduction(lang, P.mode === "free" ? null : ex.id, pes);
+      P.loading = false;
+      return;
+    } catch (e) {
+      P.loading = false;
+      P.llmError = e.message;
+      if (P.mode === "free") { P.result = null; toast(e.message); return; } // pas de réponse type en mode libre
+    }
+  }
+  checkProductionLocal(lang, text);
+}
+const norm = (lang, s) => (isKo(lang) ? normKo : normEn)(s);
+
+function checkProductionLocal(lang, text) {
   const P = ui.prod, ex = P.ex;
   const tWords = parseSentence(ex.target, lang);
   const target = plain(tWords);
-  const norm = isKo(lang) ? normKo : normEn;
   const cands = [target, ...ex.accept];
-  const match = cands.find((c) => norm(c) === norm(text));
+  const match = cands.find((c) => norm(lang, c) === norm(lang, text));
   const issues = isKo(lang) ? koChecks(ex, text, tWords) : { register: [], particles: [] };
   if (match) {
     issues.particles = [];
-    P.result = { perfect: true, alt: norm(match) === norm(target) ? (ex.accept[0] || "") : target, target, issues };
+    P.result = { perfect: true, alt: norm(lang, match) === norm(lang, target) ? (ex.accept[0] || "") : target, target, issues };
   } else {
     const best = cands.map((c) => ({ c, r: recast(text, c, lang) })).sort((a, b) => b.r.sim - a.r.sim)[0];
     P.result = { perfect: false, ...best.r, target: best.c, issues };
   }
-  // Erreurs récurrentes → cartes ciblées (§4)
-  const L = state.langs[lang];
-  for (const i of issues.particles) {
-    L.errors[i.want] = (L.errors[i.want] || 0) + 1;
-    if (L.errors[i.want] >= 2) {
-      const wi = tWords.findIndex((w) => w.segs.map((s) => s.surface).join("").startsWith(i.stem) && w.segs.some((s) => s.particle));
-      const gi = wi >= 0 ? tWords[wi].segs.findIndex((s) => s.particle) : -1;
-      if (gi > 0 && tWords[wi].segs.length === gi + 1) {
-        const { before, after } = splitAround(tWords, wi, gi);
-        if (addCard(lang, { type: "cloze", lemma: i.lemma, before, surface: i.want, after, contextFr: ex.prompt, fr: i.explain || i.want, source: ex.id })) toast(`🎯 Carte ciblée créée pour la particule ${i.want}`);
-      }
-    }
-  }
-  L.prodDone[ex.id] = today();
-  L.xp += 5;
-  track(lang, "prod");
-  P.text = text;
-  bumpSession(lang, "production");
+  const pes = issues.particles.map((i) => {
+    const wi = tWords.findIndex((w) => w.segs.map((s) => s.surface).join("").startsWith(i.stem) && w.segs.some((s) => s.particle));
+    const gi = wi >= 0 ? tWords[wi].segs.findIndex((s) => s.particle) : -1;
+    if (!(gi > 0 && tWords[wi].segs.length === gi + 1)) return { particle: i.want, before: null };
+    return { particle: i.want, ...splitAround(tWords, wi, gi), contextFr: ex.prompt };
+  });
+  recordProduction(lang, ex.id, pes);
 }
 
 // ---------- Mots (§3 : modèle du vocabulaire, fréquence) ----------
@@ -1657,12 +1726,18 @@ const actions = {
   },
 
   // Production
-  "check-prod": () => {
+  "check-prod": async () => {
+    if (ui.prod.loading) return;
     const text = document.getElementById("prod-text").value.trim();
     if (!text) return toast("Écris d'abord une phrase ✍️");
-    checkProduction(currentLang(), text); render();
+    await checkProduction(currentLang(), text); render();
   },
-  "next-ex": () => { const lang = currentLang(); ui.prod = { lang, ex: pickExercise(lang, ui.prod?.ex.id), text: "", result: null, why: false }; render(); },
+  "next-ex": () => {
+    const P = ui.prod, lang = currentLang();
+    if (P.mode === "free") P.free = pickFree(lang, P.free?.prompt); else P.ex = pickExercise(lang, P.ex?.id);
+    Object.assign(P, { text: "", result: null, why: false, llmError: null }); render();
+  },
+  "prod-mode": (el) => { Object.assign(ui.prod, { mode: el.dataset.v, text: "", result: null, why: false }); render(); },
   why: () => { ui.prod.why = !ui.prod.why; render(); },
 
   // Mots
@@ -1851,6 +1926,7 @@ window.addEventListener("hashchange", route);
     if (r.ok && (r.headers.get("content-type") || "").includes("json")) {
       serverOn = true;
       const d = await r.json();
+      features = d.features || features;
       if (d.user) attachAccount(d.user, { legacy: d.legacy_state });
     }
   } catch {}
