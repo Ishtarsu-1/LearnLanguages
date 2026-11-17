@@ -1,6 +1,16 @@
 # SETUP.md : installer et configurer Mochi
 
-Ce guide explique comment lancer Mochi sur ta machine et comment activer le **correcteur Claude** (la correction des phrases dans l'onglet « Produire »).
+Ce guide explique comment lancer Mochi sur ta machine et comment activer le **correcteur IA** (la correction des phrases dans l'onglet « Produire »). Deux moteurs au choix :
+
+| | **Claude** (API) | **Ollama** (local) |
+|---|---|---|
+| Prix | ~1 à 3 centimes par correction (Opus), ~0,05 avec Haiku | **Gratuit** |
+| Qualité en coréen | Très bonne (registres, particules) | Correcte à moyenne, selon le modèle |
+| Vitesse | Quelques secondes | ~20 s par correction sur CPU (section 6 bis) |
+| Confidentialité | Phrases envoyées à Anthropic | Rien ne quitte ta machine |
+| Pour un site en ligne | ✅ | Seulement avec un serveur qui a une carte graphique |
+
+Pour développer gratuitement : **Ollama** (section 6 bis). Pour le site public : **Claude** (sections 3 à 6).
 
 ---
 
@@ -86,14 +96,55 @@ MOCHI_MODEL=claude-haiku-5-5    # environ 40 fois moins cher
 
 ---
 
+## 6 bis. Correcteur gratuit et local avec Ollama
+
+[Ollama](https://ollama.com) fait tourner un modèle de langage sur ton propre ordinateur.
+
+1. **Installe Ollama** (s'il n'est pas déjà là : `ollama --version`) : suis les instructions de https://ollama.com/download pour ton système, puis vérifie qu'il tourne avec `curl http://localhost:11434/api/version`.
+2. **Télécharge le modèle** (4,7 Go) :
+   ```bash
+   ollama pull qwen2.5:7b-instruct
+   ```
+3. **Configure Mochi** dans `.env` :
+   ```
+   MOCHI_LLM_PROVIDER=ollama
+   # MOCHI_MODEL=qwen2.5:7b-instruct   # c'est déjà le modèle par défaut avec Ollama
+   ```
+4. Relance `npm start`. Le terminal affiche `correcteur : Ollama (qwen2.5:7b-instruct)`.
+5. **Mesure la qualité sur ta machine** (gratuit avec Ollama). Mesuré sur un i7-13620H, sans carte graphique, avec 23 Go de RAM : **9/10** et **~22 s par correction** (la première, qui charge le modèle, est plus lente). La seule erreur ratée est une nuance (에 → 에서) que Claude, lui, repère.
+   ```bash
+   MOCHI_LLM_PROVIDER=ollama node tests/eval-llm.js
+   ```
+   Le script soumet 10 phrases d'apprenants (anglais et coréen, avec et sans fautes) et affiche le score et le temps moyen par correction.
+
+**Quel modèle choisir ?** Ça dépend de ta mémoire vive :
+
+| Machine | Modèle conseillé | Taille |
+|---|---|---|
+| 8 Go de RAM | `qwen2.5:3b-instruct` (rapide, mais faible en coréen) | 1,9 Go |
+| 16 Go de RAM, sans carte graphique | `qwen2.5:7b-instruct` (**défaut**) | 4,7 Go |
+| 32 Go ou plus, ou une carte graphique de 12 Go et plus | `qwen2.5:14b-instruct` (meilleur coréen, plus lent sur CPU) | 9 Go |
+
+Qwen est l'une des familles de petits modèles les plus solides en coréen. Les modèles de 3 milliards de paramètres sont trop faibles pour juger les registres.
+
+> 💡 **Carte graphique NVIDIA :** si ton PC portable en a une, installe son pilote. Ollama l'utilisera automatiquement et les corrections seront 5 à 10 fois plus rapides. Vérifie avec `nvidia-smi`.
+
+Bon à savoir :
+- La **première** correction est plus lente : le modèle se charge en mémoire. Il y reste 30 minutes après la dernière utilisation.
+- Si une correction dépasse 3 minutes, elle est abandonnée et le correcteur hors ligne prend le relais (`OLLAMA_TIMEOUT_MS` pour changer ce délai).
+- Le quota de corrections par jour s'applique aussi (protège ton processeur).
+
 ## 7. Toutes les variables d'environnement
 
 | Variable | Par défaut | Rôle |
 |---|---|---|
-| `ANTHROPIC_API_KEY` | — | Clé API Claude pour le correcteur |
-| `MOCHI_MODEL` | `claude-opus-5-5` | Modèle utilisé pour les corrections |
+| `MOCHI_LLM_PROVIDER` | `claude` | Moteur du correcteur : `claude` ou `ollama` |
+| `ANTHROPIC_API_KEY` | — | Clé API Claude (moteur `claude`) |
+| `MOCHI_MODEL` | `claude-opus-5-5`, ou `qwen2.5:7b-instruct` avec Ollama | Modèle utilisé pour les corrections |
+| `OLLAMA_URL` | `http://localhost:11434` | Adresse d'Ollama |
+| `OLLAMA_TIMEOUT_MS` | `180000` | Délai maximum d'une correction locale |
 | `MOCHI_LLM_DAILY` | `60` | Corrections max par compte et par jour |
-| `MOCHI_LLM` | activé | Mettre `off` pour couper le correcteur Claude |
+| `MOCHI_LLM` | activé | Mettre `off` pour couper le correcteur IA |
 | `PORT` | `8000` | Port du serveur |
 | `DATA_DIR` | `./data` | Base de données et photos de profil |
 | `COOKIE_SECURE` | — | Mettre `1` quand le site est servi en HTTPS |
@@ -121,6 +172,10 @@ Ils couvrent l'application, l'API des comptes, la synchronisation entre plusieur
 | « Le correcteur est très sollicité… » | Limite de débit de l'API atteinte. Réessaie dans une minute. |
 | « Tu as utilisé tes 60 corrections du jour » | Quota Mochi atteint. Il se remet à zéro chaque jour (UTC), sinon augmente `MOCHI_LLM_DAILY`. |
 | « Correcteur désactivé » | `MOCHI_LLM=off` est défini : retire-le. |
+| « Ollama ne répond pas sur … » | Ollama n'est pas lancé : `ollama serve` (ou `systemctl start ollama`). |
+| « Modèle … absent : lance ollama pull … » | Le modèle n'est pas téléchargé : copie la commande affichée. |
+| « Le modèle local a mis trop de temps » | Prends un modèle plus petit, ou augmente `OLLAMA_TIMEOUT_MS`. |
+| « Réponse du modèle local illisible » | Le petit modèle s'est embrouillé : réessaie, ou prends un modèle plus gros. |
 | « Phrases libres : connecte-toi » | Tu es en mode invité. Crée un compte ou connecte-toi. |
 | Pas de bouton « Se connecter » | Tu n'es pas passé par `npm start` (site servi sans serveur). |
 | `node: bad option: --env-file-if-exists` | Node est trop ancien : installe Node 22.5 ou plus récent. |

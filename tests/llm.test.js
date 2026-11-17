@@ -64,7 +64,7 @@ server.listen(0, "127.0.0.1", async () => {
     ctx.window = ctx; vm.createContext(ctx);
     for (const f of ["content.js", "app.js", "exercises.js"]) vm.runInContext(fs.readFileSync(path.join(APP, f), "utf8"), ctx);
     const run = (c) => vm.runInContext(c, ctx);
-    run(`account = { id: 9, email: "a@b.c", name: "", avatar_emoji: "🐰" }; features = { llm: true }; sync.meta = { cursor: 0, epoch: 0, snap: emptySnap(), times: {} }; state.langs.ko.hangulDone = true;`);
+    run(`account = { id: 9, email: "a@b.c", name: "", avatar_emoji: "🐰" }; features = { llm: true, engine: "Claude" }; sync.meta = { cursor: 0, epoch: 0, snap: emptySnap(), times: {} }; state.langs.ko.hangulDone = true;`);
     run(`location.hash = "#/lang/ko/produire"; route(); ui.prod.ex = PRODUCTION.ko.find((e) => e.id === "p-ko-3");`);
     for (let i = 0; i < 2; i++) { ctx.document.getElementById = (id) => (id === "prod-text" ? { value: "저는 커피을 좋아해" } : el()); run(`ui.prod.result = null`); await run(`actions["check-prod"]()`); }
     ok(run(`ui.prod.result.llm && !ui.prod.result.perfect && ui.prod.result.errors.length === 2`), "client : résultat Claude");

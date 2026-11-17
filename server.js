@@ -303,7 +303,7 @@ async function api(req, res, url) {
     if (db.prepare("SELECT 1 FROM users WHERE email = ?").get(email.trim())) return fail(res, 409, "Un compte existe déjà avec cette adresse.");
     const info = db.prepare("INSERT INTO users (email, pass, name, created_at) VALUES (?, ?, ?, ?)").run(email.trim(), await hashPassword(password), cleanName(name), now());
     createSession(res, Number(info.lastInsertRowid), req);
-    return send(res, 201, { user: publicUser(db.prepare("SELECT * FROM users WHERE id = ?").get(info.lastInsertRowid)), legacy_state: null, features: { llm: LLM_ON } });
+    return send(res, 201, { user: publicUser(db.prepare("SELECT * FROM users WHERE id = ?").get(info.lastInsertRowid)), legacy_state: null, features: { llm: LLM_ON, engine: llm.ENGINE } });
   }
 
   if (route === "POST /api/login") {
@@ -316,14 +316,14 @@ async function api(req, res, url) {
     if (!user || !good) { keys.forEach(recordFailure); return fail(res, 401, "E-mail ou mot de passe incorrect."); }
     keys.forEach((k) => attempts.delete(k));
     createSession(res, user.id, req);
-    return send(res, 200, `{"user":${JSON.stringify(publicUser({ ...user, last_login_at: now() }))},"legacy_state":${legacyState(user)},"features":{"llm":${LLM_ON}}}`);
+    return send(res, 200, `{"user":${JSON.stringify(publicUser({ ...user, last_login_at: now() }))},"legacy_state":${legacyState(user)},"features":{"llm":${LLM_ON},"engine":${JSON.stringify(llm.ENGINE)}}}`);
   }
 
   // --- Routes authentifiées ---
   const auth = currentSession(req);
   if (route === "GET /api/me") {
     if (!auth) return send(res, 200, { user: null, features: { llm: false } });
-    return send(res, 200, `{"user":${JSON.stringify(publicUser(auth.user))},"legacy_state":${legacyState(auth.user)},"features":{"llm":${LLM_ON}}}`);
+    return send(res, 200, `{"user":${JSON.stringify(publicUser(auth.user))},"legacy_state":${legacyState(auth.user)},"features":{"llm":${LLM_ON},"engine":${JSON.stringify(llm.ENGINE)}}}`);
   }
   if (!auth) return fail(res, 401, "Connecte-toi d'abord.");
   const uid = auth.user.id;
@@ -346,7 +346,7 @@ async function api(req, res, url) {
     db.prepare("INSERT INTO llm_usage (user_id, day, count) VALUES (?, ?, 1) ON CONFLICT (user_id, day) DO UPDATE SET count = count + 1").run(uid, day);
     try {
       const feedback = await llm.getFeedback({ lang: b.lang, prompt: b.prompt, who: b.who || null, register: b.register || null, reference: b.reference || null, text: b.text.trim() });
-      return send(res, 200, { feedback, remaining: LLM_DAILY - used - 1 });
+      return send(res, 200, { feedback, engine: llm.ENGINE, remaining: LLM_DAILY - used - 1 });
     } catch (e) {
       // Échec : on ne décompte pas la correction
       db.prepare("UPDATE llm_usage SET count = count - 1 WHERE user_id = ? AND day = ?").run(uid, day);
@@ -452,5 +452,5 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-if (require.main === module) server.listen(PORT, () => console.log(`Mochi → http://localhost:${PORT}`));
+if (require.main === module) server.listen(PORT, () => console.log(`Mochi → http://localhost:${PORT} · correcteur : ${LLM_ON ? llm.ENGINE : "désactivé"}`));
 module.exports = { server, db };

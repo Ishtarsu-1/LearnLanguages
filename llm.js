@@ -1,14 +1,21 @@
 // ============================================================
 //  Mochi — feedback de production par LLM (PEDAGOGIE.md §4)
-//  Claude corrige la phrase de l'apprenant par reformulation (recast),
+//  Le modèle corrige la phrase de l'apprenant par reformulation (recast),
 //  sépare grammaire / vocabulaire / registre, explique en français.
-//  Identifiants : ANTHROPIC_API_KEY (ou un profil `ant auth login`).
+//
+//  Deux moteurs (MOCHI_LLM_PROVIDER) :
+//   - "claude" (défaut) : API Claude, clé ANTHROPIC_API_KEY. Payant, meilleure qualité.
+//   - "ollama"          : modèle local via Ollama. Gratuit, plus lent, moins fiable en coréen.
 // ============================================================
 const Anthropic = require("@anthropic-ai/sdk").default;
 const { z } = require("zod");
 const { betaZodOutputFormat } = require("@anthropic-ai/sdk/helpers/beta/zod");
 
-const MODEL = process.env.MOCHI_MODEL || "claude-opus-5-5";
+const PROVIDER = (process.env.MOCHI_LLM_PROVIDER || "claude").toLowerCase();
+const MODEL = process.env.MOCHI_MODEL || (PROVIDER === "ollama" ? "qwen2.5:7b-instruct" : "claude-opus-5-5");
+const OLLAMA_URL = (process.env.OLLAMA_URL || "http://localhost:11434").replace(/\/$/, "");
+const OLLAMA_TIMEOUT = Number(process.env.OLLAMA_TIMEOUT_MS) || 180_000; // CPU : une correction peut prendre ~1 min
+const ENGINE = PROVIDER === "ollama" ? `Ollama (${MODEL})` : "Claude";
 let client = null;
 const getClient = () => (client ||= new Anthropic({ timeout: 60_000, maxRetries: 2 }));
 
@@ -65,6 +72,41 @@ function userMessage({ lang, prompt, who, register, reference, text }) {
 class LlmUnavailable extends Error {}
 
 async function getFeedback(input) {
+  const f = PROVIDER === "ollama" ? await getFeedbackOllama(input) : await getFeedbackClaude(input);
+  return postProcess(input, f);
+}
+
+// ---------- Garde-fous déterministes (les deux moteurs) ----------
+// Ce qui se vérifie sans IA ne doit pas dépendre de l'humeur du modèle.
+const lastWord = (t) => (t.replace(/[.,!?~…\s]+$/u, "").split(/\s+/).pop() || "");
+const KO_PARTICLES = new Set(["은", "는", "이", "가", "을", "를", "에", "에서", "도", "의", "와", "과", "하고", "로", "으로", "랑", "이랑", "한테", "께", "에게", "부터", "까지", "만"]);
+function postProcess(input, f) {
+  // « particle » ne garde que de vraies particules (sert à créer des cartes ciblées)
+  f = { ...f, errors: f.errors.map((e) => ({ ...e, particle: input.lang === "ko" && KO_PARTICLES.has(e.particle) ? e.particle : null })) };
+  // Coréen, registre poli attendu : la terminaison se vérifie mécaniquement
+  if (input.lang === "ko" && input.register === "haeyo") {
+    const last = lastWord(input.text);
+    const formal = /(니다|니까)$/u.test(last);
+    const polite = /요$/u.test(last);
+    if (formal || polite) {
+      // 합니다체 (plus formel) ou -요 : le registre n'est pas fautif
+      f.errors = f.errors.filter((e) => e.type !== "registre");
+      // Plus formel que nécessaire : correct, avec la version 해요체 en suggestion
+      if (formal && !f.errors.length) f.verdict = "acceptable";
+    } else if (!f.errors.some((e) => e.type === "registre")) {
+      // Terminaison sans -요 (반말) face à un inconnu : erreur de registre, même si le modèle l'a ratée
+      const fixed = lastWord(f.recast);
+      f.errors.push({ type: "registre", original: last, correction: /요$/u.test(fixed) ? fixed : `${last}요`, particle: null, explanation: `${input.who || "Ici"} : on termine la phrase par -요 (registre poli). Sans -요, c'est du 반말, réservé aux proches.` });
+    }
+  }
+  // Cohérence : des erreurs listées ⇒ verdict « errors » ; aucune erreur et rien de changé ⇒ « correct »
+  if (f.errors.length) f.verdict = "errors";
+  else if (f.verdict === "errors" && f.recast.trim() === input.text.trim()) f.verdict = "correct";
+  return f;
+}
+
+// ---------- Moteur Claude ----------
+async function getFeedbackClaude(input) {
   let response;
   try {
     response = await getClient().beta.messages.parse({
@@ -90,4 +132,50 @@ async function getFeedback(input) {
   return response.parsed_output;
 }
 
-module.exports = { getFeedback, LlmUnavailable, FeedbackSchema, userMessage, SYSTEM, MODEL };
+// ---------- Moteur Ollama (local, gratuit) ----------
+// Sortie contrainte par le schéma JSON (option `format` d'Ollama), puis revalidée avec zod :
+// un petit modèle peut produire un JSON valide mais incohérent.
+const OLLAMA_SCHEMA = z.toJSONSchema(FeedbackSchema);
+// Rappel supplémentaire pour les petits modèles, qui ont tendance à sur-corriger
+const OLLAMA_EXTRA = `
+
+Reply with the JSON object only. Be conservative: if you are not sure something is an error, it is not an error. Keep every explanation very short.`;
+
+// Les petits modèles oublient les consignes lointaines : on rappelle l'essentiel à la fin
+const OLLAMA_REMINDER = `
+
+Reminders: if you list at least one error, verdict must be "errors". Write "explanation", "encouragement" and every error explanation in FRENCH only (never in Korean or English).`;
+
+async function getFeedbackOllama(input) {
+  let r;
+  try {
+    r = await fetch(`${OLLAMA_URL}/api/chat`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      signal: AbortSignal.timeout(OLLAMA_TIMEOUT),
+      body: JSON.stringify({
+        model: MODEL,
+        stream: false,
+        keep_alive: "30m", // garde le modèle en mémoire entre deux corrections
+        format: OLLAMA_SCHEMA,
+        options: { temperature: 0.1 },
+        messages: [{ role: "system", content: SYSTEM + OLLAMA_EXTRA }, { role: "user", content: userMessage(input) + OLLAMA_REMINDER }],
+      }),
+    });
+  } catch (e) {
+    if (e.name === "TimeoutError") throw new LlmUnavailable("Le modèle local a mis trop de temps à répondre.");
+    throw new LlmUnavailable(`Ollama ne répond pas sur ${OLLAMA_URL} (lance « ollama serve »).`);
+  }
+  if (r.status === 404) throw new LlmUnavailable(`Modèle ${MODEL} absent : lance « ollama pull ${MODEL} ».`);
+  if (!r.ok) throw new LlmUnavailable(`Erreur d'Ollama (${r.status}).`);
+  const data = await r.json().catch(() => null);
+  let parsed;
+  try { parsed = FeedbackSchema.safeParse(JSON.parse(data?.message?.content ?? "")); } catch { parsed = { success: false }; }
+  if (!parsed.success || !parsed.data.recast.trim()) throw new LlmUnavailable("Réponse du modèle local illisible.");
+  const f = parsed.data;
+  // Cohérence minimale : pas d'erreurs listées si la phrase est déclarée correcte
+  if (f.verdict === "correct") f.errors = [];
+  return f;
+}
+
+module.exports = { getFeedback, postProcess, LlmUnavailable, FeedbackSchema, userMessage, SYSTEM, MODEL, PROVIDER, ENGINE };

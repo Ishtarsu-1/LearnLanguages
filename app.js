@@ -1033,7 +1033,7 @@ function tabProduce(lang) {
   const recent = [...recentLemmas(lang)].slice(0, 8);
   const r = P.result;
   let fb = "";
-  if (P.loading) fb = `<div class="card feedback loading">${mochi("small")}<p><b>Mochi relit ta phrase…</b></p></div>`;
+  if (P.loading) fb = `<div class="card feedback loading">${mochi("small")}<p><b>Mochi relit ta phrase…</b>${/Ollama/.test(features.engine || "") ? "<br/><small class=\"muted\">Modèle local : ça peut prendre jusqu'à une minute.</small>" : ""}</p></div>`;
   else if (r) {
     const label = { grammaire: "Grammaire", vocabulaire: "Vocabulaire", registre: "Registre", orthographe: "Orthographe" };
     const head = r.perfect
@@ -1053,7 +1053,7 @@ function tabProduce(lang) {
         <button class="btn small" data-act="next-ex">Phrase suivante →</button>
       </div>
       ${P.why && why ? `<p class="why">💡 ${esc(why)}</p>` : ""}
-      <p class="muted corrector"><small>${r.llm ? `✨ Corrigé par Claude${P.remaining != null ? ` · ${P.remaining} correction(s) restante(s) aujourd'hui` : ""}` : `Correcteur hors ligne${P.llmError ? ` (${esc(P.llmError)})` : ""} : compare avec des réponses types.`}</small></p>
+      <p class="muted corrector"><small>${r.llm ? `✨ Corrigé par ${esc(P.engine || features.engine || "l'IA")}${P.remaining != null ? ` · ${P.remaining} correction(s) restante(s) aujourd'hui` : ""}` : `Correcteur hors ligne${P.llmError ? ` (${esc(P.llmError)})` : ""} : compare avec des réponses types.`}</small></p>
     </div>`;
   }
   const modes = `<div class="seg-ctl mode-ctl">
@@ -1062,7 +1062,7 @@ function tabProduce(lang) {
     </div>`;
   if (P.mode === "free" && !llmReady()) {
     return `${modes}<div class="card empty">${mochi("small", "sleepy")}<h2>Phrases libres</h2>
-      <p class="muted">Pour écrire ce que tu veux et être corrigé·e intelligemment, ${account ? "le correcteur doit être activé sur le serveur (clé API Claude)." : "connecte-toi : le correcteur Claude est réservé aux comptes."}</p>
+      <p class="muted">Pour écrire ce que tu veux et être corrigé·e intelligemment, ${account ? "le correcteur IA doit être activé sur le serveur (voir SETUP.md)." : "connecte-toi : le correcteur IA est réservé aux comptes."}</p>
       ${account ? "" : `<a class="btn" href="#/connexion">Se connecter</a>`}</div>`;
   }
   return `
@@ -1076,7 +1076,7 @@ function tabProduce(lang) {
       ${r || P.loading ? "" : `<div class="wp-actions"><button class="btn" data-act="check-prod">Vérifier</button><button class="btn ghost small" data-act="next-ex">Autre phrase</button></div>`}
     </div>
     ${fb}
-    <p class="muted"><small>On te renvoie ta phrase reformulée plutôt qu'un simple « faux ». ${isKo(lang) ? "Le registre est vérifié selon l'interlocuteur. " : ""}Les variantes correctes sont acceptées.${llmReady() ? "" : account ? "" : " Connecte-toi pour le correcteur Claude."}</small></p>`;
+    <p class="muted"><small>On te renvoie ta phrase reformulée plutôt qu'un simple « faux ». ${isKo(lang) ? "Le registre est vérifié selon l'interlocuteur. " : ""}Les variantes correctes sont acceptées.${llmReady() ? "" : account ? "" : " Connecte-toi pour le correcteur IA."}</small></p>`;
 }
 
 function pickFree(lang, skip) {
@@ -1107,11 +1107,11 @@ async function checkProduction(lang, text) {
     P.loading = true; render();
     try {
       const reference = P.mode === "free" ? null : plain(parseSentence(ex.target, lang));
-      const { feedback: f, remaining } = await api("POST", "/api/feedback", { lang, prompt: ex.prompt, who: ex.who || null, register: ex.register || null, reference, text });
+      const { feedback: f, remaining, engine } = await api("POST", "/api/feedback", { lang, prompt: ex.prompt, who: ex.who || null, register: ex.register || null, reference, text });
       const perfect = f.verdict !== "errors";
       const d = recast(text, f.recast, lang);
       P.result = { llm: true, perfect, verdict: f.verdict, alt: perfect && norm(lang, f.recast) !== norm(lang, text) ? f.recast : "", target: f.recast, tHtml: d.tHtml, uHtml: d.uHtml, errors: f.errors, explanation: f.explanation, encouragement: f.encouragement };
-      P.remaining = remaining;
+      P.remaining = remaining; P.engine = engine;
       // Particules ratées → cartes ciblées, à partir de la phrase corrigée
       const pes = isKo(lang) ? f.errors.filter((e) => e.particle && KO_PARTICLES.has(e.particle)).map((e) => {
         const i = f.recast.indexOf(e.correction);

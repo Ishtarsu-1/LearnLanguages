@@ -65,7 +65,8 @@
 
 ### ✅ Feedback de production par LLM (fait)
 Fait : `llm.js` + route `POST /api/feedback` (Claude Opus 5.5, sortie JSON structurée, modèle de secours en cas de refus), quota de 60 corrections par compte et par jour (`MOCHI_LLM_DAILY`), mode « Phrase libre », cartes ciblées créées à partir des particules corrigées, repli automatique sur le correcteur hors ligne. Activer avec `ANTHROPIC_API_KEY=… node server.js` (désactiver avec `MOCHI_LLM=off`).
-Reste : un cache des réponses, et un jeu d'évaluation (phrases d'apprenants + corrections attendues) pour mesurer la qualité du prompt.
+Moteur gratuit et local : **Ollama** (`MOCHI_LLM_PROVIDER=ollama`, modèle par défaut `qwen2.5:7b-instruct`). Des garde-fous déterministes s'appliquent aux deux moteurs : registre -요 vérifié mécaniquement, cohérence du verdict, vraies particules uniquement. Évaluation réelle : `node tests/eval-llm.js` (9/10 avec Ollama sur CPU, ~22 s par correction).
+Reste : un cache des réponses, et un jeu d'évaluation plus large (aujourd'hui 10 phrases) pour comparer les moteurs et les prompts.
 
 Spécification d'origine :
 Remplace l'heuristique actuelle (comparaison avec des réponses de référence) pour pouvoir proposer des **phrases libres** (§4).
