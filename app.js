@@ -842,7 +842,7 @@ function tabLibrary(lang) {
       ${list.map(({ t, c, z }) => `
         <a class="card text-item" href="#/lang/${lang}/lire/${t.id}">
           <span class="ti-icon">${t.icon}</span>
-          <div style="flex:1">
+          <div>
             <h3>${esc(t.title)} ${state.langs[lang].readTexts[t.id] ? '<small class="muted">· lu ✓</small>' : ""}</h3>
             <small class="muted">${t.kind} · ${t.sentences.length} phrases · 🔊 audio</small>
             <div class="cov"><div class="bar"><span style="width:${pct(c)}%"></span></div><b>${pct(c)} %</b></div>

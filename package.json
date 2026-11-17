@@ -5,7 +5,7 @@
   "description": "Mochi : apprendre l'anglais et le coréen (voir PEDAGOGIE.md)",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node --env-file-if-exists=.env server.js",
     "test": "node tests/run.js"
   },
   "engines": {
