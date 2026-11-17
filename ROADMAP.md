@@ -13,7 +13,7 @@
 |---|---|---|---|
 | **P0** | Mise en ligne sécurisée (HTTPS, sauvegardes) | 🟡 | — |
 | **P0** | Mot de passe oublié + vérification de l'e-mail | 🟡 | service d'e-mail |
-| **P0** | Synchro sans perte entre appareils | 🟡 | — |
+| ~~**P0**~~ | ~~Synchro sans perte entre appareils~~ ✅ fait | 🟡 | — |
 | **P1** | Feedback de production par LLM | 🔴 | backend |
 | **P1** | Vraies voix (TTS neuronal / audio natif) | 🟡 | backend |
 | **P1** | Beaucoup plus de contenu (textes, dialogues) | 🔴 | — |
@@ -47,12 +47,17 @@
 - Lien de réinitialisation à usage unique, valable environ 30 minutes, avec un jeton haché en base.
 - Vérification de l'adresse à l'inscription (sans bloquer l'usage : bandeau de rappel).
 
-### Synchro sans perte entre appareils 🟡
-- Aujourd'hui, la dernière sauvegarde écrase l'autre. À la place :
-  - envoyer les **révisions** sous forme d'événements (table `review_logs` côté serveur) plutôt que tout l'état d'un bloc ;
-  - fusionner les cartes par `id` et garder la version la plus récente de chacune ;
-  - détecter les conflits (`updated_at`) et prévenir l'utilisateur.
-- Bonus : ça prépare l'optimisation FSRS (P2), qui a besoin de l'historique complet côté serveur.
+### ✅ Synchro sans perte entre appareils (fait)
+- Route `POST /api/sync` : l'appareil envoie uniquement ce qui a changé et reçoit ce qui a changé ailleurs depuis son dernier passage (curseur `rev`).
+- Une règle de fusion par type de donnée :
+  - **révisions** : ajout seul, table `review_logs` (prête pour l'optimisation FSRS) ;
+  - **cartes** : la version la plus récente gagne, carte par carte ;
+  - **réglages** : la modification la plus récente gagne, clé par clé ;
+  - **XP, temps, activité** : chaque appareil envoie des deltas, que le serveur additionne.
+- Une modification faite pendant une requête n'est pas écrasée. Les modifications hors ligne partent au retour du réseau.
+- Une réinitialisation se propage aux autres appareils (`epoch`). L'ancien format (un bloc JSON) est migré automatiquement.
+- Tests multi-appareils : `tests/sync.test.js`.
+- Reste à faire : prévenir l'utilisateur quand une de ses modifications a perdu face à une plus récente (rare : il faut modifier le même réglage sur deux appareils).
 
 ---
 
@@ -163,12 +168,12 @@ Mécanique :
 - **Espace prof / classe** : un prof crée une classe, assigne des textes et suit la progression.
 - **Accessibilité** : navigation au clavier complète, lecteurs d'écran, contraste, taille de texte réglable.
 - **Interface en plusieurs langues** (aujourd'hui seulement en français).
-- **Tests automatisés** dans le dépôt (aujourd'hui seulement des harnais locaux) et intégration continue (CI).
+- **Intégration continue** : lancer `node tests/run.js` à chaque push (GitHub Actions).
 
 ---
 
 ## Dette technique à surveiller
 
 - `app.js` dépasse 1 400 lignes : le découper en modules (`fsrs`, `reader`, `review`, `account`…) quand on ajoutera un bundler ou des modules ES.
-- L'état complet est renvoyé à chaque sauvegarde : il faudra passer aux événements (voir la synchro du P0).
+- Les tests (`node tests/run.js`) simulent le navigateur et FSRS : il manque des tests dans un vrai navigateur (Playwright).
 - La limitation des tentatives de connexion est gardée en mémoire : elle se remet à zéro au redémarrage du serveur et ne fonctionne pas avec plusieurs instances.

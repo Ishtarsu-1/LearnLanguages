@@ -15,7 +15,7 @@ const DATA = path.resolve(process.env.DATA_DIR || path.join(ROOT, "data"));
 const AVATAR_DIR = path.join(DATA, "avatars");
 const SECURE = process.env.COOKIE_SECURE === "1";
 const SESSION_DAYS = 30;
-const MAX_STATE = 5 * 1024 * 1024;
+const MAX_STATE = 8 * 1024 * 1024;
 const MAX_AVATAR = 1024 * 1024;
 const EMOJIS = ["🐰", "🐱", "🐻", "🐼", "🦊", "🐥", "🐸", "🐨"];
 
@@ -42,12 +42,49 @@ db.exec(`
     expires_at TEXT NOT NULL,
     user_agent TEXT NOT NULL DEFAULT ''
   );
+  -- Ancien format (un seul bloc JSON) : lu une fois pour migrer, plus écrit
   CREATE TABLE IF NOT EXISTS user_state (
     user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
     state TEXT NOT NULL,
     updated_at TEXT NOT NULL
   );
+
+  -- Synchronisation par événements. Chaque écriture porte un numéro de révision
+  -- (rev) croissant par utilisateur : un appareil demande « tout ce qui a changé
+  -- depuis la rev N ».
+  -- Réglages et petites valeurs : la modification la plus récente gagne, clé par clé
+  CREATE TABLE IF NOT EXISTS sync_kv (
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    key TEXT NOT NULL, value TEXT NOT NULL, updated_at INTEGER NOT NULL, rev INTEGER NOT NULL,
+    PRIMARY KEY (user_id, key)
+  );
+  -- Cartes : la version la plus récente gagne, carte par carte (data = 'null' : supprimée)
+  CREATE TABLE IF NOT EXISTS sync_cards (
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    id TEXT NOT NULL, data TEXT NOT NULL, updated_at INTEGER NOT NULL, rev INTEGER NOT NULL,
+    PRIMARY KEY (user_id, id)
+  );
+  -- Historique des révisions : ajout seul, jamais modifié (sert aussi à optimiser FSRS)
+  CREATE TABLE IF NOT EXISTS review_logs (
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    id TEXT NOT NULL, card_id TEXT NOT NULL, data TEXT NOT NULL, rev INTEGER NOT NULL,
+    PRIMARY KEY (user_id, id)
+  );
+  -- Compteurs additifs (XP, temps, activité par jour) : chaque appareil envoie des deltas
+  CREATE TABLE IF NOT EXISTS sync_counters (
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    key TEXT NOT NULL, value REAL NOT NULL, rev INTEGER NOT NULL,
+    PRIMARY KEY (user_id, key)
+  );
+  CREATE INDEX IF NOT EXISTS sync_kv_rev ON sync_kv (user_id, rev);
+  CREATE INDEX IF NOT EXISTS sync_cards_rev ON sync_cards (user_id, rev);
+  CREATE INDEX IF NOT EXISTS review_logs_rev ON review_logs (user_id, rev);
+  CREATE INDEX IF NOT EXISTS sync_counters_rev ON sync_counters (user_id, rev);
 `);
+// Migration : colonnes de synchro sur users
+const userCols = db.prepare("PRAGMA table_info(users)").all().map((c) => c.name);
+if (!userCols.includes("sync_rev")) db.exec("ALTER TABLE users ADD COLUMN sync_rev INTEGER NOT NULL DEFAULT 0");
+if (!userCols.includes("sync_epoch")) db.exec("ALTER TABLE users ADD COLUMN sync_epoch INTEGER NOT NULL DEFAULT 0");
 db.prepare("DELETE FROM sessions WHERE expires_at < ?").run(new Date().toISOString());
 
 // ---------- Utilitaires ----------
@@ -161,6 +198,85 @@ function removeAvatarFile(file) {
   if (file && /^[a-z0-9-]+\.(jpg|png|webp)$/.test(file)) fs.rm(path.join(AVATAR_DIR, file), { force: true }, () => {});
 }
 
+// ---------- Synchronisation ----------
+// L'ancien bloc JSON n'est renvoyé que tant que le compte n'a jamais synchronisé (migration)
+function legacyState(user) {
+  const u = db.prepare("SELECT sync_rev FROM users WHERE id = ?").get(user.id);
+  if (u.sync_rev > 0) return "null";
+  return db.prepare("SELECT state FROM user_state WHERE user_id = ?").get(user.id)?.state || "null";
+}
+
+const isKey = (k) => typeof k === "string" && k.length > 0 && k.length <= 200;
+const LIMITS = { kv: 20000, cards: 20000, logs: 50000, counters: 20000 };
+
+function validSync(b) {
+  if (!b || typeof b !== "object") return "Données invalides.";
+  if (!Number.isInteger(b.cursor) || b.cursor < 0 || !Number.isInteger(b.epoch) || b.epoch < 0) return "Curseur invalide.";
+  for (const [name, max] of Object.entries(LIMITS)) {
+    if (b[name] === undefined) b[name] = [];
+    if (!Array.isArray(b[name]) || b[name].length > max) return `Liste ${name} invalide.`;
+  }
+  for (const x of b.kv) if (!x || !isKey(x.k) || !Number.isFinite(x.t) || x.v === undefined) return "Valeur invalide.";
+  for (const x of b.cards) if (!x || !isKey(x.id) || !Number.isFinite(x.t) || (x.data !== null && (typeof x.data !== "object" || Array.isArray(x.data)))) return "Carte invalide.";
+  for (const x of b.logs) if (!x || !isKey(x.id) || !isKey(x.card_id) || !x.data || typeof x.data !== "object") return "Révision invalide.";
+  for (const x of b.counters) if (!x || !isKey(x.k) || !Number.isFinite(x.d)) return "Compteur invalide.";
+  return null;
+}
+
+function syncUser(uid, b) {
+  const err = validSync(b);
+  if (err) return { error: err };
+  const serverNow = Date.now();
+  const clampT = (t) => Math.min(t, serverNow); // une horloge en avance ne doit pas gagner pour toujours
+  let { sync_rev: rev, sync_epoch: epoch } = db.prepare("SELECT sync_rev, sync_epoch FROM users WHERE id = ?").get(uid);
+  let cursor = b.cursor;
+  let epochChanged = false;
+
+  db.exec("BEGIN IMMEDIATE");
+  try {
+    if (b.reset) {
+      // Réinitialisation volontaire : on repart de zéro, les autres appareils le verront via l'epoch
+      for (const t of ["sync_kv", "sync_cards", "review_logs", "sync_counters", "user_state"]) db.prepare(`DELETE FROM ${t} WHERE user_id = ?`).run(uid);
+      epoch++;
+      cursor = 0;
+    } else if (b.epoch !== epoch) {
+      // Le compte a été réinitialisé ailleurs : on ignore les changements de cet appareil
+      // et on lui renvoie tout depuis le début.
+      epochChanged = true;
+      cursor = 0;
+    }
+    const writes = epochChanged ? 0 : b.kv.length + b.cards.length + b.logs.length + b.counters.length;
+    if (writes || b.reset) {
+      const r = ++rev;
+      const kv = db.prepare(`INSERT INTO sync_kv (user_id, key, value, updated_at, rev) VALUES (?, ?, ?, ?, ?)
+        ON CONFLICT (user_id, key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at, rev = excluded.rev
+        WHERE excluded.updated_at >= sync_kv.updated_at`);
+      for (const x of epochChanged ? [] : b.kv) kv.run(uid, x.k, JSON.stringify(x.v), clampT(x.t), r);
+      const card = db.prepare(`INSERT INTO sync_cards (user_id, id, data, updated_at, rev) VALUES (?, ?, ?, ?, ?)
+        ON CONFLICT (user_id, id) DO UPDATE SET data = excluded.data, updated_at = excluded.updated_at, rev = excluded.rev
+        WHERE excluded.updated_at >= sync_cards.updated_at`);
+      for (const x of epochChanged ? [] : b.cards) card.run(uid, x.id, JSON.stringify(x.data), clampT(x.t), r);
+      const log = db.prepare("INSERT OR IGNORE INTO review_logs (user_id, id, card_id, data, rev) VALUES (?, ?, ?, ?, ?)");
+      for (const x of epochChanged ? [] : b.logs) log.run(uid, x.id, x.card_id, JSON.stringify(x.data), r);
+      const ctr = db.prepare(`INSERT INTO sync_counters (user_id, key, value, rev) VALUES (?, ?, MAX(0, ?), ?)
+        ON CONFLICT (user_id, key) DO UPDATE SET value = MAX(0, sync_counters.value + excluded.value), rev = excluded.rev`);
+      for (const x of epochChanged ? [] : b.counters) ctr.run(uid, x.k, x.d, r);
+      db.prepare("UPDATE users SET sync_rev = ?, sync_epoch = ? WHERE id = ?").run(rev, epoch, uid);
+    }
+    db.exec("COMMIT");
+  } catch (e) { db.exec("ROLLBACK"); throw e; }
+
+  // Tout ce qui a changé depuis le curseur de l'appareil (y compris ses propres écritures)
+  const since = (sql) => db.prepare(sql).all(uid, cursor);
+  return {
+    epoch, epochChanged, cursor: rev,
+    kv: since("SELECT key AS k, value FROM sync_kv WHERE user_id = ? AND rev > ?").map((x) => ({ k: x.k, v: JSON.parse(x.value) })),
+    cards: since("SELECT id, data FROM sync_cards WHERE user_id = ? AND rev > ?").map((x) => ({ id: x.id, data: JSON.parse(x.data) })),
+    logs: since("SELECT id, data FROM review_logs WHERE user_id = ? AND rev > ?").map((x) => ({ id: x.id, data: JSON.parse(x.data) })),
+    counters: since("SELECT key AS k, value AS v FROM sync_counters WHERE user_id = ? AND rev > ?"),
+  };
+}
+
 // ---------- API ----------
 async function api(req, res, url) {
   const route = `${req.method} ${url.pathname}`;
@@ -191,16 +307,14 @@ async function api(req, res, url) {
     if (!user || !good) { keys.forEach(recordFailure); return fail(res, 401, "E-mail ou mot de passe incorrect."); }
     keys.forEach((k) => attempts.delete(k));
     createSession(res, user.id, req);
-    const st = db.prepare("SELECT state, updated_at FROM user_state WHERE user_id = ?").get(user.id);
-    return send(res, 200, `{"user":${JSON.stringify(publicUser({ ...user, last_login_at: now() }))},"state":${st ? st.state : "null"},"updated_at":${JSON.stringify(st?.updated_at || null)}}`);
+    return send(res, 200, `{"user":${JSON.stringify(publicUser({ ...user, last_login_at: now() }))},"legacy_state":${legacyState(user)}}`);
   }
 
   // --- Routes authentifiées ---
   const auth = currentSession(req);
   if (route === "GET /api/me") {
     if (!auth) return send(res, 200, { user: null });
-    const st = db.prepare("SELECT state, updated_at FROM user_state WHERE user_id = ?").get(auth.user.id);
-    return send(res, 200, `{"user":${JSON.stringify(publicUser(auth.user))},"state":${st ? st.state : "null"},"updated_at":${JSON.stringify(st?.updated_at || null)}}`);
+    return send(res, 200, `{"user":${JSON.stringify(publicUser(auth.user))},"legacy_state":${legacyState(auth.user)}}`);
   }
   if (!auth) return fail(res, 401, "Connecte-toi d'abord.");
   const uid = auth.user.id;
@@ -209,15 +323,12 @@ async function api(req, res, url) {
     db.prepare("DELETE FROM sessions WHERE token_hash = ?").run(auth.session.token_hash);
     return send(res, 200, { ok: true }, { "Set-Cookie": sessionCookie("", 0) });
   }
-  if (route === "PUT /api/state") {
-    const buf = await readBody(req, MAX_STATE);
-    let parsed;
-    try { parsed = JSON.parse(buf.toString("utf8")); } catch { return fail(res, 400, "Données invalides."); }
-    if (!parsed || typeof parsed.state !== "object" || Array.isArray(parsed.state)) return fail(res, 400, "Données invalides.");
-    const t = now();
-    db.prepare("INSERT INTO user_state (user_id, state, updated_at) VALUES (?, ?, ?) ON CONFLICT(user_id) DO UPDATE SET state = excluded.state, updated_at = excluded.updated_at")
-      .run(uid, JSON.stringify(parsed.state), t);
-    return send(res, 200, { ok: true, updated_at: t });
+  if (route === "POST /api/sync") {
+    let body;
+    try { body = JSON.parse((await readBody(req, MAX_STATE)).toString("utf8")); } catch { return fail(res, 400, "Données invalides."); }
+    const out = syncUser(uid, body);
+    if (out.error) return fail(res, 400, out.error);
+    return send(res, 200, out);
   }
   if (route === "PATCH /api/me") {
     const body = await readJson(req);
