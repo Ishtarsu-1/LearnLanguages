@@ -50,6 +50,7 @@
   --mochi-fill: #FBF4EA;   /* saveur Nature (§8) */
   --mochi-ink: #2A2230;
   --mochi-cheek: rgb(224 98 143 / 0.6);
+  --acc-cream: #FFFDF8;    /* accessoires de Mochi (illustration uniquement) */
 
   /* Particules coréennes */
   --particle-topic: var(--blue-600);

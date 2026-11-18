@@ -438,3 +438,32 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
   ok(tabPath("ko").includes("#/lang/ko/atelier"), "lien vers l'atelier dans le Parcours");
   ui.quiz = null; ui.atelier = null;
 }
+{ // Accessoires de Mochi
+  const acc = account; account = null;
+  const L = state.langs.en, q0 = { ...L.quests }, look0 = state.settings.look, seen0 = state.settings.lookSeen;
+  state.settings.look = {}; state.settings.lookSeen = [];
+  L.quests = {}; state.langs.ko.quests = {};
+  const beanie = accessoryById("beanie"), scarf = accessoryById("scarf");
+  ok(!accUnlocked(beanie), "bonnet verrouillé sans quête");
+  actions["acc-wear"]({ dataset: { id: "beanie" } }); ok(!state.settings.look.head, "accessoire verrouillé : impossible à porter");
+  L.quests["2026-11-16:read"] = true;
+  ok(accUnlocked(beanie) && !accUnlocked(scarf), "1 quête → bonnet, pas encore l'écharpe");
+  let toasted = ""; const t0 = toast; toast = (m) => (toasted = m);
+  checkNewAccessories(); ok(/Bonnet|nouveaux accessoires/.test(toasted) && state.settings.lookSeen.includes("beanie"), "nouvel accessoire annoncé : " + toasted);
+  toasted = ""; checkNewAccessories(); ok(toasted === "", "annoncé une seule fois");
+  toast = t0;
+  actions["acc-wear"]({ dataset: { id: "beanie" } });
+  ok(state.settings.look.head === "beanie" && mochi("", "happy").includes("acc-beanie"), "bonnet porté partout");
+  ok(!mochi("", "happy", false).includes("acc-beanie"), "pas sur les Mochis de collection");
+  ok(mochi("", "sleepy").includes("translate(0 15)"), "le chapeau suit la forme (endormie)");
+  // Un seul accessoire par emplacement
+  L.quests["2026-11-16:prod"] = true; L.quests["2026-11-16:ear"] = true; L.quests["2026-11-23:read"] = true; L.quests["2026-11-23:rev"] = true; L.quests["2026-11-23:min"] = true;
+  actions["acc-wear"]({ dataset: { id: "cap" } });
+  ok(state.settings.look.head === "cap" && !mochi("", "happy").includes("acc-beanie"), "la casquette remplace le bonnet");
+  actions["acc-wear"]({ dataset: { id: "scarf" } }); ok(state.settings.look.neck === "scarf" && state.settings.look.head === "cap", "tête + cou ensemble");
+  actions["acc-wear"]({ dataset: { id: "scarf" } }); ok(!state.settings.look.neck, "retirer un accessoire");
+  ok(lookCard().includes("Ma Mochi") && lookCard().includes("🔒") && viewProfile().includes("Ma Mochi"), "profil : Ma Mochi");
+  ok(flatten(state).kv["settings.look"]?.head === "cap", "tenue synchronisée");
+  account = { id: 1, is_admin: true }; ok(ACCESSORIES.every((a) => accUnlocked(a)), "admin : tout débloqué"); account = acc;
+  L.quests = q0; state.settings.look = look0; state.settings.lookSeen = seen0;
+}

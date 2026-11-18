@@ -24,7 +24,7 @@ const langDefaults = () => ({
 });
 const defaultState = () => ({
   name: "", avatar: "🐰", goal: 10, lastLang: null,
-  settings: { retention: 0.9, newPerDay: 12, cognateWeight: 0.8, particleColors: true, speed: 1, textScale: 1, zen: false, theme: "auto", voices: {}, themes: [] },
+  settings: { retention: 0.9, newPerDay: 12, cognateWeight: 0.8, particleColors: true, speed: 1, textScale: 1, zen: false, theme: "auto", voices: {}, themes: [], look: {}, lookSeen: [] },
   langs: Object.fromEntries(Object.keys(LANGUAGES).map((k) => [k, langDefaults()])),
   cards: [], logs: [],
   history: {}, // { "AAAA-MM-JJ": { en: { sec, rev, prod, read } } } : suivi d'activité
@@ -346,7 +346,7 @@ const MOCHI_FACES = {
   sleepy: '<path d="M52 80 q5 4 10 0 M78 80 q5 4 10 0" class="mo-line"/><path d="M66 88 q4 2 8 0" class="mo-line"/><text x="108" y="36" class="mo-mark">z</text><text x="119" y="24" class="mo-mark small">z</text>',
   surprised: '<circle cx="57" cy="78" r="4.4" class="mo-ink"/><circle cx="83" cy="78" r="4.4" class="mo-ink"/><circle cx="70" cy="88" r="3" class="mo-ink"/>',
 };
-function mochi(cls = "", mood = "happy") {
+function mochi(cls = "", mood = "happy", dressed = true) {
   const squash = mood === "sleepy" ? "M14 90 C14 54 38 40 70 40 C102 40 126 54 126 90 C126 104 104 106 70 106 C36 106 14 104 14 90 Z"
     : mood === "proud" ? "M18 84 C18 34 42 16 70 16 C98 16 122 34 122 84 C122 104 102 106 70 106 C38 106 18 104 18 84 Z"
     : "M12 84 C12 40 38 24 70 24 C102 24 128 40 128 84 C128 104 106 106 70 106 C34 106 12 104 12 84 Z";
@@ -357,6 +357,7 @@ function mochi(cls = "", mood = "happy") {
       <path d="${squash}" class="mo-body"/>
       <ellipse cx="44" cy="88" rx="8" ry="4.5" class="mo-cheek"/><ellipse cx="96" cy="88" rx="8" ry="4.5" class="mo-cheek"/>
       ${MOCHI_FACES[mood] || MOCHI_FACES.happy}
+      ${dressed && typeof mochiAccessories === "function" ? mochiAccessories(mood) : ""}
     </g>
   </svg>`;
 }
@@ -1151,7 +1152,7 @@ function themeProgress(lang, stab = stabilityMap(lang)) {
   });
 }
 const flavorMochi = (th, mood = "happy", locked = false) =>
-  `<span class="flavor ${locked ? "locked" : ""}" style="--mochi-fill:${th.fill}${th.dark && !locked ? ";--mochi-ink:#FBF4EA" : ""}">${mochi("small", mood)}</span>`;
+  `<span class="flavor ${locked ? "locked" : ""}" style="--mochi-fill:${th.fill}${th.dark && !locked ? ";--mochi-ink:#FBF4EA" : ""}">${mochi("small", mood, false)}</span>`;
 function tabThemes(lang) {
   const P = themeProgress(lang), got = P.filter((p) => p.unlocked).length;
   return `
@@ -1776,6 +1777,8 @@ function viewProfile() {
     <h2 class="section-title">${account?.avatar_url ? "Avatar (si tu retires ta photo)" : "Choisis ton avatar"}</h2>
     <div class="choice-row">${AVATARS.map((a) => `<button class="choice ${a === state.avatar ? "active" : ""}" data-act="avatar" data-v="${a}" style="font-size:1.6rem">${a}</button>`).join("")}</div>
 
+    ${typeof lookCard === "function" ? lookCard() : ""}
+
     <h2 class="section-title">Objectif quotidien</h2>
     <div class="choice-row">${GOALS.map((g) => `<button class="choice ${g.min === state.goal ? "active" : ""}" data-act="goal" data-v="${g.min}">${g.label}<br/><span class="muted" style="font-size:.85rem">${g.min} min / jour</span></button>`).join("")}</div>
 
@@ -2207,6 +2210,7 @@ function route() {
   if (hashChanged) window.scrollTo({ top: 0 });
   ui.lastHash = location.hash;
   if (typeof enhanceKoInputs === "function") enhanceKoInputs($app); // clavier coréen (keyboard.js)
+  if (typeof checkNewAccessories === "function") checkNewAccessories(); // accessoires gagnés (cosmetics.js)
   const ans = document.getElementById("answer");
   if (ans) ans.focus();
 }

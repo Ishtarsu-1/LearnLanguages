@@ -37,7 +37,7 @@
 | **P1** | Paires minimales multi-voix (✅ avec les voix du navigateur ; reste : vraies voix) | 🟡 | 🆓 | vraies voix |
 | **P1** | Bibliothèque de lectures graduées (lecture + écoute) (🟢 moteur + 2 livres ; reste : volume, surlignage mot à mot) | 🔴 | 🆓 | contenu, voix |
 | **P1** | Génération de textes calibrés par LLM | 🔴 | 🆓/💶 | LLM + analyseur |
-| **P2** | Mochi, la mascotte, et la collection de Mochis (🟢 saveurs par thème dans l'onglet Thèmes ; reste : accessoires) | 🟡 | 🆓 | charte graphique |
+| ~~**P2**~~ | ~~Mochi, la mascotte, et la collection de Mochis~~ ✅ (saveurs par thème + accessoires) | 🟡 | 🆓 | charte graphique |
 | ~~**P2**~~ | ~~Série flexible + quêtes hebdomadaires~~ ✅ fait (reste : récompenses cosmétiques) | 🟡 | 🆓 | — |
 | **P2** | Mode histoire (🟢 moteur + 5 chapitres par langue ; reste : la suite de l'histoire) | 🔴 | 🆓 | bibliothèque |
 | ~~**P2**~~ | ~~Application installable (PWA) + hors ligne~~ ✅ fait | 🟡 | 🆓 | — |
@@ -216,10 +216,10 @@ Application du §15.
 - **Mochi**, une petite pâte de riz ronde et expressive (design dans `CHARTE-GRAPHIQUE.md` §8). Elle réagit aux actions : contente après une séance, concentrée pendant les révisions, endormie un jour de repos. **Jamais triste ni en colère** contre l'utilisateur.
 - **Collection de saveurs** : chaque thème a sa saveur de Mochi (Matcha = « Au café », Sakura = « Rencontrer quelqu'un », Yuzu = « Sport », Ube = « K-drama »…). On débloque une saveur quand on atteint un palier de **mots solides** dans le thème (10, 50, 100), pas quand on a « vu » des cartes.
 - **Mochidex** : une page avec toutes les saveurs (débloquées ou en silhouette) et la progression de chaque thème. C'est une façon visuelle et collectionnable de montrer la progression réelle.
-- Accessoires cosmétiques pour Mochi (bonnet, écharpe, hanbok, casquette) gagnés avec les quêtes. **Purement cosmétiques**, jamais achetables.
+- ✅ Accessoires cosmétiques (`cosmetics.js`, Profil › Ma Mochi) : nœud, bonnet, écharpe, casquette, couronne de fleurs, lunettes, casque audio, toque, col de hanbok. Chacun lié à une bonne pratique (1 / 3 / 6 quêtes, une mission, une semaine régulière, 10 lectures, 100 essais d'écoute, 30 phrases, Hangul terminé). Un par emplacement (tête, cou, visage), portés par Mochi partout sur le site, annoncés une fois quand ils sont gagnés. **Purement cosmétiques**, jamais achetables.
 
 ### Série flexible + quêtes hebdomadaires 🟡 🆓 *(série ✅)*
-Fait : série hebdomadaire 5/7 (`fullDays`, migrée depuis l'ancienne série), carte « Ma semaine », Mochi endormie les jours de repos, nouvelle définition d'une séance complète, reprise en douceur après une absence (20 révisions puis 40/jour, sans nouvelles cartes). Quêtes faites : 3 par semaine et par langue parmi 6 (lire, écrire, paires de sons, révisions, minutes, séances complètes d'affilée), tirage identique sur tous les appareils, objectifs proportionnels à l'objectif du jour, +50 XP chacune. Reste : les accessoires cosmétiques en récompense (avec la collection de Mochis), et les quêtes par thème (« Lis 3 textes du thème Café ») quand les thèmes existeront.
+Fait : série hebdomadaire 5/7 (`fullDays`, migrée depuis l'ancienne série), carte « Ma semaine », Mochi endormie les jours de repos, nouvelle définition d'une séance complète, reprise en douceur après une absence (20 révisions puis 40/jour, sans nouvelles cartes). Quêtes faites : 3 par semaine et par langue parmi 6 (lire, écrire, paires de sons, révisions, minutes, séances complètes d'affilée), tirage identique sur tous les appareils, objectifs proportionnels à l'objectif du jour, +50 XP chacune. Les quêtes débloquent aussi les accessoires de Mochi (1, 3, 6 quêtes). Reste : les quêtes par thème (« Lis 3 textes du thème Café ») quand les thèmes existeront.
 
 - **Série hebdomadaire plutôt que quotidienne** : l'objectif est « 5 jours sur 7 », comme le défi « Semaine régulière ». Une semaine réussie ajoute +1 à la série. Rater un jour ne casse rien : manquer une occasion n'empêche pas une habitude de se former (§16).
 - **Jours de repos** : 2 par semaine, inclus d'office, présentés positivement (Mochi fait la sieste).

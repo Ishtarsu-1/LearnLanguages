@@ -25,6 +25,7 @@
 | Histoire | Mode histoire (Mochi à Séoul / à Londres) : chapitres gradués, missions de conversation avec l'IA ou en mode guidé, déblocage par mots clés et grammaire |
 | Clavier | Clavier coréen intégré (두벌식) sous chaque champ coréen : à l'écran ou avec le clavier physique (AZERTY ou QWERTY), syllabes composées automatiquement |
 | Syllabes | Module Hangul en 10 jours (consonnes doubles, voyelles composées, 받침, écriture au clavier), atelier des syllabes (schéma du bloc, 7 sons finaux, décomposition d'un mot) |
+| Ma Mochi | 9 accessoires cosmétiques (tête, cou, visage) gagnés par les bonnes pratiques (quêtes, lecture, écoute, écriture, régularité, Hangul), portés partout sur le site |
 | Audio | Voix du navigateur ou vraies voix du serveur (Kokoro, MeloTTS, cache disque), Profil › Audio : état, choix et test des voix, aide si aucune voix |
 
 ---

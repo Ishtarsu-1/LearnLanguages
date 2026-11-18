@@ -689,3 +689,25 @@ code { background: var(--surface-2); padding: 2px 6px; border-radius: var(--radi
 .atl-piece { display: flex; flex-direction: column; align-items: center; gap: 4px; }
 .atl-big { font-size: var(--text-3xl); font-weight: 600; }
 .type-form { max-width: 360px; margin: 16px auto 0; }
+
+/* Accessoires de Mochi (cosmetics.js) : aplats + contour encre fin, comme Mochi (charte §8) */
+.acc path, .acc rect, .acc circle { stroke: var(--mochi-ink); stroke-width: 1.5; stroke-linejoin: round; }
+.acc-pink { fill: var(--sakura-500); } .acc-pink-dark { fill: var(--sakura-600); }
+.acc-cream { fill: var(--acc-cream); } .acc-yuzu { fill: var(--yuzu-400); stroke: none !important; }
+.acc-kaki { fill: var(--kaki-700); } .acc-blue { fill: var(--blue-600); } .acc-blue-dark { fill: var(--mochi-ink); }
+.acc-ube { fill: var(--ube-600); }
+.acc-frame { fill: none; stroke-width: 2.5 !important; }
+.acc-band { fill: none; stroke-width: 5 !important; stroke-linecap: round; }
+.acc-line-light { fill: none; stroke: var(--acc-cream) !important; stroke-width: 2 !important; stroke-linecap: round; }
+.acc-ribbon { fill: none; stroke: var(--sakura-500) !important; stroke-width: 3 !important; stroke-linecap: round; }
+.mochi { overflow: visible; } /* les chapeaux peuvent dépasser du cadre */
+.look-card { display: flex; gap: var(--space-5); flex-wrap: wrap; align-items: flex-start; }
+.look-preview .mochi { width: 160px; height: auto; }
+.acc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 8px; }
+.acc-item { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 6px; border-radius: var(--radius-md); border: 1px solid var(--border); background: var(--surface); color: var(--ink); cursor: pointer; font: inherit; min-height: 44px; }
+.acc-item svg { width: 72px; height: 62px; }
+.acc-item b { font-size: var(--text-sm); }
+.acc-item small { font-size: var(--text-xs); }
+.acc-item.worn { border-color: var(--primary); background: var(--primary-soft); }
+.acc-item.locked svg { filter: grayscale(1); opacity: .35; }
+.acc-ghost { fill: var(--surface-2); stroke: var(--border); stroke-width: 1.5; }
