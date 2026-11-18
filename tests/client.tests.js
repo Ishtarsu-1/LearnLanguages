@@ -121,6 +121,43 @@ render1("#/profil");
 }
 // Page « Pourquoi » : chaque renvoi pointe vers une source existante
 ok(SOURCES.length === 29 && WHY.every(([, , , refs]) => refs.every((n) => n >= 1 && n <= SOURCES.length)), "sources du « Pourquoi »");
+// Test de niveau (ROADMAP P1)
+{
+  const saved = JSON.stringify(state);
+  ok(estimateEn([{ known: 6, size: 6 }, { known: 6, size: 6 }, { known: 2, size: 6 }, { fake: true, known: 0 }, { fake: true, known: 0 }, { fake: true, known: 0 }]).words === 2300, "estimation sans faux mots");
+  const e2 = estimateEn([{ known: 6, size: 6 }, { known: 6, size: 6 }, { fake: true, known: 1 }, { fake: true, known: 0 }]);
+  ok(e2.fakeRate === 0.5 && e2.words === 2000 && e2.solid === 2, "correction par les faux mots " + JSON.stringify(e2));
+  ok(estimateEn([{ known: 6, size: 6 }, { fake: true, known: 1 }]).words === 0, "tout coché, faux mots compris → 0");
+  // Parcours anglais : 3 tranches connues, la 4e non, aucun faux mot
+  state.langs.en.known = {}; state.langs.en.placement = null; ui.place = null;
+  ok(placementPending("en") || state.cards.some((c) => c.lang === "en"), "offre de test");
+  location.hash = "#/lang/en/niveau"; let h = tabPlacement("en");
+  ok(h.includes("place-pick"), "écran du test");
+  for (let b = 0; b < 4; b++) {
+    ui.place.screen.forEach((x, i) => { if (!x.fake && b < 3) actions["place-pick"]({ dataset: { i: String(i) } }); });
+    actions["place-next"]();
+  }
+  ok(ui.place.step === "done" && state.langs.en.placement.words === 3000, "anglais ~3000 mots : " + JSON.stringify(state.langs.en.placement));
+  ok(state.langs.en.known.coffee && state.langs.en.known.elevator && !state.langs.en.known.actually, "lexique marqué, faux amis exclus");
+  ok(tabPlacement("en").includes("Tu connais environ"), "écran de résultat");
+  // Parcours coréen : lit le Hangul, connaît -요, a étudié, réussit 2 points sur 4
+  const K = state.langs.ko; K.hangulDone = false; K.grammarDone = {}; K.placement = null; ui.place = null;
+  location.hash = "#/lang/ko/niveau"; tabPlacement("ko");
+  ["hangul", "haeyo", "studied"].forEach((q) => actions["place-answer"]({ dataset: { q, v: "oui" } }));
+  actions["place-next"](); ok(ui.place.step === "read", "contrôle de lecture");
+  ok(tabPlacement("ko").includes("mot d'emprunt"), "rendu lecture");
+  while (ui.place.step === "read") actions["place-read"]({ dataset: { o: ui.place.read[ui.place.i].fr } });
+  ok(ui.place.step === "gram", "mini-quiz de grammaire");
+  let gi = 0; while (ui.place.step === "gram") { const g = ui.place.gram[ui.place.i]; actions["place-gram"]({ dataset: { o: gi++ === 2 ? "" : g.item.a } }); }
+  ok(K.hangulDone && K.grammarDone.haeyo && K.grammarDone["eun-neun"] && K.grammarDone[KO_GRAMMAR[2].id] && !K.grammarDone[KO_GRAMMAR[4].id], "coréen : Hangul + points consécutifs " + JSON.stringify(K.placement));
+  // Ne sait pas lire → Hangul non validé
+  K.hangulDone = false; ui.place = null; tabPlacement("ko");
+  actions["place-answer"]({ dataset: { q: "hangul", v: "oui" } }); actions["place-answer"]({ dataset: { q: "haeyo", v: "non" } }); actions["place-answer"]({ dataset: { q: "studied", v: "non" } });
+  actions["place-next"](); while (ui.place.step === "read") actions["place-read"]({ dataset: { o: "" } });
+  ok(!K.hangulDone && ui.place.step === "done", "lecture ratée : Hangul d'abord");
+  actions["place-skip"](); ok(K.placement.skipped && !placementPending("ko"), "test passé");
+  Object.assign(state, JSON.parse(saved)); ui.place = null;
+}
 // Anti-interférence (§12)
 {
   const saved = JSON.stringify(state);

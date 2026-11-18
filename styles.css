@@ -560,3 +560,11 @@ code { background: var(--surface-2); padding: 2px 6px; border-radius: var(--radi
 .mochi-proud { animation: hop 1.2s var(--ease-squish) infinite; }
 @keyframes hop { 0%, 100% { transform: translateY(0) scale(1, 1); } 40% { transform: translateY(-10px) scale(.96, 1.04); } 60% { transform: translateY(0) scale(1.04, .96); } }
 .card > .big-audio { display: grid; place-items: center; margin-inline: auto; }
+
+/* ---------- Test de niveau ---------- */
+.offer { display: flex; align-items: center; gap: var(--space-4); margin-bottom: var(--space-4); background: var(--primary-soft); }
+.offer p { margin: var(--space-1) 0 0; }
+.place-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: var(--space-2); width: 100%; }
+.place-q { margin-bottom: var(--space-4); }
+.place-q p { margin: 0 0 var(--space-2); }
+@media (max-width: 640px) { .offer { flex-direction: column; text-align: center; } .offer .wp-actions { justify-content: center; } }

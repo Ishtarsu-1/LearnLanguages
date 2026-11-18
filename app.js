@@ -906,7 +906,7 @@ Object.assign(TAB_VIEWS, { aujourdhui: (l) => tabToday(l), parcours: (l) => tabP
 function tabToday(lang) {
   if (hangulGate(lang)) {
     const n = Object.keys(state.langs.ko.hangulDays).length;
-    return `<div class="card phase"><b>Phase 1 · Le Hangul</b><div class="bar"><span style="width:${(n / HANGUL_DAYS.length) * 100}%"></span></div><small class="muted">${n} / ${HANGUL_DAYS.length} jours</small></div>${gateCard()}`;
+    return `${placementOffer(lang)}<div class="card phase"><b>Phase 1 · Le Hangul</b><div class="bar"><span style="width:${(n / HANGUL_DAYS.length) * 100}%"></span></div><small class="muted">${n} / ${HANGUL_DAYS.length} jours</small></div>${gateCard()}`;
   }
   const s = session(lang);
   const best = rankedTexts(lang)[0];
@@ -917,6 +917,7 @@ function tabToday(lang) {
   const w = weekly(state.langs[lang]);
   const nextStep = !s.input ? 1 : !reviewDone ? 3 : !s.production ? 4 : 0;
   return `
+    ${placementOffer(lang)}
     ${s.welcomeBack ? `<div class="card celebrate">${mochi("small")}<div><h3>Content de te revoir !</h3><p class="muted">On reprend en douceur : ${CATCHUP_FIRST} révisions aujourd'hui, le reste plus tard, réparti sur les prochains jours. Pas de nouvelles cartes en attendant.</p></div></div>` : ""}
     ${all ? `<div class="card celebrate">${mochi("small", w.thisWeek >= WEEK_GOAL ? "proud" : "happy")}<div><h3>Séance du jour bouclée</h3><p class="muted">${w.thisWeek}/${WEEK_GOAL} jours cette semaine. Tu peux continuer, mais l'essentiel est fait.</p></div></div>`
       : w.resting ? `<div class="card celebrate">${mochi("small", "sleepy")}<div><h3>Jour de repos possible</h3><p class="muted">Objectif de la semaine atteint. Mochi fait la sieste, ta série est en sécurité. Tu peux quand même pratiquer si tu en as envie.</p></div></div>` : ""}
