@@ -774,3 +774,25 @@ code { background: var(--surface-2); padding: 2px 6px; border-radius: var(--radi
 .lang-card.soon { position: relative; font: inherit; text-align: left; color: var(--ink); cursor: not-allowed; background: var(--surface-2); border-style: dashed; opacity: .75; filter: saturate(.4); }
 .lang-card.soon:hover, .lang-card.soon:active { transform: none; box-shadow: none; }
 .lang-card.soon .soon-badge { position: absolute; top: 14px; right: 14px; padding: 4px 10px; border-radius: var(--radius-full); background: var(--surface); border: 1px solid var(--border); font-size: var(--text-xs); font-weight: 800; color: var(--ink-muted); }
+
+/* Mes mots en révision */
+.cards-tools { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: var(--space-3); }
+.cards-tools input { flex: 1; min-width: 200px; }
+.cards-tools .chip { cursor: pointer; border: 1px solid var(--border); }
+.cards-tools .chip.active { background: var(--primary-soft); color: var(--primary); border-color: var(--primary); }
+.my-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--space-3); }
+.my-card { padding: 14px 16px; border-radius: var(--radius-lg); background: var(--surface); border: 1px solid var(--border); display: flex; flex-direction: column; gap: 6px; }
+.my-card.paused { opacity: .6; border-style: dashed; }
+.mc-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+.mc-word { border: none; background: none; padding: 0; font: 700 var(--text-xl) var(--font-sans); color: var(--ink); cursor: pointer; text-align: left; }
+.mc-word small { font-size: var(--text-sm); font-weight: 600; }
+.mc-st { font-size: var(--text-xs); font-weight: 800; padding: 3px 8px; border-radius: var(--radius-full); background: var(--surface-2); color: var(--ink-muted); white-space: nowrap; }
+.mc-st.st-today { background: var(--primary-soft); color: var(--primary); }
+.mc-st.st-solid { background: var(--matcha-50); color: var(--success); }
+.mc-st.st-new { background: var(--blue-50); color: var(--info); }
+.mc-fr { margin: 0; font-weight: 700; }
+.mc-ctx { margin: 0; color: var(--ink); }
+.mc-ctx mark { background: var(--yuzu-100); color: inherit; border-radius: 4px; padding: 0 2px; }
+.mc-ctxfr { margin: 0; }
+.mc-foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+.my-card[hidden] { display: none; }

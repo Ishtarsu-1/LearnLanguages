@@ -628,7 +628,7 @@ function unlockSiblings(c) {
 }
 
 function dueCards(lang, now = new Date()) {
-  return state.cards.filter((c) => c.lang === lang && c.fsrs.state !== 0 && new Date(c.fsrs.due) <= now).sort((a, b) => new Date(a.fsrs.due) - new Date(b.fsrs.due));
+  return state.cards.filter((c) => c.lang === lang && !c.paused && c.fsrs.state !== 0 && new Date(c.fsrs.due) <= now).sort((a, b) => new Date(a.fsrs.due) - new Date(b.fsrs.due));
 }
 function newAllowance(lang) {
   const I = state.langs[lang].introduced;
@@ -670,14 +670,14 @@ function introducedToday(lang) {
 function waitingNew(lang) {
   const shown = newCards(lang);
   if (shown.length >= newAllowance(lang) || session(lang).cap != null) return 0;
-  return state.cards.filter((c) => c.lang === lang && c.fsrs.state === 0 && c.type === "recog").length - shown.filter((c) => c.type === "recog").length;
+  return state.cards.filter((c) => c.lang === lang && !c.paused && c.fsrs.state === 0 && c.type === "recog").length - shown.filter((c) => c.type === "recog").length;
 }
 function newCards(lang) {
   if (session(lang).cap != null) return [];
   const taken = introducedToday(lang), out = [], max = newAllowance(lang);
   for (const c of state.cards) {
     if (out.length >= max) break;
-    if (c.lang !== lang || c.fsrs.state !== 0) continue;
+    if (c.lang !== lang || c.paused || c.fsrs.state !== 0) continue;
     if (c.type === "recog" && interferes(lang, c.lemma, taken)) continue;
     takeLemma(lang, c.lemma, taken);
     out.push(c);
@@ -1367,7 +1367,66 @@ function tabReviews(lang) {
       <div class="stat"><span class="ico">✍️</span><div><b>${byType("prod") + byType("cloze")}</b><small>production</small></div></div>
       <div class="stat"><span class="ico">🎧</span><div><b>${byType("listen")}</b><small>écoute</small></div></div>
     </div>
-    <p class="muted"><small>Les cartes de production et d'écoute se débloquent après 2 bonnes réponses en reconnaissance.</small></p>`;
+    <p class="muted"><small>Les cartes de production et d'écoute se débloquent après 2 bonnes réponses en reconnaissance.</small></p>
+    ${myCardsList(lang)}`;
+}
+
+// ---------- Mes mots en révision : la liste des mots capturés, par langue ----------
+// Un mot peut avoir plusieurs cartes (reconnaissance, production, écoute) : on les regroupe.
+const CARD_TYPE_ICON = { recog: ["👁️", "reconnaissance"], prod: ["✍️", "production"], cloze: ["✍️", "phrase à trou"], listen: ["🎧", "écoute"] };
+function cardGroups(lang) {
+  const by = new Map();
+  for (const c of state.cards) if (c.lang === lang) (by.get(c.lemma) || by.set(c.lemma, []).get(c.lemma)).push(c);
+  const now = new Date(), newIds = new Set(newCards(lang).map((c) => c.id));
+  return [...by.entries()].map(([lemma, cards]) => {
+    const main = cards.find((c) => c.type === "recog") || cards[0], active = cards.filter((c) => !c.paused);
+    const due = active.filter((c) => c.fsrs.state !== 0).map((c) => new Date(c.fsrs.due)).sort((a, b) => a - b)[0] || null;
+    const stab = Math.max(...cards.map((c) => c.fsrs.stability || 0));
+    const status = !active.length ? ["paused", "En pause"]
+      : active.some((c) => newIds.has(c.id)) ? ["today", "Nouveau, aujourd'hui"]
+      : due && due <= now ? ["today", "À revoir aujourd'hui"]
+      : active.every((c) => c.fsrs.state === 0) ? ["new", "Nouveau, bientôt"]
+      : stab >= KNOWN_STABILITY ? ["solid", `Solide 💪 · dans ${fmtInterval(due, now)}`]
+      : ["later", `Dans ${fmtInterval(due, now)}`];
+    return { lemma, cards, main, due, status, paused: !active.length, created: Math.max(...cards.map((c) => Date.parse(c.created) || 0)) };
+  });
+}
+function myCardsList(lang) {
+  const groups = cardGroups(lang), sort = ui.cardSort || "recent", k = koCls(lang);
+  const sorted = [...groups].sort(sort === "az" ? (a, b) => a.lemma.localeCompare(b.lemma, lang)
+    : sort === "due" ? (a, b) => (a.paused - b.paused) || ((a.due || 0) - (b.due || 0))
+    : (a, b) => b.created - a.created);
+  const langTabs = Object.entries(LANGUAGES).map(([id, l]) => {
+    const n = new Set(state.cards.filter((c) => c.lang === id).map((c) => c.lemma)).size;
+    return `<a class="${id === lang ? "active" : ""}" href="#/lang/${id}/revisions" ${id === lang ? 'aria-current="page"' : ""}>${l.flag} ${l.name} (${n})</a>`;
+  }).join("");
+  const sortBtn = (id, label) => `<button class="chip ${sort === id ? "active" : ""}" data-act="card-sort" data-s="${id}" aria-pressed="${sort === id}">${label}</button>`;
+  return `<h2 class="section-title" id="mes-mots">Mes mots en révision</h2>
+    <nav class="sub-nav" aria-label="Langue">${langTabs}</nav>
+    ${groups.length ? `
+    <div class="cards-tools">
+      <input class="input" id="card-search" type="search" placeholder="Rechercher un mot ou une traduction…" aria-label="Rechercher dans mes mots" />
+      <div class="choice-row" role="group" aria-label="Trier">${sortBtn("recent", "Récents")}${sortBtn("due", "Prochaine révision")}${sortBtn("az", "A → Z")}</div>
+    </div>
+    <div class="my-cards">
+      ${sorted.map((g) => {
+        const m = g.main, types = [...new Set(g.cards.map((c) => c.type))];
+        return `<div class="my-card ${g.paused ? "paused" : ""}" data-search="${esc(`${g.lemma} ${m.surface} ${lexFr(lang, g.lemma)} ${m.fr || ""}`.toLowerCase())}">
+          <div class="mc-head">
+            <button class="mc-word ${k}" data-act="say" data-text="${esc(m.surface || g.lemma)}" data-lang="${lang}" title="Écouter">${esc(m.surface || g.lemma)}${m.surface && m.surface !== g.lemma ? ` <small class="muted">← ${esc(g.lemma)}</small>` : ""}</button>
+            <span class="mc-st st-${g.status[0]}">${g.status[1]}</span>
+          </div>
+          <p class="mc-fr">${esc(m.fr || lexFr(lang, g.lemma))}</p>
+          ${m.context ? `<p class="mc-ctx ${k}">${esc(m.before)}<mark>${esc(m.surface)}</mark>${esc(m.after)} <button class="mini" data-act="say" data-text="${esc(m.context)}" data-lang="${lang}" aria-label="Écouter la phrase">🔊</button></p>${m.contextFr ? `<p class="muted mc-ctxfr"><small>${esc(m.contextFr)}</small></p>` : ""}` : ""}
+          <div class="mc-foot">
+            <span class="muted"><small>${types.map((t) => `<span title="${CARD_TYPE_ICON[t]?.[1] || t}">${CARD_TYPE_ICON[t]?.[0] || "🃏"}</span>`).join(" ")} · ajouté le ${new Date(g.created).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}</small></span>
+            <button class="mini" data-act="card-pause" data-l="${esc(g.lemma)}">${g.paused ? "▶ Remettre en révision" : "Retirer des révisions"}</button>
+          </div>
+        </div>`;
+      }).join("")}
+    </div>
+    <p class="muted" id="card-none" hidden>Aucun mot ne correspond.</p>`
+    : `<div class="card"><p class="muted" style="margin:0">Aucun mot pour l'instant. Pendant la lecture, touche un mot inconnu puis « + Ajouter aux révisions » : il apparaîtra ici, avec sa phrase.</p></div>`}`;
 }
 
 function startReview(lang) {
@@ -1581,6 +1640,7 @@ function tabWords(lang) {
       </div>
       <p class="muted" style="margin:12px 0"><small>Un mot devient « connu » quand FSRS estime que tu le retiens au moins ${KNOWN_STABILITY} jours, ou si tu le marques toi-même. Les mots sont classés par fréquence : on apprend d'abord les plus utiles.</small></p>
       ${next.length ? `<button class="btn small" data-act="add-frequent">+ Apprendre les ${next.length} prochains mots fréquents</button>` : ""}
+      <a class="btn ghost small" href="#/lang/${lang}/revisions">📋 Voir mes mots en révision</a>
     </div>
     <div class="word-list">
       ${lemmas.map((l) => { const s = lemmaStatus(lang, l, stab); return `
@@ -2522,6 +2582,15 @@ const actions = {
     try { const r = await api("POST", "/api/email/resend", {}); if (r.already) account.email_verified = true; toast(r.already ? "Adresse déjà confirmée ✓" : "E-mail renvoyé ✉️"); render(); }
     catch (e) { toast(e.message); }
   },
+  "card-sort": (el) => { ui.cardSort = el.dataset.s; render(); },
+  // Retirer = mettre en pause (réversible, et compatible avec la synchronisation entre appareils)
+  "card-pause": (el) => {
+    const lang = currentLang(), cards = state.cards.filter((c) => c.lang === lang && c.lemma === el.dataset.l);
+    const pause = cards.some((c) => !c.paused);
+    cards.forEach((c) => { if (pause) c.paused = true; else delete c.paused; });
+    save(); render();
+    toast(pause ? `« ${el.dataset.l} » retiré des révisions (tu peux le remettre)` : `« ${el.dataset.l} » remis en révision ✓`);
+  },
   "lang-soon": (el) => toast(`${el.dataset.name} : en cours de préparation, bientôt sur Mochi 🍡`),
   theme: (el) => { state.settings.theme = el.dataset.v; save(); render(); },
   goal: (el) => { state.goal = +el.dataset.v; save(); render(); toast("Objectif mis à jour 🎯"); },
@@ -2548,6 +2617,12 @@ $app.addEventListener("click", (e) => {
 });
 let nameTimer;
 $app.addEventListener("input", (e) => {
+  if (e.target.id === "card-search") {
+    const q = e.target.value.trim().toLowerCase(); let shown = 0;
+    $app.querySelectorAll(".my-card").forEach((el) => { const hit = !q || el.dataset.search.includes(q); el.hidden = !hit; shown += hit; });
+    const none = document.getElementById("card-none"); if (none) none.hidden = shown > 0;
+    return;
+  }
   if (e.target.id === "name") {
     state.name = e.target.value.trim(); save();
     if (account) { clearTimeout(nameTimer); nameTimer = setTimeout(() => api("PATCH", "/api/me", { name: state.name }).then((d) => { account = d.user; renderTopUser(); }).catch((er) => toast(er.message)), 600); }

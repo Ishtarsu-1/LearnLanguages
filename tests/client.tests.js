@@ -568,3 +568,27 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
   location.hash = "#/lang/ja"; route(); ok(!location.hash.startsWith("#/lang/ja/") , "URL directe : pas de page");
   location.hash = "";
 }
+{ // Mes mots en révision : liste, statuts, tri, pause, langues
+  const cards0 = state.cards; state.cards = [];
+  const s = toSentence("I like coffee with milk.", "en");
+  captureSeg("en", s, 2, 0, "test"); captureSeg("en", s, 4, 0, "test");
+  const ko = toSentence("저|는 커피|를 좋아해요=좋아하다.", "ko"); captureSeg("ko", ko, 1, 0, "test");
+  const v = tabReviews("en");
+  ok(v.includes("Mes mots en révision") && v.includes("<mark>coffee</mark>") && v.includes("<mark>milk</mark>"), "mots capturés visibles avec leur phrase");
+  ok(v.includes("🇬🇧 Anglais (2)") && v.includes("🇰🇷 Coréen (1)") && v.includes('href="#/lang/ko/revisions"'), "tri par langue");
+  ok(!v.includes("커피") && tabReviews("ko").includes("커피"), "chaque langue montre ses mots");
+  ok(/Nouveau/.test(v), "statut : nouveau");
+  // Pause : retiré des révisions, réversible
+  const before = reviewCount("en");
+  location.hash = "#/lang/en/revisions";
+  actions["card-pause"]({ dataset: { l: "coffee" } });
+  ok(state.cards.filter((c) => c.lemma === "coffee").every((c) => c.paused) && ![...newCards("en"), ...dueCards("en")].some((c) => c.lemma === "coffee"), "retiré des révisions");
+  ok(tabReviews("en").includes("En pause") && tabReviews("en").includes("Remettre en révision"), "statut : en pause");
+  actions["card-pause"]({ dataset: { l: "coffee" } }); ok(state.cards.every((c) => !c.paused), "remis en révision");
+  // Statut après une révision : prochaine date
+  const c = state.cards.find((x) => x.lemma === "milk"); rateCard(c.id, 3);
+  ok(/Dans \d+|Solide/.test(tabReviews("en")), "statut : prochaine révision");
+  ui.cardSort = "az"; const h = tabReviews("en"); ok(h.indexOf("coffee") < h.indexOf("milk"), "tri A → Z"); ui.cardSort = null;
+  ok(tabWords("en").includes("Voir mes mots en révision"), "lien depuis Mes mots");
+  state.cards = cards0; location.hash = "";
+}

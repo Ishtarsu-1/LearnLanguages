@@ -28,6 +28,7 @@
 | Ma Mochi | 9 accessoires cosmétiques (tête, cou, visage) gagnés par les bonnes pratiques (quêtes, lecture, écoute, écriture, régularité, Hangul), portés partout sur le site |
 | Exercices | 12 types regroupés (écoute, écrit, grammaire, vocabulaire) : dictée, compréhension orale, phrase à trou, traduction corrigée par reformulation, bonne forme, bonne particule, remettre dans l'ordre, registre, ne pas confondre, associe, faux amis, mélange |
 | Accueil | Visite guidée **interactive** à la première visite : un projecteur éclaire le vrai élément et l'utilisateur fait lui-même (choisir sa langue, ouvrir un texte, toucher un mot, l'ajouter aux révisions, aller dans S'entraîner) ; en coréen sans Hangul, elle montre l'alphabet. Passable, à revoir depuis l'accueil ou le profil |
+| Mes mots | Dans Réviser : la liste de ses mots capturés, par langue, avec phrase d'origine (audio), traduction, statut (nouveau, à revoir aujourd'hui, prochaine révision, solide, en pause), recherche, tri, et « Retirer des révisions » (pause réversible, synchronisée) |
 | Audio | Voix du navigateur ou vraies voix du serveur (Kokoro, MeloTTS, cache disque), Profil › Audio : état, choix et test des voix, aide si aucune voix |
 
 ---
