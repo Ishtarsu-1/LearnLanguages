@@ -1,51 +1,82 @@
-# ROADMAP.md : fonctionnalités à venir
+# ROADMAP.md : fonctionnalités à venir (v2)
 
 > Liste des fonctionnalités à ajouter à Mochi, **classées par importance**.
-> Chaque feature doit respecter `PEDAGOGIE.md` (checklist §9). Quand une feature touche la motivation ou le social, relire §8 : **la gamification ne doit jamais récompenser une mauvaise pratique**.
+> Chaque feature doit respecter `PEDAGOGIE.md` (checklist §9, et les nouveaux principes §12 à §16) ainsi que `CHARTE-GRAPHIQUE.md` pour tout ce qui est visuel.
+> Quand une feature touche la motivation ou le social, relire §8 et §16 : **la gamification ne doit jamais récompenser une mauvaise pratique, ni culpabiliser l'utilisateur**.
 >
 > Effort : 🟢 petit (≤ 1 jour) · 🟡 moyen (quelques jours) · 🔴 gros (1 semaine et plus)
+> Coût : 🆓 réalisable gratuitement (voir la section « Stack 100 % gratuite ») · 💶 coût récurrent probable
+
+---
+
+## Ce qui change dans la v2
+
+- **Nouveaux principes pédagogiques** issus de la recherche, ajoutés à `PEDAGOGIE.md` : thèmes plutôt que catégories (§12), alternance des points de grammaire (§13), écoute multi-voix (§14), lecture extensive et lecture + écoute (§15), règles de motivation (§16).
+- **Nouvelles features** : test de niveau, thèmes et situations, bibliothèque de lectures graduées, mode histoire, collection de Mochis, série flexible, quêtes hebdomadaires, paires minimales multi-voix, ordre d'introduction des mots anti-interférence.
+- **Sécurité remontée en P0** : la limitation des tentatives de connexion en mémoire (ancienne dette technique) passe en P0.
+- **Une section « Stack 100 % gratuite »** : un outil gratuit pour chaque besoin, avec ses limites.
+- **Une charte graphique** dans un fichier à part : `CHARTE-GRAPHIQUE.md`.
 
 ---
 
 ## Vue d'ensemble
 
-| Priorité | Feature | Effort | Dépend de |
-|---|---|---|---|
-| **P0** | Mise en ligne sécurisée (HTTPS, sauvegardes) | 🟡 | — |
-| **P0** | Mot de passe oublié + vérification de l'e-mail | 🟡 | service d'e-mail |
-| ~~**P0**~~ | ~~Synchro sans perte entre appareils~~ ✅ fait | 🟡 | — |
-| ~~**P1**~~ | ~~Feedback de production par LLM~~ ✅ fait | 🔴 | backend |
-| **P1** | Vraies voix (TTS neuronal / audio natif) | 🟡 | backend |
-| **P1** | Beaucoup plus de contenu (textes, dialogues) | 🔴 | — |
-| **P1** | Nouveaux types d'exercices (5 faits, d'autres à venir) | 🟡 | — |
-| **P1** | Analyseur morphologique coréen côté serveur | 🟡 | backend |
-| **P1** | Génération de textes calibrés par LLM | 🔴 | LLM + analyseur |
-| **P2** | Liste d'amis | 🟡 | comptes |
-| **P2** | Défis entre amis | 🟡 | liste d'amis |
-| **P2** | Reconnaissance vocale (exercices oraux) | 🔴 | backend |
-| **P2** | Optimisation FSRS par utilisateur | 🟡 | historique de révisions |
-| **P2** | Rappels et notifications | 🟡 | PWA |
-| **P2** | Application installable (PWA) + hors ligne | 🟡 | — |
-| **P3** | Classements entre amis, badges | 🟢 | amis |
-| **P3** | Import de contenus perso (articles, sous-titres) | 🔴 | analyseur |
-| **P3** | Nouvelles langues | 🔴 | contenu |
-| **P3** | Espace prof / classe | 🔴 | comptes |
-| **P3** | Accessibilité et traduction de l'interface | 🟡 | — |
+| Priorité | Feature | Effort | Coût | Dépend de |
+|---|---|---|---|---|
+| **P0** | Mise en ligne sécurisée (HTTPS, sauvegardes continues) | 🟡 | 🆓 | — |
+| **P0** | Limitation des tentatives de connexion persistante | 🟢 | 🆓 | — |
+| **P0** | Mot de passe oublié + vérification de l'e-mail | 🟡 | 🆓 | service d'e-mail |
+| ~~**P0**~~ | ~~Synchro sans perte entre appareils~~ ✅ fait | 🟡 | — | — |
+| ~~**P1**~~ | ~~Feedback de production par LLM~~ ✅ fait (reste : cache) | 🔴 | — | backend |
+| **P1** | Test de niveau à l'inscription | 🟡 | 🆓 | — |
+| **P1** | Vraies voix (TTS neuronal, plusieurs voix) | 🟡 | 🆓 | backend |
+| **P1** | Analyseur morphologique coréen côté serveur | 🟡 | 🆓 | backend |
+| **P1** | Beaucoup plus de contenu + thèmes et situations | 🔴 | 🆓 | analyseur |
+| **P1** | Ordre d'introduction des nouveaux mots (anti-interférence) | 🟢 | 🆓 | thèmes |
+| **P1** | Nouveaux types d'exercices + alternance | 🟡 | 🆓 | — |
+| **P1** | Paires minimales multi-voix | 🟡 | 🆓 | vraies voix |
+| **P1** | Bibliothèque de lectures graduées (lecture + écoute) | 🔴 | 🆓 | contenu, voix |
+| **P1** | Génération de textes calibrés par LLM | 🔴 | 🆓/💶 | LLM + analyseur |
+| **P2** | Mochi, la mascotte, et la collection de Mochis | 🟡 | 🆓 | charte graphique |
+| **P2** | Série flexible + quêtes hebdomadaires | 🟡 | 🆓 | — |
+| **P2** | Mode histoire | 🔴 | 🆓 | bibliothèque |
+| **P2** | Application installable (PWA) + hors ligne | 🟡 | 🆓 | — |
+| **P2** | Rappels et notifications | 🟡 | 🆓 | PWA |
+| **P2** | Liste d'amis | 🟡 | 🆓 | comptes |
+| **P2** | Défis entre amis | 🟡 | 🆓 | liste d'amis |
+| **P2** | Reconnaissance vocale (exercices oraux) | 🔴 | 🆓 | backend |
+| **P2** | Optimisation FSRS par utilisateur | 🟡 | 🆓 | historique de révisions |
+| **P3** | Classements entre amis, badges | 🟢 | 🆓 | amis |
+| **P3** | Import de contenus perso (articles, sous-titres) | 🔴 | 🆓 | analyseur |
+| **P3** | Tandem FR ↔ KO / FR ↔ EN | 🔴 | 🆓 | amis, modération |
+| **P3** | Nouvelles langues | 🔴 | 🆓 | contenu |
+| **P3** | Espace prof / classe | 🔴 | 🆓 | comptes |
+| **P3** | Accessibilité et traduction de l'interface | 🟡 | 🆓 | charte graphique |
 
 ---
 
 ## P0 : indispensable avant d'ouvrir le site au public
 
-### Mise en ligne sécurisée 🟡
-- Hébergement (VPS, Fly.io, Railway…) derrière un reverse proxy HTTPS (Caddy ou nginx), avec `COOKIE_SECURE=1`.
-- Sauvegarde automatique quotidienne de `data/` (base SQLite + photos), avec une restauration testée.
-- En-têtes de sécurité complets (Content-Security-Policy), logs d'erreurs, page de statut.
-- Pages légales : mentions légales, politique de confidentialité (RGPD : export et suppression déjà disponibles).
+### Mise en ligne sécurisée 🟡 🆓
+- Hébergement derrière un reverse proxy HTTPS. **Caddy** est le plus simple : il gère les certificats Let's Encrypt tout seul. Activer `COOKIE_SECURE=1`.
+- Où héberger gratuitement : voir la section « Stack 100 % gratuite » (Oracle Cloud Always Free, avec ses limites).
+- **Sauvegardes continues de la base SQLite avec Litestream** vers un stockage objet (Cloudflare R2, voir la stack gratuite). On peut restaurer la base à la seconde près au lieu de perdre jusqu'à une journée. Les photos et fichiers audio vont directement sur R2.
+- Faire **un test de restauration** sur une machine vierge et le documenter dans `docs/restauration.md`. Une sauvegarde qu'on n'a jamais restaurée ne compte pas.
+- En-têtes de sécurité complets (Content-Security-Policy stricte, `Referrer-Policy`, `Permissions-Policy` qui n'autorise le micro que sur les pages d'exercices oraux).
+- Logs d'erreurs et page de statut (Uptime Kuma, auto-hébergé et gratuit).
+- Pages légales : mentions légales et politique de confidentialité. Le RGPD (export et suppression) est déjà en place. **Lister chaque sous-traitant** qui reçoit des données (fournisseur de LLM, service d'e-mail, hébergeur). Les phrases écrites par les utilisateurs partent vers le LLM, et ça doit figurer dans la politique de confidentialité.
 
-### Mot de passe oublié + vérification de l'e-mail 🟡
-- Envoi d'e-mails transactionnels (Resend, Postmark, SMTP).
+### Limitation des tentatives de connexion persistante 🟢 🆓
+*(Ancienne dette technique, remontée en P0 : aujourd'hui, un simple redémarrage du serveur remet les compteurs à zéro.)*
+- Stocker les compteurs dans SQLite (table `login_attempts (key, count, window_start)`), avec une clé par IP **et** par compte.
+- Freinage progressif (attente croissante) plutôt que blocage sec, pour ne pas permettre de verrouiller le compte de quelqu'un d'autre.
+- Appliquer la même limite à « mot de passe oublié » et à `POST /api/feedback`. Le quota LLM existe déjà, mais une limite par minute évite les rafales.
+
+### Mot de passe oublié + vérification de l'e-mail 🟡 🆓
+- Envoi d'e-mails transactionnels avec **Resend** (offre gratuite, voir la stack) ou un SMTP.
 - Lien de réinitialisation à usage unique, valable environ 30 minutes, avec un jeton haché en base.
-- Vérification de l'adresse à l'inscription (sans bloquer l'usage : bandeau de rappel).
+- Vérification de l'adresse à l'inscription, sans bloquer l'usage (bandeau de rappel).
+- Réponse identique que l'adresse existe ou non, pour ne pas révéler quels e-mails sont inscrits.
 
 ### ✅ Synchro sans perte entre appareils (fait)
 - Route `POST /api/sync` : l'appareil envoie uniquement ce qui a changé et reçoit ce qui a changé ailleurs depuis son dernier passage (curseur `rev`).
@@ -63,124 +94,221 @@
 
 ## P1 : le cœur pédagogique
 
-### ✅ Feedback de production par LLM (fait)
+### ✅ Feedback de production par LLM (fait, reste le cache)
 Fait : `llm.js` + route `POST /api/feedback` (Claude Opus 5.5, sortie JSON structurée, modèle de secours en cas de refus), quota de 60 corrections par compte et par jour (`MOCHI_LLM_DAILY`), mode « Phrase libre », cartes ciblées créées à partir des particules corrigées, repli automatique sur le correcteur hors ligne. Activer avec `ANTHROPIC_API_KEY=… node server.js` (désactiver avec `MOCHI_LLM=off`).
 Moteur gratuit et local : **Ollama** (`MOCHI_LLM_PROVIDER=ollama`, modèle par défaut `qwen2.5:7b-instruct`). Des garde-fous déterministes s'appliquent aux deux moteurs : registre -요 vérifié mécaniquement, cohérence du verdict, vraies particules uniquement. Évaluation réelle : `node tests/eval-llm.js` (9/10 avec Ollama sur CPU, ~22 s par correction).
-Reste : un cache des réponses, et un jeu d'évaluation plus large (aujourd'hui 10 phrases) pour comparer les moteurs et les prompts.
 
-Spécification d'origine :
-Remplace l'heuristique actuelle (comparaison avec des réponses de référence) pour pouvoir proposer des **phrases libres** (§4).
-- Route serveur `POST /api/feedback` : la clé API ne doit jamais aller dans le navigateur.
-- Prompt système conforme au §4 :
-  - corrige sans changer le sens ;
-  - sépare les erreurs de **grammaire**, de **vocabulaire** et de **registre** (registre vérifié selon l'interlocuteur indiqué, §6) ;
-  - explique en français, seulement à la demande (bouton « Pourquoi ? ») ;
-  - ne corrige pas les variantes acceptables ;
-  - répond en JSON structuré (`recast`, `errors[]`, `explanation`) pour garder l'affichage avec surlignage.
-- Garder l'heuristique actuelle en secours si le LLM ne répond pas.
-- Les erreurs récurrentes détectées par le LLM alimentent les cartes ciblées (déjà en place pour les particules).
-- Limite d'usage par utilisateur et par jour (coût), avec un cache des réponses.
+Reste à faire :
+- **Cache des réponses** : clé = hash de (phrase normalisée + consigne + interlocuteur + version du prompt). Les exercices à réponse guidée reviennent souvent avec les mêmes phrases, donc le cache évite des appels payants et les ~22 s d'attente avec Ollama.
+- **Jeu d'évaluation plus large** : passer de 10 à au moins 100 phrases (50 coréen, 50 anglais), avec des erreurs de registre, de particules, des faux amis et des variantes correctes à **ne pas** corriger. Lancer `tests/eval-llm.js` à chaque changement de prompt ou de modèle.
+- **Choisir le modèle selon le coût** : pour corriger une phrase courte, un modèle plus léger suffit souvent. Garder le plus gros modèle pour le mode « Phrase libre » ou les cas où le petit modèle a un doute. À mesurer avec le jeu d'évaluation avant de trancher.
+- **Feedback en attente** : avec Ollama, afficher tout de suite le résultat du correcteur hors ligne, puis le remplacer par la correction du LLM quand elle arrive. L'utilisateur n'attend jamais 22 s devant un écran vide.
 
-### Vraies voix 🟡
+### Test de niveau à l'inscription 🟡 🆓 *(nouveau)*
+Le calcul de couverture du §3 ne veut rien dire si le site croit qu'un francophone ne connaît aucun mot d'anglais.
+- **Anglais** : test adaptatif de taille de vocabulaire. On montre des mots par tranches de fréquence (1 000 premiers, 2 000…), l'utilisateur dit s'il les connaît. On mélange quelques **faux mots** pour détecter ceux qui cochent tout. On en déduit une estimation (« ~3 500 mots ») et on marque les tranches correspondantes comme connues.
+- **Coréen** : trois questions suffisent (« Tu sais lire le Hangul ? », « Tu connais le 해요체 ? », « Tu as déjà étudié ? »), puis un mini-test de 2 minutes si nécessaire. La plupart des débutants commencent au module Hangul.
+- Le résultat est modifiable à tout moment (« Je connais déjà ce mot » dans le lecteur).
+- 5 minutes maximum, sautable. Le test sert aussi de **premier moment agréable** : afficher à la fin « Tu comprends déjà ~X % d'un épisode de sitcom ».
+
+### Vraies voix 🟡 🆓
 La synthèse vocale du navigateur varie énormément d'un appareil à l'autre (§5 : audio natif ou TTS de haute qualité).
-- Générer l'audio de chaque phrase avec un TTS neuronal, côté serveur ou au moment de la création du contenu, puis le stocker en fichiers (`audio_url` existe déjà dans le modèle de carte).
-- Plusieurs voix par langue (homme / femme, jeune / âgé), surtout utile pour les dialogues.
-- À terme : enregistrements de locuteurs natifs pour les contenus principaux.
-- Lecteur : surlignage mot à mot synchronisé avec l'audio (timestamps).
+- Générer l'audio **au moment de la création du contenu** (pas à la volée), le stocker sur R2 et le servir via `audio_url`.
+- **Coréen : MeloTTS** (licence MIT, tourne sur CPU). **Anglais : Kokoro** (licence Apache 2.0, plusieurs voix) ou MeloTTS (accents américain, britannique, australien, indien). Détails dans la stack gratuite.
+- **Plusieurs voix par langue** : homme / femme, différents accents en anglais. C'est indispensable pour les paires minimales multi-voix (§14) et pour les dialogues.
+- Lecteur : surlignage mot à mot synchronisé avec l'audio (timestamps). Il servira à la lecture + écoute (§15).
+- À terme : enregistrements de locuteurs natifs pour les contenus principaux. Les phrases Tatoeba avec audio sous licence libre peuvent compléter, **en vérifiant la licence de chaque enregistrement**.
 
-### Beaucoup plus de contenu 🔴
+### Analyseur morphologique coréen 🟡 🆓
+Obligatoire selon le §3 pour tout contenu qui n'est pas annoté à la main.
+- **Kiwi** (`kiwipiepy`), exposé par une petite route serveur, éventuellement en microservice Python. Plus simple à installer que Mecab-ko.
+- Anglais : lemmatisation (spaCy, wink-nlp).
+- Produit directement le format annoté de `content.js` (`surface=lemme`, `nom|particule`).
+- Bonus : l'analyseur alimente le surlignage des particules par fonction (voir `CHARTE-GRAPHIQUE.md` §5).
+
+### Beaucoup plus de contenu + thèmes et situations 🔴 🆓 *(enrichi)*
 4 textes par langue, c'est trop peu pour que le calcul de couverture (§3) ait du sens.
-- Objectif : 50 textes ou plus par langue, du A1 au B1, avec beaucoup de dialogues (§7).
-- Couvrir les ~1 000 mots les plus fréquents de chaque langue, avec des listes de fréquence.
-- Coréen : du contenu qui reprend chaque point de grammaire de la phase 2, puis débloquer la phase 3 (반말, 합니다체, honorifiques).
-- Outil interne d'annotation : coller un texte, obtenir les lemmes et particules (analyseur, voir plus bas), corriger à la main.
 
-### Nouveaux types d'exercices 🟡
+**Volume**
+- Objectif : 50 textes ou plus par langue, du A1 au B1, avec beaucoup de dialogues (§7).
+- Couvrir les ~1 000 mots les plus fréquents de chaque langue avec des listes de fréquence. Coréen : **liste de vocabulaire d'apprentissage du 국립국어원** (environ 6 000 mots classés). Anglais : liste de fréquence libre (voir la stack gratuite).
+- Coréen : du contenu qui reprend chaque point de grammaire de la phase 2, puis déblocage de la phase 3 (반말, 합니다체, honorifiques).
+- Sources libres pour amorcer : **Tatoeba** (phrases sous CC BY 2.0 FR, attribution obligatoire), le **한국어기초사전** (dictionnaire d'apprentissage du coréen, API gratuite avec clé) pour les définitions et les exemples.
+
+**Thèmes et situations** (réponse à « faut-il trier par catégories ? », détail dans `PEDAGOGIE.md` §12)
+- Oui pour les **thèmes de situation** : « Au café », « Le sport », « Les transports », « Rencontrer quelqu'un », « Au travail », « K-drama & variétés », « Gaming », « Cuisine »… Un thème regroupe des mots qui *vont ensemble dans une scène* (commander, chaud, emporter, tasse, payer).
+- Non pour les **listes de mots de même catégorie** apprises d'un coup : « 20 fruits », « les 12 couleurs », « gauche / droite », « les jours de la semaine ». Les apprendre ensemble crée de la confusion entre mots proches. On les répartit dans le temps (voir la feature suivante).
+- « Vie de tous les jours » n'est pas un thème : c'est le **socle de fréquence** (les ~1 000 mots les plus courants), qui reste prioritaire pour tout le monde. Les thèmes viennent **en plus**, selon les centres d'intérêt choisis.
+- Modèle de données : chaque lexème a `themes[]` (situations) et `semantic_group` (ex. `fruit`, `couleur`, `jour`). Chaque texte a `themes[]`.
+- Interface : à l'inscription et dans les paramètres, l'utilisateur choisit 2 ou 3 thèmes. Le lecteur et la génération de textes les privilégient. Une page « Thèmes » montre la progression de chacun (mots solides / total).
+
+**Outil interne d'annotation** : coller un texte, obtenir les lemmes et particules (analyseur), les thèmes suggérés, corriger à la main.
+
+### Ordre d'introduction des nouveaux mots (anti-interférence) 🟢 🆓 *(nouveau)*
+Application directe du §12.
+- Règle du planificateur de nouvelles cartes : **au maximum 1 nouveau mot par `semantic_group` et par jour**. Un deuxième fruit attendra demain, même s'il est dans le même texte (il reste cliquable et traduisible dans le lecteur).
+- Les paires d'opposés et les quasi-synonymes (gauche/droite, 오른쪽/왼쪽, 가르치다/배우다, *borrow/lend*) sont marqués `confusable_with` et jamais introduits le même jour.
+- Une fois les deux mots solides (stabilité FSRS ≥ 7 jours), on peut proposer un exercice de **discrimination** qui les oppose volontairement.
+
+### Nouveaux types d'exercices + alternance 🟡 🆓
 Faits (onglet « 🎯 Exercices », `exercises.js`) : ✅ dictée, ✅ remettre dans l'ordre, ✅ compréhension orale (audio → sens), ✅ choix du registre (coréen), ✅ faux amis (anglais).
 
 Tous en **rappel actif** (§1), avec une phrase de contexte et de l'audio (§2) :
 - ~~**Dictée**~~ ✅
 - ~~**Remettre les mots dans l'ordre**~~ ✅
-- **Traduction FR → langue cible** avec feedback reformulé (après le LLM).
+- **Traduction FR → langue cible** avec feedback reformulé (le LLM est maintenant prêt).
 - **Compréhension orale** : ✅ phrase par phrase ; reste un dialogue entier suivi de questions.
 - ~~**Choix du registre** (coréen)~~ ✅
 - **Conjugaison et terminaisons** en contexte (-아요 / -어요, passé, futur).
-- **Paires minimales étendues** (§5) : davantage de sons, avec un score par son pour repérer les points faibles.
-- **Mini-conversations** guidées (avec le LLM) : un scénario (commander au café, se présenter) et un objectif.
+- **Choisis la bonne particule** : phrase à trou, avec explication du rôle de la particule à la demande.
+- **Paires minimales multi-voix** : voir la feature dédiée.
+- **Mini-conversations** guidées (avec le LLM) : un scénario lié à un thème (commander au café, se présenter) et un objectif (« obtiens un café glacé à emporter »).
 
-### Analyseur morphologique coréen 🟡
-Obligatoire selon le §3 pour tout contenu qui n'est pas annoté à la main.
-- Kiwi (`kiwipiepy`) ou Mecab-ko, exposé par une petite route serveur, éventuellement en microservice Python.
-- Anglais : lemmatisation (spaCy, wink-nlp).
-- Produit directement le format annoté de `content.js` (`surface=lemme`, `nom|particule`).
+**Alternance (§13)** : un point de grammaire nouveau est d'abord travaillé seul (quelques items), puis les séances suivantes **mélangent** les points déjà vus (ex. -았/었어요 + -(으)ㄹ 거예요 + 은/는 vs 이/가 dans la même série). Implémentation : `exercises.js` tire les items au hasard parmi les points de grammaire débloqués, avec un poids plus fort pour les points récents ou souvent ratés.
 
-### Génération de textes calibrés par LLM 🔴
+### Paires minimales multi-voix 🟡 🆓 *(nouveau, remplace les « paires minimales étendues »)*
+Application du §14.
+- L'utilisateur entend un mot et choisit entre deux options (ex. 달 / 딸 / 탈, 어 / 오, *ship / sheep*, *think / sink*).
+- **Chaque mot est prononcé par plusieurs voix** (au moins 4 par langue grâce au TTS, puis des voix natives) et dans plusieurs mots différents, pas toujours le même enregistrement.
+- Feedback immédiat (bonne ou mauvaise réponse + réécoute des deux).
+- **Score par contraste** (ㄱ/ㅋ/ㄲ, ㅓ/ㅗ, th/s…) pour repérer les points faibles, affiché dans le profil.
+- Sessions courtes (2 à 3 minutes), à glisser dans la séance du jour quand un contraste est faible.
+
+### Bibliothèque de lectures graduées (lecture + écoute) 🔴 🆓 *(nouveau)*
+Application du §15.
+- Petits livres de 300 à 2 000 mots, classés par niveau (A1, A2, B1) et par thème, écrits pour rester dans la bonne couverture (~95-98 %).
+- **Mode lecture + écoute** : l'audio joue et le mot en cours est surligné (timestamps des vraies voix).
+- Après chaque chapitre : 2 ou 3 questions de compréhension rapides, et les mots inconnus proposés en cartes.
+- La bibliothèque est la base du **mode histoire** (P2).
+- Contenu : écrit à la main, généré par LLM puis relu (feature suivante), ou adapté de textes du domaine public.
+
+### Génération de textes calibrés par LLM 🔴 🆓/💶
 §3 : un texte sur mesure pour chaque utilisateur.
-- Contraindre le LLM au vocabulaire connu, plus 3 à 8 mots nouveaux ciblés (les prochains mots fréquents).
+- Contraindre le LLM au vocabulaire connu, plus 3 à 8 mots nouveaux ciblés (les prochains mots fréquents **du thème choisi**, en respectant la règle anti-interférence).
 - **Vérifier** la couverture réelle après génération avec l'analyseur, et régénérer si on sort de la fourchette 92-98 %.
-- Sujets choisis par l'utilisateur (sport, cuisine, K-drama…) pour la motivation.
+- Sujets choisis par l'utilisateur (ses thèmes).
+- Les textes générés et validés vont dans un cache partagé : un texte A2 sur « Au café » pourra servir à d'autres utilisateurs avec un vocabulaire proche. Ça limite les appels et le coût.
 
 ---
 
-## P2 : social et motivation
+## P2 : motivation et jeu *(section refondue)*
 
-### Liste d'amis 🟡
+**Principe (§16)** : on vise les trois besoins qui entretiennent la motivation : **se sentir compétent** (voir ses progrès réels), **se sentir libre** (choisir ses thèmes et son rythme) et **se sentir relié** (amis, défis coopératifs). Les points et badges marchent, à condition de récompenser les bonnes pratiques. **Interdits** : monnaie payante, coffres aléatoires payants, notifications culpabilisantes, série qui s'effondre au premier jour manqué.
+
+### Mochi, la mascotte, et la collection de Mochis 🟡 🆓 *(nouveau)*
+- **Mochi**, une petite pâte de riz ronde et expressive (design dans `CHARTE-GRAPHIQUE.md` §8). Elle réagit aux actions : contente après une séance, concentrée pendant les révisions, endormie un jour de repos. **Jamais triste ni en colère** contre l'utilisateur.
+- **Collection de saveurs** : chaque thème a sa saveur de Mochi (Matcha = « Au café », Sakura = « Rencontrer quelqu'un », Yuzu = « Sport », Ube = « K-drama »…). On débloque une saveur quand on atteint un palier de **mots solides** dans le thème (10, 50, 100), pas quand on a « vu » des cartes.
+- **Mochidex** : une page avec toutes les saveurs (débloquées ou en silhouette) et la progression de chaque thème. C'est une façon visuelle et collectionnable de montrer la progression réelle.
+- Accessoires cosmétiques pour Mochi (bonnet, écharpe, hanbok, casquette) gagnés avec les quêtes. **Purement cosmétiques**, jamais achetables.
+
+### Série flexible + quêtes hebdomadaires 🟡 🆓 *(nouveau)*
+- **Série hebdomadaire plutôt que quotidienne** : l'objectif est « 5 jours sur 7 », comme le défi « Semaine régulière ». Une semaine réussie ajoute +1 à la série. Rater un jour ne casse rien : manquer une occasion n'empêche pas une habitude de se former (§16).
+- **Jours de repos** : 2 par semaine, inclus d'office, présentés positivement (Mochi fait la sieste).
+- **Une séance compte** si elle contient les révisions dues (ou au moins 10) **et** un input ou une production. Ouvrir l'app ne suffit pas.
+- **Quêtes de la semaine** (3 par semaine, tirées parmi les bonnes pratiques) : « Lis 3 textes du thème Café », « Termine 5 séances de paires minimales », « Écris 10 phrases libres », « Zéro révision en retard 4 jours de suite ». Récompense : accessoires cosmétiques et XP.
+- **Objectif du jour réglable** (5, 10, 20 minutes), avec la possibilité de le baisser sans pénalité. Un objectif trop ambitieux fait perdre la série plus souvent.
+
+### Mode histoire 🔴 🆓 *(nouveau)*
+- Un fil narratif par langue. Exemple coréen : Mochi part un an à Séoul (arrivée à l'aéroport, trouver son logement, premier jour de cours, le café du coin, la sortie au 노래방…). Exemple anglais : un stage à Londres ou un road trip.
+- Chaque chapitre est une lecture graduée (bibliothèque), avec dialogues audio, quelques mots nouveaux et une mini-conversation finale avec le LLM (« Commande ton premier 아이스 아메리카노 »).
+- Un chapitre se débloque quand le précédent est lu **et** que ses mots clés sont en révision. On ne peut pas le « farmer ».
+- Les chapitres suivent la progression grammaticale (§6) : le mode histoire *est* le parcours, en plus motivant.
+
+### Application installable + hors ligne 🟡 🆓
+- PWA : manifeste, icône (Mochi), service worker.
+- Mode hors ligne : réviser dans le métro, synchroniser au retour du réseau (s'appuie sur la synchro du P0).
+- Pré-télécharger l'audio des cartes dues dans les 2 prochains jours.
+- Embarquer ts-fsrs localement au lieu du CDN.
+
+### Rappels et notifications 🟡 🆓
+- Notification « Tes révisions t'attendent » à l'heure choisie (Web Push, gratuit avec des clés VAPID).
+- **Ton** : neutre ou encourageant, jamais culpabilisant. Exemples dans `CHARTE-GRAPHIQUE.md` §9. Au maximum 1 rappel par jour, aucun les jours de repos.
+- E-mail hebdomadaire facultatif : heures, mots solides gagnés, saveurs débloquées, défis en cours.
+
+### Liste d'amis 🟡 🆓
 - Ajouter un ami par pseudo unique ou par lien d'invitation, avec une demande à accepter.
-- Profil public minimal : photo, prénom, langues apprises, heures cumulées, mots connus. Ce qui est visible se règle dans les paramètres.
+- Profil public minimal : Mochi (avec ses accessoires), prénom, langues apprises, heures cumulées, mots solides. Ce qui est visible se règle dans les paramètres.
 - Bloquer ou retirer un ami. Rien n'est public par défaut.
 - Côté serveur : tables `friendships (user_id, friend_id, status, created_at)` et `usernames`.
 
-### Défis entre amis 🟡
-**Règle d'or (§8) : un défi ne doit jamais pousser à mal apprendre.** On ne fait pas de course à l'XP, qu'on pourrait gonfler en relisant ou en bâclant les cartes.
+### Défis entre amis 🟡 🆓
+**Règle d'or (§8, §16) : un défi ne doit jamais pousser à mal apprendre.** On ne fait pas de course à l'XP, qu'on pourrait gonfler en relisant ou en bâclant les cartes. On privilégie le **coopératif**.
 
 Défis qui récompensent les **bonnes pratiques** :
-- **Semaine régulière** : faire sa session complète (input + révisions + production) 5 jours sur 7, ensemble ou en duel.
+- **Semaine régulière** : faire sa séance complète (input + révisions + production) 5 jours sur 7, ensemble ou en duel.
 - **Zéro retard** : finir toutes ses révisions dues chaque jour pendant une semaine.
-- **Objectif d'heures** : cumuler X heures à deux (défi coopératif, pas une compétition).
+- **Objectif d'heures** : cumuler X heures à deux (coopératif).
 - **Mots solides** : gagner le plus de mots devenus « connus » (stabilité FSRS ≥ 7 jours), donc de vraie rétention, pas des cartes vues.
-- **Défi d'écoute** : meilleur score aux paires minimales sur un même lot de sons.
+- **Défi d'écoute** : meilleur score aux paires minimales multi-voix sur un même lot de sons.
 - **Défi de production** : écrire une phrase sur un thème commun, puis voir celle de l'ami et sa version reformulée.
+- **Même chapitre** *(nouveau)* : lire le même chapitre du mode histoire dans la semaine et répondre aux questions.
 
 Mécanique :
 - Créer un défi : type, durée (3, 7 ou 14 jours), ami(s) invité(s).
 - Suivi en direct de la progression de chacun, notification à la fin, résultat dans l'historique.
-- Côté serveur : tables `challenges` et `challenge_participants`. La progression est calculée côté serveur à partir des événements (révisions, sessions), jamais déclarée par le client.
+- Côté serveur : tables `challenges` et `challenge_participants`. La progression est calculée côté serveur à partir des événements (révisions, séances), jamais déclarée par le client.
 
-### Reconnaissance vocale 🔴
-- Exercices oraux : lire une phrase à voix haute, la transcription automatique (Whisper ou équivalent) est comparée au texte attendu.
-- Shadowing amélioré : comparer le rythme et l'intonation (courbe de hauteur du modèle et de l'utilisateur côte à côte), en accord avec le §5 qui vise la prosodie et non la perfection de chaque son.
-- Réponse orale aux cartes de production.
+### Reconnaissance vocale 🔴 🆓
+- **Étape 1 (gratuite, rapide)** : l'API Web Speech du navigateur. Elle marche sur Chrome, Edge et Safari, et Firefox l'a ajoutée en version 160 avec une reconnaissance sur l'appareil. Prévoir un message clair si le navigateur ne la gère pas.
+- **Étape 2** : Whisper auto-hébergé (whisper.cpp ou faster-whisper) pour un résultat identique partout. Attention, Whisper est nettement moins précis en coréen qu'en anglais. Des versions affinées pour le coréen existent : à tester avec un petit jeu d'évaluation avant de choisir.
+- Exercices oraux : lire une phrase à voix haute, la transcription est comparée au texte attendu. Rester **tolérant** (la transcription automatique se trompe aussi) et ne jamais pénaliser l'utilisateur sur la base d'un seul mot mal reconnu.
+- Shadowing amélioré : comparer le rythme et l'intonation (courbe de hauteur du modèle et de l'utilisateur côte à côte), en accord avec le §5.
+- Confidentialité : l'audio n'est jamais stocké sans accord explicite, et la politique de confidentialité indique où il part.
 
-### Optimisation FSRS par utilisateur 🟡
+### Optimisation FSRS par utilisateur 🟡 🆓
 - Après environ 1 000 révisions, optimiser les paramètres FSRS sur l'historique de l'utilisateur (optimiseur `fsrs-rs` / `fsrs-optimizer`).
 - Afficher la rétention réelle comparée à la rétention visée.
-
-### Rappels et notifications 🟡
-- Notification « Tes révisions t'attendent » à l'heure choisie (Web Push).
-- E-mail hebdomadaire facultatif : heures, mots gagnés, défis en cours.
-- Pas de notifications culpabilisantes ni de rappels en rafale.
-
-### Application installable + hors ligne 🟡
-- PWA : manifeste, icône, service worker.
-- Mode hors ligne : réviser dans le métro, synchroniser au retour du réseau (s'appuie sur la synchro par événements du P0).
-- Embarquer ts-fsrs localement au lieu du CDN.
 
 ---
 
 ## P3 : plus tard
 
-- **Classements entre amis** (heures, mots solides), toujours basés sur des indicateurs honnêtes, et **badges** (premier texte lu, Hangul terminé, 100 mots connus, phase 2 franchie).
-- **Import de contenus perso** : coller un article, des sous-titres de série (.srt) ou des paroles, puis calculer la couverture et capturer les mots. La lecture des sous-titres en parallèle de la vidéo serait le Graal pour l'anglais.
+- **Classements entre amis** (heures, mots solides), toujours basés sur des indicateurs honnêtes, et **badges** (premier texte lu, Hangul terminé, 100 mots solides, phase 2 franchie, première saveur débloquée).
+- **Import de contenus perso** : coller un article, des sous-titres (.srt) ou des paroles, puis calculer la couverture et capturer les mots. Les paroles et sous-titres restent privés (droits d'auteur) : jamais partagés entre utilisateurs. La lecture des sous-titres en parallèle de la vidéo serait le Graal pour l'anglais.
+- **Tandem** *(nouveau)* : mettre en relation un francophone qui apprend le coréen avec un Coréen qui apprend le français, pour échanger des corrections de phrases (pas de chat libre au début, pour limiter la modération). Ça répond au besoin de pratique avec des humains, surtout pour les niveaux de langue coréens.
 - **Nouvelles langues** : japonais (même logique d'alphabet d'abord que le Hangul), espagnol. Le code est déjà prévu pour (`LANGUAGES`, `LEXICON`, `TEXTS`).
 - **Espace prof / classe** : un prof crée une classe, assigne des textes et suit la progression.
-- **Accessibilité** : navigation au clavier complète, lecteurs d'écran, contraste, taille de texte réglable.
+- **Accessibilité** : navigation au clavier complète, lecteurs d'écran, contraste (déjà calculé dans la charte), taille de texte réglable, police adaptée en option.
 - **Interface en plusieurs langues** (aujourd'hui seulement en français).
 - **Intégration continue** : lancer `node tests/run.js` à chaque push (GitHub Actions).
 
 ---
 
+## Stack 100 % gratuite *(nouveau)*
+
+Tout ce qu'il faut pour faire tourner Mochi sans payer, avec les limites à connaître. **Les offres gratuites changent souvent** : revérifier avant de s'engager, et toujours garder une solution de repli.
+
+| Besoin | Outil gratuit | Limites / licence | Remarque |
+|---|---|---|---|
+| Serveur | **Oracle Cloud Always Free** (VM ARM Ampere A1) | Réduit en 2026 à **2 OCPU / 12 Go de RAM** (avant : 4 / 24). 200 Go de disque. | Suffisant pour Node + SQLite + Kiwi + génération TTS par lots. Ollama 7B y sera lent. Risque de récupération des instances inactives : garder les sauvegardes ailleurs. |
+| Reverse proxy + HTTPS | **Caddy** | Open source, certificats Let's Encrypt automatiques | — |
+| Stockage audio et photos | **Cloudflare R2** | 10 Go, 1 M d'écritures et 10 M de lectures par mois, **sortie de données gratuite** | ~10 Go = des dizaines de milliers de phrases en audio compressé (Opus/MP3 basse résolution). |
+| Sauvegarde SQLite | **Litestream** → R2 | Open source | Sauvegarde continue, restauration à la seconde. |
+| E-mails | **Resend** | 3 000 e-mails/mois, **100 par jour** maximum | Largement assez pour les mots de passe oubliés. L'e-mail hebdomadaire devra rester facultatif tant qu'on reste en gratuit. |
+| TTS coréen | **MeloTTS** | Licence MIT, temps réel sur CPU, coréen + anglais (4 accents) | Générer à la création du contenu, pas à la volée. |
+| TTS anglais | **Kokoro** (82M) | Licence Apache 2.0, très rapide, plusieurs voix | **Pas de coréen.** Éviter les voix Piper sans vérifier : le moteur est sous MIT mais beaucoup de voix sont réservées à un usage non commercial. |
+| Reconnaissance vocale | **API Web Speech** du navigateur, puis **whisper.cpp / faster-whisper** | Web Speech : Chrome, Edge, Safari, Firefox 160+ | Whisper est moins bon en coréen : tester des modèles affinés. |
+| LLM | **Ollama** (déjà en place) | Gratuit, local, lent sur CPU | L'offre gratuite de Gemini existe mais ses limites ont été fortement réduites en 2026, et Google peut utiliser les requêtes gratuites pour améliorer ses produits : **à éviter pour les phrases des utilisateurs** (RGPD). |
+| Analyse morphologique | **Kiwi** (`kiwipiepy`) | Open source | — |
+| Dictionnaire coréen | **한국어기초사전 Open API** (Institut national de la langue coréenne) | Gratuit avec clé, jusqu'à 50 000 requêtes/jour | Définitions, exemples, traductions. Mettre en cache, respecter les conditions d'utilisation. |
+| Fréquence coréen | **Liste de vocabulaire d'apprentissage du 국립국어원** | Téléchargeable sur korean.go.kr | ~6 000 mots classés. |
+| Fréquence anglais | **wordfreq** (bibliothèque Python) | Données sous licence ouverte (vérifier l'attribution) | Couvre aussi le coréen, utile pour croiser. |
+| Phrases d'exemple | **Tatoeba** | Texte sous **CC BY 2.0 FR** (attribution obligatoire). Licence audio variable selon le contributeur. | Exports hebdomadaires. Afficher l'attribution sur une page « Crédits ». |
+| Polices | **Pretendard** (texte), **Jua** (titres) | SIL OFL 1.1 | Auto-héberger via Fontsource. Voir la charte. |
+| Icônes | **Lucide** | Licence ISC | — |
+| Statistiques d'usage | **Umami** (auto-hébergé) | Open source, sans cookies tiers | Pour mesurer la rétention réelle. |
+| Surveillance | **Uptime Kuma** (auto-hébergé) | Open source | Page de statut. |
+| Notifications push | **Web Push** (clés VAPID) | Gratuit, standard du navigateur | Pas besoin de service tiers. |
+| CI | **GitHub Actions** | Gratuit dans les limites du plan | `node tests/run.js` à chaque push. |
+
+**Ce qui reste payant** : le nom de domaine (une dizaine d'euros par an) et, si on garde Claude pour le feedback, les appels à l'API (d'où le cache, le quota et le choix d'un modèle adapté).
+
+---
+
 ## Dette technique à surveiller
 
-- `app.js` dépasse 1 400 lignes : le découper en modules (`fsrs`, `reader`, `review`, `account`…) quand on ajoutera un bundler ou des modules ES.
+- `app.js` dépasse 1 400 lignes : le découper en modules (`fsrs`, `reader`, `review`, `account`, `exercises`, `mochi`…) quand on ajoutera un bundler ou des modules ES. À faire **avant** la refonte graphique, sinon appliquer la charte va être pénible.
 - Les tests (`node tests/run.js`) simulent le navigateur et FSRS : il manque des tests dans un vrai navigateur (Playwright).
-- La limitation des tentatives de connexion est gardée en mémoire : elle se remet à zéro au redémarrage du serveur et ne fonctionne pas avec plusieurs instances.
+- ~~La limitation des tentatives de connexion est gardée en mémoire~~ → remontée en P0.
+- Les couleurs et tailles sont probablement codées en dur un peu partout : migrer vers les **variables CSS de la charte** (`CHARTE-GRAPHIQUE.md` §11) au fur et à mesure.
+- Attribution des contenus : dès qu'on importe des phrases Tatoeba ou des définitions du 한국어기초사전, stocker la source et la licence **par phrase** (`source`, `license`, `author`), pas seulement globalement.

@@ -107,7 +107,7 @@ L'input seul ne suffit pas : des critiques récentes de Krashen insistent sur le
 - Explication grammaticale courte disponible **à la demande** (bouton « Pourquoi ? »), pas imposée.
 - Pour le feedback libre (phrases ouvertes), utiliser un LLM avec un prompt qui :
   - corrige sans réécrire le sens,
-  - signale séparément les erreurs de grammaire, de vocabulaire et de **registre** (crucial en coréen, voir §7),
+  - signale séparément les erreurs de grammaire, de vocabulaire et de **registre** (crucial en coréen, voir §6),
   - répond en français pour les explications,
   - ne corrige pas les variantes acceptables (ne pas sur-corriger).
 - Les erreurs récurrentes d'un utilisateur génèrent des cartes ciblées (ex. une particule souvent ratée → cartes cloze sur cette particule).
@@ -188,6 +188,11 @@ Avant de valider une feature, vérifier :
 - [ ] Il y a une occasion de production avec feedback reformulé ?
 - [ ] (Coréen) Pas de romanisation hors module Hangul, registre 해요체 par défaut, registre vérifié dans le feedback ?
 - [ ] L'audio est présent ?
+- [ ] (Vocabulaire) Les nouveaux mots sont regroupés par **thème de situation**, et jamais deux mots du même `semantic_group` introduits le même jour (§12) ?
+- [ ] (Grammaire) Après la première présentation, les points de grammaire sont-ils **mélangés** dans les exercices (§13) ?
+- [ ] (Écoute) Les exercices de sons utilisent-ils **plusieurs voix** (§14) ?
+- [ ] (Motivation) La feature récompense-t-elle une vraie progression, sans culpabiliser ni casser la série au premier jour manqué (§16) ?
+- [ ] (Visuel) Elle respecte `CHARTE-GRAPHIQUE.md` ?
 
 ---
 
@@ -214,7 +219,19 @@ Les applis de langues aident bien pour le vocabulaire et la grammaire, mais moin
 **5. Le coréen, dans le bon ordre.**
 Le coréen demande du temps (environ 2 200 heures de cours selon l'institut de formation des diplomates américains pour un niveau professionnel). Mais son alphabet est l'un des plus simples au monde : la plupart des gens le lisent en une semaine environ. On commence donc par là, sans romanisation, puis on enchaîne avec le registre poli le plus utile au quotidien, et on t'accompagne dans la phase la plus difficile : particules, terminaisons et niveaux de politesse. Sources : [11], [12], [13], [14]
 
-**6. Des objectifs honnêtes.**
+**6. Des mots appris par situations, pas par listes.**
+Apprendre d'un coup des mots très proches (tous les fruits, gauche et droite) crée de la confusion. Regrouper des mots qui vont ensemble dans une même scène (au café : commander, chaud, à emporter) aide au contraire. Mochi organise donc le vocabulaire par thèmes de situation, et étale dans le temps les mots qui se ressemblent. Sources : [17], [18], [19]
+
+**7. On mélange les exercices, et on écoute plusieurs voix.**
+Alterner plusieurs points de grammaire dans une même séance aide à apprendre à choisir la bonne forme. Et entendre un même son prononcé par plusieurs voix entraîne efficacement l'oreille : c'est aujourd'hui considéré comme la méthode d'entraînement de la perception la mieux étayée par la recherche. Sources : [20], [21], [22]
+
+**8. Lire beaucoup, avec l'audio.**
+Lire de nombreux textes adaptés à son niveau fait progresser en vocabulaire et en vitesse de lecture. Le site propose une bibliothèque de lectures graduées, à lire en écoutant l'audio. Sources : [23], [24], [25]
+
+**9. Une motivation honnête.**
+Les éléments de jeu aident à apprendre, à condition de récompenser les vrais progrès. Et rater un jour n'empêche pas une habitude de se former : chez Mochi, ta série est hebdomadaire, avec des jours de repos, et la mascotte n'est jamais triste à cause de toi. Sources : [26], [27], [28], [29]
+
+**10. Des objectifs honnêtes.**
 On te montre tes heures d'apprentissage et le nombre de mots que tu connais, pas seulement une série de jours. Tu sais où tu en es, et ce qu'il reste. Sources : [5], [12]
 
 ---
@@ -237,3 +254,107 @@ On te montre tes heures d'apprentissage et le nombre de mots que tu connais, pas
 14. Le « mur après le Hangul » — https://www.hellotalk.com/en/blog/after-hangul-gap-in-korean-resources
 15. Niveaux de langue et honorifiques en coréen — Korea Herald : https://www.koreaherald.com/article/3211101
 16. Revue critique des études internes de Duolingo — https://callej.org/index.php/journal/article/download/419/347/1013
+
+---
+
+# Partie 2 — Principes ajoutés (v2)
+
+> Ces sections complètent les §1 à §8. La checklist du §9 a été mise à jour en conséquence. La numérotation continue après les sources (§11) pour ne pas casser les renvois existants dans `ROADMAP.md` et dans le code.
+
+---
+
+## 12. Vocabulaire : thèmes de situation, pas listes de catégories
+
+**Pourquoi :** apprendre ensemble des mots de la même catégorie (« semantic clustering » : tous les vêtements, tous les fruits, les couleurs) tend à **gêner** l'apprentissage, parce que les mots proches se mélangent en mémoire (théorie de l'interférence). À l'inverse, regrouper des mots qui vont ensemble dans une même scène (« thematic clustering » : grenouille, vert, sauter, mare, glissant) tend à **faciliter** l'apprentissage. Les études récentes sont plus mitigées sur l'effet négatif des catégories, mais elles montrent que les mots proches provoquent plus d'erreurs de confusion, et que l'espacement peut réduire cette interférence.
+
+### Règles
+
+- **[OBLIGATOIRE]** Le socle reste la **fréquence** (§3) : les ~1 000 mots les plus fréquents passent avant tout thème.
+- Les **thèmes** sont des **situations** : « Au café », « Le sport », « Les transports », « Rencontrer quelqu'un », « Au travail », « K-drama & variétés », « Gaming », « Cuisine »… Un thème = des mots qui apparaissent ensemble dans une scène, de natures variées (noms, verbes, adjectifs, expressions).
+- « Vie de tous les jours » n'est pas un thème : c'est le socle de fréquence.
+- Chaque lexème porte `themes[]` (situations) et `semantic_group` (catégorie : `fruit`, `couleur`, `jour`, `direction`…). Les paires d'opposés et quasi-synonymes portent `confusable_with`.
+- **[OBLIGATOIRE]** Le planificateur introduit **au maximum 1 nouveau mot par `semantic_group` et par jour**, et jamais deux mots `confusable_with` le même jour.
+- Une fois les deux mots d'une paire confusable solides (stabilité FSRS ≥ 7 jours), un exercice de **discrimination** peut les opposer volontairement.
+- L'utilisateur choisit 2 ou 3 thèmes favoris. La recommandation de textes (§3) et la génération par LLM les privilégient, sans jamais sortir de la fourchette de couverture.
+
+---
+
+## 13. Grammaire : présenter seul, puis alterner
+
+**Pourquoi :** l'alternance (« interleaving ») consiste à mélanger plusieurs catégories pendant l'entraînement au lieu de les travailler une par une. Plusieurs études l'ont montré bénéfique pour la grammaire d'une langue étrangère (conjugaison et choix des temps en espagnol, propositions relatives en anglais), avec un meilleur résultat quand on présente d'abord de façon systématique puis qu'on mélange au hasard pendant la pratique. Certains résultats sont nuls (pas d'avantage, mais pas de désavantage non plus).
+
+### Règles
+
+- Un nouveau point de grammaire est d'abord **présenté et pratiqué seul** (quelques items, avec beaucoup d'input qui le contient, §6).
+- Ensuite, **[OBLIGATOIRE]** les séances d'exercices **mélangent** les points déjà vus (ex. 은/는 vs 이/가, -았/었어요 vs -(으)ㄹ 거예요, registres). L'utilisateur doit **choisir** la bonne forme, pas appliquer la même règle 10 fois de suite.
+- Pondération du tirage : plus de poids aux points récents et aux points souvent ratés.
+- L'alternance s'applique aussi aux révisions FSRS (c'est déjà le cas naturellement, les cartes dues étant mélangées). Ne pas trier les cartes dues par catégorie.
+
+---
+
+## 14. Écoute : entraînement multi-voix (HVPT)
+
+**Pourquoi :** l'entraînement à la perception « à haute variabilité » (HVPT) fait écouter les sons cibles prononcés par **plusieurs locuteurs**, dans des mots variés, avec un retour immédiat. Une méta-analyse de 79 études trouve des effets moyens à grands sur la perception des sons d'une langue étrangère, et c'est aujourd'hui la méthode d'entraînement phonétique la mieux étayée. Une autre méta-analyse (31 études) montre que cet entraînement à la perception peut aussi améliorer la **prononciation** des sons travaillés, même sans exercice de prononciation.
+
+### Règles
+
+- **[OBLIGATOIRE]** Les exercices de discrimination de sons (paires minimales) utilisent **au moins 4 voix différentes** par langue (TTS multi-voix, puis voix natives), et chaque son dans **plusieurs mots**.
+- Format : identification (« Tu as entendu 달, 딸 ou 탈 ? ») avec **retour immédiat** et réécoute des options.
+- Contrastes prioritaires :
+  - Coréen pour francophones : consonnes simples / aspirées / tendues (ㄱ ㅋ ㄲ, ㄷ ㅌ ㄸ, ㅂ ㅍ ㅃ, ㅈ ㅊ ㅉ, ㅅ ㅆ), voyelles ㅓ / ㅗ, ㅡ / ㅜ, ㅐ / ㅔ (souvent confondues même par les natifs : à garder pour plus tard), consonnes finales.
+  - Anglais pour francophones : *th* / *s* / *z* / *f*, voyelles longues / courtes (*ship / sheep*, *full / fool*), *h* aspiré, *w* / *v*.
+- Suivre un **score par contraste** et proposer automatiquement de courtes séances sur les contrastes faibles.
+- Complémentaire du shadowing (§5) : le HVPT entraîne l'oreille, le shadowing le rythme et l'intonation.
+
+---
+
+## 15. Lecture extensive et lecture + écoute
+
+**Pourquoi :** la lecture extensive (lire beaucoup de textes faciles, pour le sens) a des effets positifs sur le vocabulaire, la vitesse et la compréhension écrite, selon plusieurs méta-analyses. Les **lectures graduées** (vocabulaire contrôlé) jouent un rôle important. Une étude sur 10 lectures graduées lues **en écoutant l'audio** montre des gains de vocabulaire importants, en partie conservés trois mois plus tard, d'autant plus que les mots reviennent souvent et dans plusieurs textes. La recherche montre aussi qu'il faut **beaucoup** lire pour apprendre de nouveaux mots par ce seul moyen : la lecture complète les cartes, elle ne les remplace pas.
+
+### Règles
+
+- Une **bibliothèque** de lectures graduées par niveau et par thème, respectant la couverture du §3 (92-98 %).
+- **Mode lecture + écoute** : audio synchronisé, mot en cours surligné.
+- Écrire les textes pour que les mots cibles **reviennent plusieurs fois**, dans plusieurs textes différents (pas un seul passage).
+- Après chaque chapitre : 2 ou 3 questions de compréhension et proposition des mots inconnus en cartes (§2).
+- Pas de quiz long après la lecture : la lecture extensive doit rester agréable.
+
+---
+
+## 16. Motivation : règles de design
+
+**Pourquoi :**
+- La **théorie de l'autodétermination** explique la motivation durable par trois besoins : **autonomie** (choisir), **compétence** (se sentir progresser) et **lien social**. Plusieurs études sur les applis de langues la retrouvent, avec des résultats variables selon le besoin (pour Duolingo, une étude récente trouve que la compétence et le lien social comptent le plus).
+- La **gamification** a un effet moyen positif sur l'apprentissage de l'anglais (méta-analyse coréenne, g ≈ 0,52), et les points, scores, badges et récompenses y ont un effet significatif. À nuancer : l'effet est plus faible dans les articles de revues que dans les mémoires.
+- Les **séries** (« streaks ») motivent fortement via l'aversion à la perte, mais à double tranchant : l'utilisateur peut finir par optimiser le chiffre plutôt que l'apprentissage, et Duolingo a constaté que des objectifs quotidiens trop ambitieux faisaient perdre la série plus souvent.
+- Une habitude met en moyenne **66 jours** à devenir automatique (de 18 à 254 jours selon les personnes), et **manquer une occasion ne compromet pas sérieusement** sa formation.
+
+### Règles
+
+- **[OBLIGATOIRE]** Toute récompense est liée à une **vraie progression** (mots solides, séance complète, texte lu et compris), jamais à du temps passé ou des cartes simplement vues.
+- **[OBLIGATOIRE]** Série **hebdomadaire** (objectif 5 jours sur 7), jours de repos inclus. Rater un jour ne remet rien à zéro.
+- **Autonomie** : l'utilisateur choisit ses thèmes, son objectif quotidien (réglable à la baisse sans pénalité), l'ordre des activités de la séance.
+- **Compétence** : montrer des indicateurs concrets et compréhensibles (« tu comprends ~X % de cet épisode », « 120 mots solides », score par son).
+- **Lien social** : défis **coopératifs** d'abord, compétitifs ensuite et seulement sur des indicateurs honnêtes (§8).
+- **[OBLIGATOIRE]** Interdits : monnaie payante, coffres aléatoires, rachat de série payant, notifications culpabilisantes, mascotte triste ou en colère contre l'utilisateur, compte à rebours anxiogène.
+- Retour après une absence : plafonner les révisions du jour et étaler le retard sur plusieurs jours.
+- Mesurer : rétention à J7, J30 et J90 (Umami ou équivalent), et vérifier que les mécaniques de jeu font progresser les **mots solides**, pas seulement l'activité.
+
+---
+
+## 17. Sources (v2)
+
+17. Tinkham, T. (1997). *The effects of semantic and thematic clustering on the learning of second language vocabulary.* Second Language Research, 13(2), 138–163 — résumé : https://synapsesocial.com/papers/W2038339147
+18. Tinkham, T. (1994). Thèse sur le regroupement sémantique et thématique — https://ideals.illinois.edu/items/19069
+19. Nakata, T. & Suzuki, Y. (2019). *Effects of massing and spacing on the learning of semantically related and unrelated words.* Studies in Second Language Acquisition — https://resolve.cambridge.org/core/services/aop-cambridge-core/content/view/F58BA8D70385603B9C42E408BFCB8A10/S0272263118000219a.pdf/effects-of-massing-and-spacing-on-the-learning-of-semantically-related-and-unrelated-words.pdf
+20. Pan, S. C. et al. (2019). *The synergistic benefits of systematic and random interleaving for second language grammar learning.* JARMAC — https://sc-pan.github.io/pdf/PLPR_2019.pdf
+21. Pan, S. C. et al. (2024). *Interleaved practice enhances grammar skill learning for similar and dissimilar tenses in Romance languages* — https://sc-pan.github.io/pdf/PRKL_2024.pdf
+22. Uchihara, T., Karas, M. & Thomson, R. I. *High variability phonetic training (HVPT): A meta-analysis of L2 perceptual training studies.* Studies in Second Language Acquisition — https://resolve.cambridge.org/core/journals/studies-in-second-language-acquisition/article/high-variability-phonetic-training-hvpt-a-metaanalysis-of-l2-perceptual-training-studies/6ABB8C1F32D88D53EA8D05A4565E76F6/core-reader · et la méta-analyse perception → production (2024) : https://www.cambridge.org/core/product/E38D8F5CE65DC708137B0E95F97C6BC7
+23. Liu, J. & Zhang, J. (2018). *The Effects of Extensive Reading on English Vocabulary Learning: A Meta-analysis.* English Language Teaching, 11(6) — https://econpapers.repec.org/RePEc:ibn:eltjnl:v:11:y:2018:i:6:p:1
+24. Jeon, E.-Y. & Day, R. R. (2016). *The effectiveness of ER on reading proficiency: A meta-analysis.* Reading in a Foreign Language — https://scholarspace.manoa.hawaii.edu/server/api/core/bitstreams/eebea128-afb4-47cd-8a16-453a7eff6ca1/content
+25. Étude sur l'apprentissage du vocabulaire en lisant et écoutant 10 lectures graduées — https://core.ac.uk/download/215386265.pdf
+26. Lee, J.-Y. & Baek, M. (2023). *Effects of Gamification on Students' English Language Proficiency: A Meta-Analysis on Research in South Korea.* Sustainability, 15(14) — https://mdpi.com/2071-1050/15/14/11325
+27. Étude sur les effets de la gamification de Duolingo sous l'angle de l'autodétermination (2026) — https://jst-ud.vn/jst-ud/article/download/10685/6973/33542
+28. Duolingo, tests A/B sur les séries — https://making.duolingo.com/how-streaks-keep-duolingo-learners-committed-to-their-language-goals · analyse critique : https://uxmag.com/?p=20707
+29. Lally, P. et al. (2009/2010), formation des habitudes (UCL) — https://www.ucl.ac.uk/news/2009/aug/how-long-does-it-take-form-habit · résumé incluant le résultat sur les jours manqués : https://jamesclear.com/new-habit
