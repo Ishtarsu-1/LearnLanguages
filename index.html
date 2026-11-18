@@ -17,10 +17,10 @@
   <header class="topbar">
     <a href="#/" class="brand" aria-label="Mochi, accueil">m<span class="logo-o" id="logo-o"></span>chi</a>
     <div class="topbar-stats" id="topbar-stats"></div>
-    <nav class="topnav">
-      <a href="#/" data-nav="home">Accueil</a>
-      <a href="#/learn" data-nav="learn">Apprendre</a>
-      <a href="#/pourquoi" data-nav="pourquoi">Pourquoi ?</a>
+    <nav class="topnav" aria-label="Navigation principale">
+      <a href="#/aujourdhui" data-nav="aujourdhui">Aujourd'hui</a>
+      <a href="#/lire" data-nav="lire">Lire</a>
+      <a href="#/reviser" data-nav="reviser">Réviser</a>
       <a href="#/profil" data-nav="profil">Profil</a>
     </nav>
     <a class="user-pill" id="topbar-user" href="#/connexion" hidden></a>
@@ -28,11 +28,11 @@
 
   <main id="app" class="app"></main>
 
-  <nav class="bottomnav">
-    <a href="#/" data-nav="home"><span>🏠</span>Accueil</a>
-    <a href="#/learn" data-nav="learn"><span>📚</span>Apprendre</a>
-    <a href="#/pourquoi" data-nav="pourquoi"><span>🔬</span>Pourquoi</a>
-    <a href="#/profil" data-nav="profil"><span>🐰</span>Profil</a>
+  <nav class="bottomnav" aria-label="Navigation principale">
+    <a href="#/aujourdhui" data-nav="aujourdhui"><span aria-hidden="true">☀️</span>Aujourd'hui</a>
+    <a href="#/lire" data-nav="lire"><span aria-hidden="true">📖</span>Lire</a>
+    <a href="#/reviser" data-nav="reviser"><span aria-hidden="true">🧠</span>Réviser</a>
+    <a href="#/profil" data-nav="profil"><span aria-hidden="true">🐰</span>Profil</a>
   </nav>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>

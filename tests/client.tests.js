@@ -252,3 +252,8 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
   actions.theme({ dataset: { v: "dark" } }); ok(document.documentElement.dataset.theme === "dark", "thème sombre forcé");
   actions.theme({ dataset: { v: "auto" } }); ok(document.documentElement.dataset.theme === undefined, "thème auto");
 }
+{ // Navigation principale (charte §7)
+  state.lastLang = "ko"; location.hash = "#/reviser"; route(); ok(location.hash === "#/lang/ko/revisions", "Réviser → onglet de la dernière langue");
+  location.hash = "#/lire"; route(); ok(location.hash === "#/lang/ko/lire", "Lire");
+  const last = state.lastLang; state.lastLang = null; location.hash = "#/aujourdhui"; route(); ok(location.hash === "#/aujourdhui", "sans langue : accueil"); state.lastLang = last;
+}

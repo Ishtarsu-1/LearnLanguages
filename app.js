@@ -1688,6 +1688,7 @@ function viewProfile() {
     <div style="margin-top:36px;display:flex;gap:10px;flex-wrap:wrap">
       <button class="btn ghost small" data-act="export">Exporter mes données (JSON)</button>
       <button class="btn ghost small" data-act="reset">Réinitialiser ma progression</button>
+      <a class="btn ghost small" href="#/pourquoi">🔬 Pourquoi ça marche ?</a>
     </div>
 
     ${account ? `
@@ -1875,6 +1876,9 @@ function viewNotFound() {
 // ============================================================
 //  ROUTEUR
 // ============================================================
+// Onglets de la barre de navigation (charte §7 : 4 au maximum)
+const NAV_TABS = { aujourdhui: "aujourdhui", lire: "lire", reviser: "revisions" };
+const NAV_OF_TAB = { aujourdhui: "aujourdhui", lire: "lire", revisions: "reviser" };
 function route() {
   const parts = location.hash.replace(/^#\/?/, "").split("/").filter(Boolean);
   const hashChanged = ui.lastHash !== location.hash;
@@ -1882,14 +1886,17 @@ function route() {
   let html, nav = "home", lang = null;
 
   if (parts.length === 0) html = viewHome();
-  else if (parts[0] === "learn") {
-    if (state.lastLang) return void (location.hash = `#/lang/${state.lastLang}`);
-    html = viewHome(); nav = "learn";
+  else if (NAV_TABS[parts[0]] || parts[0] === "learn") {
+    // Navigation principale (charte §7) : ouvre l'onglet dans la dernière langue,
+    // ou l'accueil (choix de la langue) si aucune n'a encore été choisie.
+    const tab = NAV_TABS[parts[0]] || "aujourdhui";
+    if (state.lastLang) return void (location.hash = `#/lang/${state.lastLang}/${tab}`);
+    html = viewHome(); nav = parts[0] === "learn" ? "aujourdhui" : parts[0];
   } else if (parts[0] === "profil") { html = viewProfile(); nav = "profil"; }
   else if (parts[0] === "connexion" || parts[0] === "inscription") { html = viewAuth(parts[0]); nav = "profil"; }
   else if (parts[0] === "pourquoi") { html = viewWhy(); nav = "pourquoi"; }
   else if (parts[0] === "lang" && LANGUAGES[parts[1]]) {
-    lang = parts[1]; nav = "learn";
+    lang = parts[1]; nav = NAV_OF_TAB[parts[2]] || "aujourdhui";
     state.lastLang = lang; state.langs[lang].started = true; save();
     const [, , tab, a] = parts;
     if (tab === "lire" && a) html = viewReader(lang, a);
