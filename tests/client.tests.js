@@ -537,10 +537,15 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
   location.hash = "#/lang/ko/hangul/1"; tourNext(); ok(TOUR[ui.tour.i].title === "Touche une lettre", "leçon de Hangul");
   tourNext(); ok(/pratique/.test(TOUR[ui.tour.i].target), "la lecture est sautée tant que le Hangul n'est pas fait");
   ok(location.hash === "#/lang/ko/aujourdhui", "retour sur la page de la langue (barre des sections)");
-  // Anglais : le parcours lecture est proposé
+  // Anglais, débutant complet : les premiers mots (pas de texte illisible)
   location.hash = "#/lang/en/aujourdhui"; ui.tour.i = 0; tourGo(5);
+  ok(TOUR[ui.tour.i].target.includes("learn-first") && !TOUR[ui.tour.i].doneWhen, "anglais débutant : premiers mots ou test");
+  // Anglais avec des bases : le parcours lecture est proposé
+  const known0 = state.langs.en.known; state.langs.en.known = Object.fromEntries(Object.keys(LEXICON.en).map((l) => [l, true]));
+  ui.tour.i = 0; tourGo(5);
   ok(TOUR[ui.tour.i].target.includes("/lire/") && TOUR[ui.tour.i].doneWhen && !TOUR[ui.tour.i].doneWhen(), "anglais : ouvrir un texte (action attendue)");
   location.hash = "#/lang/en/lire/en-cafe"; ok(TOUR[ui.tour.i].doneWhen(), "texte ouvert → étape validée");
+  state.langs.en.known = known0;
   closeTour(true);
   ok(state.settings.tourDone && !tourShouldShow() && ui.tour === null, "visite terminée : plus proposée");
   ok(flatten(state).kv["settings.tourDone"] === true, "synchronisée");
@@ -610,3 +615,30 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
   ok(viewAuth("inscription").includes('name="accept" required') && viewAuth("inscription").includes("#/legal/cgu") && !viewAuth("connexion").includes('name="accept"'), "inscription : case obligatoire");
   account = acc; location.hash = "";
 }
+// --- Parcours débutant (PEDAGOGIE §3) et coréen : le Hangul d'abord (charte §3) ---
+{
+  const saved = { ...state }; // mêmes objets restaurés à la fin (des tests asynchrones les gardent en référence)
+  Object.assign(state, defaultState()); state.cards = []; state.logs = [];
+  const best = rankedTexts("en")[0];
+  ok(best.c < BEGINNER_COVERAGE, "état neuf : aucun texte à 80 % (" + Math.round(best.c * 100) + " %)");
+  let h = tabToday("en");
+  ok(!h.includes(`/lire/${best.t.id}"`) && h.includes("test de niveau") && h.includes('data-act="learn-first"'), "neuf en anglais : pas de texte < 80 % à l'étape 1, test ou premiers mots");
+  ok(!h.includes("Tu as déjà des bases"), "pas de double proposition du test");
+  actions["learn-first"]({ dataset: { l: "en" } });
+  ok(state.cards.filter((c) => c.lang === "en").length >= 5 && session("en").firstWords, "premiers mots ajoutés, étape 1 validée");
+  h = tabToday("en");
+  ok(/step done[\s\S]*Apprendre mes 10 premiers mots/.test(h) || h.includes("Tes premiers mots sont dans tes révisions"), "étape 1 cochée");
+  for (const l of Object.keys(LEXICON.en)) state.langs.en.known[l] = true;
+  ok(tabToday("en").includes(`/lire/${rankedTexts("en")[0].t.id}"`), "dès qu'un texte dépasse 80 % : retour à la lecture");
+  // Coréen, Hangul pas commencé : « Commencer le jour 1 » est le seul bouton plein, en premier
+  Object.assign(state, defaultState()); state.cards = [];
+  h = tabToday("ko");
+  const primaries = h.match(/class="btn"[^>]*>[^<]*/g) || [];
+  ok(primaries.length === 1 && primaries[0].includes("Commencer le jour 1") && h.indexOf("Phase 1") < h.indexOf("Faire le test"), "coréen : le Hangul est l'action principale " + JSON.stringify(primaries));
+  state.langs.ko.hangulDays = { 1: true, 2: true };
+  ok(tabToday("ko").includes("Continuer : jour 3"), "coréen : continuer au jour suivant");
+  for (const k of Object.keys(state)) if (!(k in saved)) delete state[k];
+  Object.assign(state, saved);
+  location.hash = "";
+}
+console.log(fails ? `${fails} échec(s)` : "OK : parcours débutant");

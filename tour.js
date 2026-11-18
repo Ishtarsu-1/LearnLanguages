@@ -10,6 +10,8 @@
 // ============================================================
 const tourLang = () => currentLang() || state.lastLang || "en";
 const tourGated = () => hangulGate(tourLang());
+// Débutant complet : l'étape 1 propose les premiers mots (ou le test), pas encore un texte
+const tourBeginner = () => !tourGated() && isBeginner(tourLang(), rankedTexts(tourLang())[0]);
 const onLangPage = () => !!currentLang();
 const goLang = (tab = "aujourdhui") => { location.hash = `#/lang/${tourLang()}/${tab}`; };
 // Pages sans la barre des sections (lecteur, leçon…) : on revient sur la page de la langue
@@ -33,7 +35,10 @@ const TOUR = [
   { skipIf: () => !/\/hangul\//.test(location.hash), target: ".alpha-grid, .build-demo", title: "Touche une lettre", next: true,
     text: "Chaque jour : tu découvres quelques lettres (touche-les pour les entendre), puis tu t'entraînes. Tu reprendras ici quand tu veux." },
   // Lecture (anglais, ou coréen une fois le Hangul fait)
-  { skipIf: tourGated, target: '.step a.btn[href*="/lire/"]', title: "Ta séance du jour",
+  { skipIf: () => !tourBeginner(), target: '.step [data-act="learn-first"], .step a.btn[href$="/niveau"]', title: "Ta séance du jour", next: true,
+    text: "Chaque jour : lire, capturer des mots, réviser, écrire. Tu débutes : on commence par tes 10 premiers mots, chacun dans sa phrase et avec son audio. Tu as déjà des bases ? Le test de niveau prend 5 minutes.",
+    enter() { goLang("aujourdhui"); } },
+  { skipIf: () => tourGated() || tourBeginner(), target: '.step a.btn[href*="/lire/"]', title: "Ta séance du jour",
     text: "Chaque jour : lire, capturer des mots, réviser, écrire. On commence par lire : clique sur « Lire ».",
     doneWhen: () => /\/lire\/[^/]+$/.test(location.hash), enter() { goLang("aujourdhui"); } },
   { skipIf: () => tourGated() || !/\/lire\/[^/]+$/.test(location.hash), target: ".sentences .w:not(.proper)", title: "Touche un mot",

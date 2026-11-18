@@ -114,7 +114,7 @@ Si un modèle plus léger obtient **le même score** qu'Opus, mets-le dans `MOCH
 | `claude-opus-5-5` | à mesurer | | |
 | `claude-sonnet-5-5` | à mesurer | | |
 | `claude-haiku-5-5` | à mesurer | | |
-| Ollama `qwen2.5:7b-instruct` | à mesurer | | gratuit |
+| Ollama `qwen2.5:7b-instruct` (CPU, 18/11/2026) | 9/10 | 21,8 s | gratuit |
 
 > L'évaluation consomme quelques centimes par modèle. Elle n'a pas encore été lancée (aucune clé API sur la machine de développement) : le défaut reste Opus en attendant.
 

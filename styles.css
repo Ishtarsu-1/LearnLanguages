@@ -260,6 +260,11 @@ h1 { font-size: var(--text-3xl); }
 .step p { margin: 4px 0 0; }
 .step-n { width: 42px; height: 42px; flex: none; border-radius: 50%; display: grid; place-items: center; font-weight: 800; background: var(--surface-2); color: var(--ink-muted); }
 .step.done { opacity: .75; }
+.step-acts { display: flex; gap: 8px; flex-wrap: wrap; }
+.hangul-first { margin-bottom: var(--space-4); }
+.hangul-first .muted { margin: 12px 0 16px; }
+.offer.compact { display: block; background: var(--surface); }
+.offer.compact .wp-actions { margin-top: 10px; }
 .step.done .step-n { background: var(--success); color: var(--on-color); }
 .celebrate { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; background: var(--matcha-50); }
 .celebrate p { margin: 4px 0 0; }
@@ -502,7 +507,7 @@ code { background: var(--surface-2); padding: 2px 6px; border-radius: var(--radi
   .tabs { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-left: -16px; margin-right: -16px; padding-left: 16px; padding-right: 16px; }
   .section-title { margin-top: 28px; }
   .step { gap: 12px; }
-  .step .btn { width: 100%; }
+  .step .btn, .step-acts { width: 100%; }
   .player { top: 56px; padding: 10px; gap: 8px; }
   .sentence { padding: 8px 4px; }
   .s-tools button { width: 32px; height: 32px; }

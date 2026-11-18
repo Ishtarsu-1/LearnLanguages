@@ -1097,10 +1097,23 @@ function stepCard(n, icon, title, done, desc, action) {
 
 Object.assign(TAB_VIEWS, { pratique: (l) => tabPractice(l), aujourdhui: (l) => tabToday(l), parcours: (l) => tabPath(l), lire: (l) => tabLibrary(l), themes: (l) => tabThemes(l), revisions: (l) => tabReviews(l), produire: (l) => tabProduce(l), mots: (l) => tabWords(l), oreille: (l) => tabEar(l), fauxamis: (l) => tabFauxAmis(l) });
 
+// Débutant complet : aucun texte lisible (< 80 %) et presque aucun mot connu (PEDAGOGIE §3).
+// On ne propose pas un texte à 12 % : d'abord le test de niveau ou les premiers mots.
+const BEGINNER_COVERAGE = 0.8, BEGINNER_WORDS = 50, FIRST_WORDS = 10;
+const isBeginner = (lang, best) => best.c < BEGINNER_COVERAGE && knownCount(lang) < BEGINNER_WORDS;
+
 function tabToday(lang) {
   if (hangulGate(lang)) {
-    const n = Object.keys(state.langs.ko.hangulDays).length;
-    return `${placementOffer(lang)}<div class="card phase"><b>Phase 1 · Le Hangul</b><div class="bar"><span style="width:${(n / HANGUL_DAYS.length) * 100}%"></span></div><small class="muted">${n} / ${HANGUL_DAYS.length} jours</small></div>${gateCard()}`;
+    // Coréen, Hangul pas fini : une seule action principale, le jour suivant du Hangul (charte §3)
+    const n = Object.keys(state.langs.ko.hangulDays).length, next = Math.min(n + 1, HANGUL_DAYS.length);
+    return `<div class="card phase hangul-first">
+        <div class="phase-head"><b>Phase 1 · Le Hangul</b><span class="tag">${n} / ${HANGUL_DAYS.length} jours</span></div>
+        <div class="bar"><span style="width:${(n / HANGUL_DAYS.length) * 100}%"></span></div>
+        <p class="muted">L'alphabet coréen s'apprend en ${HANGUL_DAYS.length} petites séances. Ensuite, plus aucune romanisation : tout se lit en Hangul.</p>
+        <a class="btn" href="#/lang/ko/hangul/${next}">${n ? `Continuer : jour ${next}` : "Commencer le jour 1"}</a>
+      </div>
+      <div class="card offer compact"><p class="muted"><b>Tu lis déjà le Hangul ?</b> Passe directement à la suite, ou fais le test de niveau.</p>
+        <div class="wp-actions"><button class="btn ghost small" data-act="skip-hangul">Je lis déjà le Hangul</button>${placementPending(lang) ? `<a class="btn ghost small" href="#/lang/ko/niveau">Faire le test</a>` : ""}</div></div>`;
   }
   const s = session(lang);
   const best = rankedTexts(lang)[0];
@@ -1109,15 +1122,26 @@ function tabToday(lang) {
   const ex = currentExercise(lang);
   const all = sessionComplete(lang);
   const w = weekly(state.langs[lang]);
-  const nextStep = !s.input ? 1 : !reviewDone ? 3 : !s.production ? 4 : 0;
+  const beginner = isBeginner(lang, best);
+  const step1Done = s.input || (beginner && s.firstWords);
+  const nextStep = !step1Done ? 1 : !reviewDone ? 3 : !s.production ? 4 : 0;
+  const step1 = !beginner
+    ? stepCard(1, "📖", "Lire & écouter", s.input,
+      `${esc(best.t.title)} · tu connais ~${pct(best.c)} % des mots${best.z.k === "gloss" ? " (avec glossaire)" : ""}.`,
+      `<a class="btn small ${nextStep === 1 ? "" : "ghost"}" href="#/lang/${lang}/lire/${best.t.id}">Lire</a>`)
+    : placementPending(lang)
+      ? stepCard(1, "🧭", "Faire le test de niveau (5 min)", false,
+        "Pour savoir quels mots tu connais déjà. Tu débutes vraiment ? Commence par tes premiers mots.",
+        `<div class="step-acts"><a class="btn small" href="#/lang/${lang}/niveau">Faire le test</a><button class="btn ghost small" data-act="learn-first" data-l="${lang}">🌱 Mes ${FIRST_WORDS} premiers mots</button></div>`)
+      : stepCard(1, "🌱", `Apprendre mes ${FIRST_WORDS} premiers mots`, step1Done,
+        step1Done ? "Tes premiers mots sont dans tes révisions : chacun avec sa phrase et son audio." : "Les mots les plus fréquents d'abord, chacun dans sa phrase et avec son audio. Les textes deviendront lisibles très vite.",
+        step1Done ? "" : `<button class="btn small" data-act="learn-first" data-l="${lang}">Apprendre</button>`);
   return `
-    ${placementOffer(lang)}
+    ${beginner ? "" : placementOffer(lang)}
     ${s.welcomeBack ? `<div class="card celebrate">${mochi("small")}<div><h3>Content de te revoir !</h3><p class="muted">On reprend en douceur : ${CATCHUP_FIRST} révisions aujourd'hui, le reste plus tard, réparti sur les prochains jours. Pas de nouvelles cartes en attendant.</p></div></div>` : ""}
     ${all ? `<div class="card celebrate">${mochi("small", w.thisWeek >= WEEK_GOAL ? "proud" : "happy")}<div><h3>Séance du jour bouclée</h3><p class="muted">${w.thisWeek}/${WEEK_GOAL} jours cette semaine. Tu peux continuer, mais l'essentiel est fait.</p></div></div>`
       : w.resting ? `<div class="card celebrate">${mochi("small", "sleepy")}<div><h3>Jour de repos possible</h3><p class="muted">Objectif de la semaine atteint. Mochi fait la sieste, ta série est en sécurité. Tu peux quand même pratiquer si tu en as envie.</p></div></div>` : ""}
-    ${stepCard(1, "📖", "Lire & écouter", s.input,
-      `${esc(best.t.title)} · tu connais ~${pct(best.c)} % des mots${best.z.k === "gloss" ? " (avec glossaire)" : ""}.`,
-      `<a class="btn small ${nextStep === 1 ? "" : "ghost"}" href="#/lang/${lang}/lire/${best.t.id}">Lire</a>`)}
+    ${step1}
     ${stepCard(2, "🫳", "Capturer", s.captured > 0, s.captured ? `${s.captured} mot(s) capturé(s) aujourd'hui.` : "Pendant la lecture, touche un mot inconnu pour l'ajouter.", "")}
     ${stepCard(3, "🧠", "Réviser", reviewDone, due + fresh ? `${due} carte(s) à revoir, ${fresh} nouvelle(s).` : "Rien à réviser pour l'instant.",
       due + fresh ? `<a class="btn small ${nextStep === 3 ? "" : "ghost"}" href="#/lang/${lang}/revisions/go">Réviser</a>` : "")}
@@ -1624,6 +1648,19 @@ function checkProductionLocal(lang, text) {
 }
 
 // ---------- Mots (§3 : modèle du vocabulaire, fréquence) ----------
+// Ajoute aux révisions les `max` prochains mots fréquents, chacun avec sa phrase (§12 : variés)
+function addFrequent(lang, max) {
+  const stab = stabilityMap(lang), taken = { lemmas: new Set(), groups: new Set() };
+  let n = 0;
+  for (const l of Object.keys(LEXICON[lang])) {
+    if (n >= max) break;
+    if (lemmaStatus(lang, l, stab) !== "new" || interferes(lang, l, taken)) continue;
+    takeLemma(lang, l, taken);
+    const ctx = findContext(lang, l);
+    if (ctx && captureSeg(lang, ctx.s, ctx.w, ctx.g, ctx.source)) n++;
+  }
+  return n;
+}
 function tabWords(lang) {
   const stab = stabilityMap(lang);
   const lemmas = Object.keys(LEXICON[lang]);
@@ -2481,17 +2518,16 @@ const actions = {
   "toggle-known": (el) => { const L = state.langs[currentLang()]; L.known[el.dataset.l] = true; delete L.unknown[el.dataset.l]; save(); render(); },
   "toggle-unknown": (el) => { const L = state.langs[currentLang()]; delete L.known[el.dataset.l]; L.unknown[el.dataset.l] = true; save(); render(); },
   "add-frequent": () => {
-    const lang = currentLang(), stab = stabilityMap(lang);
-    let n = 0;
-    const taken = { lemmas: new Set(), groups: new Set() };
-    for (const l of Object.keys(LEXICON[lang])) {
-      if (n >= 5) break;
-      if (lemmaStatus(lang, l, stab) !== "new" || interferes(lang, l, taken)) continue; // §12 : des mots variés
-      takeLemma(lang, l, taken);
-      const ctx = findContext(lang, l);
-      if (ctx && captureSeg(lang, ctx.s, ctx.w, ctx.g, ctx.source)) n++;
-    }
+    const n = addFrequent(currentLang(), 5);
     save(); toast(`${n} mot(s) ajouté(s), chacun avec sa phrase ✓`); render();
+  },
+  // Débutant complet : les premiers mots fréquents, puis on les découvre tout de suite (phrase + audio)
+  "learn-first": (el) => {
+    const lang = el.dataset.l, n = addFrequent(lang, FIRST_WORDS);
+    if (!n) return toast("Pas de nouveau mot à apprendre pour l'instant.");
+    session(lang).firstWords = true; // étape 1 validée (le test n'est plus proposé : il y a des cartes)
+    save(); toast(`${n} premiers mots ajoutés, chacun avec sa phrase ✓`);
+    location.hash = `#/lang/${lang}/revisions/go`;
   },
   "add-faux": () => {
     let n = 0;
