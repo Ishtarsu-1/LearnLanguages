@@ -1,0 +1,179 @@
+/* ============================================================
+   Mochi — jetons de design (CHARTE-GRAPHIQUE.md §11)
+   Toute interface utilise ces variables : jamais de couleur, taille ou rayon
+   codés en dur. Contrastes WCAG 2.x recalculés pour les jetons ajoutés
+   (marqués « ajout ») : voir les commentaires.
+   ============================================================ */
+:root {
+  color-scheme: light;
+  /* Fonds et texte */
+  --bg: #FFF9F3;
+  --surface: #FFFFFF;
+  --surface-2: #F6EEE6;
+  --border: #E8DCCF;
+  --ink: #2A2230;
+  --ink-muted: #665A6B;
+
+  /* Marque et saveurs */
+  --sakura-600: #C2386A;
+  --sakura-500: #E0628F;  /* décoratif uniquement */
+  --sakura-50:  #FDEFF4;  /* ajout : Sakura 600 dessus 4,63:1 ; encre 13,3:1 */
+  --matcha-700: #2F7A52;
+  --matcha-50:  #E6F4EC;
+  --ube-600:    #6E4FBF;
+  --ube-50:     #EFEAFB;
+  --yuzu-400:   #F4C04A;
+  --yuzu-100:   #FFF1C7;
+  --blue-600:   #2F5FC4;
+  --blue-50:    #EAF0FC;
+  --kaki-700:   #A64A0C;
+  --kaki-50:    #FDEEE2;
+  --cherry-600: #C7353A;
+  --cherry-50:  #FDECEC;
+  --honey-700:  #8F5A0B;
+  --honey-50:   #FFF4DC;
+
+  /* Rôles */
+  --primary: var(--sakura-600);
+  --primary-soft: var(--sakura-50);
+  --on-primary: #FFFFFF;
+  --on-color: #FFFFFF;     /* texte sur un aplat de couleur fonctionnelle (≥ 5:1 en clair) */
+  --success: var(--matcha-700);
+  --grammar: var(--ube-600);
+  --reward: var(--yuzu-400);
+  --info: var(--blue-600);
+  --error: var(--cherry-600);
+  --warning: var(--honey-700);
+  --lang-en: var(--blue-600);
+  --lang-ko: var(--kaki-700);
+  --focus-ring: var(--sakura-600);
+  --mochi-fill: #FBF4EA;   /* saveur Nature (§8) */
+  --mochi-ink: #2A2230;
+  --mochi-cheek: rgb(224 98 143 / 0.6);
+
+  /* Particules coréennes */
+  --particle-topic: var(--blue-600);
+  --particle-subject: var(--kaki-700);
+  --particle-object: var(--matcha-700);
+  --particle-place: var(--ube-600);
+  --particle-other: var(--ink-muted);
+
+  /* Typographie */
+  --font-sans: "Pretendard Variable", Pretendard, -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif;
+  --font-display: "Jua", "Pretendard Variable", Pretendard, sans-serif;
+  --text-scale: 1;
+  --text-xs: calc(0.75rem * var(--text-scale));
+  --text-sm: calc(0.875rem * var(--text-scale));
+  --text-md: calc(1rem * var(--text-scale));
+  --text-lg: calc(1.125rem * var(--text-scale));
+  --text-xl: calc(1.25rem * var(--text-scale));
+  --text-2xl: calc(1.5rem * var(--text-scale));
+  --text-3xl: calc(1.875rem * var(--text-scale));
+  --text-4xl: calc(2.5rem * var(--text-scale));
+  --text-hangul: clamp(6rem, 18vw, 8rem);
+  --leading-latin: 1.6;
+  --leading-ko: 1.75;
+
+  /* Espacements */
+  --space-1: 4px;  --space-2: 8px;  --space-3: 12px; --space-4: 16px;
+  --space-5: 24px; --space-6: 32px; --space-7: 48px; --space-8: 64px;
+
+  /* Formes */
+  --radius-sm: 8px; --radius-md: 14px; --radius-lg: 20px; --radius-xl: 28px; --radius-full: 999px;
+  --shadow-1: 0 1px 2px rgb(42 34 48 / 0.06), 0 2px 6px rgb(42 34 48 / 0.06);
+  --shadow-2: 0 4px 12px rgb(42 34 48 / 0.08), 0 2px 4px rgb(42 34 48 / 0.05);
+  --shadow-3: 0 12px 32px rgb(42 34 48 / 0.12);
+
+  /* Mouvement */
+  --ease-squish: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 120ms; --dur-base: 200ms; --dur-slow: 320ms;
+}
+
+/* Mode sombre « nuit de Séoul ». Les mêmes valeurs servent pour le choix
+   explicite (data-theme="dark") et pour la préférence du système. */
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #1B1720;
+  --surface: #25202B;
+  --surface-2: #2F2935;
+  --border: #3D3544;
+  --ink: #F4EDF6;
+  --ink-muted: #B5AAB9;
+
+  --primary: #F28DB0;
+  --primary-soft: #3A2431;  /* ajout : Sakura 300 dessus 6,24:1 */
+  --on-primary: #1B1720;
+  --on-color: #1B1720;      /* sur les couleurs 300 : ≥ 7:1 */
+  --success: #7CCB9E;
+  --grammar: #B9A2F0;
+  --reward: #F7D47A;
+  --info: #8CB0F5;
+  --error: #F28B8E;
+  --warning: #F2C36B;
+  --lang-en: #8CB0F5;
+  --lang-ko: #F5A66B;
+  --focus-ring: #F28DB0;
+  --mochi-ink: #2A2230;
+
+  --matcha-50: #1E3328;
+  --ube-50: #2C2540;
+  --cherry-50: #3A2226;
+  --yuzu-100: #4A3F1E;
+  --blue-50: #1F2A44;   /* ajout : Myrtille 300 dessus 6,55:1 */
+  --kaki-50: #3A2A1E;   /* ajout : Kaki 300 dessus 6,9:1 */
+  --honey-50: #3A301C;  /* ajout : Miel 300 dessus 7,9:1 */
+
+  --particle-topic: #8CB0F5;
+  --particle-subject: #F5A66B;
+  --particle-object: #7CCB9E;
+  --particle-place: #B9A2F0;
+  --particle-other: #B5AAB9;
+
+  --shadow-1: none; --shadow-2: none; --shadow-3: 0 12px 32px rgb(0 0 0 / 0.4);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #1B1720;
+    --surface: #25202B;
+    --surface-2: #2F2935;
+    --border: #3D3544;
+    --ink: #F4EDF6;
+    --ink-muted: #B5AAB9;
+
+    --primary: #F28DB0;
+    --primary-soft: #3A2431;
+    --on-primary: #1B1720;
+    --on-color: #1B1720;
+    --success: #7CCB9E;
+    --grammar: #B9A2F0;
+    --reward: #F7D47A;
+    --info: #8CB0F5;
+    --error: #F28B8E;
+    --warning: #F2C36B;
+    --lang-en: #8CB0F5;
+    --lang-ko: #F5A66B;
+    --focus-ring: #F28DB0;
+    --mochi-ink: #2A2230;
+
+    --matcha-50: #1E3328;
+    --ube-50: #2C2540;
+    --cherry-50: #3A2226;
+    --yuzu-100: #4A3F1E;
+    --blue-50: #1F2A44;
+    --kaki-50: #3A2A1E;
+    --honey-50: #3A301C;
+
+    --particle-topic: #8CB0F5;
+    --particle-subject: #F5A66B;
+    --particle-object: #7CCB9E;
+    --particle-place: #B9A2F0;
+    --particle-other: #B5AAB9;
+
+    --shadow-1: none; --shadow-2: none; --shadow-3: 0 12px 32px rgb(0 0 0 / 0.4);
+  }
+}
+
+/* Coréen : pas de coupure au milieu des mots, plus d'interligne (§6) */
+:lang(ko) { word-break: keep-all; line-height: var(--leading-ko); }

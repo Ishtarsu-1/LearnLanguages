@@ -4,17 +4,18 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Mochi — Apprendre les langues</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Noto+Sans+KR:wght@500;700&display=swap" rel="stylesheet" />
+  <meta name="theme-color" content="#FFF9F3" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#1B1720" media="(prefers-color-scheme: dark)" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <!-- Polices auto-hébergées (charte §6) : Pretendard en sous-ensembles dynamiques, Jua pour les titres -->
+  <link rel="stylesheet" href="fonts/pretendard.css" />
+  <link rel="stylesheet" href="fonts/jua.css" />
+  <link rel="stylesheet" href="tokens.css" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header class="topbar">
-    <a href="#/" class="brand">
-      <span class="brand-blob" aria-hidden="true"></span>
-      <span>Mochi</span>
-    </a>
+    <a href="#/" class="brand" aria-label="Mochi, accueil">m<span class="logo-o" id="logo-o"></span>chi</a>
     <div class="topbar-stats" id="topbar-stats"></div>
     <nav class="topnav">
       <a href="#/" data-nav="home">Accueil</a>
@@ -37,7 +38,7 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <!-- FSRS (Free Spaced Repetition Scheduler) : planification des révisions, cf. PEDAGOGIE.md §1 -->
-  <script src="https://cdn.jsdelivr.net/npm/ts-fsrs@5.2.3/dist/index.umd.js"></script>
+  <script src="vendor/ts-fsrs-5.2.3.umd.js"></script>
   <script src="content.js"></script>
   <script src="app.js"></script>
   <script src="exercises.js"></script>

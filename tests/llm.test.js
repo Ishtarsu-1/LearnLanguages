@@ -44,7 +44,7 @@ server.listen(0, "127.0.0.1", async () => {
 
     // --- Client : correcteur Claude, cartes ciblées, repli hors ligne ---
     const store = {};
-    const el = () => ({ value: "", innerHTML: "", classList: { add() {}, remove() {}, toggle() {} }, dataset: {}, addEventListener() {}, querySelector: () => null, focus() {} });
+    const el = () => ({ value: "", innerHTML: "", classList: { add() {}, remove() {}, toggle() {} }, dataset: {}, addEventListener() {}, querySelector: () => null, querySelectorAll: () => [], focus() {} });
     let fetchMode = "ok";
     const ctx = {
       console, setTimeout, clearTimeout, setInterval: () => 0, Date, Math, JSON, URL, Blob: function () {}, Promise,

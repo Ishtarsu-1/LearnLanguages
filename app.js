@@ -316,24 +316,41 @@ const shuffle = (a) => { a = [...a]; for (let i = a.length - 1; i > 0; i--) { co
 const pct = (x) => Math.round(x * 100);
 const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
 const isKo = (lang) => lang === "ko";
-const koCls = (lang) => (isKo(lang) ? "ko" : "");
+const koCls = (lang) => (isKo(lang) ? "ko" : "en");
+// Fonction d'une particule coréenne, pour la couleur et le soulignement (charte §5)
+const PARTICLE_FN = { 은: "topic", 는: "topic", 이: "subject", 가: "subject", 을: "object", 를: "object", 에: "place", 에서: "place", 에게: "place", 한테: "place", 께: "place" };
+const PARTICLE_LABEL = { topic: "particule de thème", subject: "particule de sujet", object: "particule d'objet", place: "particule de lieu, de temps ou de destinataire", other: "particule" };
+const particleFn = (p) => { const f = PARTICLE_FN[p] || "other"; return [f, PARTICLE_LABEL[f]]; };
 
+// Mochi, la mascotte (charte §8) : un galet rond un peu plus large que haut, visage
+// dans le tiers inférieur, aplats sans dégradé. Jamais triste ni en colère.
+// Humeurs : happy (contente), focused (concentrée), proud (fière), curious (curieuse),
+// thinking (pensive), sleepy (endormie), surprised (surprise).
+const MOCHI_FACES = {
+  happy: '<path d="M52 79 q5 -6 10 0 M78 79 q5 -6 10 0" class="mo-line"/><path d="M65 86 q5 4 10 0" class="mo-line"/>',
+  focused: '<circle cx="57" cy="79" r="3.6" class="mo-ink"/><circle cx="83" cy="79" r="3.6" class="mo-ink"/><path d="M66 87 h8" class="mo-line"/>',
+  proud: '<path d="M52 80 q5 -6 10 0 M78 80 q5 -6 10 0" class="mo-line"/><path d="M64 86 q6 6 12 0" class="mo-line"/><path d="M22 30 l2.5 5 5 .8 -3.6 3.5 .9 5 -4.8 -2.4 -4.8 2.4 .9 -5 -3.6 -3.5 5 -.8z M116 22 l2 4 4 .6 -2.9 2.8 .7 4 -3.8 -2 -3.8 2 .7 -4 -2.9 -2.8 4 -.6z" class="mo-star"/>',
+  curious: '<circle cx="57" cy="78" r="3.6" class="mo-ink"/><circle cx="83" cy="80" r="3.6" class="mo-ink"/><path d="M66 87 q4 2 8 0" class="mo-line"/><text x="112" y="34" class="mo-mark">?</text>',
+  thinking: '<circle cx="58" cy="76" r="3.4" class="mo-ink"/><circle cx="84" cy="76" r="3.4" class="mo-ink"/><path d="M66 87 h8" class="mo-line"/><circle cx="104" cy="30" r="2.6" class="mo-ink"/><circle cx="113" cy="24" r="2.6" class="mo-ink"/><circle cx="122" cy="18" r="2.6" class="mo-ink"/>',
+  sleepy: '<path d="M52 80 q5 4 10 0 M78 80 q5 4 10 0" class="mo-line"/><path d="M66 88 q4 2 8 0" class="mo-line"/><text x="108" y="36" class="mo-mark">z</text><text x="119" y="24" class="mo-mark small">z</text>',
+  surprised: '<circle cx="57" cy="78" r="4.4" class="mo-ink"/><circle cx="83" cy="78" r="4.4" class="mo-ink"/><circle cx="70" cy="88" r="3" class="mo-ink"/>',
+};
 function mochi(cls = "", mood = "happy") {
-  const mouth = mood === "sleepy"
-    ? '<path d="M62 78 q8 4 16 0" stroke="#3b2f3a" stroke-width="3" fill="none" stroke-linecap="round"/>'
-    : '<path d="M62 74 q8 10 16 0" stroke="#3b2f3a" stroke-width="3" fill="#ff6b8b" stroke-linecap="round"/>';
-  const eyes = mood === "sleepy"
-    ? '<path d="M48 62 q6 5 12 0 M80 62 q6 5 12 0" stroke="#3b2f3a" stroke-width="3" fill="none" stroke-linecap="round"/>'
-    : '<circle cx="54" cy="62" r="6" fill="#3b2f3a"/><circle cx="86" cy="62" r="6" fill="#3b2f3a"/><circle cx="56" cy="60" r="2" fill="#fff"/><circle cx="88" cy="60" r="2" fill="#fff"/>';
-  return `<svg class="mochi ${cls}" viewBox="0 0 140 120" aria-hidden="true">
-    <ellipse cx="70" cy="112" rx="44" ry="6" fill="#000" opacity=".08"/>
-    <path d="M14 82 C14 36 40 18 70 18 C100 18 126 36 126 82 C126 104 104 108 70 108 C36 108 14 104 14 82 Z" fill="var(--accent)"/>
-    <path d="M30 50 C38 34 52 28 64 28" stroke="#fff" stroke-width="6" stroke-linecap="round" fill="none" opacity=".45"/>
-    <ellipse cx="40" cy="78" rx="9" ry="5" fill="#fff" opacity=".45"/>
-    <ellipse cx="100" cy="78" rx="9" ry="5" fill="#fff" opacity=".45"/>
-    ${eyes}${mouth}
+  const squash = mood === "sleepy" ? "M14 90 C14 54 38 40 70 40 C102 40 126 54 126 90 C126 104 104 106 70 106 C36 106 14 104 14 90 Z"
+    : mood === "proud" ? "M18 84 C18 34 42 16 70 16 C98 16 122 34 122 84 C122 104 102 106 70 106 C38 106 18 104 18 84 Z"
+    : "M12 84 C12 40 38 24 70 24 C102 24 128 40 128 84 C128 104 106 106 70 106 C34 106 12 104 12 84 Z";
+  const tilt = mood === "curious" ? ' transform="rotate(-6 70 100)"' : mood === "focused" ? ' transform="rotate(3 70 100)"' : "";
+  return `<svg class="mochi mochi-${mood} ${cls}" viewBox="0 0 140 120" aria-hidden="true">
+    <ellipse cx="70" cy="110" rx="50" ry="6" class="mo-shadow"/>
+    <g${tilt}>
+      <path d="${squash}" class="mo-body"/>
+      <ellipse cx="44" cy="88" rx="8" ry="4.5" class="mo-cheek"/><ellipse cx="96" cy="88" rx="8" ry="4.5" class="mo-cheek"/>
+      ${MOCHI_FACES[mood] || MOCHI_FACES.happy}
+    </g>
   </svg>`;
 }
+// Petit visage pour le logotype (le premier « o » de « mochi »)
+const LOGO_FACE = '<svg viewBox="0 0 40 34" aria-hidden="true"><path d="M2 22 C2 9 10 3 20 3 C30 3 38 9 38 22 C38 31 31 32 20 32 C9 32 2 31 2 22 Z" class="mo-body"/><circle cx="14" cy="21" r="2" class="mo-ink"/><circle cx="26" cy="21" r="2" class="mo-ink"/><path d="M18 25 q2 2 4 0" class="mo-line" style="stroke-width:1.5"/><ellipse cx="9" cy="25" rx="3" ry="1.8" class="mo-cheek"/><ellipse cx="31" cy="25" rx="3" ry="1.8" class="mo-cheek"/></svg>';
 
 let toastTimer;
 function toast(msg) {
@@ -341,7 +358,7 @@ function toast(msg) {
   t.textContent = msg;
   t.classList.add("show");
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove("show"), 2400);
+  toastTimer = setTimeout(() => t.classList.remove("show"), 4000);
 }
 
 // ---------- Audio : synthèse vocale (§5) ----------
@@ -471,7 +488,7 @@ const revive = (c) => ({ ...c, due: new Date(c.due), last_review: c.last_review 
 const scheduler = () => FSRS.fsrs({ request_retention: state.settings.retention, enable_fuzz: true });
 
 function addCard(lang, { type = "recog", lemma, before, surface, after, contextFr, fr, source, note }) {
-  if (!HAS_FSRS) { toast("FSRS n'a pas pu être chargé (connexion ?)"); return null; }
+  if (!HAS_FSRS) { toast("FSRS n'a pas pu être chargé"); return null; }
   const context = before + surface + after;
   const dup = state.cards.find((c) => c.lang === lang && c.type === type && c.lemma === lemma && (type !== "cloze" || c.context === context));
   if (dup) return null;
@@ -746,7 +763,7 @@ function greeting() {
   const base = h < 6 ? "Bonne nuit" : h < 18 ? "Bonjour" : "Bonsoir";
   return state.name ? `${base}, ${esc(state.name)}` : base;
 }
-const fsrsWarning = () => (HAS_FSRS ? "" : `<div class="card warn">⚠️ L'algorithme FSRS n'a pas pu être chargé (connexion internet ?). Les révisions sont désactivées.</div>`);
+const fsrsWarning = () => (HAS_FSRS ? "" : `<div class="card warn">⚠️ L'algorithme FSRS n'a pas pu être chargé. Les révisions sont désactivées.</div>`);
 
 function viewHome() {
   const cont = state.lastLang && LANGUAGES[state.lastLang];
@@ -804,7 +821,7 @@ const GATED_TABS = ["lire", "revisions", "produire", "mots"]; // coréen : aprè
 const hangulGate = (lang) => isKo(lang) && !state.langs.ko.hangulDone;
 function gateCard() {
   const n = Object.keys(state.langs.ko.hangulDays).length;
-  return `<div class="card empty">${mochi("small", "sleepy")}
+  return `<div class="card empty">${mochi("small", "curious")}
     <h2>D'abord, le Hangul</h2>
     <p class="muted">L'alphabet coréen s'apprend en une semaine environ. Ensuite, plus aucune romanisation : tout se lit en Hangul.</p>
     <a class="btn" href="#/lang/ko/hangul/${Math.min(n + 1, HANGUL_DAYS.length)}">Jour ${Math.min(n + 1, HANGUL_DAYS.length)} du Hangul</a>
@@ -892,17 +909,18 @@ function tabToday(lang) {
   const ex = currentExercise(lang);
   const all = sessionComplete(lang);
   const w = weekly(state.langs[lang]);
+  const nextStep = !s.input ? 1 : !reviewDone ? 3 : !s.production ? 4 : 0;
   return `
     ${s.welcomeBack ? `<div class="card celebrate">${mochi("small")}<div><h3>Content de te revoir !</h3><p class="muted">On reprend en douceur : ${CATCHUP_FIRST} révisions aujourd'hui, le reste plus tard, réparti sur les prochains jours. Pas de nouvelles cartes en attendant.</p></div></div>` : ""}
-    ${all ? `<div class="card celebrate">${mochi("small")}<div><h3>Séance du jour bouclée</h3><p class="muted">${w.thisWeek}/${WEEK_GOAL} jours cette semaine. Tu peux continuer, mais l'essentiel est fait.</p></div></div>`
+    ${all ? `<div class="card celebrate">${mochi("small", w.thisWeek >= WEEK_GOAL ? "proud" : "happy")}<div><h3>Séance du jour bouclée</h3><p class="muted">${w.thisWeek}/${WEEK_GOAL} jours cette semaine. Tu peux continuer, mais l'essentiel est fait.</p></div></div>`
       : w.resting ? `<div class="card celebrate">${mochi("small", "sleepy")}<div><h3>Jour de repos possible</h3><p class="muted">Objectif de la semaine atteint. Mochi fait la sieste, ta série est en sécurité. Tu peux quand même pratiquer si tu en as envie.</p></div></div>` : ""}
     ${stepCard(1, "📖", "Lire & écouter", s.input,
       `${esc(best.t.title)} · tu connais ~${pct(best.c)} % des mots${best.z.k === "gloss" ? " (avec glossaire)" : ""}.`,
-      `<a class="btn small" href="#/lang/${lang}/lire/${best.t.id}">Lire</a>`)}
+      `<a class="btn small ${nextStep === 1 ? "" : "ghost"}" href="#/lang/${lang}/lire/${best.t.id}">Lire</a>`)}
     ${stepCard(2, "🫳", "Capturer", s.captured > 0, s.captured ? `${s.captured} mot(s) capturé(s) aujourd'hui.` : "Pendant la lecture, touche un mot inconnu pour l'ajouter.", "")}
     ${stepCard(3, "🧠", "Réviser", reviewDone, due + fresh ? `${due} carte(s) à revoir, ${fresh} nouvelle(s).` : "Rien à réviser pour l'instant.",
-      due + fresh ? `<a class="btn small" href="#/lang/${lang}/revisions/go">Réviser</a>` : "")}
-    ${stepCard(4, "💬", "Produire", s.production, `« ${esc(ex.prompt)} »`, `<a class="btn small" href="#/lang/${lang}/produire">Écrire</a>`)}
+      due + fresh ? `<a class="btn small ${nextStep === 3 ? "" : "ghost"}" href="#/lang/${lang}/revisions/go">Réviser</a>` : "")}
+    ${stepCard(4, "💬", "Produire", s.production, `« ${esc(ex.prompt)} »`, `<a class="btn small ${nextStep === 4 ? "" : "ghost"}" href="#/lang/${lang}/produire">Écrire</a>`)}
   `;
 }
 
@@ -996,7 +1014,8 @@ function viewReader(lang, textId) {
     const st = seg.lemmas.map((l) => lemmaStatus(lang, l, stab));
     const cls = st.includes("new") ? "new" : st.includes("learning") ? "learning" : st.includes("cognate") ? "cognate" : "known";
     const sel = R.sel && R.sel.s === si && R.sel.w === wi && R.sel.g === gi ? "sel" : "";
-    return `<span class="w ${cls} ${seg.particle ? "pt" : ""} ${sel}" data-act="word" data-s="${si}" data-w="${wi}" data-g="${gi}">${esc(seg.surface)}</span>`;
+    const pt = seg.particle ? particleFn(seg.surface) : null;
+    return `<span class="w ${cls} ${pt ? `pt pt-${pt[0]}` : ""} ${sel}" data-act="word" data-s="${si}" data-w="${wi}" data-g="${gi}"${pt ? ` title="${pt[1]}"` : ""} tabindex="0" role="button">${esc(seg.surface)}</span>`;
   };
 
   let panel = "";
@@ -1034,7 +1053,7 @@ function viewReader(lang, textId) {
     </details>` : ""}
 
     <div class="player card">
-      <button class="btn small" data-act="${R.playing ? "stop" : "play-all"}">${R.playing ? "⏸ Stop" : "▶ Tout écouter"}</button>
+      <button class="btn ghost small" data-act="${R.playing ? "stop" : "play-all"}">${R.playing ? "⏸ Stop" : "▶ Tout écouter"}</button>
       <div class="seg-ctl">${[0.75, 1, 1.25].map((v) => `<button class="${v === sp ? "on" : ""}" data-act="speed" data-v="${v}">${v}×</button>`).join("")}</div>
       <button class="choice small-choice ${R.hide ? "active" : ""}" data-act="toggle-hide">${R.hide ? "🙈 Texte masqué" : "👀 Texte affiché"}</button>
       <button class="choice small-choice ${R.shadow ? "active" : ""}" data-act="toggle-shadow">🎙️ Shadowing</button>
@@ -1058,7 +1077,7 @@ function viewReader(lang, textId) {
         </div>`).join("")}
     </div>
 
-    <div class="legend muted"><span class="w new">nouveau</span><span class="w learning">en révision</span>${lang === "en" ? '<span class="w cognate">transparent</span>' : '<span class="w pt">particule</span>'}<span>Touche un mot pour sa traduction.</span></div>
+    <div class="legend muted"><span class="w new">nouveau</span><span class="w learning">en révision</span>${lang === "en" ? '<span class="w cognate">transparent</span>' : '<span class="w pt pt-topic">thème</span><span class="w pt pt-subject">sujet</span><span class="w pt pt-object">objet</span><span class="w pt pt-place">lieu, temps</span><span class="w pt">autre particule</span>'}<span>Touche un mot pour sa traduction.</span></div>
 
     ${panel}
 
@@ -1135,8 +1154,8 @@ function viewReviewSession(lang) {
   if (!R.revealed) buttons = `<button class="btn" data-act="reveal">${input ? "Vérifier" : "Afficher la réponse"}</button>`;
   else {
     const prev = scheduler().repeat(revive(c.fsrs), new Date());
-    const labels = [[1, "À revoir", "again"], [2, "Difficile", "hard"], [3, "Bien", "good"], [4, "Facile", "easy"]];
-    buttons = `<div class="rate">${labels.map(([g, l, cls]) => `<button class="rate-btn ${cls}" data-act="rate" data-g="${g}"><b>${l}</b><small>${fmtInterval(prev[g].card.due, new Date())}</small></button>`).join("")}</div>`;
+    const labels = [[1, "À revoir", "again", "↺"], [2, "Difficile", "hard", "〰"], [3, "Bien", "good", "✓"], [4, "Facile", "easy", "⚡"]];
+    buttons = `<div class="rate">${labels.map(([g, l, cls, ico]) => `<button class="rate-btn ${cls}" data-act="rate" data-g="${g}" aria-keyshortcuts="${g}"><b><span aria-hidden="true">${ico}</span> ${l}</b><small>${fmtInterval(prev[g].card.due, new Date())}</small><kbd aria-hidden="true">${g}</kbd></button>`).join("")}</div>`;
   }
   const typeLabel = { recog: "👁️ Reconnaissance", listen: "🎧 Écoute", prod: "✍️ Production", cloze: "🎯 Point faible" }[c.type];
   return `<section class="view lesson-shell still">${top}
@@ -1162,7 +1181,7 @@ function tabProduce(lang) {
   const recent = [...recentLemmas(lang)].slice(0, 8);
   const r = P.result;
   let fb = "";
-  if (P.loading) fb = `<div class="card feedback loading">${mochi("small")}<p><b>Mochi relit ta phrase…</b>${/Ollama/.test(features.engine || "") ? "<br/><small class=\"muted\">Modèle local : ça peut prendre jusqu'à une minute.</small>" : ""}</p></div>`;
+  if (P.loading) fb = `<div class="card feedback loading">${mochi("small", "thinking")}<p><b>Mochi relit ta phrase…</b>${/Ollama/.test(features.engine || "") ? "<br/><small class=\"muted\">Modèle local : ça peut prendre jusqu'à une minute.</small>" : ""}</p></div>`;
   else if (r) {
     const label = { grammaire: "Grammaire", vocabulaire: "Vocabulaire", registre: "Registre", orthographe: "Orthographe" };
     const head = r.perfect
@@ -1190,7 +1209,7 @@ function tabProduce(lang) {
       <button class="${P.mode === "free" ? "on" : ""}" data-act="prod-mode" data-v="free">✍️ Phrase libre</button>
     </div>`;
   if (P.mode === "free" && !llmReady()) {
-    return `${modes}<div class="card empty">${mochi("small", "sleepy")}<h2>Phrases libres</h2>
+    return `${modes}<div class="card empty">${mochi("small", "curious")}<h2>Phrases libres</h2>
       <p class="muted">Pour écrire ce que tu veux et être corrigé·e intelligemment, ${account ? "le correcteur IA doit être activé sur le serveur (voir SETUP.md)." : "connecte-toi : le correcteur IA est réservé aux comptes."}</p>
       ${account ? "" : `<a class="btn" href="#/connexion">Se connecter</a>`}</div>`;
   }
@@ -1454,7 +1473,7 @@ function viewHangul(day) {
   const d = HANGUL_DAYS[day - 1];
   const K = state.langs.ko;
   if (!d) return viewNotFound();
-  if (day > 1 && !K.hangulDays[day - 1] && !K.hangulDone) return `<section class="view lesson-shell"><div class="card empty">${mochi("small", "sleepy")}<h2>Un jour à la fois</h2><p class="muted">Termine d'abord le jour ${day - 1}.</p><a class="btn" href="#/lang/ko/hangul/${day - 1}">Jour ${day - 1}</a></div></section>`;
+  if (day > 1 && !K.hangulDays[day - 1] && !K.hangulDone) return `<section class="view lesson-shell"><div class="card empty">${mochi("small", "focused")}<h2>Un jour à la fois</h2><p class="muted">Termine d'abord le jour ${day - 1}.</p><a class="btn" href="#/lang/ko/hangul/${day - 1}">Jour ${day - 1}</a></div></section>`;
   const key = `hangul-${day}`;
   if (ui.quiz?.key === key && ui.quiz.started) return viewQuiz("#/lang/ko/parcours", `Jour ${day}`);
   const intro = d.kind === "jamo"
@@ -1480,7 +1499,7 @@ function viewGrammar(id) {
   const g = KO_GRAMMAR[i];
   if (!g) return viewNotFound();
   const K = state.langs.ko;
-  if (!K.hangulDone || (i > 0 && !K.grammarDone[KO_GRAMMAR[i - 1].id])) return `<section class="view lesson-shell"><div class="card empty">${mochi("small", "sleepy")}<h2>Un point à la fois</h2><p class="muted">Termine d'abord le point précédent : c'est comme ça qu'on passe le cap.</p><a class="btn" href="#/lang/ko/parcours">Parcours</a></div></section>`;
+  if (!K.hangulDone || (i > 0 && !K.grammarDone[KO_GRAMMAR[i - 1].id])) return `<section class="view lesson-shell"><div class="card empty">${mochi("small", "focused")}<h2>Un point à la fois</h2><p class="muted">Termine d'abord le point précédent : c'est comme ça qu'on passe le cap.</p><a class="btn" href="#/lang/ko/parcours">Parcours</a></div></section>`;
   const key = `gram-${id}`;
   if (ui.quiz?.key === key && ui.quiz.started) return viewQuiz("#/lang/ko/parcours", g.title);
   const ex = g.examples.map((src) => toSentence(src, "ko"));
@@ -1491,7 +1510,7 @@ function viewGrammar(id) {
     <h2 class="section-title">Écoute d'abord</h2>
     <div class="sentences">${ex.map((s, j) => `
       <div class="sentence"><div class="s-tools"><button data-act="say" data-text="${esc(s.text)}" data-lang="ko">🔊</button></div>
-        <div class="s-body"><p class="s-text ko">${s.words.map((w) => esc(w.pre) + w.segs.map((x) => `<span class="w ${x.particle ? "pt" : ""}">${esc(x.surface)}</span>`).join("") + esc(w.post)).join(" ")}</p>
+        <div class="s-body"><p class="s-text ko">${s.words.map((w) => esc(w.pre) + w.segs.map((x) => `<span class="w ${x.particle ? `pt pt-${particleFn(x.surface)[0]}` : ""}">${esc(x.surface)}</span>`).join("") + esc(w.post)).join(" ")}</p>
         <p class="s-fr">${esc(frOf(g.examples[j]))}</p></div></div>`).join("")}</div>
     <div class="center" style="margin-top:20px"><button class="btn" data-act="start-gram" data-id="${id}">Je m'entraîne</button></div>
   </section>`;
@@ -1645,7 +1664,7 @@ async function loadSessions() {
 
 // ---------- Connexion / inscription ----------
 function viewAuth(mode) {
-  if (!serverOn) return `<section class="view lesson-shell"><div class="card empty">${mochi("small", "sleepy")}<h2>Comptes indisponibles</h2>
+  if (!serverOn) return `<section class="view lesson-shell"><div class="card empty">${mochi("small", "thinking")}<h2>Comptes indisponibles</h2>
     <p class="muted">Les comptes ont besoin du serveur Mochi. Lance <code>node server.js</code> puis ouvre <code>http://localhost:8000</code>.</p><a class="btn" href="#/">Continuer en invité</a></div></section>`;
   if (account) return `<section class="view lesson-shell"><div class="card empty">${displayAvatar("avatar")}<h2>Tu es connecté·e</h2><p class="muted">${esc(account.email)}</p><a class="btn" href="#/profil">Mon profil</a></div></section>`;
   const signup = mode === "inscription";
@@ -1709,7 +1728,7 @@ function viewWhy() {
 }
 
 function viewNotFound() {
-  return `<section class="view card empty">${mochi("", "sleepy")}<h2>Oups, page introuvable</h2>
+  return `<section class="view card empty">${mochi("", "curious")}<h2>Oups, page introuvable</h2>
     <p class="muted">Mochi s'est perdu…</p><a class="btn" href="#/">Retour à l'accueil</a></section>`;
 }
 
@@ -1743,6 +1762,8 @@ function route() {
   document.body.dataset.lang = lang || state.lastLang || "ko";
   document.body.classList.toggle("no-pt", !state.settings.particleColors);
   $app.innerHTML = html;
+  const logo = document.getElementById("logo-o"); if (logo && !logo.innerHTML) logo.innerHTML = LOGO_FACE;
+  $app.querySelectorAll(".ko, .en").forEach((e) => { if (!e.classList.contains("lang-card")) e.lang = e.classList.contains("ko") ? "ko" : "en"; });
   if (!hashChanged) $app.querySelector(".view")?.classList.add("still");
   document.querySelectorAll("[data-nav]").forEach((a) => a.classList.toggle("active", a.dataset.nav === nav));
   renderTopStats(lang);
@@ -2067,6 +2088,8 @@ $app.addEventListener("submit", async (e) => {
 });
 
 $app.addEventListener("keydown", (e) => {
+  // Éléments cliquables non natifs (mots du lecteur) : Entrée ou Espace = clic
+  if ((e.key === "Enter" || e.key === " ") && e.target.getAttribute?.("role") === "button" && e.target.dataset?.act) { e.preventDefault(); e.target.click(); return; }
   if (e.key !== "Enter") return;
   if (e.target.id === "answer") { e.preventDefault(); actions.reveal(); }
   if (e.target.id === "prod-text" && !e.shiftKey) { e.preventDefault(); actions["check-prod"](); }
@@ -2075,6 +2098,7 @@ document.addEventListener("keydown", (e) => {
   if (!ui.review || !location.hash.endsWith("/revisions/go") || /INPUT|TEXTAREA/.test(e.target.tagName)) return;
   if (e.key === " " && !ui.review.revealed) { e.preventDefault(); actions.reveal(); }
   else if (ui.review.revealed && ["1", "2", "3", "4"].includes(e.key)) actions.rate({ dataset: { g: e.key } });
+  else if (e.key === "r" || e.key === "R") { const c = state.cards.find((x) => x.id === ui.review.queue[0]); if (c) speak(c.context, c.lang); }
 });
 
 window.addEventListener("hashchange", route);
