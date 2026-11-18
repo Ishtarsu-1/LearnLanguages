@@ -483,7 +483,15 @@ const HANGUL_DAYS = [
   { title: "Les aspirées", sub: "ㅊ ㅋ ㅌ ㅍ", kind: "jamo", items: [["ㅊ", "ch", "차"], ["ㅋ", "k (soufflé)", "카"], ["ㅌ", "t (soufflé)", "타"], ["ㅍ", "p (soufflé)", "파"]] },
   { title: "Construire des syllabes", sub: "Consonne + voyelle", kind: "build", items: [["나", "na"], ["모", "mo"], ["수", "su"], ["리", "ri"], ["하", "ha"], ["져", "jyeo"], ["커", "keo"], ["드", "deu"]] },
   { title: "Consonnes finales & mots", sub: "받침 + premiers mots", kind: "words", items: [["한국", "hanguk"], ["사람", "saram"], ["친구", "chingu"], ["학생", "haksaeng"], ["김치", "gimchi"], ["커피", "keopi"], ["엄마", "eomma"], ["밥", "bap"]] },
+  // Jours ajoutés après coup : à la suite (la progression est enregistrée par numéro de jour)
+  { title: "Les consonnes doubles", sub: "ㄲ ㄸ ㅃ ㅆ ㅉ", kind: "jamo", items: [["ㄲ", "kk (tendu)", "까"], ["ㄸ", "tt (tendu)", "따"], ["ㅃ", "pp (tendu)", "빠"], ["ㅆ", "ss (tendu)", "싸"], ["ㅉ", "jj (tendu)", "짜"]] },
+  { title: "Les voyelles composées", sub: "ㅐ ㅔ ㅘ ㅝ ㅚ ㅟ ㅢ", kind: "jamo", items: [["ㅐ", "ae", "애"], ["ㅔ", "e", "에"], ["ㅘ", "wa", "와"], ["ㅝ", "wo", "워"], ["ㅚ", "oe", "외"], ["ㅟ", "wi", "위"], ["ㅢ", "ui", "의"]] },
+  { title: "Construire avec le 받침", sub: "Consonne + voyelle + consonne, et taper", kind: "buildFinal",
+    items: [["한", "han"], ["국", "guk"], ["밥", "bap"], ["말", "mal"], ["산", "san"], ["곰", "gom"], ["빵", "ppang"], ["옷", "ot"]],
+    type: [["엄마", "maman"], ["친구", "ami"], ["한국", "Corée"], ["김치", "kimchi"], ["사랑", "amour"]] },
 ];
+// Voyelles qui se prononcent pareil aujourd'hui (Séoul) : jamais opposées dans un exercice d'écoute
+const HANGUL_HOMOPHONES = { "ㅐ": ["ㅔ"], "ㅔ": ["ㅐ"], "ㅚ": ["ㅙ", "ㅞ"], "ㅙ": ["ㅚ", "ㅞ"], "ㅞ": ["ㅚ", "ㅙ"] };
 
 // ---------- Phase 2 coréen : les briques de la phrase (§6) ----------
 // Un seul point à la fois, input d'abord (exemples), puis rappel actif (quiz).

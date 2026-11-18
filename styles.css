@@ -662,3 +662,30 @@ code { background: var(--surface-2); padding: 2px 6px; border-radius: var(--radi
 .kkey.on, .kkey.shifted { background: var(--primary-soft); color: var(--primary); }
 .kbd-tip { margin: 2px 4px 0; }
 @media (pointer: coarse) { .kkey small, .kbd-tip { display: none; } } /* sur écran tactile, les repères du clavier physique ne servent pas */
+
+/* Atelier des syllabes : schéma du bloc (consonne bleue, voyelle verte, 받침 violet) */
+.atelier-main { text-align: center; }
+.atl-result { display: flex; align-items: center; justify-content: center; gap: var(--space-6); flex-wrap: wrap; }
+.atl-syl { font-size: clamp(5rem, 22vw, 7.5rem); line-height: 1; border: none; background: none; color: var(--ink); cursor: pointer; font-family: var(--font-sans); font-weight: 600; padding: 0 8px; border-radius: var(--radius-lg); }
+.atl-syl:hover { background: var(--surface-2); }
+.block-diagram { display: inline-grid; gap: 4px; width: 132px; height: 132px; font: 700 var(--text-2xl) var(--font-sans); }
+.block-diagram > span { display: grid; place-items: center; border-radius: var(--radius-sm); border: 2px solid currentColor; }
+.block-diagram .bd-c { grid-area: c; color: var(--particle-topic); background: var(--blue-50); }
+.block-diagram .bd-v, .block-diagram .bd-v1, .block-diagram .bd-v2 { color: var(--particle-object); background: var(--matcha-50); }
+.block-diagram .bd-v { grid-area: v; } .block-diagram .bd-v1 { grid-area: v1; } .block-diagram .bd-v2 { grid-area: v2; }
+.block-diagram .bd-f { grid-area: f; color: var(--particle-place); background: var(--ube-50); }
+.block-diagram.vert { grid-template: "c v" 1fr / 1fr 1fr; }
+.block-diagram.vert.with-f { grid-template: "c v" 1.3fr "f f" 1fr / 1fr 1fr; }
+.block-diagram.horiz { grid-template: "c" 1fr "v" 1fr / 1fr; }
+.block-diagram.horiz.with-f { grid-template: "c" 1fr "v" 1fr "f" 1fr / 1fr; }
+.block-diagram.mix { grid-template: "c v2" 1fr "v1 v2" 1fr / 1.4fr 1fr; }
+.block-diagram.mix.with-f { grid-template: "c v2" 1fr "v1 v2" 1fr "f f" 1fr / 1.4fr 1fr; }
+.block-diagram.small { width: 64px; height: 64px; font-size: var(--text-sm); gap: 2px; }
+.block-diagram.small > span { border-width: 1px; }
+.atl-row { gap: 6px; }
+.atl-row .chip { cursor: pointer; border: 1px solid var(--border); min-width: 44px; min-height: 40px; justify-content: center; font-size: var(--text-lg); }
+.atl-row .chip.active { background: var(--primary-soft); color: var(--primary); border-color: var(--primary); }
+.atl-out { display: flex; flex-wrap: wrap; gap: var(--space-4); margin-top: var(--space-4); }
+.atl-piece { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.atl-big { font-size: var(--text-3xl); font-weight: 600; }
+.type-form { max-width: 360px; margin: 16px auto 0; }

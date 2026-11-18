@@ -1076,6 +1076,7 @@ function tabPath(lang) {
   return `
     <div class="card phase ${K.hangulDone ? "done" : ""}">
       <div class="phase-head"><b>Phase 1 · Le Hangul</b><span class="tag">${K.hangulDone ? "Terminé ✓" : `${hDone} / ${HANGUL_DAYS.length} jours`}</span></div>
+      <p style="margin:8px 0 0"><a class="btn ghost small" href="#/lang/ko/atelier">🧪 Atelier des syllabes</a></p>
       <div class="bar"><span style="width:${K.hangulDone ? 100 : (hDone / HANGUL_DAYS.length) * 100}%"></span></div>
       <div class="day-grid">
         ${HANGUL_DAYS.map((d, i) => {
@@ -1595,7 +1596,7 @@ function tabFauxAmis(lang) {
 
 // ---------- Quiz générique (Hangul, grammaire) ----------
 function startQuiz(key, questions, onDone) {
-  ui.quiz = { key, qs: questions, queue: questions.map((_, i) => i), failed: new Set(), answer: null, onDone, total: questions.length, build: { l: null, v: null } };
+  ui.quiz = { key, qs: questions, queue: questions.map((_, i) => i), failed: new Set(), answer: null, onDone, total: questions.length, build: { l: null, v: null, f: null } };
 }
 function viewQuiz(backHref, title) {
   const Q = ui.quiz;
@@ -1618,7 +1619,15 @@ function viewQuiz(backHref, title) {
       <div class="build-preview ko ${A ? (A.ok ? "right" : "wrong") : ""}">${comp}</div>
       <div class="choice-row center">${q.leads.map((x) => `<button class="choice ko ${Q.build.l === x ? "active" : ""}" data-act="build-l" data-x="${x}" ${A ? "disabled" : ""}>${x}</button>`).join("")}</div>
       <div class="choice-row center" style="margin-top:10px">${q.vowels.map((x) => `<button class="choice ko ${Q.build.v === x ? "active" : ""}" data-act="build-v" data-x="${x}" ${A ? "disabled" : ""}>${x}</button>`).join("")}</div>
-      ${A ? (A.ok ? `<p class="ok-msg">Bien joué !</p>` : `<p class="ko-msg">C'était <b class="ko">${q.target}</b> = ${q.target_l} + ${q.target_v}</p>`) : `<div class="center" style="margin-top:16px"><button class="btn" data-act="build-check" ${Q.build.l && Q.build.v ? "" : "disabled"}>Vérifier</button></div>`}`;
+      ${q.finals ? `<p class="muted" style="margin:12px 0 0"><small>Consonne du bas (받침) :</small></p><div class="choice-row center" style="margin-top:6px">${q.finals.map((x) => `<button class="choice ko ${Q.build.f === x ? "active" : ""}" data-act="build-f" data-x="${x}" ${A ? "disabled" : ""}>${x}</button>`).join("")}</div>` : ""}
+      ${A ? (A.ok ? `<p class="ok-msg">Bien joué !</p>` : `<p class="ko-msg">C'était <b class="ko">${q.target}</b> = ${q.target_l} + ${q.target_v}${q.target_f ? ` + ${q.target_f}` : ""}</p>`) : `<div class="center" style="margin-top:16px"><button class="btn" data-act="build-check" ${Q.build.l && Q.build.v && (!q.finals || Q.build.f) ? "" : "disabled"}>Vérifier</button></div>`}`;
+  } else if (q.type) {
+    body = `<p class="q-label">Écris ce que tu entends <span class="muted">(${esc(q.fr)})</span></p>
+      <button class="big-audio" data-act="say" data-text="${q.target}" data-lang="ko">🔊</button>
+      ${A ? `<p class="${A.ok ? "ok-msg" : "ko-msg"}">${A.ok ? "Bien joué !" : `Tu as écrit <b class="ko">${esc(A.picked || "…")}</b> · c'était <b class="ko">${q.target}</b>`}</p>`
+        : `<form class="type-form" data-quiz-type="1"><input class="input answer ko" id="quiz-type" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="한글로…" />
+          <p class="muted" style="margin:6px 0 0"><small>Pas de clavier coréen ? Ouvre « ⌨️ 한글 » juste en dessous.</small></p>
+          <div class="center" style="margin-top:12px"><button class="btn">Vérifier</button></div></form>`}`;
   } else {
     body = `<p class="q-label">${q.ask}</p>${q.prompt}
       <div class="choice-row center" style="margin-top:16px">${q.options.map((o) => {
@@ -1639,7 +1648,7 @@ function answerQuiz(ok, picked) {
 function nextQuiz() {
   const Q = ui.quiz, i = Q.queue.shift();
   if (!Q.answer.ok) Q.queue.push(i); // on repose l'erreur plus tard (rappel actif)
-  Q.answer = null; Q.build = { l: null, v: null };
+  Q.answer = null; Q.build = { l: null, v: null, f: null };
   const q = Q.qs[Q.queue[0]];
   if (q?.autoplay) setTimeout(() => speak(q.audio, "ko"), 250);
 }
@@ -1647,26 +1656,33 @@ function nextQuiz() {
 // ---------- Module Hangul (§6) ----------
 const LEADS = "ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ", VOWELS = "ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ";
 const BASIC_C = [..."ㄱㄴㄷㄹㅁㅂㅅㅇㅈㅊㅋㅌㅍㅎ"], BASIC_V = [..."ㅏㅑㅓㅕㅗㅛㅜㅠㅡㅣ"];
-const composeHangul = (l, v) => String.fromCharCode(0xac00 + (LEADS.indexOf(l) * 21 + VOWELS.indexOf(v)) * 28);
-function decomposeHangul(s) { const c = s.charCodeAt(0) - 0xac00; return [LEADS[Math.floor(c / 588)], VOWELS[Math.floor((c % 588) / 28)]]; }
+const FINALS = ["", ..."ㄱㄲㄳㄴㄵㄶㄷㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂㅄㅅㅆㅇㅈㅊㅋㅌㅍㅎ"];
+const BASIC_F = [..."ㄱㄴㄷㄹㅁㅂㅅㅇ"]; // les finales les plus courantes
+const composeHangul = (l, v, f = "") => String.fromCharCode(0xac00 + (LEADS.indexOf(l) * 21 + VOWELS.indexOf(v)) * 28 + FINALS.indexOf(f));
+function decomposeHangul(s) { const c = s.charCodeAt(0) - 0xac00; return [LEADS[Math.floor(c / 588)], VOWELS[Math.floor((c % 588) / 28)], FINALS[c % 28]]; }
 const distractors = (pool, right, n = 3) => shuffle([right, ...shuffle(pool.filter((x) => x !== right)).slice(0, n)]);
 
 function hangulQuestions(day) {
   const d = HANGUL_DAYS[day - 1];
   if (d.kind === "jamo") {
     // Distracteurs de la même famille (voyelles avec voyelles…) pour que l'audio reste sans ambiguïté
-    const isV = (c) => BASIC_V.includes(c);
+    const isV = (c) => VOWELS.includes(c);
+    const noHomophone = (pool, ch) => pool.filter((x) => !(HANGUL_HOMOPHONES[ch] || []).includes(x));
     const seenAll = HANGUL_DAYS.slice(0, day).filter((x) => x.kind === "jamo").flatMap((x) => x.items);
     return shuffle(d.items.flatMap(([ch, rom, say]) => { const seen = seenAll.filter((x) => isV(x[0]) === isV(ch)); return [
       { ask: "Quel son fait cette lettre ?", prompt: `<div class="big-char ko">${ch}</div>`, options: distractors([...new Set(seen.map((x) => x[1]))], rom), answer: rom, audio: say },
-      ch === "ㅇ" ? null : { ask: "Quelle lettre entends-tu ?", prompt: `<button class="big-audio" data-act="say" data-text="${say}" data-lang="ko">🔊</button>`, options: distractors(seen.map((x) => x[0]), ch), answer: ch, optCls: "ko", audio: say, autoplay: true, after: `<span class="ko">${say}</span>` },
+      ch === "ㅇ" ? null : { ask: "Quelle lettre entends-tu ?", prompt: `<button class="big-audio" data-act="say" data-text="${say}" data-lang="ko">🔊</button>`, options: distractors(noHomophone(seen.map((x) => x[0]), ch), ch), answer: ch, optCls: "ko", audio: say, autoplay: true, after: `<span class="ko">${say}</span>` },
     ].filter(Boolean); }));
   }
-  if (d.kind === "build") {
-    return shuffle(d.items.map(([syl, rom]) => {
-      const [l, v] = decomposeHangul(syl);
-      return { build: true, target: syl, rom, target_l: l, target_v: v, leads: distractors(BASIC_C, l, 3), vowels: distractors(BASIC_V, v, 3), audio: syl };
-    }));
+  if (d.kind === "build" || d.kind === "buildFinal") {
+    const fin = d.kind === "buildFinal";
+    const builds = d.items.map(([syl, rom]) => {
+      const [l, v, f] = decomposeHangul(syl);
+      return { build: true, target: syl, rom, target_l: l, target_v: v, target_f: f, leads: distractors(fin ? [...BASIC_C, "ㄲ", "ㄸ", "ㅃ", "ㅆ", "ㅉ"] : BASIC_C, l, 3), vowels: distractors(BASIC_V, v, 3), finals: fin ? distractors(BASIC_F, f, 3) : null, audio: syl };
+    });
+    // Écrire ce qu'on entend, avec le clavier coréen (keyboard.js)
+    const typing = (d.type || []).map(([w, fr]) => ({ type: true, target: w, fr, audio: w, autoplay: true }));
+    return [...shuffle(builds), ...shuffle(typing)];
   }
   return shuffle(d.items.map(([w, rom]) => ({ ask: "Comment se lit ce mot ?", prompt: `<div class="big-char ko">${w}</div>`, options: distractors(d.items.map((x) => x[1]), rom), answer: rom, audio: w })));
 }
@@ -1682,15 +1698,22 @@ function viewHangul(day) {
     ? `<div class="alpha-grid">${d.items.map(([ch, rom, say]) => `<button class="alpha ko" data-act="say" data-text="${say}" data-lang="ko"><span>${ch}<small>${K.hangulDone ? "" : rom}</small></span></button>`).join("")}</div>
        <p class="muted"><small>Touche une lettre pour l'entendre (dans une syllabe : ${d.items[0][2]}).</small></p>`
     : d.kind === "build"
-    ? `<p>Une syllabe coréenne = un bloc. Consonne à gauche ou en haut, voyelle à droite ou en dessous :</p>
-       <div class="build-demo ko"><span>ㄴ + ㅏ = <b>나</b></span><span>ㅁ + ㅗ = <b>모</b></span><span>ㅅ + ㅜ = <b>수</b></span></div>
-       <p class="muted"><small>ㅇ en début de syllabe est muet : 아 = « a ».</small></p>`
+    ? `<p>Une syllabe coréenne = un bloc. Tout dépend de la forme de la voyelle :</p>
+       <ul><li>voyelle <b>verticale</b> (ㅏ ㅓ ㅣ ㅑ ㅕ…) : la consonne va <b>à gauche</b> → ㄴ + ㅏ = <b class="ko">나</b></li>
+       <li>voyelle <b>horizontale</b> (ㅗ ㅜ ㅡ ㅛ ㅠ) : la consonne va <b>au-dessus</b> → ㅁ + ㅗ = <b class="ko">모</b>, ㅅ + ㅜ = <b class="ko">수</b></li></ul>
+       <p class="muted"><small>Une syllabe commence toujours par une consonne : ㅇ en début de syllabe est muet, il « tient la place » → 아 = « a ».</small></p>`
+    : d.kind === "buildFinal"
+    ? `<p>Une syllabe peut avoir une 3ᵉ lettre, <b>en bas</b> : le 받침. Elle se place sous la consonne et la voyelle, quelle que soit leur forme.</p>
+       <div class="build-demo ko"><span>ㅎ + ㅏ + ㄴ = <b>한</b></span><span>ㄱ + ㅜ + ㄱ = <b>국</b></span><span>ㅇ + ㅗ + ㅅ = <b>옷</b></span></div>
+       <p><b>En fin de syllabe, il n'existe que 7 sons</b> : [k] (ㄱ ㅋ ㄲ), [n] (ㄴ), [t] (ㄷ ㅅ ㅆ ㅈ ㅊ ㅌ ㅎ), [l] (ㄹ), [m] (ㅁ), [p] (ㅂ ㅍ), [ng] (ㅇ). Ainsi 옷 se dit « ot ».</p>
+       <p class="muted"><small>À la fin, tu écriras des mots que tu entends, avec le clavier coréen du site.</small></p>`
     : `<p>Une consonne peut se placer <b>sous</b> le bloc : c'est le 받침 (consonne finale).</p>
        <div class="build-demo ko"><span>하 + ㄴ = <b>한</b></span><span>구 + ㄱ = <b>국</b></span><span>바 + ㅂ = <b>밥</b></span></div>`;
   return `<section class="view lesson-shell">
     <div class="lesson-top"><a class="close" href="#/lang/ko/parcours" aria-label="Quitter">✕</a><div style="flex:1"><small class="muted">Hangul · jour ${day} / ${HANGUL_DAYS.length}</small><h1 style="font-size:1.4rem">${d.title}</h1></div></div>
     <div class="card" style="margin-top:18px">${intro}</div>
     <p class="muted"><small>💡 La romanisation n'est qu'une aide temporaire pendant ce module. Elle disparaîtra ensuite.</small></p>
+    ${d.kind === "build" || d.kind === "buildFinal" || d.kind === "words" ? `<p class="center"><a class="btn ghost small" href="#/lang/ko/atelier">🧪 Atelier des syllabes : assemble-les toi-même</a></p>` : ""}
     <div class="center"><button class="btn" data-act="start-hangul" data-day="${day}">Je m'entraîne</button></div>
   </section>`;
 }
@@ -2166,6 +2189,7 @@ function route() {
     else if (tab === "livre" && a) { html = viewBook(lang, a, parts[4], parts[5]); nav = "lire"; }
     else if (tab === "revisions" && a === "go") { if (hashChanged) ui.review = null; html = viewReviewSession(lang); }
     else if (tab === "hangul" && isKo(lang)) html = viewHangul(Number(a) || 1);
+    else if (tab === "atelier" && isKo(lang)) html = viewAtelier();
     else if (tab === "grammaire" && isKo(lang)) html = viewGrammar(a);
     else html = viewLanguage(lang, TABS[lang].some(([k]) => k === tab) ? tab : "aujourdhui");
   } else html = viewNotFound();
@@ -2379,7 +2403,8 @@ const actions = {
   "quiz-next": () => { nextQuiz(); render(); },
   "build-l": (el) => { ui.quiz.build.l = el.dataset.x; render(); },
   "build-v": (el) => { ui.quiz.build.v = el.dataset.x; render(); },
-  "build-check": () => { const Q = ui.quiz, q = Q.qs[Q.queue[0]]; answerQuiz(composeHangul(Q.build.l, Q.build.v) === q.target); render(); },
+  "build-f": (el) => { ui.quiz.build.f = el.dataset.x; render(); },
+  "build-check": () => { const Q = ui.quiz, q = Q.qs[Q.queue[0]]; answerQuiz(composeHangul(Q.build.l, Q.build.v, q.finals ? Q.build.f : "") === q.target); render(); },
   "start-hangul": (el) => {
     const day = +el.dataset.day;
     startQuiz(`hangul-${day}`, hangulQuestions(day), () => {

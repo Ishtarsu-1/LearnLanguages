@@ -18,7 +18,7 @@ const s2 = toSentence("No, that's=that+be all.", "en");
 ok(s2.text === "No, that's all." && s2.words[1].segs[0].lemmas.join() === "that,be", "en contraction " + s2.text);
 // 3. Hangul
 ok(composeHangul("ㄴ", "ㅏ") === "나" && decomposeHangul("져").join("") === "ㅈㅕ", "compose");
-for (let d = 1; d <= HANGUL_DAYS.length; d++) { const qs = hangulQuestions(d); ok(qs.length > 0, "hangul q " + d); for (const q of qs) if (!q.build) ok(q.options.includes(q.answer) && new Set(q.options).size === q.options.length, `hangul day ${d} options ${q.options}`); else ok(q.leads.includes(q.target_l) && q.vowels.includes(q.target_v), "build opts"); }
+for (let d = 1; d <= HANGUL_DAYS.length; d++) { const qs = hangulQuestions(d); ok(qs.length > 0, "hangul q " + d); for (const q of qs) if (q.type) ok(q.target && q.fr, "écriture " + d); else if (!q.build) ok(q.options.includes(q.answer) && new Set(q.options).size === q.options.length, `hangul day ${d} options ${q.options}`); else ok(q.leads.includes(q.target_l) && q.vowels.includes(q.target_v), "build opts"); }
 // 4. Couverture
 ok(coverage("en", textById("en", "en-cafe").parsed) < 0.5, "couverture débutant faible");
 for (const l of Object.keys(LEXICON.en)) state.langs.en.known[l] = true;
@@ -415,4 +415,26 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
   ok(hangulAdd("가", "ㄴ", false) === "가ㄴ", "pas de recollage hors frappe continue");
   ok(Object.keys(KO_KEYMAP).length === 26 && KO_KEYMAP.KeyR[0] === "ㄱ" && KO_KEYMAP.KeyR[1] === "ㄲ" && KO_KEYMAP.KeyK[0] === "ㅏ", "disposition 두벌식");
   ok(kbdPanel("x").includes('data-j="ㅂ"') && kbdPanel("x").split('class="kkey').length > 28, "clavier à l'écran");
+}
+{ // Apprendre à former les syllabes
+  ok(HANGUL_DAYS.length === 10 && HANGUL_DAYS[9].kind === "buildFinal", "10 jours de Hangul");
+  ok(composeHangul("ㅎ", "ㅏ", "ㄴ") === "한" && composeHangul("ㄴ", "ㅏ") === "나" && decomposeHangul("밥").join() === "ㅂ,ㅏ,ㅂ", "composition avec 받침");
+  // Jour 9 : jamais ㅐ contre ㅔ à l'oreille
+  for (let i = 0; i < 20; i++) for (const q of hangulQuestions(9)) if (q.ask === "Quelle lettre entends-tu ?" && ["ㅐ", "ㅔ"].includes(q.answer)) ok(!(q.options.includes("ㅐ") && q.options.includes("ㅔ")), "ㅐ/ㅔ homophones séparés");
+  // Jour 10 : construction avec finale + écriture
+  const qs = hangulQuestions(10), b = qs.find((q) => q.build && q.target === "옷");
+  ok(b && b.finals.includes("ㅅ") && b.target_f === "ㅅ", "construction avec 받침");
+  ok(qs.filter((q) => q.type).length === 5, "questions d'écriture");
+  startQuiz("t-h", [b], () => {}); ui.quiz.build = { l: "ㅇ", v: "ㅗ", f: "ㅅ" };
+  actions["build-check"](); ok(ui.quiz.answer.ok, "옷 construit");
+  startQuiz("t-h2", [qs.find((q) => q.type)], () => {});
+  ok(viewQuiz("#", "x").includes('id="quiz-type"') && viewQuiz("#", "x").includes("input answer ko"), "champ d'écriture coréen (clavier disponible)");
+  // Atelier
+  ui.atelier = { l: "ㅇ", v: "ㅗ", f: "ㅅ" };
+  const v = viewAtelier();
+  ok(v.includes(">옷<") && v.includes("≈ « ot »") && v.includes("se prononce [t]") && v.includes("au-dessus"), "atelier : 옷, son final, voyelle horizontale");
+  ui.atelier = { l: "ㄱ", v: "ㅘ", f: "" }; ok(viewAtelier().includes(">과<") && viewAtelier().includes("bd-v2"), "atelier : voyelle composée");
+  ok(decomposeView("한국").split("atl-piece").length === 3 && decomposeView("한국").includes("≈ guk"), "décomposition d'un mot");
+  ok(tabPath("ko").includes("#/lang/ko/atelier"), "lien vers l'atelier dans le Parcours");
+  ui.quiz = null; ui.atelier = null;
 }
