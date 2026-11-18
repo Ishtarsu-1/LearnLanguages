@@ -152,24 +152,30 @@ Sous Linux, Chromium et Firefox passent par `speech-dispatcher`. Sans lui, **auc
 **Anglais : Kokoro** (licence Apache 2.0, plusieurs voix américaines et britanniques, tourne sur CPU) :
 
 ```bash
-docker run -d -p 8880:8880 --name kokoro ghcr.io/remsky/kokoro-fastapi-cpu:latest
+docker run -d --restart unless-stopped -p 127.0.0.1:8880:8880 --name kokoro ghcr.io/remsky/kokoro-fastapi-cpu:latest
 curl http://localhost:8880/health   # attendre qu'il réponde
 ```
 
 **Coréen : MeloTTS** (licence MIT, CPU). Kokoro ne parle pas coréen. `tools/melotts_server.py` expose MeloTTS avec le même protocole :
 
+MeloTTS demande **Python 3.10** (pas 3.12+). Avec `uv`, qui installe la bonne version tout seul :
+
 ```bash
-python -m venv ~/melotts && source ~/melotts/bin/activate
-pip install git+https://github.com/myshell-ai/MeloTTS.git
-python -m unidic download
+uv venv --python 3.10 ~/melotts && source ~/melotts/bin/activate
+uv pip install torch torchaudio --index-url https://download.pytorch.org/whl/cpu   # version CPU, évite ~3 Go de CUDA
+uv pip install git+https://github.com/myshell-ai/MeloTTS.git
+uv pip uninstall unidic && rm -rf ~/melotts/lib/python3.10/site-packages/unidic
+uv pip install unidic-lite python-mecab-ko   # dictionnaires légers (évite le téléchargement d'unidic, ~500 Mo et très lent)
 python tools/melotts_server.py      # → http://127.0.0.1:8881/v1
 ```
+
+Au premier lancement, MeloTTS télécharge son modèle (~1 Go). Ensuite, une phrase prend moins d'une seconde sur CPU. La toute première après le démarrage prend ~3 s.
 
 Puis dans `.env` :
 
 ```
 TTS_URL_EN=http://localhost:8880/v1
-TTS_VOICES_EN=af_heart,am_michael,bf_emma,bm_george
+TTS_VOICES_EN=af_heart,af_bella,am_michael,am_fenrir,bf_emma,bm_george
 TTS_URL_KO=http://127.0.0.1:8881/v1
 TTS_VOICES_KO=KR
 TTS_MODEL_KO=melotts
@@ -178,6 +184,8 @@ TTS_MODEL_KO=melotts
 Relance `npm start`. La ligne de démarrage affiche `voix : en ×4, ko ×1`, et le Profil › Audio indique « 🎙️ Voix neuronales du serveur ». Si le moteur ne répond pas, Mochi repasse automatiquement sur la voix du navigateur.
 
 - La liste exacte des voix Kokoro est disponible sur `http://localhost:8880/v1/audio/voices`. Mets-en 2 à 6, variées (homme, femme, accents), pour l'écoute multi-voix.
+- Les voix Kokoro les mieux notées : `af_heart` (A), `af_bella` (A-), puis `bf_emma`, `am_michael`, `am_fenrir`, `bm_george` (préfixes : a = américain, b = britannique, f / m = femme / homme).
+- Kokoro redémarre tout seul avec Docker. `tools/melotts_server.py`, lui, est à relancer après un redémarrage du PC.
 - MeloTTS n'a qu'une voix coréenne : Mochi en fait 4 « locuteurs » en variant la hauteur et le débit.
 - La génération est limitée à 40 phrases par minute et par adresse IP. Les phrases déjà en cache sont servies sans limite.
 - Le cache se vide en supprimant `data/tts/`. Il est régénéré à la demande.

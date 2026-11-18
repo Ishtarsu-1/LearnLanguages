@@ -20,7 +20,7 @@ from melo.api import TTS
 
 PORT = int(os.environ.get("PORT", "8881"))
 model = TTS(language="KR", device=os.environ.get("DEVICE", "cpu"))
-speakers = model.hps.data.spk2id
+speakers = dict(model.hps.data.spk2id.items())  # HParams, pas un vrai dict
 lock = Lock()  # le modèle n'est pas prévu pour des appels simultanés
 
 
