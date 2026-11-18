@@ -2182,6 +2182,7 @@ function route() {
   if (account && parts[0] === "profil") loadSessions();
   if (hashChanged) window.scrollTo({ top: 0 });
   ui.lastHash = location.hash;
+  if (typeof enhanceKoInputs === "function") enhanceKoInputs($app); // clavier coréen (keyboard.js)
   const ans = document.getElementById("answer");
   if (ans) ans.focus();
 }

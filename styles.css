@@ -647,3 +647,18 @@ code { background: var(--surface-2); padding: 2px 6px; border-radius: var(--radi
 .mission-form { display: flex; flex-direction: column; gap: 10px; }
 .choice-col { display: flex; flex-direction: column; gap: 8px; }
 .choice-col .choice { text-align: left; }
+
+/* Clavier coréen intégré (keyboard.js) */
+.kbd-bar { margin-top: 8px; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; width: 100%; }
+.kbd-toggle { cursor: pointer; border: 1px solid var(--border); background: var(--surface); }
+.kbd-toggle.active { background: var(--primary-soft); color: var(--primary); border-color: var(--primary); }
+.ko-kbd { width: 100%; max-width: 560px; padding: 8px; border-radius: var(--radius-lg); background: var(--surface-2); border: 1px solid var(--border); display: flex; flex-direction: column; gap: 6px; user-select: none; }
+.krow { display: flex; gap: 4px; justify-content: center; }
+.kkey { flex: 1 1 0; min-width: 0; max-width: 52px; min-height: 44px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0; border: 1px solid var(--border); border-bottom-width: 3px; border-radius: var(--radius-sm); background: var(--surface); color: var(--ink); font: 600 var(--text-lg) var(--font-sans); cursor: pointer; padding: 2px 0; touch-action: manipulation; }
+.kkey small { font-size: 10px; color: var(--ink-muted); line-height: 1; }
+.kkey:active { transform: translateY(1px); border-bottom-width: 1px; }
+.kkey.wide { max-width: 64px; flex-grow: 1.4; }
+.kkey.space { max-width: 260px; flex-grow: 5; font-size: var(--text-sm); }
+.kkey.on, .kkey.shifted { background: var(--primary-soft); color: var(--primary); }
+.kbd-tip { margin: 2px 4px 0; }
+@media (pointer: coarse) { .kkey small, .kbd-tip { display: none; } } /* sur écran tactile, les repères du clavier physique ne servent pas */

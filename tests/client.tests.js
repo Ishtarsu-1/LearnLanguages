@@ -402,3 +402,17 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
     api = realApi; account = acc; features = feat; L.grammarDone = gd; L.hangulDone = hd; location.hash = ""; ui.mission = null;
   });
 }
+{ // Clavier coréen : composition des syllabes (두벌식)
+  const type = (keys) => { let t = "", joinable = true; for (const j of keys) t = hangulAdd(t, j, joinable); return t; };
+  ok(type([..."ㅎㅏㄴㄱㅜㄱㅇㅓ"]) === "한국어", "한국어 : " + type([..."ㅎㅏㄴㄱㅜㄱㅇㅓ"]));
+  ok(type([..."ㅇㅏㄴㄴㅕㅇㅎㅏㅅㅔㅇㅛ"]) === "안녕하세요", "안녕하세요");
+  ok(type([..."ㄱㅗㅏ"]) === "과" && type([..."ㅇㅜㅓ"]) === "워" && type([..."ㅇㅡㅣ"]) === "의", "voyelles composées");
+  ok(type([..."ㅇㅓㅂㅅ"]) === "없" && type([..."ㅇㅓㅂㅅㅇㅓ"]) === "없어", "finale double ㅄ, puis 없어");
+  ok(type([..."ㄷㅏㄹㄱ"]) === "닭" && type([..."ㄷㅏㄹㄱㅇㅣ"]) === "닭이" && type([..."ㅇㅣㄹㄱㅓ"]) === "일거", "ㄺ et passage de la finale");
+  ok(type([..."ㄲㅏㅆㄷㅏ"]) === "깠다" && type([..."ㅃㅏ"]) === "빠", "consonnes doubles");
+  ok(type([..."ㅏ"]) === "ㅏ" && type([..."ㄱ"]) === "ㄱ" && type([..."ㄸㄸ"]) === "ㄸㄸ", "lettres seules, ㄸ jamais en finale");
+  ok(hangulBack("한") === "하" && hangulBack("하") === "ㅎ" && hangulBack("ㅎ") === "" && hangulBack("없") === "업" && hangulBack("과") === "고", "retour arrière syllabe par syllabe");
+  ok(hangulAdd("가", "ㄴ", false) === "가ㄴ", "pas de recollage hors frappe continue");
+  ok(Object.keys(KO_KEYMAP).length === 26 && KO_KEYMAP.KeyR[0] === "ㄱ" && KO_KEYMAP.KeyR[1] === "ㄲ" && KO_KEYMAP.KeyK[0] === "ㅏ", "disposition 두벌식");
+  ok(kbdPanel("x").includes('data-j="ㅂ"') && kbdPanel("x").split('class="kkey').length > 28, "clavier à l'écran");
+}

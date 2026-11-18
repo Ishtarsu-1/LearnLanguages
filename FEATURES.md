@@ -23,6 +23,7 @@
 | Thèmes | 8 thèmes de situation (café, rencontre, transports, cuisine, sport, séries, gaming, travail), 10 textes par langue, saveurs de Mochi à débloquer (10 mots solides), thèmes favoris, bibliothèque filtrable |
 | Livres | Bibliothèque de lectures graduées : livres en chapitres (A1), questions de compréhension, chapitre suivant débloqué, mots inconnus en cartes |
 | Histoire | Mode histoire (Mochi à Séoul / à Londres) : chapitres gradués, missions de conversation avec l'IA ou en mode guidé, déblocage par mots clés et grammaire |
+| Clavier | Clavier coréen intégré (두벌식) sous chaque champ coréen : à l'écran ou avec le clavier physique (AZERTY ou QWERTY), syllabes composées automatiquement |
 | Audio | Voix du navigateur ou vraies voix du serveur (Kokoro, MeloTTS, cache disque), Profil › Audio : état, choix et test des voix, aide si aucune voix |
 
 ---

@@ -284,6 +284,9 @@ Mécanique :
 
 ---
 
+### ✅ Clavier coréen intégré (fait)
+Sous chaque champ de saisie coréen, un bouton « ⌨️ 한글 » ouvre un clavier 두벌식 à l'écran (composition des syllabes, ⇧ pour les consonnes doubles, ⌫ lettre par lettre). Tant qu'il est ouvert, le clavier physique tape aussi en coréen à la position des touches coréennes (AZERTY ou QWERTY ; un clavier coréen du système n'est pas gêné). Repères des touches selon la vraie disposition de l'utilisateur quand le navigateur la donne. Choix mémorisé sur l'appareil.
+
 ## P3 : plus tard
 
 - **Classements entre amis** (heures, mots solides), toujours basés sur des indicateurs honnêtes, et **badges** (premier texte lu, Hangul terminé, 100 mots solides, phase 2 franchie, première saveur débloquée).
