@@ -11,6 +11,7 @@ const net = require("node:net");
 const { DatabaseSync } = require("node:sqlite");
 const llm = require("./llm.js");
 const ttsMod = require("./tts.js");
+const hw = require("./hardware.js");
 const mailer = require("./mailer.js");
 const { MISSIONS } = require("./missions.js");
 
@@ -134,6 +135,12 @@ db.prepare("DELETE FROM email_tokens WHERE expires_at < ?").run(new Date().toISO
 if (!userCols.includes("sync_epoch")) db.exec("ALTER TABLE users ADD COLUMN sync_epoch INTEGER NOT NULL DEFAULT 0");
 db.prepare("DELETE FROM sessions WHERE expires_at < ?").run(new Date().toISOString());
 
+// Moteurs (voix, Ollama) : état et latence mesurés au préchauffage, pour l'adaptation (lot 8.4)
+// et le bloc « Machine » de l'admin. machine : matériel de CE serveur (jamais celui des visiteurs).
+const engines = { tts: {}, llm: null, ttsSlow: false, llmSlow: false };
+const machine = { basic: null, report: null, at: null };
+const TTS_SLOW_MS = 3000, LLM_SLOW_MS = 20000;
+
 // ---------- Utilitaires ----------
 // Adresse IP du client, pour la limitation des tentatives.
 // Derrière un proxy, req.socket.remoteAddress est celle du proxy pour tout le monde :
@@ -220,7 +227,8 @@ function globalReserve() {
 const LLM_PAUSE = "Le correcteur IA fait une pause pour aujourd'hui, voici la correction simplifiée.";
 const normText = (t) => String(t ?? "").normalize("NFC").trim().replace(/\s+/g, " ");
 const cacheKey = (b) => sha256(JSON.stringify([normText(b.text), normText(b.prompt), normText(b.who), normText(b.register), normText(b.reference), b.lang, llm.PROMPT_VERSION, llm.ENGINE, llm.MODEL]));
-const featuresJson = (loggedIn = true) => JSON.stringify({ llm: loggedIn && LLM_ON, engine: llm.ENGINE, tts: tts.info(), mail: mail.mode });
+// ttsSlow / llmSlow : mesurés au préchauffage (lot 8.4). Rien d'autre sur la machine n'est exposé ici.
+const featuresJson = (loggedIn = true) => JSON.stringify({ llm: loggedIn && LLM_ON, engine: llm.ENGINE, tts: tts.info(), mail: mail.mode, ttsSlow: !!engines.ttsSlow, llmSlow: !!engines.llmSlow });
 
 function hashPassword(pw) {
   const salt = crypto.randomBytes(16);
@@ -305,6 +313,7 @@ const RATE_LIMITS = {
   "login-email": { free: 5, max: 60e3, window: 3600e3 },
   signup: { free: 10, max: 15 * 60e3, window: 3600e3 },
   feedback: { free: 10, max: 60e3, window: 60e3, flat: true }, // 10 corrections par minute, pas de rafales
+  doctor: { free: 1, max: 60e3, window: 60e3, flat: true },    // diagnostic de la machine (admin) : 1 par minute
   forgot: { free: 5, max: 15 * 60e3, window: 3600e3 },        // demandes de réinitialisation (par IP et par adresse)
   verify: { free: 3, max: 15 * 60e3, window: 3600e3 },        // renvois de l'e-mail de vérification
   tts: { free: 40, max: 60e3, window: 60e3, flat: true },      // 40 phrases générées par minute (le cache, lui, est libre)
@@ -427,6 +436,32 @@ function syncUser(uid, b) {
     cards: since("SELECT id, data FROM sync_cards WHERE user_id = ? AND rev > ?").map((x) => ({ id: x.id, data: JSON.parse(x.data) })),
     logs: since("SELECT id, data FROM review_logs WHERE user_id = ? AND rev > ?").map((x) => ({ id: x.id, data: JSON.parse(x.data) })),
     counters: since("SELECT key AS k, value AS v FROM sync_counters WHERE user_id = ? AND rev > ?"),
+  };
+}
+
+// ---------- Bloc « Machine » de l'admin (lot 8.5) ----------
+// Phrases du site, calculées une fois avec le code du client (spokenSentences) : sert à compter
+// ce qui reste à pré-générer.
+let spokenCache = null;
+function spokenByLang() {
+  if (!spokenCache) {
+    try { const site = require("./tools/load-site.js").loadSite(ROOT); spokenCache = Object.fromEntries(Object.keys(tts.info()).map((l) => [l, site.run(`spokenSentences(${JSON.stringify(l)})`)])); }
+    catch (e) { console.error("Phrases du site :", e.message); spokenCache = {}; }
+  }
+  return spokenCache;
+}
+function machineInfo() {
+  const b = machine.basic, rec = b ? hw.recommend({ ...b, voices: Object.fromEntries(Object.entries(engines.tts).map(([l, x]) => [l, { configured: true, up: x.ok, ms: x.ms, error: x.error }])), ...(machine.report || {}) }) : null;
+  const spoken = spokenByLang();
+  const cache = Object.entries(tts.info()).flatMap(([lang, voices]) => voices.map((voice) => {
+    const list = spoken[lang] || [], cached = list.filter((t) => tts.cached(lang, voice, t)).length;
+    return { lang, voice, cached, total: list.length };
+  }));
+  return {
+    profile: rec?.profile || null, label: rec?.label || null, warnings: machine.report ? rec.warnings : [], at: machine.at,
+    cpu: b?.cpu || null, ram: b?.ram || null, gpus: b?.gpus || [], system: b?.system || null,
+    engines: { tts: engines.tts, llm: engines.llm, ttsSlow: engines.ttsSlow, llmSlow: engines.llmSlow },
+    cache,
   };
 }
 
@@ -684,11 +719,22 @@ async function api(req, res, url) {
           total: one("SELECT COALESCE(sum(calls), 0) n FROM llm_global").n, engine: LLM_ON ? llm.ENGINE : null, daily: LLM_DAILY, globalDaily: LLM_GLOBAL_DAILY, cacheSize: one("SELECT count(*) n FROM llm_cache").n };
       })(),
       tts: { voices: tts.info(), files: ttsFiles, bytes: ttsBytes },
+      machine: machineInfo(),
       mail: mail.mode,
       list: db.prepare(`SELECT u.id, u.email, u.name, u.created_at, u.last_login_at, u.email_verified_at IS NOT NULL verified, u.is_admin admin,
           (SELECT count(*) FROM sync_cards c WHERE c.user_id = u.id) cards, (SELECT count(*) FROM review_logs r WHERE r.user_id = u.id) reviews
         FROM users u ORDER BY u.created_at DESC LIMIT 100`).all(),
     });
+  }
+  // Diagnostic complet de la machine (admin uniquement, 1 par minute) : jamais dans /api/me
+  if (route === "POST /api/admin/doctor") {
+    if (!auth.user.is_admin) return fail(res, 403, "Réservé aux administrateurs.");
+    const wait = waitFor(`doctor:${uid}`);
+    if (wait) return tooMany(res, wait);
+    recordAttempt(`doctor:${uid}`);
+    machine.report = await hw.detect();
+    machine.basic = machine.report; machine.at = now();
+    return send(res, 200, { machine: machineInfo() });
   }
   if (route === "GET /api/sessions") {
     const rows = db.prepare("SELECT token_hash, created_at, last_seen_at, user_agent FROM sessions WHERE user_id = ? AND expires_at > ? ORDER BY last_seen_at DESC").all(uid, now());
@@ -795,7 +841,6 @@ const server = http.createServer(async (req, res) => {
 
 // Préchauffage des moteurs (lot 7.2), en arrière-plan : ne bloque jamais le démarrage.
 // Un premier appel charge le modèle, un second mesure la vitesse réelle d'une phrase courte.
-const engines = { tts: {}, llm: null }; // état et latence, pour l'adaptation (lot 8.4) et l'admin
 const secs = (ms) => `${(ms / 1000).toLocaleString("fr-FR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} s`;
 async function warmEngines(log = console.log) {
   const jobs = Object.keys(tts.info()).map(async (lang) => {
@@ -806,12 +851,22 @@ async function warmEngines(log = console.log) {
     ? llm.warmup().then((ms) => { engines.llm = { ok: true, ms }; }, (e) => { engines.llm = { ok: false, error: e.cause?.code || e.message }; })
     : null;
   await Promise.all([...jobs, llmJob]);
+  // Adaptation (lot 8.4) : voix lentes → le client ne précharge plus et passe plus vite à la voix
+  // de l'appareil ; Ollama lent → le client prévient que la correction peut prendre un moment.
+  const slowVoices = Object.entries(engines.tts).filter(([, x]) => x.ok && x.ms > TTS_SLOW_MS).map(([l]) => l);
+  engines.ttsSlow = slowVoices.length > 0;
+  engines.llmSlow = !!(engines.llm?.ok && engines.llm.ms > LLM_SLOW_MS);
   const parts = Object.entries(engines.tts).map(([l, x]) => (x.ok ? `Voix ${l} : prête (${secs(x.ms)})` : `⚠️ Voix ${l} : le moteur ne répond pas (${x.error}) → voix du navigateur`));
   if (engines.llm) parts.push(engines.llm.ok ? `Ollama : prêt (${secs(engines.llm.ms)})` : `⚠️ Ollama ne répond pas (${engines.llm.error}) → correcteur hors ligne`);
   if (parts.length) log(parts.join(" · "));
+  if (engines.ttsSlow) log(`⚠️  Voix lentes (${slowVoices.join(", ")} : plus de ${TTS_SLOW_MS / 1000} s par phrase) : lance « npm run tts:pregen » pour tout générer d'avance.`);
+  if (engines.llmSlow) log(`⚠️  Ollama a mis ${secs(engines.llm.ms)} à se charger : les corrections seront lentes (npm run doctor pour les conseils).`);
   return engines;
 }
 
 if (require.main === module) server.listen(PORT, HOST, () => console.log(`Mochi → http://${HOST && HOST !== "0.0.0.0" && HOST !== "::" ? HOST : "localhost"}:${PORT} · correcteur : ${LLM_ON ? llm.ENGINE : "désactivé"} · e-mails : ${mail.mode} · voix : ${tts.enabled ? Object.entries(tts.info()).map(([l, v]) => `${l} ×${v.length}`).join(", ") : "navigateur"}`));
-if (require.main === module) warmEngines().catch((e) => console.error("Préchauffage :", e.message));
+if (require.main === module) {
+  warmEngines().catch((e) => console.error("Préchauffage :", e.message));
+  hw.detectBasic().then((b) => { machine.basic = b; }).catch(() => {}); // léger : système, mémoire, nvidia-smi
+}
 module.exports = { server, db, mail, clientIp, warmEngines, engines, tts, limiter: { waitFor, recordAttempt, clearAttempts } };

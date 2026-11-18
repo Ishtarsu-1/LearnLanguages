@@ -25,8 +25,32 @@ Pour développer gratuitement : **Ollama** (section 6 bis). Pour le site public 
 git clone git@github.com:Ishtarsu-1/LearnLanguages.git
 cd LearnLanguages
 npm install        # installe le SDK Claude et zod (validation)
+npm run doctor     # te dit quoi installer pour TA machine (voix, correcteur IA)
 npm start          # → http://localhost:8000
 ```
+
+**Lance `npm run doctor` : il te dit quoi installer pour ta machine.** Il détecte le système, le processeur, la mémoire, la carte graphique NVIDIA (ou Apple Silicon), Docker, Python 3.10 / uv, Ollama et les moteurs de voix (chronométrés), choisit un **profil**, puis affiche les commandes à copier, adaptées à ton système (PowerShell sous Windows). Il n'installe jamais rien tout seul.
+
+| Profil | Machine | Voix anglaises | Voix coréennes | Correcteur IA |
+|---|---|---|---|---|
+| `gpu-large` | NVIDIA ≥ 12 Go | Kokoro, image **GPU** | MeloTTS `DEVICE=cuda` | Ollama `qwen2.5:14b-instruct` |
+| `gpu-small` | NVIDIA 6 à 12 Go | Kokoro GPU | MeloTTS `cuda` | Ollama `qwen2.5:7b-instruct` |
+| `apple` | Apple Silicon, ≥ 16 Go | Kokoro CPU | MeloTTS `DEVICE=mps` | Ollama 7B (Metal automatiquement) |
+| `cpu` | pas de carte graphique utilisable | Kokoro CPU + **pré-génération obligatoire** | MeloTTS CPU + pré-génération | API Anthropic si clé, sinon Ollama 7B (lent) |
+| `light` | < 8 Go de RAM | voix du navigateur, ou audio pré-généré ailleurs puis copié dans `data/tts/` | idem | API Anthropic si clé, sinon correcteur hors ligne |
+
+Il signale aussi les incohérences : carte graphique présente mais Kokoro dans l'image CPU, Docker qui ne voit pas la carte, Ollama « 100% CPU » alors qu'il y a une carte, MeloTTS trop lent pour tourner sur la carte, `localhost` dans les adresses, mémoire juste…
+
+```bash
+npm run doctor -- --write   # écrit les variables recommandées dans .env
+npm run doctor -- --pull    # propose de télécharger le modèle Ollama recommandé (o/N)
+```
+
+`--write` fait d'abord une copie de sauvegarde (`.env.bak-AAAAMMJJ-HHMM`), ne modifie que les lignes concernées (`TTS_*`, `MOCHI_LLM_PROVIDER`, `MOCHI_MODEL`, `OLLAMA_URL`), ne touche **jamais** aux secrets (`ANTHROPIC_API_KEY`, clés d'e-mail) et affiche le différentiel.
+
+> Le diagnostic ne concerne que la machine qui **héberge** Mochi. Le site ne cherche jamais à connaître l'ordinateur des visiteurs.
+
+**Au démarrage**, `npm start` s'adapte à la vitesse réelle des moteurs : si une voix met plus de 3 s pour une phrase courte, il le signale (« lance `npm run tts:pregen` ») et le site arrête de précharger l'audio et passe plus vite à la voix de l'appareil ; si Ollama met plus de 20 s à se charger, les élèves sont prévenus que la correction peut prendre un moment ; un moteur qui ne répond pas est simplement ignoré (voix du navigateur, correcteur hors ligne). Le tableau de bord admin (`#/admin`) montre le bloc **Machine** : profil, carte graphique, mémoire, état et vitesse de chaque moteur, audio déjà pré-généré par voix, et un bouton « Relancer le diagnostic ».
 
 Ouvre **http://localhost:8000** dans ton navigateur. Le site fonctionne tout de suite : comptes, révisions, exercices et correcteur hors ligne. Seul le correcteur Claude demande une clé API (section suivante).
 

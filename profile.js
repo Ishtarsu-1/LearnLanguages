@@ -250,6 +250,28 @@ function contentStats() {
     ],
   }));
 }
+// Bloc « Machine » (lot 8.5) : le serveur qui héberge Mochi, réservé aux admins
+function machineCard(m) {
+  if (!m) return "";
+  const s = (ms) => (ms == null ? "" : `${num1(ms / 1000)} s`);
+  const gb = (b) => `${num1(b / 1024 ** 3)} Go`;
+  const eng = (x, name, what = "pour une phrase courte") => !x ? `<tr><th scope="row">${name}</th><td>—</td><td class="muted">non configuré</td></tr>`
+    : `<tr><th scope="row">${name}</th><td>${x.ok ? "✅" : "❌"}</td><td class="muted">${x.ok ? `${s(x.ms)} ${what}` : esc(x.error || "ne répond pas")}</td></tr>`;
+  const left = m.cache.reduce((n, c) => n + c.total - c.cached, 0);
+  return `<h2 class="section-title">Machine</h2>
+    <div class="card"><table class="admin-table"><tbody>
+      <tr><th scope="row">Profil</th><td><b>${esc(m.profile || "…")}</b></td><td class="muted">${esc(m.label || "détection en cours")}</td></tr>
+      <tr><th scope="row">Carte graphique</th><td>${m.gpus.length ? "✅" : "—"}</td><td class="muted">${m.gpus.map((g) => `${esc(g.name)} · ${num1(g.memUsedMB / 1024)} / ${num1(g.memTotalMB / 1024)} Go utilisés`).join(" | ") || "aucune carte NVIDIA détectée"}</td></tr>
+      <tr><th scope="row">Mémoire vive</th><td></td><td class="muted">${m.ram ? `${gb(m.ram.total - m.ram.free)} / ${gb(m.ram.total)} utilisés` : ""}${m.cpu ? ` · ${esc(m.cpu.model)} (${m.cpu.cores} cœurs)` : ""}</td></tr>
+      ${Object.keys(m.engines.tts).length ? Object.entries(m.engines.tts).map(([l, x]) => eng(x, `Voix ${LANGUAGES[l]?.flag || l}`)).join("") : eng(null, "Voix du serveur")}
+      ${m.engines.llm ? eng(m.engines.llm, "Ollama", "pour charger le modèle au démarrage") : ""}
+      ${m.engines.ttsSlow || m.engines.llmSlow ? `<tr><th scope="row">Adaptation</th><td>⚠️</td><td class="muted">${[m.engines.ttsSlow && "voix lentes : préchargement coupé, repli sur la voix de l'appareil après 3 s", m.engines.llmSlow && "correcteur lent : les élèves sont prévenus"].filter(Boolean).join(" · ")}</td></tr>` : ""}
+    </tbody></table>
+    ${m.cache.length ? `<h3 class="mt-16">Audio pré-généré</h3><table class="admin-table"><tbody>${m.cache.map((c) => `<tr><th scope="row">${LANGUAGES[c.lang]?.flag || c.lang} ${esc(c.voice)}</th><td>${num0(c.cached)} / ${num0(c.total)}</td><td class="muted">${c.total - c.cached ? `${num0(c.total - c.cached)} à pré-générer` : "complet ✓"}</td></tr>`).join("")}</tbody></table>
+      ${left ? `<p class="muted"><small>Sur le serveur : <code>npm run tts:pregen</code></small></p>` : ""}` : ""}
+    ${m.warnings.length ? `<ul class="mt-12">${m.warnings.map((w) => `<li>${esc(w)}</li>`).join("")}</ul>` : ""}
+    <p class="mt-12"><button class="btn ghost small" data-act="admin-doctor">🩺 Relancer le diagnostic</button>${m.at ? ` <small class="muted">dernier : ${new Date(m.at).toLocaleString("fr-FR")}</small>` : ""}</p></div>`;
+}
 function viewAdmin() {
   if (!isAdmin()) return viewNotFound();
   const A = ui.admin;
@@ -280,7 +302,8 @@ function viewAdmin() {
     </div></div>
 
     <h2 class="section-title">Fonctionnalités</h2>
-    <div class="card"><table class="admin-table"><tbody>${features.map(([n, st, info]) => `<tr><th scope="row">${n}</th><td>${st}</td><td class="muted">${info}</td></tr>`).join("")}</tbody></table></div>`}
+    <div class="card"><table class="admin-table"><tbody>${features.map(([n, st, info]) => `<tr><th scope="row">${n}</th><td>${st}</td><td class="muted">${info}</td></tr>`).join("")}</tbody></table></div>
+    ${machineCard(d.machine)}`}
 
     <h2 class="section-title">Contenu</h2>
     <div class="lang-grid">${contentStats().map((c) => `<div class="card"><h3>${LANGUAGES[c.lang].flag} ${LANGUAGES[c.lang].name}</h3>

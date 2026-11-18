@@ -379,7 +379,7 @@ function tabProduce(lang) {
   const recent = [...recentLemmas(lang)].slice(0, 8);
   const r = P.result;
   let fb = "";
-  if (P.loading) fb = `<div class="card feedback loading">${mochi("small", "thinking")}<p><b>Mochi relit ta phrase…</b>${/Ollama/.test(features.engine || "") ? "<br/><small class=\"muted\">Modèle local : ça peut prendre jusqu'à une minute.</small>" : ""}</p></div>`;
+  if (P.loading) fb = `<div class="card feedback loading">${mochi("small", "thinking")}<p><b>Mochi relit ta phrase…</b>${features.llmSlow ? "<br/><small class=\"muted\">La correction peut prendre un moment.</small>" : /Ollama/.test(features.engine || "") ? "<br/><small class=\"muted\">Modèle local : ça peut prendre jusqu'à une minute.</small>" : ""}</p></div>`;
   else if (r) {
     const label = { grammaire: "Grammaire", vocabulaire: "Vocabulaire", registre: "Registre", orthographe: "Orthographe" };
     const head = r.perfect

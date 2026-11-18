@@ -30,6 +30,7 @@
 | ~~**P1**~~ | ~~Feedback de production par LLM~~ ✅ fait (cache, plafond global ✅ ; reste : évaluer un modèle plus léger) | 🔴 | — | backend |
 | ~~**P1**~~ | ~~Test de niveau à l'inscription~~ ✅ fait | 🟡 | 🆓 | — |
 | ~~**P1**~~ | ~~Vraies voix (TTS neuronal, plusieurs voix)~~ ✅ fait : relais serveur, cache, pré-génération, préchauffage, file prioritaire, repli rapide (reste : installer les moteurs sur la machine de production, surlignage mot à mot) | 🟡 | 🆓 | backend |
+| ~~**P1**~~ | ~~Le serveur détecte le matériel et s'adapte~~ ✅ fait (`npm run doctor`, profils, `--write`, adaptation au démarrage, bloc Machine ; CORRECTIFS v0.4 lot 8) | 🟡 | 🆓 | vraies voix |
 | **P1** | Analyseur morphologique coréen côté serveur | 🟡 | 🆓 | backend |
 | **P1** | Beaucoup plus de contenu + thèmes et situations (🟢 thèmes faits, 10 textes par langue ; reste : volume) | 🔴 | 🆓 | analyseur |
 | ~~**P1**~~ | ~~Ordre d'introduction des nouveaux mots (anti-interférence)~~ ✅ fait | 🟢 | 🆓 | thèmes |

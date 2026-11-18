@@ -225,6 +225,12 @@ const actions = {
   },
   "lib-theme": (el) => { ui.libTheme = el.dataset.t || null; render(); },
   "admin-refresh": () => { ui.admin = null; render(); },
+  "admin-doctor": async (el) => {
+    el.disabled = true; el.textContent = "🩺 Diagnostic en cours…";
+    try { const { machine } = await api("POST", "/api/admin/doctor"); if (ui.admin?.d) ui.admin.d.machine = machine; toast("Diagnostic terminé ✓"); }
+    catch (e) { toast(e.message); }
+    render();
+  },
   "forgot-again": () => { ui.forgotSent = null; render(); },
   "resend-verify": async () => {
     try { const r = await api("POST", "/api/email/resend", {}); if (r.already) account.email_verified = true; toast(r.already ? "Adresse déjà confirmée ✓" : "E-mail renvoyé ✉️"); render(); }

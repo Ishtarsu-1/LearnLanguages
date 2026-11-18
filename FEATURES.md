@@ -20,6 +20,7 @@
 | Motivation | Série hebdomadaire 5/7, quêtes de la semaine (3 par langue, +50 XP) |
 | Appli | Installable (PWA), marche hors ligne (révisions, lecture), synchro au retour du réseau, audio des cartes dues pré-téléchargé |
 | Admin | Comptes admin (`tools/admin.js`) : toutes les leçons ouvertes, tableau de bord `#/admin` (comptes, usage, appels IA du jour, taux de cache, coût estimé, fonctionnalités, contenu, accès direct) |
+| Machine | `npm run doctor` : diagnostic de la machine serveur (système, processeur, RAM, carte NVIDIA ou Apple Silicon, Docker, Python / uv, Ollama, moteurs de voix chronométrés), profil (`gpu-large`, `gpu-small`, `apple`, `cpu`, `light`), commandes adaptées au système, incohérences signalées, `--write` (sauvegarde, sans toucher aux secrets) et `--pull` ; adaptation au démarrage (voix ou correcteur lents) ; bloc « Machine » dans l'admin. Jamais rien sur l'ordinateur des visiteurs |
 | Sécurité | Content-Security-Policy stricte (aucun script ni style inline), `Permissions-Policy`, `Cross-Origin-Opener-Policy`, HSTS en HTTPS ; derrière Caddy, IP réelle du client lue seulement depuis un proxy de confiance (`TRUST_PROXY`, IPv6 regroupées par /64) |
 | Thèmes | 8 thèmes de situation (café, rencontre, transports, cuisine, sport, séries, gaming, travail), 10 textes par langue, saveurs de Mochi à débloquer (10 mots solides), thèmes favoris, bibliothèque filtrable |
 | Livres | Bibliothèque de lectures graduées : livres en chapitres (A1), questions de compréhension, chapitre suivant débloqué, mots inconnus en cartes |
@@ -201,7 +202,7 @@ Phrases tirées des textes où tu connais déjà la plupart des mots, toujours a
 | Correcteur | `llm.js` : SDK Claude + zod, ou Ollama |
 | Révisions | ts-fsrs 5.2.3 (embarqué) |
 | Sécurité | CSP stricte et en-têtes de sécurité, IP réelle derrière un proxy de confiance (`TRUST_PROXY`), mots de passe hachés, cookie de session protégé, protection contre les requêtes venues d'autres sites, tentatives de connexion limitées (freinage progressif stocké en base, qui survit aux redémarrages), images vérifiées, seuls les fichiers du site sont servis |
-| Tests | `npm test` : 7 suites (application, API, voix, e-mails, synchronisation, correcteur, Ollama), sans appel payant. Plus `tests/eval-llm.js` pour évaluer un vrai modèle (score, temps, coût) |
+| Tests | `npm test` : 8 suites (application, API, voix, e-mails, synchronisation, correcteur, Ollama, matériel), sans appel payant. Plus `tests/eval-llm.js` pour évaluer un vrai modèle (score, temps, coût) |
 
 ## ⚠️ Limites actuelles
 
