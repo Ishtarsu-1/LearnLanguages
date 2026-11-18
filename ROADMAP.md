@@ -23,11 +23,11 @@
 
 | Priorité | Feature | Effort | Coût | Dépend de |
 |---|---|---|---|---|
-| **P0** | Mise en ligne sécurisée (HTTPS, sauvegardes continues) | 🟡 | 🆓 | — |
+| **P0** | Mise en ligne sécurisée (HTTPS, sauvegardes continues) (🟢 CSP + en-têtes, `TRUST_PROXY`, doc Caddy faits ; reste : héberger, Litestream, test de restauration) | 🟡 | 🆓 | — |
 | ~~**P0**~~ | ~~Limitation des tentatives de connexion persistante~~ ✅ fait | 🟢 | 🆓 | — |
 | ~~**P0**~~ | ~~Mot de passe oublié + vérification de l'e-mail~~ ✅ fait (reste : clé Resend à la mise en ligne) | 🟡 | 🆓 | service d'e-mail |
 | ~~**P0**~~ | ~~Synchro sans perte entre appareils~~ ✅ fait | 🟡 | — | — |
-| ~~**P1**~~ | ~~Feedback de production par LLM~~ ✅ fait (reste : cache) | 🔴 | — | backend |
+| ~~**P1**~~ | ~~Feedback de production par LLM~~ ✅ fait (cache, plafond global ✅ ; reste : évaluer un modèle plus léger) | 🔴 | — | backend |
 | ~~**P1**~~ | ~~Test de niveau à l'inscription~~ ✅ fait | 🟡 | 🆓 | — |
 | **P1** | Vraies voix (TTS neuronal, plusieurs voix) (🟢 relais serveur + cache + Profil › Audio faits ; reste : déployer Kokoro / MeloTTS) | 🟡 | 🆓 | backend |
 | **P1** | Analyseur morphologique coréen côté serveur | 🟡 | 🆓 | backend |
@@ -62,7 +62,8 @@
 - Où héberger gratuitement : voir la section « Stack 100 % gratuite » (Oracle Cloud Always Free, avec ses limites).
 - **Sauvegardes continues de la base SQLite avec Litestream** vers un stockage objet (Cloudflare R2, voir la stack gratuite). On peut restaurer la base à la seconde près au lieu de perdre jusqu'à une journée. Les photos et fichiers audio vont directement sur R2.
 - Faire **un test de restauration** sur une machine vierge et le documenter dans `docs/restauration.md`. Une sauvegarde qu'on n'a jamais restaurée ne compte pas.
-- En-têtes de sécurité complets (Content-Security-Policy stricte, `Referrer-Policy`, `Permissions-Policy` qui n'autorise le micro que sur les pages d'exercices oraux).
+- ✅ En-têtes de sécurité : Content-Security-Policy (`script-src 'self'`, aucun script inline ; `style-src 'unsafe-inline'` temporaire, voir la dette technique), `Referrer-Policy`, `Permissions-Policy` (micro pour le shadowing, rien d'autre), `Cross-Origin-Opener-Policy`, HSTS si `COOKIE_SECURE=1`.
+- ✅ IP réelle du client derrière le proxy (`TRUST_PROXY`, dernière entrée de `X-Forwarded-For`, IPv6 par /64) : sans elle, la limitation des tentatives serait commune à tous les visiteurs. `HOST=127.0.0.1` en production. Section Caddy dans `SETUP.md`.
 - Logs d'erreurs et page de statut (Uptime Kuma, auto-hébergé et gratuit).
 - Pages légales : mentions légales et politique de confidentialité. Le RGPD (export et suppression) est déjà en place. **Lister chaque sous-traitant** qui reçoit des données (fournisseur de LLM, service d'e-mail, hébergeur). Les phrases écrites par les utilisateurs partent vers le LLM, et ça doit figurer dans la politique de confidentialité.
 
@@ -99,14 +100,15 @@ Fait : `mailer.js` (Resend, ou affichage dans le terminal en local), jetons alé
 
 ## P1 : le cœur pédagogique
 
-### ✅ Feedback de production par LLM (fait, reste le cache)
+### ✅ Feedback de production par LLM (fait)
 Fait : `llm.js` + route `POST /api/feedback` (Claude Opus 5.5, sortie JSON structurée, modèle de secours en cas de refus), quota de 60 corrections par compte et par jour (`MOCHI_LLM_DAILY`), mode « Phrase libre », cartes ciblées créées à partir des particules corrigées, repli automatique sur le correcteur hors ligne. Activer avec `ANTHROPIC_API_KEY=… node server.js` (désactiver avec `MOCHI_LLM=off`).
 Moteur gratuit et local : **Ollama** (`MOCHI_LLM_PROVIDER=ollama`, modèle par défaut `qwen2.5:7b-instruct`). Des garde-fous déterministes s'appliquent aux deux moteurs : registre -요 vérifié mécaniquement, cohérence du verdict, vraies particules uniquement. Évaluation réelle : `node tests/eval-llm.js` (9/10 avec Ollama sur CPU, ~22 s par correction).
 
 Reste à faire :
-- **Cache des réponses** : clé = hash de (phrase normalisée + consigne + interlocuteur + version du prompt). Les exercices à réponse guidée reviennent souvent avec les mêmes phrases, donc le cache évite des appels payants et les ~22 s d'attente avec Ollama.
+- ✅ **Cache des réponses** : table `llm_cache`, clé = SHA-256 de (phrase normalisée + consigne + interlocuteur + registre + référence + langue + version du prompt + modèle), 90 jours. Une réponse en cache ne décompte pas le quota.
+- ✅ **Plafond global** (`MOCHI_LLM_GLOBAL_DAILY`, 500 par défaut, compteur en base) : au-delà, correcteur hors ligne jusqu'à minuit. Quota par compte ramené à 30. Appels du jour, taux de cache et coût estimé dans `#/admin`.
 - **Jeu d'évaluation plus large** : passer de 10 à au moins 100 phrases (50 coréen, 50 anglais), avec des erreurs de registre, de particules, des faux amis et des variantes correctes à **ne pas** corriger. Lancer `tests/eval-llm.js` à chaque changement de prompt ou de modèle.
-- **Choisir le modèle selon le coût** : pour corriger une phrase courte, un modèle plus léger suffit souvent. Garder le plus gros modèle pour le mode « Phrase libre » ou les cas où le petit modèle a un doute. À mesurer avec le jeu d'évaluation avant de trancher.
+- **Choisir le modèle selon le coût** : pour corriger une phrase courte, un modèle plus léger suffit souvent. `tests/eval-llm.js` affiche maintenant le modèle, le temps et le coût : lancer avec `MOCHI_MODEL=claude-sonnet-5-5` puis `claude-haiku-5-5` (clé API nécessaire) et reporter les scores dans `SETUP.md` avant de changer le défaut.
 - **Feedback en attente** : avec Ollama, afficher tout de suite le résultat du correcteur hors ligne, puis le remplacer par la correction du LLM quand elle arrive. L'utilisateur n'attend jamais 22 s devant un écran vide.
 
 ### ✅ Test de niveau à l'inscription (fait)
@@ -333,7 +335,8 @@ Tout ce qu'il faut pour faire tourner Mochi sans payer, avec les limites à conn
 
 ## Dette technique à surveiller
 
-- `app.js` dépasse 1 400 lignes : le découper en modules (`fsrs`, `reader`, `review`, `account`, `exercises`, `mochi`…) quand on ajoutera un bundler ou des modules ES. À faire **avant** la refonte graphique, sinon appliquer la charte va être pénible.
+- **Découper `app.js`** (~2 800 lignes) sans changer le comportement ni ajouter de bundler : `state.js`, `sync.js`, `fsrs-cards.js`, `audio.js`, `reader.js`, `today.js`, `profile.js`, `ui.js`, `router.js`, `app.js` (démarrage). Chaque fichier ajouté à `STATIC` (`server.js`) et au service worker. (CORRECTIFS v0.3, lot 6.1)
+- **Migrer les attributs `style="…"`** des templates vers des classes (ou `element.style.setProperty`), puis retirer `'unsafe-inline'` de `style-src` dans la CSP. (CORRECTIFS v0.3, lot 6.2)
 - Les tests (`node tests/run.js`) simulent le navigateur et FSRS : il manque des tests dans un vrai navigateur (Playwright).
 - ~~La limitation des tentatives de connexion est gardée en mémoire~~ → remontée en P0.
 - ~~Les couleurs et tailles sont codées en dur~~ ✅ `tokens.css` + `styles.css` migré (plus aucune couleur en dur). Restent hors charte : ~~la navigation Aujourd'hui / Lire / Réviser / Profil~~ ✅ (reste : barre latérale sur ordinateur, aujourd'hui en haut), les icônes Lucide à la place des émojis, ~~le sélecteur clair / sombre explicite~~ ✅ (Profil › Affichage), les modales avec piège du focus.

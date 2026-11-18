@@ -11,15 +11,16 @@
 | Domaine | Fonctionnalités |
 |---|---|
 | Apprentissage | Session du jour, lecteur calibré, cartes en contexte, révisions FSRS, production corrigée, exercices, oreille |
-| Coréen | Module Hangul (7 jours), 9 briques de grammaire, sélecteur de registre, particules en couleur |
+| Coréen | Module Hangul (10 jours), 9 briques de grammaire, sélecteur de registre, particules en couleur |
 | Anglais | Mots transparents, faux amis, prononciation |
-| Correcteur IA | Claude (API) ou Ollama (local et gratuit), avec garde-fous et repli hors ligne |
+| Correcteur IA | Claude (API) ou Ollama (local et gratuit), avec garde-fous et repli hors ligne ; plafond global quotidien, quota de 30 par compte, cache des réponses (90 jours), coût suivi dans l'admin |
 | Comptes | Inscription, photo de profil, suivi d'activité, sécurité, synchronisation multi-appareils |
 | Site | Responsive mobile et desktop, thème clair et sombre, page « Pourquoi ça marche » |
 | Comptes | Mot de passe oublié (lien par e-mail, usage unique, 30 min), confirmation de l'adresse (bandeau non bloquant) |
 | Motivation | Série hebdomadaire 5/7, quêtes de la semaine (3 par langue, +50 XP) |
 | Appli | Installable (PWA), marche hors ligne (révisions, lecture), synchro au retour du réseau, audio des cartes dues pré-téléchargé |
-| Admin | Comptes admin (`tools/admin.js`) : toutes les leçons ouvertes, tableau de bord `#/admin` (comptes, usage, fonctionnalités, contenu, accès direct) |
+| Admin | Comptes admin (`tools/admin.js`) : toutes les leçons ouvertes, tableau de bord `#/admin` (comptes, usage, appels IA du jour, taux de cache, coût estimé, fonctionnalités, contenu, accès direct) |
+| Sécurité | Content-Security-Policy stricte (aucun script inline), `Permissions-Policy`, `Cross-Origin-Opener-Policy`, HSTS en HTTPS ; derrière Caddy, IP réelle du client lue seulement depuis un proxy de confiance (`TRUST_PROXY`, IPv6 regroupées par /64) |
 | Thèmes | 8 thèmes de situation (café, rencontre, transports, cuisine, sport, séries, gaming, travail), 10 textes par langue, saveurs de Mochi à débloquer (10 mots solides), thèmes favoris, bibliothèque filtrable |
 | Livres | Bibliothèque de lectures graduées : livres en chapitres (A1), questions de compréhension, chapitre suivant débloqué, mots inconnus en cartes |
 | Histoire | Mode histoire (Mochi à Séoul / à Londres) : chapitres gradués, missions de conversation avec l'IA ou en mode guidé, déblocage par mots clés et grammaire |
@@ -37,7 +38,7 @@
 ## ☀️ 1. La session du jour (onglet « Aujourd'hui »)
 
 Les 4 étapes de la boucle, avec leur état :
-1. **📖 Lire & écouter** : le texte recommandé du jour et ton pourcentage de mots connus.
+1. **📖 Lire & écouter** : le texte recommandé du jour et ton pourcentage de mots connus. **Débutant complet** (aucun texte à 80 % et moins de 50 mots connus) : jamais de texte illisible, l'étape propose à la place le test de niveau ou « 🌱 Mes 10 premiers mots » (les plus fréquents, chacun dans sa phrase avec son audio, révisés tout de suite). Retour à la lecture dès qu'un texte dépasse 80 %.
 2. **🫳 Capturer** : nombre de mots ajoutés aux révisions aujourd'hui.
 3. **🧠 Réviser** : cartes à revoir et nouvelles cartes.
 4. **💬 Produire** : la phrase à écrire du jour.
@@ -45,6 +46,7 @@ Les 4 étapes de la boucle, avec leur état :
 **Série hebdomadaire 📅** (§16) : l'objectif est 5 séances complètes sur 7 jours, 2 jours de repos inclus. Rater un jour ne casse rien ; seule une semaine sous l'objectif remet la série à zéro. Une séance compte si elle contient les révisions dues (ou au moins 10) **et** une lecture ou une production : ouvrir l'appli ne suffit pas.
 - Carte « Ma semaine » : 7 pastilles, message bienveillant, Mochi fait la sieste quand l'objectif est atteint.
 - **Reprise en douceur** : après 4 jours d'absence ou plus, 20 révisions le premier jour, puis 40 par jour jusqu'à résorber le retard, sans nouvelles cartes en attendant.
+- **Coréen, Hangul pas fini** : une seule action principale, « Commencer le jour 1 » (ou « Continuer : jour N ») ; « Je lis déjà le Hangul » et le test de niveau sont proposés en dessous, en secondaire.
 - **Test de niveau 🧭** (facultatif, 5 min) proposé tant qu'aucune carte n'existe : en anglais, estimation de la taille du vocabulaire par tranches de fréquence avec des faux mots ; en coréen, lecture du Hangul par des mots d'emprunt puis quelques points de grammaire. Les mots et points connus sont validés d'office.
 
 ## 📖 2. Lire & écouter (onglet « Lire »)
@@ -58,15 +60,15 @@ Les 4 étapes de la boucle, avec leur état :
   - touche un mot pour voir sa traduction et sa forme de base, puis l'ajouter aux révisions ou le marquer comme connu ;
   - glossaire automatique des mots inconnus quand le texte est trop dur, avec un bouton « Tout ajouter » ;
   - code couleur : mot nouveau (pointillé), en révision (surligné), transparent, particule coréenne (violet, désactivable).
-- **Audio** (synthèse vocale du navigateur) :
+- **Audio** (voix du serveur si configurées, sinon synthèse vocale du navigateur) :
   - écouter tout le texte, avec la phrase en cours surlignée ;
   - écouter une seule phrase, à la vitesse 0,75×, 1× ou 1,25× ;
   - masquer le texte pour une écoute pure ;
   - traduction de chaque phrase sur demande (🇫🇷).
 - **Mode shadowing 🎙️** : tu t'enregistres en répétant **en même temps** que la voix, puis tu réécoutes le modèle, ta voix, ou les deux à la suite.
-- **Contenu** : 4 textes par langue, surtout des dialogues :
-  - 🇬🇧 Au café, La nouvelle voisine, Le week-end, À la bibliothèque ;
-  - 🇰🇷 Au café, Se présenter, Ma famille, Le week-end (registre poli 해요체).
+- **Contenu** : 10 textes par langue, surtout des dialogues, rangés par thème de situation :
+  - 🇬🇧 Au café, La nouvelle voisine, Le week-end, À la bibliothèque, Dans le bus, On cuisine ce soir, Un match de foot, Une partie en ligne, Premier jour au bureau, Une série à voir ;
+  - 🇰🇷 Au café, Se présenter, Ma famille, Le week-end, Dans le métro, Le kimchi-jjigae, Le sport, On joue ?, Au bureau, Un K-drama (registre poli 해요체).
 
 ## 🧠 3. Révisions (onglet « Réviser »)
 
@@ -103,7 +105,7 @@ Les 4 étapes de la boucle, avec leur état :
 | **Ollama** (local) | `MOCHI_LLM_PROVIDER=ollama` | Gratuit, rien ne quitte la machine. 9/10 sur l'évaluation, ~22 s par correction sur CPU |
 | **Hors ligne** | Invité, ou correcteur IA indisponible | Comparaison avec des réponses types. Automatique, sans configuration |
 
-Garde-fous communs : verdict cohérent avec les erreurs, registre coréen vérifié sans IA, quota de 60 corrections par compte et par jour.
+Garde-fous communs : verdict cohérent avec les erreurs, registre coréen vérifié sans IA, quota de 30 corrections par compte et par jour (`MOCHI_LLM_DAILY`), **plafond global** de 500 appels par jour pour tout le site (`MOCHI_LLM_GLOBAL_DAILY` ; au-delà, correcteur hors ligne avec un message honnête jusqu'à minuit), **cache des réponses** (même phrase, même exercice, même interlocuteur : un seul appel, pas décompté du quota, gardé 90 jours).
 
 ## 🎯 5. Exercices (onglet « Exercices »)
 
@@ -133,7 +135,7 @@ Phrases tirées des textes où tu connais déjà la plupart des mots, toujours a
 
 ## 🇰🇷 8. Parcours coréen (onglet « Parcours »)
 
-- **Phase 1 · Hangul (7 jours)** : voyelles, consonnes, voyelles en « y », aspirées, construction de syllabes, consonnes finales et premiers mots.
+- **Phase 1 · Hangul (10 jours)** : voyelles, consonnes, voyelles en « y », aspirées, consonnes doubles, voyelles composées, construction de syllabes, consonnes finales (받침), premiers mots et écriture au clavier.
   - Quiz d'association lettre ↔ son et son ↔ lettre ; les erreurs sont reposées jusqu'à la bonne réponse.
   - La **romanisation n'existe que dans ce module**, puis elle disparaît.
   - Le reste du coréen est verrouillé tant que le Hangul n'est pas fini (bouton « Je lis déjà le Hangul »).
@@ -151,7 +153,7 @@ Phrases tirées des textes où tu connais déjà la plupart des mots, toujours a
 ## 👤 10. Comptes & profil
 
 - **Inscription et connexion** (e-mail et mot de passe). La progression faite en invité est **rattachée** au nouveau compte.
-- **Photo de profil** (recadrée automatiquement), ou un avatar emoji au choix (8).
+- **Photo de profil** (recadrée automatiquement), ou un avatar : **Mochi** par défaut (avec ses accessoires), ou un emoji au choix (8).
 - **Mon activité** :
   - calendrier des 17 dernières semaines ;
   - jours actifs, heures totales, minutes sur 7 jours ;
@@ -178,7 +180,9 @@ Phrases tirées des textes où tu connais déjà la plupart des mots, toujours a
 
 ## 🌐 12. Le site
 
-- **Responsive** : téléphone (barre de navigation en bas, onglets qui défilent) et ordinateur.
+- **Responsive** : une seule navigation par écran. Téléphone (< 768 px) : la barre du bas, en-tête de langue compact sur une ligne. Ordinateur : le menu du haut. Pastille des cartes à revoir sur « S'entraîner », `aria-current` sur l'entrée active.
+- **Nombres au format français** : « 1,5 h », « 1 234 mots ».
+- **Cookies** : une ligne discrète dans le pied de page (« Mochi n'utilise que des cookies nécessaires »), sans bandeau ni bouton : les cookies strictement nécessaires sont dispensés de consentement.
 - **Charte graphique** (`CHARTE-GRAPHIQUE.md`) appliquée : jetons CSS (`tokens.css`), thème clair et sombre « nuit de Séoul » (automatique, ou forcé dans Profil › Affichage), Sakura pour l'action principale, une couleur par langue (myrtille pour l'anglais, kaki pour le coréen), polices Pretendard et Jua auto-hébergées, logotype « mochi », mouvements « squish » et respect de `prefers-reduced-motion`.
 - **Mascotte Mochi** : galet crème, 7 humeurs (contente, concentrée, fière, curieuse, pensive, endormie, surprise), jamais triste ni en colère.
 - **Lecteur** : particules coréennes colorées **par fonction** (thème, sujet, objet, lieu) avec un style de soulignement différent pour chacune, mots activables au clavier, `lang` posé sur tout texte étranger.
@@ -196,13 +200,13 @@ Phrases tirées des textes où tu connais déjà la plupart des mots, toujours a
 | Serveur | Node.js ≥ 22.5, SQLite intégré (`server.js`) |
 | Correcteur | `llm.js` : SDK Claude + zod, ou Ollama |
 | Révisions | ts-fsrs 5.2.3 (embarqué) |
-| Sécurité | Mots de passe hachés, cookie de session protégé, protection contre les requêtes venues d'autres sites, tentatives de connexion limitées (freinage progressif stocké en base, qui survit aux redémarrages), images vérifiées, seuls les fichiers du site sont servis |
-| Tests | `npm test` : 5 suites (application, API, synchronisation, correcteur, Ollama), sans appel payant. Plus `tests/eval-llm.js` pour évaluer un vrai modèle |
+| Sécurité | CSP stricte et en-têtes de sécurité, IP réelle derrière un proxy de confiance (`TRUST_PROXY`), mots de passe hachés, cookie de session protégé, protection contre les requêtes venues d'autres sites, tentatives de connexion limitées (freinage progressif stocké en base, qui survit aux redémarrages), images vérifiées, seuls les fichiers du site sont servis |
+| Tests | `npm test` : 7 suites (application, API, voix, e-mails, synchronisation, correcteur, Ollama), sans appel payant. Plus `tests/eval-llm.js` pour évaluer un vrai modèle (score, temps, coût) |
 
 ## ⚠️ Limites actuelles
 
-- Audio par **synthèse vocale du navigateur** : la qualité varie selon l'appareil. Pas encore de voix natives.
-- **Peu de contenu** : 4 textes par langue.
-- Pas encore de **mot de passe oublié** ni de vérification de l'e-mail.
+- **Voix** : le relais serveur (Kokoro pour l'anglais, MeloTTS pour le coréen, cache disque) est prêt, mais les moteurs restent à déployer sur la machine de production. Sans eux, c'est la synthèse vocale du navigateur, dont la qualité varie selon l'appareil.
+- **Contenu encore léger** : 10 textes par langue, 2 livres, 5 chapitres d'histoire. Pas encore de textes « tout premiers pas » lisibles dès le jour 1.
 - Pas encore de **liste d'amis** ni de **défis**.
-- Site **pas encore en ligne** (local uniquement).
+- Site **pas encore en ligne** (local uniquement). La configuration derrière Caddy est documentée (`SETUP.md`).
+- Le choix d'un modèle Claude plus léger attend l'évaluation (`tests/eval-llm.js`) avec une vraie clé API.
