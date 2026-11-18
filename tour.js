@@ -21,7 +21,7 @@ const TOUR = [
   { center: true, mood: "happy", title: "Bienvenue sur Mochi !", next: "C'est parti !",
     text: "Je vais te montrer le site <b>en vrai</b> : c'est toi qui cliques, je te guide. Ça prend 2 minutes.",
     enter() { if (!/^#?\/?$/.test(location.hash)) location.hash = "#/"; } },
-  { target: ".lang-grid", title: "Choisis ta langue", text: "Clique sur la carte de la langue que tu veux apprendre. Tu pourras faire l'autre plus tard.",
+  { target: ".lang-grid", title: "Choisis ta langue", text: "Clique sur la carte de la langue que tu veux apprendre. Tu pourras faire l'autre plus tard (les langues grisées arrivent bientôt).",
     doneWhen: onLangPage, enter() { if (onLangPage()) location.hash = "#/"; } },
   { target: ".section-nav", title: "Les 3 sections", next: true,
     text: "☀️ <b>Aujourd'hui</b> : ta séance guidée. 📖 <b>Lire</b> : textes, livres, histoire. 🎯 <b>S'entraîner</b> : révisions et exercices.",

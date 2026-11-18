@@ -10,6 +10,15 @@ const LANGUAGES = {
   ko: { name: "Coréen", native: "한국어", flag: "🇰🇷", hello: "안녕하세요!", deco: "한", speechLang: "ko-KR", tagline: "Hangul d'abord, puis les briques de la phrase" },
 };
 
+// Langues en préparation : montrées sur l'accueil, mais verrouillées (pas dans LANGUAGES,
+// pour qu'aucune autre partie du site ne les traite comme des langues actives)
+const COMING_SOON = [
+  { id: "zh", name: "Chinois", native: "中文", flag: "🇨🇳", hello: "你好！", lang: "zh" },
+  { id: "fr", name: "Français", native: "Français", flag: "🇫🇷", hello: "Bonjour !", lang: "fr" },
+  { id: "ja", name: "Japonais", native: "日本語", flag: "🇯🇵", hello: "こんにちは！", lang: "ja" },
+  { id: "it", name: "Italien", native: "Italiano", flag: "🇮🇹", hello: "Ciao!", lang: "it" },
+];
+
 const GOALS = [{ min: 5, label: "Tranquille" }, { min: 10, label: "Régulier" }, { min: 15, label: "Sérieux" }, { min: 20, label: "Intense" }];
 const AVATARS = ["🐰", "🐱", "🐻", "🐼", "🦊", "🐥", "🐸", "🐨"];
 const KNOWN_STABILITY = 7; // jours : au-delà, un mot en révision compte comme « connu » (§3)
@@ -891,6 +900,13 @@ function viewHome() {
           </div>
         </a>`;
       }).join("")}
+      ${COMING_SOON.map((l) => `
+        <button type="button" class="lang-card soon" data-act="lang-soon" data-name="${l.name}" aria-disabled="true" aria-label="${l.name} : bientôt disponible">
+          <span class="soon-badge">🔒 Bientôt</span>
+          <span class="flag">${l.flag}</span>
+          <div><h2>${l.name}</h2><div class="hello" lang="${l.lang}">${l.hello}</div></div>
+          <p class="muted" style="margin:0">En préparation</p>
+        </button>`).join("")}
     </div>
 
     <h2 class="section-title">La boucle de chaque jour</h2>
@@ -2506,6 +2522,7 @@ const actions = {
     try { const r = await api("POST", "/api/email/resend", {}); if (r.already) account.email_verified = true; toast(r.already ? "Adresse déjà confirmée ✓" : "E-mail renvoyé ✉️"); render(); }
     catch (e) { toast(e.message); }
   },
+  "lang-soon": (el) => toast(`${el.dataset.name} : en cours de préparation, bientôt sur Mochi 🍡`),
   theme: (el) => { state.settings.theme = el.dataset.v; save(); render(); },
   goal: (el) => { state.goal = +el.dataset.v; save(); render(); toast("Objectif mis à jour 🎯"); },
   export: () => {

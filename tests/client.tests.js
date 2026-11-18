@@ -558,3 +558,13 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
   ok(viewHangul(1).includes("Comment lire les repères"), "explication des repères");
   state.langs.ko.hangulDone = hd; account = acc;
 }
+{ // Langues en préparation : montrées, pas accessibles
+  const h = viewHome();
+  for (const n of ["Chinois", "Français", "Japonais", "Italien"]) ok(h.includes(`data-name="${n}"`) && h.includes(`${n} : bientôt disponible`), `${n} affiché, verrouillé`);
+  ok(!h.includes('href="#/lang/zh') && !LANGUAGES.zh && !LANGUAGES.ja, "aucun lien, pas une vraie langue");
+  let msg = ""; const t0 = toast; toast = (m) => (msg = m);
+  actions["lang-soon"]({ dataset: { name: "Japonais" } }); ok(/Japonais.*préparation/.test(msg), "clic : message « bientôt »");
+  toast = t0;
+  location.hash = "#/lang/ja"; route(); ok(!location.hash.startsWith("#/lang/ja/") , "URL directe : pas de page");
+  location.hash = "";
+}
