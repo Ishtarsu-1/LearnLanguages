@@ -40,7 +40,7 @@
 | **P2** | Mochi, la mascotte, et la collection de Mochis | 🟡 | 🆓 | charte graphique |
 | ~~**P2**~~ | ~~Série flexible + quêtes hebdomadaires~~ ✅ fait (reste : récompenses cosmétiques) | 🟡 | 🆓 | — |
 | **P2** | Mode histoire | 🔴 | 🆓 | bibliothèque |
-| **P2** | Application installable (PWA) + hors ligne | 🟡 | 🆓 | — |
+| ~~**P2**~~ | ~~Application installable (PWA) + hors ligne~~ ✅ fait | 🟡 | 🆓 | — |
 | **P2** | Rappels et notifications | 🟡 | 🆓 | PWA |
 | **P2** | Liste d'amis | 🟡 | 🆓 | comptes |
 | **P2** | Défis entre amis | 🟡 | 🆓 | liste d'amis |
@@ -229,7 +229,9 @@ Fait : série hebdomadaire 5/7 (`fullDays`, migrée depuis l'ancienne série), c
 - Un chapitre se débloque quand le précédent est lu **et** que ses mots clés sont en révision. On ne peut pas le « farmer ».
 - Les chapitres suivent la progression grammaticale (§6) : le mode histoire *est* le parcours, en plus motivant.
 
-### Application installable + hors ligne 🟡 🆓
+### ✅ Application installable + hors ligne (fait)
+Fait : manifeste et icônes Mochi (dont « maskable »), service worker (`sw.js` : réseau d'abord pour l'appli, cache d'abord pour les polices, avatars et audio, API jamais en cache), démarrage hors ligne avec le dernier compte connu (la synchro reprend au retour du réseau), pré-téléchargement lent de l'audio des cartes dues sous 2 jours (vraies voix). Vérifié dans Chromium : rechargement hors ligne OK. Reste : bouton « Installer » dans l'interface.
+
 - PWA : manifeste, icône (Mochi), service worker.
 - Mode hors ligne : réviser dans le métro, synchroniser au retour du réseau (s'appuie sur la synchro du P0).
 - Pré-télécharger l'audio des cartes dues dans les 2 prochains jours.

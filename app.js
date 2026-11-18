@@ -269,6 +269,7 @@ function signOutLocal({ forget = false } = {}) {
   if (account && forget) { try { localStorage.removeItem(storeKey()); localStorage.removeItem(metaKey()); } catch {} }
   clearTimeout(sync.timer); sync.timer = null;
   account = null; sync.meta = null; sync.status = "idle"; lastHashes = null;
+  rememberAccount(null);
   state = loadState();
 }
 
@@ -287,6 +288,7 @@ setInterval(() => { if (account && !document.hidden) syncNow(); }, 60000); // r�
 async function applyAuth(data, { isNew } = {}) {
   if (data.features) features = data.features;
   attachAccount(data.user, { legacy: data.legacy_state, adoptGuest: isNew });
+  rememberAccount({ user: data.user, features });
   if (isNew && state.avatar !== account.avatar_emoji) {
     try { account = (await api("PATCH", "/api/me", { avatar_emoji: state.avatar })).user; } catch {}
   }
@@ -418,14 +420,13 @@ let current = null; // lecture en cours (élément Audio ou null)
 const warnedMute = {};
 function speak(text, lang, speed = state.settings.speed, who = null) {
   stopSound();
-  const sv = serverVoices(lang);
   if (audioSource(lang) === "server") {
-    const pref = state.settings.voices?.[lang];
-    const voice = who?.server || (sv.includes(pref) ? pref : sv[0]);
+    const voice = who?.server || defaultServerVoice(lang);
     return serverSpeak(text, lang, voice, speed * (who?.rate || 1), who && who.pitch !== 1).catch(() => browserSpeak(text, lang, speed, null));
   }
   return browserSpeak(text, lang, speed, who);
 }
+const defaultServerVoice = (lang) => { const sv = serverVoices(lang), pref = state.settings.voices?.[lang]; return sv.includes(pref) ? pref : sv[0]; };
 const ttsUrl = (text, lang, voice) => `/api/tts?lang=${lang}&voice=${encodeURIComponent(voice)}&text=${encodeURIComponent(text.slice(0, 300))}`;
 function serverSpeak(text, lang, voice, rate, shiftPitch) {
   return new Promise((resolve, reject) => {
@@ -2382,6 +2383,10 @@ document.addEventListener("keydown", (e) => {
 window.addEventListener("hashchange", route);
 
 // Démarrage : si le serveur répond et qu'une session existe, on charge le compte
+// Hors ligne (appli installée, métro…) : on retrouve le dernier compte connu et sa
+// progression locale ; la synchro reprendra au retour du réseau.
+const LAST_ACCOUNT = "mochi-last-account";
+const rememberAccount = (d) => { try { if (d) localStorage.setItem(LAST_ACCOUNT, JSON.stringify(d)); else localStorage.removeItem(LAST_ACCOUNT); } catch {} };
 (async function boot() {
   try {
     const r = await fetch("/api/me", { credentials: "same-origin" });
@@ -2390,8 +2395,30 @@ window.addEventListener("hashchange", route);
       const d = await r.json();
       features = d.features || features;
       if (d.user) attachAccount(d.user, { legacy: d.legacy_state });
+      rememberAccount(d.user ? { user: d.user, features } : null);
     }
-  } catch {}
+  } catch {
+    let last = null; try { last = JSON.parse(localStorage.getItem(LAST_ACCOUNT)); } catch {}
+    if (last?.user) { serverOn = true; features = last.features || features; attachAccount(last.user); sync.status = "error"; }
+  }
   route();
   if (account) syncNow();
+  if (typeof navigator !== "undefined" && "serviceWorker" in navigator && location.protocol?.startsWith("http")) navigator.serviceWorker.register("/sw.js").catch(() => {});
+  setTimeout(prefetchAudio, 8000);
 })();
+
+// Pré-télécharge l'audio des cartes à revoir dans les 2 prochains jours (vraies voix),
+// pour réviser hors ligne. Lentement, pour ne pas épuiser la limite de génération.
+async function prefetchAudio() {
+  if (typeof navigator === "undefined" || !navigator.onLine || !("caches" in window)) return;
+  const soon = Date.now() + 2 * 864e5, seen = new Set();
+  const list = state.cards.filter((c) => c.context && new Date(c.due) <= soon && audioSource(c.lang) === "server")
+    .map((c) => ttsUrl(c.context, c.lang, defaultServerVoice(c.lang))).filter((u) => !seen.has(u) && seen.add(u));
+  const cache = await caches.open("mochi-audio");
+  for (const u of list.slice(0, 15)) {
+    if (!navigator.onLine) return;
+    if (await cache.match(u)) continue;
+    try { await fetch(u); } catch { return; } // le service worker range la réponse dans son cache
+    await new Promise((r) => setTimeout(r, 3000));
+  }
+}

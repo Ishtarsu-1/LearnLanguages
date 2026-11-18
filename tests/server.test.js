@@ -15,6 +15,15 @@ server.listen(0, "127.0.0.1", async () => {
   try {
     ok((await fetch(base + "/")).status === 200, "index");
     ok((await fetch(base + "/server.js")).status === 404, "server.js non servi");
+    { // Appli installable (PWA)
+      const sw = await fetch(base + "/sw.js"); ok(sw.status === 200 && /javascript/.test(sw.headers.get("content-type")), "service worker servi");
+      const mf = await fetch(base + "/manifest.webmanifest"); ok(mf.status === 200 && (await mf.json()).icons.length === 4, "manifeste");
+      ok((await fetch(base + "/icons/mochi-maskable-512.png")).headers.get("content-type") === "image/png", "icône");
+      ok((await fetch(base + "/icons/../server.js")).status === 404 && (await fetch(base + "/icons/autre.png")).status === 404, "icônes : liste stricte");
+      // Tous les fichiers précachés par le service worker existent (sinon l'installation échoue)
+      const list = JSON.parse((await sw.text()).match(/const SHELL_FILES = (\[[\s\S]*?\]);/)[1].replace(/,\s*\]/, "]"));
+      for (const f of list) ok((await fetch(base + f)).status === 200, "précache " + f);
+    }
     ok((await fetch(base + "/data/mochi.db")).status === 404, "db non servie");
     ok((await fetch(base + "/../package.json")).status === 404, "traversal");
     ok((await call("GET", "/api/me")).data.user === null, "me anonyme");

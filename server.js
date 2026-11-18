@@ -557,6 +557,8 @@ const STATIC = {
   "/fonts/pretendard.css": ["fonts/pretendard.css", "text/css; charset=utf-8"],
   "/fonts/jua.css": ["fonts/jua.css", "text/css; charset=utf-8"],
   "/favicon.svg": ["favicon.svg", "image/svg+xml"],
+  "/sw.js": ["sw.js", "text/javascript; charset=utf-8"],
+  "/manifest.webmanifest": ["manifest.webmanifest", "application/manifest+json"],
   "/vendor/ts-fsrs-5.2.3.umd.js": ["vendor/ts-fsrs-5.2.3.umd.js", "text/javascript; charset=utf-8"],
 };
 const IMG_TYPES = { jpg: "image/jpeg", png: "image/png", webp: "image/webp" };
@@ -581,6 +583,8 @@ const server = http.createServer(async (req, res) => {
     // Polices auto-hébergées (charte §6) : noms de fichiers stricts, pas de traversée possible
     const f = url.pathname.match(/^\/fonts\/(pretendard|jua)\/([A-Za-z0-9.-]+\.woff2)$/);
     if (f) return serveFile(res, path.join(ROOT, "fonts", f[1], f[2]), "font/woff2", "public, max-age=31536000, immutable");
+    const ic = url.pathname.match(/^\/icons\/(mochi-(?:maskable-)?(?:192|512)|apple-touch-icon)\.png$/);
+    if (ic) return serveFile(res, path.join(ROOT, "icons", `${ic[1]}.png`), "image/png", "public, max-age=86400");
     const s = STATIC[url.pathname];
     if (s) return serveFile(res, path.join(ROOT, s[0]), s[1], "no-cache");
     res.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });

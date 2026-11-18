@@ -5,7 +5,7 @@ const el = () => ({ value: "", innerHTML: "", textContent: "", classList: { add(
 const store = {};
 const ctx = {
   console, setTimeout, clearTimeout, setInterval: () => 0, Date, Math, JSON, URL, Blob: function () {},
-  localStorage: { getItem: (k) => store[k] ?? null, setItem: (k, v) => (store[k] = v) },
+  localStorage: { getItem: (k) => store[k] ?? null, setItem: (k, v) => (store[k] = v), removeItem: (k) => delete store[k] },
   location: { hash: "" }, document: { getElementById: () => el(), querySelectorAll: () => [], documentElement: { dataset: {}, style: { setProperty() {} } }, body: { dataset: {}, classList: { toggle() {} } }, addEventListener() {}, hidden: false },
   addEventListener() {}, confirm: () => true, window: null, scrollTo() {},
 };

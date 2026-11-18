@@ -291,3 +291,8 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
     ok(flatten(state).kv[`langs.en.quests.${done.key}`] === true, "récompense synchronisée");
   }
 }
+{ // Hors ligne : le dernier compte est mémorisé, puis oublié à la déconnexion
+  rememberAccount({ user: { id: 9 }, features: {} });
+  ok(JSON.parse(localStorage.getItem(LAST_ACCOUNT)).user.id === 9, "compte mémorisé");
+  const a = account; account = { id: 9 }; signOutLocal(); ok(localStorage.getItem(LAST_ACCOUNT) === null, "oublié à la déconnexion"); account = a;
+}
