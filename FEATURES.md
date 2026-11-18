@@ -16,6 +16,7 @@
 | Correcteur IA | Claude (API) ou Ollama (local et gratuit), avec garde-fous et repli hors ligne |
 | Comptes | Inscription, photo de profil, suivi d'activité, sécurité, synchronisation multi-appareils |
 | Site | Responsive mobile et desktop, thème clair et sombre, page « Pourquoi ça marche » |
+| Comptes | Mot de passe oublié (lien par e-mail, usage unique, 30 min), confirmation de l'adresse (bandeau non bloquant) |
 | Audio | Voix du navigateur ou vraies voix du serveur (Kokoro, MeloTTS, cache disque), Profil › Audio : état, choix et test des voix, aide si aucune voix |
 
 ---

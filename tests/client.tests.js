@@ -257,3 +257,14 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
   location.hash = "#/lire"; route(); ok(location.hash === "#/lang/ko/lire", "Lire");
   const last = state.lastLang; state.lastLang = null; location.hash = "#/aujourdhui"; route(); ok(location.hash === "#/aujourdhui", "sans langue : accueil"); state.lastLang = last;
 }
+{ // Mot de passe oublié, réinitialisation, bandeau de vérification
+  const on = serverOn, acc0 = account; serverOn = true; account = null;
+  ok(viewAuth("connexion").includes("#/mot-de-passe-oublie"), "lien mot de passe oublié");
+  ok(viewForgot().includes('data-form="forgot"'), "formulaire d'oubli");
+  ui.forgotSent = "a@b.fr"; ok(viewForgot().includes("Si un compte existe pour <b>a@b.fr</b>"), "message neutre après envoi"); ui.forgotSent = null;
+  ok(viewReset("abc").includes('name="token" value="abc"') && viewReset("abc").includes('name="confirm"'), "formulaire de réinitialisation");
+  account = { id: 1, email: "z@t.fr", created_at: new Date().toISOString(), email_verified: false };
+  ok(viewProfile().includes("Confirme ton adresse e-mail") && viewProfile().includes("resend-verify"), "bandeau si non vérifiée");
+  account.email_verified = true; ok(!viewProfile().includes("Confirme ton adresse e-mail"), "pas de bandeau si vérifiée");
+  account = acc0; serverOn = on;
+}

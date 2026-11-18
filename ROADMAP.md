@@ -25,7 +25,7 @@
 |---|---|---|---|---|
 | **P0** | Mise en ligne sécurisée (HTTPS, sauvegardes continues) | 🟡 | 🆓 | — |
 | ~~**P0**~~ | ~~Limitation des tentatives de connexion persistante~~ ✅ fait | 🟢 | 🆓 | — |
-| **P0** | Mot de passe oublié + vérification de l'e-mail | 🟡 | 🆓 | service d'e-mail |
+| ~~**P0**~~ | ~~Mot de passe oublié + vérification de l'e-mail~~ ✅ fait (reste : clé Resend à la mise en ligne) | 🟡 | 🆓 | service d'e-mail |
 | ~~**P0**~~ | ~~Synchro sans perte entre appareils~~ ✅ fait | 🟡 | — | — |
 | ~~**P1**~~ | ~~Feedback de production par LLM~~ ✅ fait (reste : cache) | 🔴 | — | backend |
 | ~~**P1**~~ | ~~Test de niveau à l'inscription~~ ✅ fait | 🟡 | 🆓 | — |
@@ -75,7 +75,9 @@ Spécification d'origine :
 - Freinage progressif (attente croissante) plutôt que blocage sec, pour ne pas permettre de verrouiller le compte de quelqu'un d'autre.
 - Appliquer la même limite à « mot de passe oublié » et à `POST /api/feedback`. Le quota LLM existe déjà, mais une limite par minute évite les rafales.
 
-### Mot de passe oublié + vérification de l'e-mail 🟡 🆓
+### ✅ Mot de passe oublié + vérification de l'e-mail (fait)
+Fait : `mailer.js` (Resend, ou affichage dans le terminal en local), jetons aléatoires hachés à usage unique (30 min / 7 jours), réponse identique pour une adresse inconnue, demandes limitées, toutes les sessions fermées après une réinitialisation, bandeau non bloquant dans le profil. Reste : créer le compte Resend et vérifier le domaine à la mise en ligne.
+
 - Envoi d'e-mails transactionnels avec **Resend** (offre gratuite, voir la stack) ou un SMTP.
 - Lien de réinitialisation à usage unique, valable environ 30 minutes, avec un jeton haché en base.
 - Vérification de l'adresse à l'inscription, sans bloquer l'usage (bandeau de rappel).

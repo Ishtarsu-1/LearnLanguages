@@ -578,3 +578,8 @@ code { background: var(--surface-2); padding: 2px 6px; border-radius: var(--radi
 .place-q { margin-bottom: var(--space-4); }
 .place-q p { margin: 0 0 var(--space-2); }
 @media (max-width: 640px) { .offer { flex-direction: column; text-align: center; } .offer .wp-actions { justify-content: center; } }
+
+/* Bandeau « confirme ton adresse » (non bloquant) */
+.verify-banner { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; background: var(--honey-50); border-color: transparent; margin-bottom: var(--space-4); }
+.verify-banner > span { font-size: var(--text-2xl); }
+.verify-banner p { flex: 1; min-width: 220px; margin: 0; }

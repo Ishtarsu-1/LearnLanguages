@@ -190,6 +190,21 @@ Relance `npm start`. La ligne de démarrage affiche `voix : en ×4, ko ×1`, et 
 - La génération est limitée à 40 phrases par minute et par adresse IP. Les phrases déjà en cache sont servies sans limite.
 - Le cache se vide en supprimant `data/tts/`. Il est régénéré à la demande.
 
+## 6 quater. E-mails (mot de passe oublié, vérification de l'adresse)
+
+Mochi envoie deux sortes d'e-mails : le lien de **réinitialisation du mot de passe** (usage unique, 30 minutes) et le lien de **confirmation de l'adresse** (envoyé à l'inscription, valable 7 jours). La confirmation ne bloque rien : un bandeau dans le profil la rappelle.
+
+- **En local, sans rien configurer** : les e-mails ne partent pas. Ils s'affichent dans le terminal du serveur, avec le lien à copier dans le navigateur.
+- **Pour de vrai** : crée un compte gratuit sur **https://resend.com** (3 000 e-mails par mois), vérifie ton nom de domaine, crée une clé API, puis dans `.env` :
+
+```
+RESEND_API_KEY=re_ta_cle
+MAIL_FROM=Mochi <bonjour@ton-domaine.fr>
+PUBLIC_URL=https://ton-domaine.fr
+```
+
+`PUBLIC_URL` sert à construire les liens des e-mails. Elle n'est jamais déduite de la requête : sinon, un attaquant pourrait faire pointer le lien de réinitialisation vers son propre site.
+
 ## 7. Toutes les variables d'environnement
 
 | Variable | Par défaut | Rôle |
@@ -204,6 +219,9 @@ Relance `npm start`. La ligne de démarrage affiche `voix : en ×4, ko ×1`, et 
 | `TTS_URL`, `TTS_URL_EN`, `TTS_URL_KO` | — | Moteur de voix (section 6 ter) ; sans valeur, voix du navigateur |
 | `TTS_VOICES_EN`, `TTS_VOICES_KO` | — | Voix proposées, séparées par des virgules |
 | `TTS_MODEL`, `TTS_MODEL_EN`, `TTS_MODEL_KO` | `kokoro` | Champ `model` envoyé au moteur |
+| `RESEND_API_KEY` | — | Envoi réel des e-mails (section 6 quater) ; sans clé, ils s'affichent dans le terminal |
+| `MAIL_FROM` | `Mochi <onboarding@resend.dev>` | Expéditeur des e-mails |
+| `PUBLIC_URL` | `http://localhost:PORT` | Adresse du site, pour les liens envoyés par e-mail |
 | `PORT` | `8000` | Port du serveur |
 | `DATA_DIR` | `./data` | Base de données et photos de profil |
 | `COOKIE_SECURE` | — | Mettre `1` quand le site est servi en HTTPS |

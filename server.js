@@ -10,12 +10,16 @@ const crypto = require("node:crypto");
 const { DatabaseSync } = require("node:sqlite");
 const llm = require("./llm.js");
 const ttsMod = require("./tts.js");
+const mailer = require("./mailer.js");
 
 const PORT = Number(process.env.PORT) || 8000;
 const ROOT = __dirname;
 const DATA = path.resolve(process.env.DATA_DIR || path.join(ROOT, "data"));
 const AVATAR_DIR = path.join(DATA, "avatars");
 const SECURE = process.env.COOKIE_SECURE === "1";
+// Adresse publique du site, pour les liens envoyés par e-mail. Jamais déduite de l'en-tête
+// Host (un attaquant pourrait sinon faire pointer le lien de réinitialisation vers son site).
+const PUBLIC_URL = (process.env.PUBLIC_URL || `http://localhost:${PORT}`).replace(/\/+$/, "");
 const SESSION_DAYS = 30;
 const MAX_STATE = 8 * 1024 * 1024;
 const MAX_AVATAR = 1024 * 1024;
@@ -98,6 +102,14 @@ db.exec(`
 // Migration : colonnes de synchro sur users
 const userCols = db.prepare("PRAGMA table_info(users)").all().map((c) => c.name);
 if (!userCols.includes("sync_rev")) db.exec("ALTER TABLE users ADD COLUMN sync_rev INTEGER NOT NULL DEFAULT 0");
+if (!userCols.includes("email_verified_at")) db.exec("ALTER TABLE users ADD COLUMN email_verified_at TEXT");
+db.exec(`CREATE TABLE IF NOT EXISTS email_tokens (
+  token_hash TEXT PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  kind TEXT NOT NULL,          -- 'reset' (30 min) ou 'verify' (7 jours)
+  expires_at TEXT NOT NULL
+)`);
+db.prepare("DELETE FROM email_tokens WHERE expires_at < ?").run(new Date().toISOString());
 if (!userCols.includes("sync_epoch")) db.exec("ALTER TABLE users ADD COLUMN sync_epoch INTEGER NOT NULL DEFAULT 0");
 db.prepare("DELETE FROM sessions WHERE expires_at < ?").run(new Date().toISOString());
 
@@ -107,6 +119,29 @@ const sha256 = (s) => crypto.createHash("sha256").update(s).digest("hex");
 
 // Vraies voix (facultatif, voir tts.js) et fonctionnalités annoncées au client
 const tts = ttsMod.create({ dir: path.join(DATA, "tts") });
+// Jetons envoyés par e-mail : aléatoires, stockés hachés, à usage unique
+const mail = mailer.create();
+const TOKEN_TTL = { reset: 30 * 60e3, verify: 7 * 864e5 };
+function issueToken(userId, kind) {
+  const token = crypto.randomBytes(32).toString("base64url");
+  db.prepare("DELETE FROM email_tokens WHERE user_id = ? AND kind = ?").run(userId, kind); // un seul lien valide à la fois
+  db.prepare("INSERT INTO email_tokens (token_hash, user_id, kind, expires_at) VALUES (?, ?, ?, ?)").run(sha256(token), userId, kind, new Date(Date.now() + TOKEN_TTL[kind]).toISOString());
+  return token;
+}
+function consumeToken(token, kind) {
+  if (typeof token !== "string" || token.length > 100) return null;
+  const row = db.prepare("SELECT * FROM email_tokens WHERE token_hash = ? AND kind = ? AND expires_at > ?").get(sha256(token), kind, new Date().toISOString());
+  if (!row) return null;
+  db.prepare("DELETE FROM email_tokens WHERE token_hash = ?").run(row.token_hash);
+  return row.user_id;
+}
+// Envoi en arrière-plan : la réponse HTTP ne dépend ni du succès ni de la durée de l'envoi
+function sendMail(user, kind) {
+  const token = issueToken(user.id, kind);
+  const link = `${PUBLIC_URL}/#/${kind === "reset" ? "reinitialiser" : "verifier"}/${token}`;
+  const m = mailer.mails[kind](user.name, link);
+  mail.send({ to: user.email, ...m }).catch((e) => console.error("E-mail :", e.message));
+}
 const featuresJson = (loggedIn = true) => JSON.stringify({ llm: loggedIn && LLM_ON, engine: llm.ENGINE, tts: tts.info() });
 
 function hashPassword(pw) {
@@ -159,7 +194,7 @@ function publicUser(u) {
   return {
     id: u.id, email: u.email, name: u.name, avatar_emoji: u.avatar_emoji,
     avatar_url: u.avatar_file ? `/avatars/${u.avatar_file}` : null,
-    created_at: u.created_at, last_login_at: u.last_login_at,
+    created_at: u.created_at, last_login_at: u.last_login_at, email_verified: !!u.email_verified_at,
   };
 }
 
@@ -192,6 +227,8 @@ const RATE_LIMITS = {
   "login-email": { free: 5, max: 60e3, window: 3600e3 },
   signup: { free: 10, max: 15 * 60e3, window: 3600e3 },
   feedback: { free: 10, max: 60e3, window: 60e3, flat: true }, // 10 corrections par minute, pas de rafales
+  forgot: { free: 5, max: 15 * 60e3, window: 3600e3 },        // demandes de réinitialisation (par IP et par adresse)
+  verify: { free: 3, max: 15 * 60e3, window: 3600e3 },        // renvois de l'e-mail de vérification
   tts: { free: 40, max: 60e3, window: 60e3, flat: true },      // 40 phrases générées par minute (le cache, lui, est libre)
 };
 db.prepare("DELETE FROM login_attempts WHERE window_start < ?").run(Date.now() - 86400e3);
@@ -332,6 +369,7 @@ async function api(req, res, url) {
     if (db.prepare("SELECT 1 FROM users WHERE email = ?").get(email.trim())) return fail(res, 409, "Un compte existe déjà avec cette adresse.");
     const info = db.prepare("INSERT INTO users (email, pass, name, created_at) VALUES (?, ?, ?, ?)").run(email.trim(), await hashPassword(password), cleanName(name), now());
     createSession(res, Number(info.lastInsertRowid), req);
+    sendMail(db.prepare("SELECT * FROM users WHERE id = ?").get(info.lastInsertRowid), "verify");
     return send(res, 201, { user: publicUser(db.prepare("SELECT * FROM users WHERE id = ?").get(info.lastInsertRowid)), legacy_state: null, features: JSON.parse(featuresJson()) });
   }
 
@@ -347,6 +385,41 @@ async function api(req, res, url) {
     clearAttempts(keys[1]); // l'IP garde son compteur : un attaquant ne le remet pas à zéro avec son propre compte
     createSession(res, user.id, req);
     return send(res, 200, `{"user":${JSON.stringify(publicUser({ ...user, last_login_at: now() }))},"legacy_state":${legacyState(user)},"features":${featuresJson()}}`);
+  }
+
+  // Mot de passe oublié : même réponse que l'adresse existe ou non (on ne révèle pas qui est inscrit)
+  if (route === "POST /api/password/forgot") {
+    const { email } = await readJson(req);
+    if (typeof email !== "string" || email.length > 254 || !EMAIL_RE.test(email.trim())) return fail(res, 400, "Adresse e-mail invalide.");
+    const keys = [`forgot:${ip}`, `forgot:${email.trim().toLowerCase()}`];
+    const wait = Math.max(...keys.map((k) => waitFor(k)));
+    if (wait) return tooMany(res, wait);
+    keys.forEach((k) => recordAttempt(k));
+    const user = db.prepare("SELECT * FROM users WHERE email = ?").get(email.trim());
+    if (user) sendMail(user, "reset");
+    return send(res, 200, { ok: true });
+  }
+  if (route === "POST /api/password/reset") {
+    const { token, password } = await readJson(req);
+    if (typeof password !== "string" || password.length < 8) return fail(res, 400, "Le mot de passe doit faire au moins 8 caractères.");
+    if (password.length > 200) return fail(res, 400, "Mot de passe trop long.");
+    const uid = consumeToken(token, "reset");
+    if (!uid) return fail(res, 400, "Ce lien n'est plus valable. Redemande un e-mail de réinitialisation.");
+    // Le lien prouve l'accès à la boîte mail : l'adresse est vérifiée du même coup.
+    // Toutes les sessions sont fermées (si le compte était compromis, l'intrus est déconnecté).
+    db.prepare("UPDATE users SET pass = ?, email_verified_at = COALESCE(email_verified_at, ?) WHERE id = ?").run(await hashPassword(password), now(), uid);
+    db.prepare("DELETE FROM sessions WHERE user_id = ?").run(uid);
+    const user = db.prepare("SELECT * FROM users WHERE id = ?").get(uid);
+    clearAttempts(`login-email:${user.email.toLowerCase()}`);
+    createSession(res, uid, req);
+    return send(res, 200, `{"user":${JSON.stringify(publicUser({ ...user, last_login_at: now() }))},"legacy_state":${legacyState(user)},"features":${featuresJson()}}`);
+  }
+  if (route === "POST /api/email/verify") {
+    const { token } = await readJson(req);
+    const uid = consumeToken(token, "verify");
+    if (!uid) return fail(res, 400, "Ce lien n'est plus valable. Tu peux en demander un nouveau depuis ton profil.");
+    db.prepare("UPDATE users SET email_verified_at = COALESCE(email_verified_at, ?) WHERE id = ?").run(now(), uid);
+    return send(res, 200, { ok: true });
   }
 
   // Voix serveur : ouvertes aux invités aussi. Le cache est servi librement,
@@ -445,6 +518,14 @@ async function api(req, res, url) {
     db.prepare("DELETE FROM sessions WHERE user_id = ? AND token_hash != ?").run(uid, auth.session.token_hash);
     return send(res, 200, { ok: true });
   }
+  if (route === "POST /api/email/resend") {
+    if (auth.user.email_verified_at) return send(res, 200, { ok: true, already: true });
+    const wait = waitFor(`verify:${uid}`);
+    if (wait) return tooMany(res, wait);
+    recordAttempt(`verify:${uid}`);
+    sendMail(auth.user, "verify");
+    return send(res, 200, { ok: true });
+  }
   if (route === "GET /api/sessions") {
     const rows = db.prepare("SELECT token_hash, created_at, last_seen_at, user_agent FROM sessions WHERE user_id = ? AND expires_at > ? ORDER BY last_seen_at DESC").all(uid, now());
     return send(res, 200, { sessions: rows.map((r) => ({ current: r.token_hash === auth.session.token_hash, created_at: r.created_at, last_seen_at: r.last_seen_at, user_agent: r.user_agent })) });
@@ -511,5 +592,5 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-if (require.main === module) server.listen(PORT, () => console.log(`Mochi → http://localhost:${PORT} · correcteur : ${LLM_ON ? llm.ENGINE : "désactivé"} · voix : ${tts.enabled ? Object.entries(tts.info()).map(([l, v]) => `${l} ×${v.length}`).join(", ") : "navigateur"}`));
-module.exports = { server, db, limiter: { waitFor, recordAttempt, clearAttempts } };
+if (require.main === module) server.listen(PORT, () => console.log(`Mochi → http://localhost:${PORT} · correcteur : ${LLM_ON ? llm.ENGINE : "désactivé"} · e-mails : ${mail.mode} · voix : ${tts.enabled ? Object.entries(tts.info()).map(([l, v]) => `${l} ×${v.length}`).join(", ") : "navigateur"}`));
+module.exports = { server, db, mail, limiter: { waitFor, recordAttempt, clearAttempts } };

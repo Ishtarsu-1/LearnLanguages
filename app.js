@@ -1594,6 +1594,7 @@ function viewProfile() {
   const since = account ? new Date(account.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" }) : "";
   return `
   <section class="view">
+    ${verifyBanner()}
     <div class="card profile-head">
       <div class="avatar-wrap">
         <div class="avatar">${displayAvatar()}</div>
@@ -1806,9 +1807,62 @@ function viewAuth(mode) {
       <button class="btn">${signup ? "Créer mon compte" : "Se connecter"}</button>
       ${signup && (cards || xp) ? `<p class="muted center"><small>✨ Ta progression actuelle (${cards} carte(s), ${xp} XP) sera rattachée à ton compte.</small></p>` : ""}
     </form>
-    <p class="center muted">${signup ? `Déjà un compte ? <a class="lnk" href="#/connexion">Se connecter</a>` : `Pas encore de compte ? <a class="lnk" href="#/inscription">Créer un compte</a>`}</p>
+    <p class="center muted">${signup ? `Déjà un compte ? <a class="lnk" href="#/connexion">Se connecter</a>` : `<a class="lnk" href="#/mot-de-passe-oublie">Mot de passe oublié ?</a> · Pas encore de compte ? <a class="lnk" href="#/inscription">Créer un compte</a>`}</p>
   </section>`;
 }
+
+// ---------- Mot de passe oublié et vérification de l'adresse (ROADMAP P0) ----------
+function viewForgot() {
+  if (!serverOn) return viewAuth("connexion");
+  const sent = ui.forgotSent;
+  return `<section class="view lesson-shell">
+    <div class="auth-head">${mochi("small", sent ? "happy" : "thinking")}<div><h1>Mot de passe oublié</h1>
+      <p class="muted">On t'envoie un lien pour en choisir un nouveau.</p></div></div>
+    ${sent ? `<div class="card"><p><b>C'est parti !</b> Si un compte existe pour <b>${esc(sent)}</b>, un e-mail vient d'y être envoyé.</p>
+      <p class="muted">Le lien marche une seule fois, pendant 30 minutes. Pense à regarder dans les indésirables.</p>
+      <button class="mini" data-act="forgot-again">Utiliser une autre adresse</button></div>`
+    : `<form class="card form" data-form="forgot">
+      <label>E-mail du compte<input class="input" type="email" name="email" autocomplete="email" required /></label>
+      <p class="form-err" hidden></p>
+      <button class="btn">Envoyer le lien</button>
+    </form>`}
+    <p class="center muted"><a class="lnk" href="#/connexion">Retour à la connexion</a></p>
+  </section>`;
+}
+function viewReset(token) {
+  if (!serverOn) return viewAuth("connexion");
+  return `<section class="view lesson-shell">
+    <div class="auth-head">${mochi("small")}<div><h1>Nouveau mot de passe</h1>
+      <p class="muted">Tes autres appareils seront déconnectés.</p></div></div>
+    <form class="card form" data-form="reset">
+      <input type="hidden" name="token" value="${esc(token)}" />
+      <label>Nouveau mot de passe<input class="input" type="password" name="password" autocomplete="new-password" minlength="8" required />
+        <small class="muted">8 caractères minimum.</small></label>
+      <label>Confirme-le<input class="input" type="password" name="confirm" autocomplete="new-password" minlength="8" required /></label>
+      <p class="form-err" hidden></p>
+      <button class="btn">Enregistrer et me connecter</button>
+    </form>
+  </section>`;
+}
+function viewVerify(token) {
+  const V = ui.verify;
+  if (!V || V.token !== token) {
+    ui.verify = { token, status: "pending" };
+    api("POST", "/api/email/verify", { token })
+      .then(() => { ui.verify.status = "ok"; if (account) account.email_verified = true; })
+      .catch((e) => { ui.verify.status = "err"; ui.verify.msg = e.message; })
+      .finally(() => { history.replaceState?.(null, "", "#/verifier/ok"); ui.verify.token = "ok"; render(); });
+  }
+  const st = ui.verify.status;
+  return `<section class="view lesson-shell"><div class="card empty">
+    ${mochi("small", st === "ok" ? "proud" : st === "err" ? "surprised" : "thinking")}
+    <h2>${st === "ok" ? "Adresse confirmée !" : st === "err" ? "Lien expiré" : "Vérification…"}</h2>
+    <p class="muted">${st === "ok" ? "Merci. Tu pourras récupérer ton compte si tu oublies ton mot de passe." : st === "err" ? esc(ui.verify.msg) : ""}</p>
+    ${st !== "pending" ? `<a class="btn" href="${account ? "#/profil" : "#/connexion"}">${account ? "Mon profil" : "Se connecter"}</a>` : ""}
+  </div></section>`;
+}
+const verifyBanner = () => account && !account.email_verified
+  ? `<div class="card verify-banner" role="status"><span aria-hidden="true">✉️</span><p><b>Confirme ton adresse e-mail.</b> On t'a envoyé un lien à ${esc(account.email)}. Sans ça, impossible de récupérer ton compte si tu oublies ton mot de passe.</p><button class="mini" data-act="resend-verify">Renvoyer l'e-mail</button></div>` : "";
 
 // ---------- Page publique « Pourquoi ça marche » (§10, §11) ----------
 const SOURCES = [
@@ -1895,6 +1949,12 @@ function route() {
   } else if (parts[0] === "profil") { html = viewProfile(); nav = "profil"; }
   else if (parts[0] === "connexion" || parts[0] === "inscription") { html = viewAuth(parts[0]); nav = "profil"; }
   else if (parts[0] === "pourquoi") { html = viewWhy(); nav = "pourquoi"; }
+  else if (parts[0] === "mot-de-passe-oublie") { html = viewForgot(); nav = "profil"; }
+  else if (parts[0] === "reinitialiser" && parts[1]) { html = viewReset(parts[1]); nav = "profil"; }
+  else if (parts[0] === "verifier" && parts[1]) {
+    if (parts[1] === "ok" && !ui.verify) return void (location.hash = account ? "#/profil" : "#/"); // rechargement après coup
+    html = viewVerify(parts[1]); nav = "profil";
+  }
   else if (parts[0] === "lang" && LANGUAGES[parts[1]]) {
     lang = parts[1]; nav = NAV_OF_TAB[parts[2]] || "aujourdhui";
     state.lastLang = lang; state.langs[lang].started = true; save();
@@ -2147,6 +2207,11 @@ const actions = {
   "logout-others": async () => {
     try { await api("POST", "/api/logout-others"); toast("Autres appareils déconnectés ✓"); loadSessions(); } catch (e) { toast(e.message); }
   },
+  "forgot-again": () => { ui.forgotSent = null; render(); },
+  "resend-verify": async () => {
+    try { const r = await api("POST", "/api/email/resend", {}); if (r.already) account.email_verified = true; toast(r.already ? "Adresse déjà confirmée ✓" : "E-mail renvoyé ✉️"); render(); }
+    catch (e) { toast(e.message); }
+  },
   theme: (el) => { state.settings.theme = el.dataset.v; save(); render(); },
   goal: (el) => { state.goal = +el.dataset.v; save(); render(); toast("Objectif mis à jour 🎯"); },
   export: () => {
@@ -2230,6 +2295,13 @@ $app.addEventListener("submit", async (e) => {
     } else if (kind === "login") {
       await applyAuth(await api("POST", "/api/login", { email: f.email.trim(), password: f.password }));
       location.hash = state.lastLang ? `#/lang/${state.lastLang}` : "#/"; toast(`Re-bonjour${account.name ? ", " + account.name : ""} ! 🍡`);
+    } else if (kind === "forgot") {
+      await api("POST", "/api/password/forgot", { email: f.email.trim() });
+      ui.forgotSent = f.email.trim(); render();
+    } else if (kind === "reset") {
+      if (f.password !== f.confirm) throw new Error("Les deux mots de passe ne sont pas identiques.");
+      await applyAuth(await api("POST", "/api/password/reset", { token: f.token, password: f.password }));
+      history.replaceState?.(null, "", "#/profil"); route(); toast("Mot de passe changé, tu es connecté·e ✓");
     } else if (kind === "password") {
       await api("POST", "/api/password", { current: f.current, next: f.next });
       form.reset(); toast("Mot de passe mis à jour ✓"); loadSessions();
