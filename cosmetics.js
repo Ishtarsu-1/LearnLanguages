@@ -46,7 +46,7 @@ const accessoryById = (id) => ACCESSORIES.find((a) => a.id === id);
 const accUnlocked = (a, st = lookStats()) => isAdmin() || st[a.need[0]] >= a.need[1];
 const myLook = () => state.settings.look || {};
 
-// Calque d'accessoires ajouté par mochi() (app.js). La tête suit la forme de Mochi selon l'humeur.
+// Calque d'accessoires ajouté par mochi() (ui.js). La tête suit la forme de Mochi selon l'humeur.
 const HEAD_DY = { proud: -6, sleepy: 15 };
 function mochiAccessories(mood) {
   const look = myLook(), st = lookStats();

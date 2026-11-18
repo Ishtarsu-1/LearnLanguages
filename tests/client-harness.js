@@ -1,5 +1,5 @@
 const vm = require("vm"), fs = require("fs"), path = require("path");
-// Charge content.js + app.js dans un faux navigateur (DOM et FSRS simulés)
+// Charge les scripts du site (liste de index.html) dans un faux navigateur (DOM et FSRS simulés)
 const dir = process.argv[2] || path.join(__dirname, "..");
 const el = () => ({ value: "", innerHTML: "", textContent: "", classList: { add() {}, remove() {}, toggle() {} }, dataset: {}, addEventListener() {}, querySelector: () => null, querySelectorAll: () => [], focus() {} });
 const store = {};

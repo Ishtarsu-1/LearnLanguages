@@ -144,7 +144,7 @@ const CONFUSABLE = {
 
 // ---------- Thèmes de situation (PEDAGOGIE §12, ROADMAP « thèmes et situations ») ----------
 // Un thème = des mots qui vont ensemble dans une scène. Chaque texte porte themes[].
-// Les mots d'un thème sont déduits de ses textes (themeWords dans app.js) : le socle de
+// Les mots d'un thème sont déduits de ses textes (themeWords dans lessons.js) : le socle de
 // fréquence (mots présents dans 3 thèmes ou plus, et les particules) n'appartient à aucun thème.
 // fill : saveur de Mochi associée (CHARTE-GRAPHIQUE §8), uniquement pour l'illustration.
 const THEMES = [

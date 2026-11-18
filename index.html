@@ -43,6 +43,18 @@
   <!-- FSRS (Free Spaced Repetition Scheduler) : planification des révisions, cf. PEDAGOGIE.md §1 -->
   <script src="vendor/ts-fsrs-5.2.3.umd.js"></script>
   <script src="content.js"></script>
+  <!-- Application : scripts classiques, chargés dans cet ordre (pas de bundler). app.js démarre. -->
+  <script src="state.js"></script>
+  <script src="sync.js"></script>
+  <script src="ui.js"></script>
+  <script src="audio.js"></script>
+  <script src="reader.js"></script>
+  <script src="fsrs-cards.js"></script>
+  <script src="today.js"></script>
+  <script src="lessons.js"></script>
+  <script src="profile.js"></script>
+  <script src="router.js"></script>
+  <script src="actions.js"></script>
   <script src="app.js"></script>
   <script src="exercises.js"></script>
   <script src="placement.js"></script>

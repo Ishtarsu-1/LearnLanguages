@@ -294,7 +294,7 @@ Sous chaque champ de saisie coréen, un bouton « ⌨️ 한글 » ouvre un clav
 - **Classements entre amis** (heures, mots solides), toujours basés sur des indicateurs honnêtes, et **badges** (premier texte lu, Hangul terminé, 100 mots solides, phase 2 franchie, première saveur débloquée).
 - **Import de contenus perso** : coller un article, des sous-titres (.srt) ou des paroles, puis calculer la couverture et capturer les mots. Les paroles et sous-titres restent privés (droits d'auteur) : jamais partagés entre utilisateurs. La lecture des sous-titres en parallèle de la vidéo serait le Graal pour l'anglais.
 - **Tandem** *(nouveau)* : mettre en relation un francophone qui apprend le coréen avec un Coréen qui apprend le français, pour échanger des corrections de phrases (pas de chat libre au début, pour limiter la modération). Ça répond au besoin de pratique avec des humains, surtout pour les niveaux de langue coréens.
-- **Nouvelles langues** : chinois, français, japonais, italien sont **annoncés sur l'accueil** (cartes « 🔒 Bientôt », non cliquables, liste `COMING_SOON` dans `app.js`). Japonais : même logique d'alphabet d'abord que le Hangul (kana). Pour en ouvrir une : la passer de `COMING_SOON` à `LANGUAGES` avec son contenu. Le code est déjà prévu pour (`LANGUAGES`, `LEXICON`, `TEXTS`).
+- **Nouvelles langues** : chinois, français, japonais, italien sont **annoncés sur l'accueil** (cartes « 🔒 Bientôt », non cliquables, liste `COMING_SOON` dans `state.js`). Japonais : même logique d'alphabet d'abord que le Hangul (kana). Pour en ouvrir une : la passer de `COMING_SOON` à `LANGUAGES` avec son contenu. Le code est déjà prévu pour (`LANGUAGES`, `LEXICON`, `TEXTS`).
 - **Espace prof / classe** : un prof crée une classe, assigne des textes et suit la progression.
 - **Accessibilité** : navigation au clavier complète, lecteurs d'écran, contraste (déjà calculé dans la charte), taille de texte réglable, police adaptée en option.
 - **Interface en plusieurs langues** (aujourd'hui seulement en français).
@@ -335,7 +335,7 @@ Tout ce qu'il faut pour faire tourner Mochi sans payer, avec les limites à conn
 
 ## Dette technique à surveiller
 
-- **Découper `app.js`** (~2 800 lignes) sans changer le comportement ni ajouter de bundler : `state.js`, `sync.js`, `fsrs-cards.js`, `audio.js`, `reader.js`, `today.js`, `profile.js`, `ui.js`, `router.js`, `app.js` (démarrage). Chaque fichier ajouté à `STATIC` (`server.js`) et au service worker. (CORRECTIFS v0.3, lot 6.1)
+- ✅ **Découpage d'`app.js`** (fait) : 12 scripts classiques chargés dans l'ordre par `index.html` (`state.js`, `sync.js`, `ui.js`, `audio.js`, `reader.js`, `fsrs-cards.js`, `today.js`, `lessons.js`, `profile.js`, `router.js`, `actions.js`, `app.js` pour le démarrage), sans bundler ni changement de comportement. Les tests lisent la liste dans `index.html` et vérifient que chaque script est servi et précaché. Prochaine étape possible : modules ES.
 - **Migrer les attributs `style="…"`** des templates vers des classes (ou `element.style.setProperty`), puis retirer `'unsafe-inline'` de `style-src` dans la CSP. (CORRECTIFS v0.3, lot 6.2)
 - Les tests (`node tests/run.js`) simulent le navigateur et FSRS : il manque des tests dans un vrai navigateur (Playwright).
 - ~~La limitation des tentatives de connexion est gardée en mémoire~~ → remontée en P0.

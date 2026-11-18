@@ -196,7 +196,7 @@ Phrases tirées des textes où tu connais déjà la plupart des mots, toujours a
 
 | | |
 |---|---|
-| Interface | HTML, CSS et JavaScript, sans framework ni étape de compilation (`index.html`, `app.js`, `exercises.js`, `placement.js`, `content.js`, `tokens.css`, `styles.css`). Polices dans `fonts/`, ts-fsrs dans `vendor/` : aucun appel à un CDN |
+| Interface | HTML, CSS et JavaScript, sans framework ni étape de compilation (`index.html` charge dans l'ordre des scripts classiques : `state.js`, `sync.js`, `ui.js`, `audio.js`, `reader.js`, `fsrs-cards.js`, `today.js`, `lessons.js`, `profile.js`, `router.js`, `actions.js`, `app.js` (démarrage), puis `exercises.js`, `placement.js`… ; `content.js` pour le contenu, `tokens.css` et `styles.css`). Polices dans `fonts/`, ts-fsrs dans `vendor/` : aucun appel à un CDN |
 | Serveur | Node.js ≥ 22.5, SQLite intégré (`server.js`) |
 | Correcteur | `llm.js` : SDK Claude + zod, ou Ollama |
 | Révisions | ts-fsrs 5.2.3 (embarqué) |
