@@ -583,3 +583,12 @@ code { background: var(--surface-2); padding: 2px 6px; border-radius: var(--radi
 .verify-banner { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; background: var(--honey-50); border-color: transparent; margin-bottom: var(--space-4); }
 .verify-banner > span { font-size: var(--text-2xl); }
 .verify-banner p { flex: 1; min-width: 220px; margin: 0; }
+
+/* Quêtes de la semaine */
+.quests ul { list-style: none; padding: 0; margin: 10px 0 8px; display: flex; flex-direction: column; gap: 12px; }
+.quests li { display: flex; align-items: center; gap: 10px; }
+.quests .q-ico { font-size: var(--text-xl); width: 28px; text-align: center; }
+.quests .q-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.quests .q-body b { font-size: var(--text-sm); }
+.quests li.done .bar span { background: var(--success); }
+.quests .q-body .bar { flex: none; height: 8px; }

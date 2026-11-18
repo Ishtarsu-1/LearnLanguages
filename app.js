@@ -20,7 +20,7 @@ const STORE_KEY = "mochi-state-v2";
 const langDefaults = () => ({
   xp: 0, streak: 0, lastStreakDay: null, seconds: 0, todayDate: null, todaySec: 0, started: false,
   known: {}, unknown: {}, readTexts: {}, fullDays: {}, catchUp: false, session: {}, introduced: { date: null, count: 0 },
-  hangulDone: false, hangulDays: {}, grammarDone: {}, grammarMiss: {}, earStats: {}, errors: {}, prodDone: {},
+  hangulDone: false, hangulDays: {}, grammarDone: {}, grammarMiss: {}, earStats: {}, errors: {}, prodDone: {}, quests: {},
 });
 const defaultState = () => ({
   name: "", avatar: "🐰", goal: 10, lastLang: null,
@@ -82,7 +82,7 @@ async function api(method, url, body, raw) {
 //   - compteurs: XP, temps, activité → on envoie des deltas, le serveur additionne
 //  « snap » = ce que le serveur connaît déjà ; on n'envoie que la différence.
 // ============================================================
-const MAP_KEYS = ["known", "unknown", "readTexts", "fullDays", "hangulDays", "grammarDone", "grammarMiss", "earStats", "errors", "prodDone"];
+const MAP_KEYS = ["known", "unknown", "readTexts", "fullDays", "hangulDays", "grammarDone", "grammarMiss", "earStats", "errors", "prodDone", "quests"];
 const CTR_KEYS = ["xp", "seconds"];
 const sync = { status: "idle", timer: null, running: false, again: false, meta: null };
 
@@ -749,7 +749,7 @@ let lastActivity = 0;
 ["click", "keydown", "pointerdown"].forEach((ev) => addEventListener(ev, () => (lastActivity = Date.now()), { passive: true }));
 setInterval(() => {
   const lang = currentLang();
-  const listening = "speechSynthesis" in window && speechSynthesis.speaking;
+  const listening = (current && !current.paused) || (hasSynth() && speechSynthesis.speaking);
   if (!lang || document.hidden || (Date.now() - lastActivity > 60000 && !listening)) return;
   const L = state.langs[lang];
   if (L.todayDate !== today()) { L.todayDate = today(); L.todaySec = 0; }
@@ -935,6 +935,7 @@ function viewLanguage(lang, tab) {
           </div>
         </div>
         ${weekCard(L)}
+        ${questsCard(lang)}
         <div class="card">
           <h3>Vers le ${lvl[0]}</h3>
           <div class="bar" style="margin:10px 0 6px"><span style="width:${Math.min(100, (hours / lvl[1]) * 100)}%"></span></div>
@@ -955,6 +956,50 @@ function weekCard(L) {
     <h3>Ma semaine · ${w.thisWeek}/${WEEK_GOAL}</h3>
     <ol class="week-dots" aria-label="Séances complètes cette semaine">${w.days.map((d, i) => `<li class="${d.done ? "done" : ""} ${d.day === today() ? "today" : ""}" title="${d.day}${d.done ? " : séance complète" : ""}"><span aria-hidden="true">${d.done ? "✓" : names[i]}</span><span class="sr-only">${d.day} ${d.done ? "fait" : "pas fait"}</span></li>`).join("")}</ol>
     <small class="muted">${msg}</small>
+  </div>`;
+}
+
+// ---------- Quêtes de la semaine (ROADMAP P2, PEDAGOGIE §16) ----------
+// 3 quêtes par semaine et par langue, tirées parmi les bonnes pratiques. Le tirage dépend
+// seulement de la semaine et de la langue : tous les appareils voient les mêmes quêtes sans
+// rien synchroniser. Les objectifs suivent l'objectif du jour (5, 10, 15 ou 20 min).
+// La progression se lit dans l'historique (state.history), déjà synchronisé.
+const QUEST_XP = 50;
+const QUESTS = [
+  { id: "read", icon: "📖", base: 3, title: (n) => `Lis ${n} texte${n > 1 ? "s" : ""}`, count: (h) => h.read },
+  { id: "prod", icon: "💬", base: 10, title: (n) => `Écris ${n} phrases`, count: (h) => h.prod },
+  { id: "ear", icon: "🎧", base: 30, title: (n) => `Fais ${n} essais de paires de sons`, count: (h) => h.ear },
+  { id: "rev", icon: "🧠", base: 80, title: (n) => `Fais ${n} révisions`, count: (h) => h.rev },
+  { id: "min", icon: "⏱️", base: 60, title: (n) => `Pratique ${n} minutes`, count: (h) => Math.floor(h.sec / 60) },
+  { id: "row", icon: "🔥", base: 4, scale: false, title: (n) => `Séance complète ${n} jours de suite`, count: (h, L, days) => { let best = 0, cur = 0; for (const d of days) { cur = L.fullDays[d] ? cur + 1 : 0; best = Math.max(best, cur); } return best; } },
+];
+function weekQuests(lang, mon = monday()) {
+  const wk = today(mon), days = Array.from({ length: 7 }, (_, i) => today(new Date(+mon + i * 864e5))).filter((d) => d <= today());
+  const L = state.langs[lang], f = Math.min(1.6, Math.max(0.6, state.goal / 10));
+  const h = { read: 0, prod: 0, ear: 0, rev: 0, sec: 0 };
+  for (const d of days) for (const k in h) h[k] += state.history[d]?.[lang]?.[k] || 0;
+  // Tirage déterministe : on trie le catalogue selon un hachage (semaine, langue, quête)
+  const rank = (q) => parseInt(fnv(`${wk}|${lang}|${q.id}`), 36);
+  const picked = [...QUESTS].sort((a, b) => rank(a) - rank(b)).slice(0, 3);
+  return picked.map((q) => {
+    const goal = q.scale === false ? q.base : Math.max(1, Math.round((q.base * f) / (q.base >= 10 ? 5 : 1)) * (q.base >= 10 ? 5 : 1));
+    const n = Math.min(goal, q.count(h, L, days));
+    const key = `${wk}:${q.id}`;
+    return { ...q, key, goal, n, title: q.title(goal), done: n >= goal, claimed: !!L.quests[key] };
+  });
+}
+function questsCard(lang) {
+  const qs = weekQuests(lang), left = 7 - ((new Date().getDay() + 6) % 7) - 1;
+  return `<div class="card quests">
+    <h3>Quêtes de la semaine</h3>
+    <ul>${qs.map((q) => `<li class="${q.done ? "done" : ""}">
+      <span class="q-ico" aria-hidden="true">${q.claimed ? "✅" : q.icon}</span>
+      <div class="q-body"><b>${esc(q.title)}</b>
+        <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="${q.goal}" aria-valuenow="${q.n}" aria-label="${esc(q.title)}"><span style="width:${(q.n / q.goal) * 100}%"></span></div>
+        <small class="muted">${q.n} / ${q.goal}</small></div>
+      ${q.done && !q.claimed ? `<button class="btn small" data-act="quest-claim" data-k="${q.key}" data-l="${lang}">+${QUEST_XP} XP</button>` : ""}
+    </li>`).join("")}</ul>
+    <small class="muted">${qs.every((q) => q.claimed) ? "Toutes les quêtes sont faites, bravo ! Les prochaines arrivent lundi." : left > 0 ? `Nouvelles quêtes lundi (dans ${left} jour${left > 1 ? "s" : ""}).` : "Nouvelles quêtes demain."}</small>
   </div>`;
 }
 
@@ -2157,7 +2202,13 @@ const actions = {
     const good = G.picked === G.target; if (good) G.score++;
     const S = state.langs[G.lang].earStats, key = earKey(EAR[G.lang].pairs[G.i]);
     S[key] = { n: (S[key]?.n || 0) + 1, ok: (S[key]?.ok || 0) + (good ? 1 : 0) };
-    track(G.lang, "ex"); save(); render();
+    track(G.lang, "ex"); track(G.lang, "ear"); save(); render();
+  },
+  "quest-claim": (el) => {
+    const L = state.langs[el.dataset.l], q = weekQuests(el.dataset.l).find((x) => x.key === el.dataset.k);
+    if (!q || !q.done || L.quests[q.key]) return;
+    L.quests[q.key] = true; L.xp += QUEST_XP; save(); render();
+    toast(weekQuests(el.dataset.l).every((x) => x.claimed) ? "Toutes les quêtes de la semaine sont faites ! 🎉" : `Quête réussie : +${QUEST_XP} XP ⭐`);
   },
   "ear-next": () => { const G = ui.ear; Object.assign(G, { i: pickPair(G.lang, G.i), target: null, picked: null }); render(); },
 

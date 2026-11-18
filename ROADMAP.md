@@ -38,7 +38,7 @@
 | **P1** | Bibliothèque de lectures graduées (lecture + écoute) | 🔴 | 🆓 | contenu, voix |
 | **P1** | Génération de textes calibrés par LLM | 🔴 | 🆓/💶 | LLM + analyseur |
 | **P2** | Mochi, la mascotte, et la collection de Mochis | 🟡 | 🆓 | charte graphique |
-| **P2** | Série flexible (✅) + quêtes hebdomadaires | 🟡 | 🆓 | — |
+| ~~**P2**~~ | ~~Série flexible + quêtes hebdomadaires~~ ✅ fait (reste : récompenses cosmétiques) | 🟡 | 🆓 | — |
 | **P2** | Mode histoire | 🔴 | 🆓 | bibliothèque |
 | **P2** | Application installable (PWA) + hors ligne | 🟡 | 🆓 | — |
 | **P2** | Rappels et notifications | 🟡 | 🆓 | PWA |
@@ -215,7 +215,7 @@ Application du §15.
 - Accessoires cosmétiques pour Mochi (bonnet, écharpe, hanbok, casquette) gagnés avec les quêtes. **Purement cosmétiques**, jamais achetables.
 
 ### Série flexible + quêtes hebdomadaires 🟡 🆓 *(série ✅)*
-Fait : série hebdomadaire 5/7 (`fullDays`, migrée depuis l'ancienne série), carte « Ma semaine », Mochi endormie les jours de repos, nouvelle définition d'une séance complète, reprise en douceur après une absence (20 révisions puis 40/jour, sans nouvelles cartes). Reste : les quêtes hebdomadaires.
+Fait : série hebdomadaire 5/7 (`fullDays`, migrée depuis l'ancienne série), carte « Ma semaine », Mochi endormie les jours de repos, nouvelle définition d'une séance complète, reprise en douceur après une absence (20 révisions puis 40/jour, sans nouvelles cartes). Quêtes faites : 3 par semaine et par langue parmi 6 (lire, écrire, paires de sons, révisions, minutes, séances complètes d'affilée), tirage identique sur tous les appareils, objectifs proportionnels à l'objectif du jour, +50 XP chacune. Reste : les accessoires cosmétiques en récompense (avec la collection de Mochis), et les quêtes par thème (« Lis 3 textes du thème Café ») quand les thèmes existeront.
 
 - **Série hebdomadaire plutôt que quotidienne** : l'objectif est « 5 jours sur 7 », comme le défi « Semaine régulière ». Une semaine réussie ajoute +1 à la série. Rater un jour ne casse rien : manquer une occasion n'empêche pas une habitude de se former (§16).
 - **Jours de repos** : 2 par semaine, inclus d'office, présentés positivement (Mochi fait la sieste).

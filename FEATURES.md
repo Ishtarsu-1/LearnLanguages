@@ -17,6 +17,7 @@
 | Comptes | Inscription, photo de profil, suivi d'activité, sécurité, synchronisation multi-appareils |
 | Site | Responsive mobile et desktop, thème clair et sombre, page « Pourquoi ça marche » |
 | Comptes | Mot de passe oublié (lien par e-mail, usage unique, 30 min), confirmation de l'adresse (bandeau non bloquant) |
+| Motivation | Série hebdomadaire 5/7, quêtes de la semaine (3 par langue, +50 XP) |
 | Audio | Voix du navigateur ou vraies voix du serveur (Kokoro, MeloTTS, cache disque), Profil › Audio : état, choix et test des voix, aide si aucune voix |
 
 ---

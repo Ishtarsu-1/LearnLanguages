@@ -268,3 +268,26 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
   account.email_verified = true; ok(!viewProfile().includes("Confirme ton adresse e-mail"), "pas de bandeau si vérifiée");
   account = acc0; serverOn = on;
 }
+{ // Quêtes de la semaine
+  const q1 = weekQuests("en"), q2 = weekQuests("en");
+  ok(q1.length === 3 && new Set(q1.map((q) => q.id)).size === 3 && q1.map((q) => q.id).join() === q2.map((q) => q.id).join(), "3 quêtes distinctes, tirage stable");
+  const nextMon = new Date(monday()); nextMon.setDate(nextMon.getDate() + 7);
+  let differs = false; for (let i = 1; i < 6 && !differs; i++) { const m = new Date(monday()); m.setDate(m.getDate() + 7 * i); differs = weekQuests("en", m).map((q) => q.id).join() !== q1.map((q) => q.id).join(); }
+  ok(differs, "les quêtes changent d'une semaine à l'autre");
+  const goal0 = state.goal; state.goal = 20;
+  const read = QUESTS.find((q) => q.id === "read");
+  ok(Math.round(read.base * 1.6) === 5, "objectifs proportionnels à l'objectif du jour"); state.goal = goal0;
+  // Compléter une quête puis réclamer l'XP, une seule fois
+  const q = weekQuests("en")[0], L = state.langs.en, xp0 = L.xp;
+  const h = (state.history[today()] ||= {}).en ||= { sec: 0, rev: 0, prod: 0, read: 0 };
+  if (q.id === "row") for (let i = 0; i < 7; i++) L.fullDays[today(new Date(+monday() + i * 864e5))] = true;
+  else if (q.id === "min") h.sec += q.goal * 60; else h[q.id] = (h[q.id] || 0) + q.goal;
+  const done = weekQuests("en").find((x) => x.id === q.id);
+  ok(q.id === "row" ? done.n >= 1 : done.done, "progression lue dans l'historique " + JSON.stringify(done));
+  if (done.done) {
+    ok(questsCard("en").includes("quest-claim"), "bouton de récompense");
+    actions["quest-claim"]({ dataset: { k: done.key, l: "en" } }); actions["quest-claim"]({ dataset: { k: done.key, l: "en" } });
+    ok(L.xp === xp0 + QUEST_XP && L.quests[done.key] === true, "XP gagnée une seule fois");
+    ok(flatten(state).kv[`langs.en.quests.${done.key}`] === true, "récompense synchronisée");
+  }
+}
