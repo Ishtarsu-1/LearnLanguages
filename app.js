@@ -425,6 +425,7 @@ function speak(text, lang, speed = state.settings.speed, who = null) {
     const voice = who?.server || defaultServerVoice(lang), token = playToken;
     return serverSpeak(text, lang, voice, speed * (who?.rate || 1), who && who.pitch !== 1, token).catch((e) => {
       if (token !== playToken || e?.name === "AbortError") return; // interrompue par une autre lecture : pas une panne
+      if (e?.name === "NotAllowedError") return; // lecture automatique bloquée avant toute interaction : le bouton 🔊 reste là
       const why = audioError(e);
       console.warn("Voix du serveur illisible :", why, e);
       // Repli sur les voix du navigateur s'il y en a ; sinon on dit la vraie raison
@@ -1201,6 +1202,8 @@ function viewReader(lang, textId) {
   const t = textById(lang, textId);
   if (!t) return viewNotFound();
   if (hangulGate(lang)) return `<section class="view">${gateCard()}</section>`;
+  const lock = t.book && chapterLock(lang, bookById(lang, t.book), t.chapter);
+  if (lock) return `<section class="view lesson-shell"><div class="card empty">${mochi("small", "focused")}<h2>Pas encore</h2><p class="muted">${esc(lock)}</p><a class="btn" href="#/lang/${lang}/livre/${t.book}">Retour au livre</a></div></section>`;
   if (!ui.reader || ui.reader.id !== textId) ui.reader = { id: textId, hide: false, shadow: false, fr: {}, sel: null, playing: false, cur: -1 };
   const R = ui.reader;
   const stab = stabilityMap(lang);

@@ -75,6 +75,16 @@ server.listen(0, "127.0.0.1", async () => {
     ok((await call("GET", "/api/me", undefined, ckz)).data.user.is_admin === true, "is_admin exposé");
     r = await call("GET", "/api/admin/stats", undefined, ckz);
     ok(r.status === 200 && r.data.users.total >= 1 && r.data.users.admins === 1 && r.data.list[0].email && r.data.mail === "console" && !("pass" in r.data.list[0]), "stats admin " + JSON.stringify(r.data).slice(0, 200));
+    // Jeu de rôle (mode histoire) : validation stricte, scénario fixé côté serveur
+    ok((await call("POST", "/api/roleplay", { mission: "ko-cafe", history: [{ who: "me", text: "안녕하세요" }] })).status === 401, "jeu de rôle : connexion requise");
+    ok((await call("POST", "/api/roleplay", { mission: "inconnue", history: [{ who: "me", text: "hi" }] }, ckz)).status === 400, "mission inconnue");
+    ok((await call("POST", "/api/roleplay", { mission: "toString", history: [{ who: "me", text: "hi" }] }, ckz)).status === 400, "pas de propriété héritée");
+    ok((await call("POST", "/api/roleplay", { mission: "en-cafe", history: [{ who: "npc", text: "hi" }] }, ckz)).status === 400, "le dernier message doit venir de l'apprenant");
+    ok((await call("POST", "/api/roleplay", { mission: "en-cafe", history: [{ who: "me", text: "x".repeat(301) }] }, ckz)).status === 400, "message trop long");
+    const before = db.prepare("SELECT COALESCE(sum(count), 0) n FROM llm_usage").get().n;
+    r = await call("POST", "/api/roleplay", { mission: "en-cafe", history: [{ who: "npc", text: "Hi there!" }, { who: "me", text: "An iced coffee, please." }] }, ckz);
+    ok([200, 503].includes(r.status), "jeu de rôle : réponse ou IA indisponible " + r.status);
+    if (r.status === 503) ok(db.prepare("SELECT COALESCE(sum(count), 0) n FROM llm_usage").get().n === before, "échec non décompté du quota");
     // Limitation : 5 demandes libres par adresse, puis freinage
     let last; for (let i = 0; i < 6; i++) last = await call("POST", "/api/password/forgot", { email: "spam@test.fr" });
     ok(last.status === 429, "limitation des demandes");

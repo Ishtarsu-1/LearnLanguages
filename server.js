@@ -11,6 +11,7 @@ const { DatabaseSync } = require("node:sqlite");
 const llm = require("./llm.js");
 const ttsMod = require("./tts.js");
 const mailer = require("./mailer.js");
+const { MISSIONS } = require("./missions.js");
 
 const PORT = Number(process.env.PORT) || 8000;
 const ROOT = __dirname;
@@ -478,6 +479,32 @@ async function api(req, res, url) {
       throw e;
     }
   }
+  // Mode histoire : une réplique de jeu de rôle (compte dans le quota quotidien du correcteur)
+  if (route === "POST /api/roleplay") {
+    if (!LLM_ON) return fail(res, 503, "IA désactivée.");
+    const b = await readJson(req);
+    const m = typeof b.mission === "string" && Object.hasOwn(MISSIONS, b.mission) ? MISSIONS[b.mission] : null;
+    const h = Array.isArray(b.history) ? b.history : null;
+    if (!m || !h || !h.length || h.length > 24 || h.at(-1).who !== "me"
+      || !h.every((x) => x && (x.who === "me" || x.who === "npc") && typeof x.text === "string" && x.text.trim() && x.text.length <= 300)) {
+      return fail(res, 400, "Requête invalide.");
+    }
+    const wait = waitFor(`feedback:${uid}`);
+    if (wait) return tooMany(res, wait);
+    recordAttempt(`feedback:${uid}`);
+    const day = now().slice(0, 10);
+    const used = db.prepare("SELECT count FROM llm_usage WHERE user_id = ? AND day = ?").get(uid, day)?.count || 0;
+    if (used >= LLM_DAILY) return fail(res, 429, `Tu as utilisé tes ${LLM_DAILY} échanges avec l'IA aujourd'hui. Le mode guidé reste disponible !`);
+    db.prepare("INSERT INTO llm_usage (user_id, day, count) VALUES (?, ?, 1) ON CONFLICT (user_id, day) DO UPDATE SET count = count + 1").run(uid, day);
+    try {
+      const turn = await llm.roleplay(m, h.map((x) => ({ who: x.who, text: x.text.trim() })));
+      return send(res, 200, { turn, engine: llm.ENGINE, remaining: LLM_DAILY - used - 1 });
+    } catch (e) {
+      db.prepare("UPDATE llm_usage SET count = count - 1 WHERE user_id = ? AND day = ?").run(uid, day);
+      if (e instanceof llm.LlmUnavailable) return fail(res, 503, e.message);
+      throw e;
+    }
+  }
   if (route === "POST /api/sync") {
     let body;
     try { body = JSON.parse((await readBody(req, MAX_STATE)).toString("utf8")); } catch { return fail(res, 400, "Données invalides."); }
@@ -581,6 +608,8 @@ const STATIC = {
   "/exercises.js": ["exercises.js", "text/javascript; charset=utf-8"],
   "/placement.js": ["placement.js", "text/javascript; charset=utf-8"],
   "/library.js": ["library.js", "text/javascript; charset=utf-8"],
+  "/missions.js": ["missions.js", "text/javascript; charset=utf-8"],
+  "/story.js": ["story.js", "text/javascript; charset=utf-8"],
   "/styles.css": ["styles.css", "text/css; charset=utf-8"],
   "/tokens.css": ["tokens.css", "text/css; charset=utf-8"],
   "/fonts/pretendard.css": ["fonts/pretendard.css", "text/css; charset=utf-8"],

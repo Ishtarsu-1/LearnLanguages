@@ -362,3 +362,43 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
   account = { id: 1, is_admin: true }; ok(chapterOpen("en", b, 2), "admin : tout ouvert"); account = acc;
   location.hash = ""; ui.quiz = null;
 }
+{ // Mode histoire
+  for (const lang of ["en", "ko"]) for (const b of STORIES[lang]) for (const ch of b.chapters) {
+    for (const [src] of ch.sentences) for (const w of parseSentence(src, lang)) for (const g of w.segs) for (const l of g.lemmas) ok(LEXICON[lang][l], `${lang}: lemme manquant « ${l} » dans « ${src} » (histoire)`);
+    ok(MISSIONS[ch.mission]?.lang === lang && MISSIONS[ch.mission].script.every((s) => s.choices.some((c) => c[1])), `${lang}: mission ${ch.mission} jouable`);
+    for (const k of ch.keywords) ok(ch.sentences.some(([src]) => parseSentence(src, lang).some((w) => w.segs.some((g) => g.lemmas.includes(k)))), `${lang}: mot clé ${k} absent du chapitre`);
+    if (ch.grammar) ok(KO_GRAMMAR.some((g) => g.id === ch.grammar), `grammaire inconnue ${ch.grammar}`);
+  }
+  ok(TABS.en.some(([k]) => k === "histoire") && TABS.ko.some(([k]) => k === "histoire"), "onglet Histoire");
+  const acc = account, feat = features; account = null;
+  const lang = "ko", b = STORIES.ko[0], L = state.langs.ko, gd = { ...L.grammarDone }, hd = L.hangulDone;
+  L.hangulDone = true; L.grammarDone = {}; L.books = {};
+  ok(/grammaire/.test(chapterLock(lang, b, 0)), "chapitre 1 : grammaire requise");
+  L.grammarDone.haeyo = true; ok(chapterOpen(lang, b, 0) && tabStory("ko").includes("공항"), "chapitre 1 ouvert après -요");
+  // Questions faites → mission guidée
+  L.books[`${b.id}:1`] = 2;
+  location.hash = `#/lang/ko/livre/${b.id}/mission/1`; route();
+  ok(ui.mission.mode === "guided" && viewMission(lang, b, 0).includes("Choisis ta réplique"), "sans IA : mode guidé");
+  const M = MISSIONS[b.chapters[0].mission];
+  actions["mission-pick"]({ dataset: { x: String(M.script[0].choices.findIndex((c) => !c[1])) } });
+  ok(ui.mission.wrong !== null && ui.mission.step === 0, "mauvaise réplique : explication, on reste");
+  for (const step of M.script) actions["mission-pick"]({ dataset: { x: String(step.choices.findIndex((c) => c[1])) } });
+  ok(ui.mission.done && L.books[`${b.id}:1:mission`] === true && chapterDone(lang, b, 0), "mission réussie");
+  ok(/mots clés/.test(chapterLock(lang, b, 1)), "chapitre 2 : mots clés requis");
+  actions["book-keywords"]({ dataset: { id: b.chapters[0].id } });
+  ok(!keywordsMissing(lang, b.chapters[0]).length, "mots clés en révision");
+  ok(/grammaire/.test(chapterLock(lang, b, 1)), "chapitre 2 : 은/는 requis");
+  L.grammarDone["eun-neun"] = true; ok(chapterOpen(lang, b, 1), "chapitre 2 ouvert");
+  // Mode IA : réponse simulée de l'API
+  account = { id: 1 }; features = { ...feat, llm: true }; ui.mission = null;
+  L.books[`${b.id}:2`] = 2;
+  location.hash = `#/lang/ko/livre/${b.id}/mission/2`; route();
+  ok(ui.mission.mode === "ai", "connecté + IA : mode libre");
+  const realApi = api; let sent;
+  api = async (m, u, body) => { sent = body; return { turn: { reply: "반가워요!", reply_fr: "Enchantée !", recast: "저는 모찌예요.", note_fr: "Après 모찌 (voyelle), on dit 예요.", hint_fr: "", goal_reached: true } }; };
+  missionSend("저는 모찌이에요.").then(() => {
+    ok(sent.mission === "ko-neighbor" && sent.history.at(-1).who === "me", "historique envoyé");
+    ok(ui.mission.log.at(-2).recast === "저는 모찌예요." && ui.mission.done && L.books[`${b.id}:2:mission`], "recast affiché, mission réussie par l'IA");
+    api = realApi; account = acc; features = feat; L.grammarDone = gd; L.hangulDone = hd; location.hash = ""; ui.mission = null;
+  });
+}

@@ -131,18 +131,37 @@ const BOOKS = {
   ],
 };
 
-// Chaque chapitre devient un « texte » que le lecteur sait afficher (textById le trouve ici)
-for (const lang of Object.keys(BOOKS)) for (const b of BOOKS[lang]) b.chapters.forEach((ch, i) => {
-  const id = `${b.id}-${i + 1}`;
-  ch.id = id;
-  CHAPTER_TEXTS[lang][id] = {
-    id, title: `${b.title} · ${i + 1}. ${ch.title}`, icon: b.icon, kind: "Chapitre", themes: b.themes, book: b.id, chapter: i,
-    sentences: ch.sentences, parsed: ch.sentences.map(([src, fr]) => toSentence(src, lang, fr)),
-  };
-});
-const bookById = (lang, id) => BOOKS[lang].find((b) => b.id === id);
-const chapterDone = (lang, b, i) => state.langs[lang].books[`${b.id}:${i + 1}`] !== undefined;
-const chapterOpen = (lang, b, i) => i === 0 || chapterDone(lang, b, i - 1) || isAdmin();
+// Chaque chapitre devient un « texte » que le lecteur sait afficher (textById le trouve ici).
+// Sert aussi au mode histoire (story.js), dont les chapitres ont en plus :
+//   mission (missions.js), keywords (mots à mettre en révision), grammar (point de KO_GRAMMAR requis).
+function registerBook(lang, b) {
+  b.chapters.forEach((ch, i) => {
+    const id = `${b.id}-${i + 1}`;
+    ch.id = id;
+    CHAPTER_TEXTS[lang][id] = {
+      id, title: `${b.title} · ${i + 1}. ${ch.title}`, icon: b.icon, kind: b.story ? "Histoire" : "Chapitre", themes: b.themes, book: b.id, chapter: i,
+      sentences: ch.sentences, parsed: ch.sentences.map(([src, fr]) => toSentence(src, lang, fr)),
+    };
+  });
+}
+for (const lang of Object.keys(BOOKS)) for (const b of BOOKS[lang]) registerBook(lang, b);
+const allBooks = (lang) => [...BOOKS[lang], ...(typeof STORIES !== "undefined" ? STORIES[lang] : [])];
+const bookById = (lang, id) => allBooks(lang).find((b) => b.id === id);
+const quizDone = (lang, b, i) => state.langs[lang].books[`${b.id}:${i + 1}`] !== undefined;
+const missionDone = (lang, b, i) => !b.chapters[i].mission || !!state.langs[lang].books[`${b.id}:${i + 1}:mission`];
+const chapterDone = (lang, b, i) => quizDone(lang, b, i) && missionDone(lang, b, i);
+// Mots clés d'un chapitre : en révision (carte) ou déjà connus
+const keywordsMissing = (lang, ch) => (ch.keywords || []).filter((l) => !state.langs[lang].known[l] && !state.cards.some((c) => c.lang === lang && c.lemma.split(" + ").includes(l)));
+// Pourquoi un chapitre est fermé (null s'il est ouvert)
+function chapterLock(lang, b, i) {
+  if (isAdmin()) return null;
+  const ch = b.chapters[i], g = ch.grammar && KO_GRAMMAR.find((x) => x.id === ch.grammar);
+  if (i > 0 && !chapterDone(lang, b, i - 1)) return `Termine d'abord le chapitre ${i}${b.chapters[i - 1].mission ? " (questions et mission)" : ""}.`;
+  if (i > 0 && keywordsMissing(lang, b.chapters[i - 1]).length) return `Mets d'abord en révision les mots clés du chapitre ${i} : ${keywordsMissing(lang, b.chapters[i - 1]).join(", ")}.`;
+  if (g && !state.langs[lang].grammarDone[g.id]) return `Fais d'abord le point de grammaire « ${g.title} » (Parcours).`;
+  return null;
+}
+const chapterOpen = (lang, b, i) => !chapterLock(lang, b, i);
 
 // Carte « livre » de l'onglet Lire
 function bookCards(lang) {
@@ -163,12 +182,40 @@ function bookCards(lang) {
   }).join("");
 }
 
+// Liste des chapitres d'un livre ou d'une histoire, avec l'étape suivante de chacun
+function chapterList(lang, b) {
+  const L = state.langs[lang], stab = stabilityMap(lang), back = `#/lang/${lang}/livre/${b.id}`;
+  return `
+    <div class="chapter-list">
+      ${b.chapters.map((ch, i) => {
+        const t = CHAPTER_TEXTS[lang][ch.id], lock = chapterLock(lang, b, i), open = !lock, done = chapterDone(lang, b, i), read = L.readTexts[ch.id];
+        const qd = quizDone(lang, b, i), md = missionDone(lang, b, i), M = ch.mission && MISSIONS[ch.mission];
+        const c = coverage(lang, t.parsed, stab);
+        const next = read && !qd ? { href: `${back}/quiz/${i + 1}`, tag: "Questions →" } : qd && !md ? { href: `${back}/mission/${i + 1}`, tag: `${M.icon} Mission →` } : { href: `#/lang/${lang}/lire/${ch.id}`, tag: "" };
+        const unknown = done ? [...unknownLemmas(lang, t.parsed, stab).keys()].filter((l) => !state.cards.some((x) => x.lang === lang && x.lemma === l)).length : 0;
+        const kwMissing = done ? keywordsMissing(lang, ch) : [];
+        return `<div class="chapter-row">
+          <a class="card chapter ${done ? "done" : ""} ${open ? "" : "locked"}" href="${next.href}" data-act="${open ? "" : "locked"}" ${lock ? `title="${esc(lock)}"` : ""}>
+            <span class="ch-n">${done ? "✓" : open ? i + 1 : "🔒"}</span>
+            <div style="flex:1"><b class="${koCls(lang)}">${esc(ch.title)}</b><br/><small class="muted">${ch.sentences.length} phrases · ~${pct(c)} % de mots connus${qd ? ` · questions ${L.books[`${b.id}:${i + 1}`]}/${ch.questions.length}` : read ? " · lu, questions à faire" : ""}${M ? ` · ${M.icon} ${md ? "mission réussie" : `mission : ${esc(M.title)}`}` : ""}</small>
+              ${lock && (i === 0 || chapterDone(lang, b, i - 1)) ? `<br/><small class="lock-why">🔒 ${esc(lock)}</small>` : ""}</div>
+            ${next.tag ? `<span class="tag">${next.tag}</span>` : ""}
+          </a>
+          ${kwMissing.length ? `<button class="btn small" data-act="book-keywords" data-id="${ch.id}">+ Mots clés en révision (${kwMissing.join(", ")})</button>` : ""}
+          ${unknown ? `<button class="btn ghost small" data-act="book-capture" data-id="${ch.id}">+ ${unknown} mot(s) inconnu(s) en révision</button>` : ""}
+        </div>`;
+      }).join("")}
+    </div>
+  `;
+}
+
 // Page d'un livre : chapitres, progression, questions
 function viewBook(lang, bookId, sub, n) {
   const b = bookById(lang, bookId);
   if (!b) return viewNotFound();
   if (hangulGate(lang)) return `<section class="view">${gateCard()}</section>`;
   const back = `#/lang/${lang}/livre/${b.id}`;
+  if (sub === "mission") { const i = Number(n) - 1; return b.chapters[i]?.mission ? viewMission(lang, b, i) : viewNotFound(); }
   if (sub === "quiz") {
     const i = Number(n) - 1, ch = b.chapters[i];
     if (!ch) return viewNotFound();
@@ -176,27 +223,12 @@ function viewBook(lang, bookId, sub, n) {
     if (ui.quiz?.key !== key) startBookQuiz(lang, b, i);
     return viewQuiz(back, `Chapitre ${n}`);
   }
-  const L = state.langs[lang], stab = stabilityMap(lang);
   return `<section class="view">
-    <div class="lesson-top"><a class="close" href="#/lang/${lang}/lire" aria-label="Retour">←</a>
+    <div class="lesson-top"><a class="close" href="#/lang/${lang}/${b.story ? "histoire" : "lire"}" aria-label="Retour">←</a>
       <div style="flex:1"><h1 style="font-size:1.5rem">${b.icon} <span class="${koCls(lang)}">${esc(b.title)}</span></h1><p class="muted" style="margin:2px 0 0">${esc(b.fr)} · livre ${b.level}</p></div></div>
     <div class="card" style="margin:16px 0"><p style="margin:0">${esc(b.summary)}</p>
       <p class="muted" style="margin:8px 0 0"><small>Lis et écoute chaque chapitre, puis réponds à 2 ou 3 questions. Le chapitre suivant s'ouvre ensuite.</small></p></div>
-    <div class="chapter-list">
-      ${b.chapters.map((ch, i) => {
-        const t = CHAPTER_TEXTS[lang][ch.id], open = chapterOpen(lang, b, i), done = chapterDone(lang, b, i), read = L.readTexts[ch.id];
-        const c = coverage(lang, t.parsed, stab);
-        const unknown = done ? [...unknownLemmas(lang, t.parsed, stab).keys()].filter((l) => !state.cards.some((x) => x.lang === lang && x.lemma === l)).length : 0;
-        return `<div class="chapter-row">
-          <a class="card chapter ${done ? "done" : ""} ${open ? "" : "locked"}" href="${read && !done ? `${back}/quiz/${i + 1}` : `#/lang/${lang}/lire/${ch.id}`}" data-act="${open ? "" : "locked"}">
-            <span class="ch-n">${done ? "✓" : open ? i + 1 : "🔒"}</span>
-            <div style="flex:1"><b class="${koCls(lang)}">${esc(ch.title)}</b><br/><small class="muted">${ch.sentences.length} phrases · ~${pct(c)} % de mots connus${done ? ` · questions ${L.books[`${b.id}:${i + 1}`]}/${ch.questions.length}` : read ? " · lu, questions à faire" : ""}</small></div>
-            ${read && !done ? `<span class="tag">Questions →</span>` : ""}
-          </a>
-          ${unknown ? `<button class="btn ghost small" data-act="book-capture" data-id="${ch.id}">+ ${unknown} mot(s) inconnu(s) en révision</button>` : ""}
-        </div>`;
-      }).join("")}
-    </div>
+    ${chapterList(lang, b)}
   </section>`;
 }
 
@@ -217,6 +249,16 @@ function finishChapter(lang, t) {
 }
 
 Object.assign(actions, {
+  // Mots clés d'un chapitre d'histoire → cartes (condition pour ouvrir le suivant)
+  "book-keywords": (el) => {
+    const lang = currentLang(), t = CHAPTER_TEXTS[lang][el.dataset.id], b = bookById(lang, t.book), ch = b.chapters[t.chapter];
+    const want = new Set(keywordsMissing(lang, ch));
+    let n = 0;
+    t.parsed.forEach((s) => s.words.forEach((w, wi) => w.segs.forEach((g, gi) => {
+      if (g.lemmas.some((l) => want.has(l)) && captureSeg(lang, s, wi, gi, t.id)) { n++; g.lemmas.forEach((l) => want.delete(l)); }
+    })));
+    save(); toast(`${n} mot(s) clé(s) en révision ✓`); render();
+  },
   // Mots inconnus d'un chapitre terminé → cartes de révision (§15)
   "book-capture": (el) => {
     const lang = currentLang(), t = CHAPTER_TEXTS[lang][el.dataset.id];
