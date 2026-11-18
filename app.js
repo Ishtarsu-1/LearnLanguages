@@ -417,26 +417,45 @@ function speakers(lang) {
   return out;
 }
 let current = null; // lecture en cours (élément Audio ou null)
+let playToken = 0;   // chaque nouvelle lecture annule la précédente (même pendant le téléchargement)
 const warnedMute = {};
 function speak(text, lang, speed = state.settings.speed, who = null) {
   stopSound();
   if (audioSource(lang) === "server") {
-    const voice = who?.server || defaultServerVoice(lang);
-    return serverSpeak(text, lang, voice, speed * (who?.rate || 1), who && who.pitch !== 1).catch(() => browserSpeak(text, lang, speed, null));
+    const voice = who?.server || defaultServerVoice(lang), token = playToken;
+    return serverSpeak(text, lang, voice, speed * (who?.rate || 1), who && who.pitch !== 1, token).catch((e) => {
+      if (token !== playToken || e?.name === "AbortError") return; // interrompue par une autre lecture : pas une panne
+      const why = audioError(e);
+      console.warn("Voix du serveur illisible :", why, e);
+      // Repli sur les voix du navigateur s'il y en a ; sinon on dit la vraie raison
+      if (voicesFor(lang).length) return browserSpeak(text, lang, speed, null);
+      toast(`Voix du serveur illisible (${why}). Recharge la page ; si ça continue, signale ce message.`);
+    });
   }
   return browserSpeak(text, lang, speed, who);
 }
+const MEDIA_ERR = { 1: "lecture annulée", 2: "erreur réseau", 3: "décodage impossible", 4: "format non pris en charge" };
+const audioError = (e) => (e?.mediaCode ? `${MEDIA_ERR[e.mediaCode] || "erreur média"} ${e.mediaCode}${e.message ? ` : ${e.message}` : ""}` : `${e?.name || "Erreur"} : ${e?.message || e}`);
 const defaultServerVoice = (lang) => { const sv = serverVoices(lang), pref = state.settings.voices?.[lang]; return sv.includes(pref) ? pref : sv[0]; };
 const ttsUrl = (text, lang, voice) => `/api/tts?lang=${lang}&voice=${encodeURIComponent(voice)}&text=${encodeURIComponent(text.slice(0, 300))}`;
-function serverSpeak(text, lang, voice, rate, shiftPitch) {
+// Le fichier est d'abord téléchargé en entier (fetch → Blob), puis joué depuis la mémoire :
+// plus de requêtes partielles (Range) entre le lecteur audio, le service worker et le serveur.
+async function serverSpeak(text, lang, voice, rate, shiftPitch, token = playToken) {
+  const r = await fetch(ttsUrl(text, lang, voice), { credentials: "same-origin" });
+  if (!r.ok) { const d = await r.json().catch(() => ({})); throw Object.assign(new Error(d.error || `HTTP ${r.status}`), { name: "Serveur" }); }
+  const blob = await r.blob();
+  if (token !== playToken) return; // une autre lecture a commencé pendant le téléchargement
+  const src = URL.createObjectURL(blob);
   return new Promise((resolve, reject) => {
-    const a = new Audio(ttsUrl(text, lang, voice));
-    a.playbackRate = rate;
+    const a = new Audio(src);
+    const done = (err) => { URL.revokeObjectURL(src); if (current === a) current = null; err ? reject(err) : resolve(); };
+    a.playbackRate = Number.isFinite(rate) && rate > 0 ? Math.min(2, Math.max(0.5, rate)) : 1;
     if (shiftPitch) a.preservesPitch = false; // variation de « locuteur » pour §14
     current = a;
-    a.onended = () => { if (current === a) current = null; resolve(); };
-    a.onerror = () => { if (current === a) current = null; reject(new Error("tts")); };
-    a.play().catch(reject);
+    a.onended = () => done();
+    a.onpause = () => { if (a.currentTime < a.duration) done(); }; // arrêtée par stopSound : la promesse se termine
+    a.onerror = () => done(Object.assign(new Error(a.error?.message || ""), { mediaCode: a.error?.code }));
+    a.play().catch(done);
   });
 }
 function browserSpeak(text, lang, speed, who) {
@@ -462,7 +481,8 @@ function browserSpeak(text, lang, speed, who) {
   });
 }
 function stopSound() {
-  if (current) { current.pause(); current = null; }
+  playToken++;
+  if (current) { const a = current; current = null; a.pause(); }
   if (hasSynth()) speechSynthesis.cancel();
 }
 function stopAudio() { stopSound(); if (ui.reader) ui.reader.playing = false; }
