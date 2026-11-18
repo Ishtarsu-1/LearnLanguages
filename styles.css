@@ -603,3 +603,18 @@ code { background: var(--surface-2); padding: 2px 6px; border-radius: var(--radi
 .table-scroll { overflow-x: auto; }
 .admin-links p { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 0 0 12px; }
 .admin-links b { margin-right: 4px; }
+
+/* Thèmes et saveurs de Mochi (§12, charte §8) */
+.theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-4); }
+.theme-card { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; }
+.theme-card h3 { margin: 0; }
+.theme-card .cov { width: 100%; }
+.theme-card .fav { position: absolute; top: 10px; right: 10px; min-width: 44px; min-height: 44px; border: none; background: none; font-size: var(--text-2xl); color: var(--ink-muted); cursor: pointer; border-radius: var(--radius-full); }
+.theme-card .fav.on { color: var(--warning); } /* contraste ≥ 3:1 (Yuzu seul serait trop pâle) */
+.theme-texts { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 4px; }
+.flavor .mochi { width: 96px; height: auto; }
+.flavor.locked .mo-body { fill: var(--surface-2); stroke: var(--border); stroke-dasharray: 4 3; }
+.flavor.locked .mo-line, .flavor.locked .mo-ink, .flavor.locked .mo-cheek, .flavor.locked .mo-star { opacity: .25; }
+.lib-filter { margin-bottom: 16px; }
+.lib-filter .chip { cursor: pointer; border: 1px solid var(--border); }
+.lib-filter .chip.active { background: var(--primary-soft); color: var(--primary); border-color: var(--primary); }

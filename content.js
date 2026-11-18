@@ -28,6 +28,17 @@ const LEXICON = {
     "i": { fr: "je" }, "you": { fr: "tu, vous" }, "it": { fr: "il, elle, ça (chose)" }, "have": { fr: "avoir, prendre" },
     "do": { fr: "faire (+ auxiliaire)" }, "that": { fr: "ça, cela, que" }, "in": { fr: "dans, en" }, "on": { fr: "sur, le (jour)" },
     "with": { fr: "avec" }, "at": { fr: "à, chez" }, "we": { fr: "nous, on" }, "she": { fr: "elle" }, "my": { fr: "mon, ma, mes" },
+    "and": { fr: "et" }, "for": { fr: "pour" }, "not": { fr: "ne… pas" }, "this": { fr: "ce, cette, ceci" }, "your": { fr: "ton, ta, tes, votre" },
+    "us": { fr: "nous (complément)" }, "will": { fr: "(futur : I'll = je vais…)" }, "would": { fr: "(conditionnel : I'd love = j'adorerais)" },
+    "good": { fr: "bon, bien" }, "make": { fr: "faire, fabriquer" }, "take": { fr: "prendre" }, "give": { fr: "donner" }, "eat": { fr: "manger" },
+    "new": { fr: "nouveau, nouvelle" }, "very": { fr: "très" }, "there": { fr: "là (there is = il y a)" }, "here": { fr: "ici" }, "some": { fr: "du, des, quelques" },
+    "any": { fr: "du, des (question), n'importe quel" }, "many": { fr: "beaucoup de (comptable)" }, "more": { fr: "plus, davantage" }, "about": { fr: "environ, à propos de" },
+    "after": { fr: "après" }, "by": { fr: "près de, par" }, "long": { fr: "long, longtemps" }, "let": { fr: "laisser (let's = allons-y, faisons)" },
+    "today": { fr: "aujourd'hui" }, "morning": { fr: "matin" }, "night": { fr: "nuit, soir" }, "tonight": { fr: "ce soir" }, "start": { fr: "commencer" },
+    "love": { fr: "aimer, adorer" }, "play": { fr: "jouer" }, "wait": { fr: "attendre" }, "ready": { fr: "prêt" }, "together": { fr: "ensemble" },
+    "five": { fr: "cinq" }, "ten": { fr: "dix" }, "eleven": { fr: "onze" }, "twelve": { fr: "douze" }, "sixteen": { fr: "seize" }, "number": { fr: "numéro, nombre", cog: true },
+    "ok": { fr: "d'accord", cog: true }, "lot": { fr: "beaucoup (a lot)" }, "bit": { fr: "un peu (a bit)" }, "yet": { fr: "encore (not yet = pas encore)" },
+    "must": { fr: "devoir (sûrement)" }, "usually": { fr: "d'habitude" }, "near": { fr: "près de" }, "across": { fr: "de l'autre côté de" },
     "me": { fr: "moi, me" }, "but": { fr: "mais" }, "no": { fr: "non" }, "yes": { fr: "oui" }, "what": { fr: "quoi, que" },
     "how": { fr: "comment" }, "where": { fr: "où" }, "go": { fr: "aller" }, "can": { fr: "pouvoir" }, "see": { fr: "voir" },
     "want": { fr: "vouloir" }, "all": { fr: "tout" }, "time": { fr: "temps, fois, moment" }, "day": { fr: "jour, journée" },
@@ -47,6 +58,20 @@ const LEXICON = {
     "weekend": { fr: "week-end", cog: true }, "cinema": { fr: "cinéma", cog: true }, "insist": { fr: "insister", cog: true },
     "excuse": { fr: "excuser", cog: true }, "second": { fr: "second, deuxième", cog: true },
     "actually": { fr: "en fait (≠ actuellement)", faux: true }, "eventually": { fr: "finalement (≠ éventuellement)", faux: true },
+    // Thèmes de situation
+    "bus": { fr: "bus", cog: true }, "station": { fr: "gare, station", cog: true }, "stop": { fr: "arrêt ; arrêter" }, "street": { fr: "rue" },
+    "minute": { fr: "minute", cog: true }, "buy": { fr: "acheter" }, "ticket": { fr: "ticket, billet", cog: true },
+    "cook": { fr: "cuisiner" }, "pasta": { fr: "pâtes" }, "tomato": { fr: "tomate", cog: true }, "idea": { fr: "idée", cog: true }, "cut": { fr: "couper" },
+    "onion": { fr: "oignon", cog: true }, "garlic": { fr: "ail" }, "kitchen": { fr: "cuisine (la pièce)" }, "bread": { fr: "pain" }, "smell": { fr: "sentir (une odeur)" },
+    "delicious": { fr: "délicieux", cog: true }, "dinner": { fr: "dîner", cog: true },
+    "football": { fr: "football", cog: true }, "saturday": { fr: "samedi" }, "matter": { fr: "importer (it doesn't matter = ce n'est pas grave)" }, "fun": { fr: "amusement (for fun = pour s'amuser)" },
+    "game": { fr: "match, jeu, partie" }, "park": { fr: "parc", cog: true }, "school": { fr: "école" }, "forget": { fr: "oublier" }, "shoe": { fr: "chaussure" }, "water": { fr: "eau" },
+    "online": { fr: "en ligne" }, "create": { fr: "créer", cog: true }, "team": { fr: "équipe" }, "connection": { fr: "connexion", cog: true }, "slow": { fr: "lent" },
+    "problem": { fr: "problème", cog: true }, "win": { fr: "gagner" },
+    "designer": { fr: "graphiste, designer", cog: true }, "nervous": { fr: "nerveux, stressé", cog: true }, "worry": { fr: "s'inquiéter" }, "friendly": { fr: "sympa, aimable" },
+    "desk": { fr: "bureau (le meuble)" }, "window": { fr: "fenêtre" }, "meeting": { fr: "réunion" }, "lunch": { fr: "déjeuner" },
+    "series": { fr: "série", cog: true }, "amazing": { fr: "génial, incroyable" }, "story": { fr: "histoire" }, "sad": { fr: "triste" }, "beautiful": { fr: "beau, belle" },
+    "episode": { fr: "épisode", cog: true }, "sleep": { fr: "dormir" },
     "library": { fr: "bibliothèque (≠ librairie)", faux: true }, "sensible": { fr: "raisonnable (≠ sensible)", faux: true },
   },
   ko: {
@@ -54,6 +79,13 @@ const LEXICON = {
     "가": { fr: "particule sujet (après voyelle)" }, "이": { fr: "particule sujet (après consonne)" }, "를": { fr: "particule objet (après voyelle)" },
     "을": { fr: "particule objet (après consonne)" }, "에": { fr: "à, dans (lieu, destination, moment)" }, "에서": { fr: "à, dans (lieu d'une action)" },
     "도": { fr: "aussi, même" }, "있다": { fr: "il y a, avoir, se trouver" }, "저": { fr: "je, moi (poli)" }, "우리": { fr: "nous, notre" },
+    "하다": { fr: "faire" }, "좋다": { fr: "être bien, bon (좋아요 = c'est bien)" }, "많다": { fr: "être nombreux, beaucoup" }, "많이": { fr: "beaucoup" },
+    "오늘": { fr: "aujourd'hui" }, "지금": { fr: "maintenant" }, "요즘": { fr: "ces temps-ci" }, "몇": { fr: "combien (de), quelques" }, "어떻게": { fr: "comment" },
+    "하지만": { fr: "mais" }, "그래서": { fr: "alors, donc" }, "그래도": { fr: "quand même, pourtant" }, "너무": { fr: "trop, très" }, "먼저": { fr: "d'abord" },
+    "와": { fr: "et, avec (après voyelle)" }, "하고": { fr: "et, avec (parlé)" }, "이랑": { fr: "et, avec (familier, après consonne)" },
+    "으로": { fr: "avec, par, en (moyen ; après consonne)" }, "로": { fr: "avec, par, en (moyen ; après voyelle ou ㄹ)" }, "들": { fr: "suffixe du pluriel" },
+    "시": { fr: "heure (compteur : 아홉 시 = 9 h)" }, "분": { fr: "minute (compteur)" }, "십": { fr: "dix (sino-coréen)" }, "이십": { fr: "vingt (sino-coréen)" },
+    "아홉": { fr: "neuf (natif)" }, "여섯": { fr: "six (natif)" }, "일": { fr: "travail, chose à faire" }, "물": { fr: "eau" }, "아침": { fr: "matin, petit-déjeuner" },
     "네": { fr: "oui" }, "안녕하세요": { fr: "bonjour (poli)" }, "감사하다": { fr: "remercier" }, "좋아하다": { fr: "aimer (bien)" },
     "먹다": { fr: "manger" }, "보다": { fr: "voir, regarder" }, "만나다": { fr: "rencontrer, voir (qqn)" }, "살다": { fr: "habiter, vivre" },
     "주다": { fr: "donner (주세요 = donnez-moi, s'il vous plaît)" }, "사람": { fr: "personne, gens" }, "정말": { fr: "vraiment" },
@@ -69,6 +101,20 @@ const LEXICON = {
     "아메리카노": { fr: "americano" }, "떡볶이": { fr: "tteokbokki (gâteaux de riz épicés)" },
     "집": { fr: "maison" }, "학교": { fr: "école" }, "가다": { fr: "aller" }, "카페": { fr: "café (lieu)" }, "마시다": { fr: "boire" },
     "공부하다": { fr: "étudier" },
+    // Thèmes de situation
+    "실례하다": { fr: "déranger (실례합니다 = excusez-moi)" }, "타다": { fr: "prendre (un transport), monter" }, "이호선": { fr: "ligne 2 (du métro)" },
+    "정거장": { fr: "arrêt, station" }, "걸리다": { fr: "prendre (du temps)" }, "교통": { fr: "transport, circulation" }, "카드": { fr: "carte" },
+    "김치찌개": { fr: "ragoût de kimchi" }, "만들다": { fr: "faire, fabriquer" }, "김치": { fr: "kimchi" }, "자르다": { fr: "couper" },
+    "돼지고기": { fr: "porc (viande)" }, "두부": { fr: "tofu" }, "넣다": { fr: "mettre (dans)" }, "붓다": { fr: "verser" }, "끓이다": { fr: "faire bouillir" },
+    "매일": { fr: "tous les jours" }, "운동하다": { fr: "faire du sport" }, "운동": { fr: "sport, exercice" }, "보통": { fr: "d'habitude ; normal" },
+    "공원": { fr: "parc" }, "달리다": { fr: "courir" }, "축구": { fr: "football" }, "힘들다": { fr: "être dur, fatigant" }, "후": { fr: "après" },
+    "건강": { fr: "santé" }, "제일": { fr: "le plus" }, "중요하다": { fr: "être important" },
+    "게임하다": { fr: "jouer (aux jeux vidéo)" }, "잠깐만": { fr: "un instant (잠깐만요 = une seconde)" }, "괜찮다": { fr: "ça va, pas de souci" },
+    "기다리다": { fr: "attendre" }, "인터넷": { fr: "internet" }, "느리다": { fr: "être lent" }, "이번": { fr: "cette fois-ci" }, "꼭": { fr: "absolument, à coup sûr" }, "이기다": { fr: "gagner" },
+    "회사": { fr: "entreprise" }, "일하다": { fr: "travailler" }, "출근하다": { fr: "aller au travail" }, "오전": { fr: "matin (avant midi)" }, "회의": { fr: "réunion" },
+    "점심": { fr: "déjeuner, midi" }, "동료": { fr: "collègue" }, "바쁘다": { fr: "être occupé, chargé" }, "퇴근하다": { fr: "quitter le travail" },
+    "드라마": { fr: "série (drama)" }, "주인공": { fr: "personnage principal" }, "멋있다": { fr: "être classe, cool" }, "이야기": { fr: "histoire" },
+    "슬프다": { fr: "être triste" }, "울다": { fr: "pleurer" }, "한국어": { fr: "le coréen (langue)" }, "자막": { fr: "sous-titres" },
   },
 };
 
@@ -77,31 +123,47 @@ const LEXICON = {
 // (apprendre « tous les fruits » d'un coup crée de la confusion).
 const SEMANTIC_GROUPS = {
   en: {
-    nombre: ["three", "four", "second"], jour: ["sunday", "weekend", "day"], boisson: ["coffee", "tea", "milk"],
-    moment: ["early", "late", "later", "last", "next"], salutation: ["hi", "hello"], remerciement: ["thanks", "thank", "please", "excuse"],
+    nombre: ["three", "four", "second", "five", "ten", "eleven", "twelve", "sixteen"], jour: ["sunday", "weekend", "day", "saturday"], boisson: ["coffee", "tea", "milk", "water"],
+    moment: ["early", "late", "later", "last", "next", "today", "tonight", "morning", "night"], salutation: ["hi", "hello"], remerciement: ["thanks", "thank", "please", "excuse"],
     pronom: ["i", "you", "it", "we", "she", "me", "my"], interrogatif: ["what", "how", "where"], oui_non: ["yes", "no", "sure"],
-    lieu: ["hospital", "university", "cinema", "library", "home"], metier: ["nurse", "student"], quantite: ["much", "little", "too", "all"],
+    lieu: ["hospital", "university", "cinema", "library", "home", "station", "park", "school", "kitchen"], metier: ["nurse", "student", "designer"], aliment: ["pasta", "tomato", "onion", "garlic", "bread"], repas: ["dinner", "lunch"], emotion: ["sad", "nervous", "friendly"], quantite: ["much", "little", "too", "all"],
     perception: ["see", "watch"], ouverture: ["open", "close"],
   },
   ko: {
-    nombre_natif: ["하나", "넷", "다섯", "스물"], compteur: ["명", "살", "잔", "원"], famille: ["아버지", "어머니", "언니", "가족"],
-    boisson: ["커피", "아메리카노"], lieu: ["집", "학교", "카페", "시장"], jour: ["토요일", "주말", "주"],
-    metier: ["학생", "선생님", "회사원"], adjectif_gout: ["맛있다", "맵다"], pronom: ["저", "우리"],
+    nombre_natif: ["하나", "넷", "다섯", "스물", "아홉", "여섯"], nombre_sino: ["십", "이십"], compteur: ["명", "살", "잔", "원"], famille: ["아버지", "어머니", "언니", "가족"],
+    boisson: ["커피", "아메리카노"], lieu: ["집", "학교", "카페", "시장", "공원", "회사", "정거장"], jour: ["토요일", "주말", "주"],
+    metier: ["학생", "선생님", "회사원", "동료", "주인공"], aliment: ["김치", "두부", "돼지고기"], moment: ["오늘", "지금", "요즘", "아침", "오전", "점심"], compteur_temps: ["시", "분"], adjectif_gout: ["맛있다", "맵다"], pronom: ["저", "우리"],
     deplacement: ["가다", "살다"], consommer: ["먹다", "마시다"], voir: ["보다", "만나다"],
   },
 };
 // Paires d'opposés et quasi-synonymes : jamais introduites le même jour
 const CONFUSABLE = {
-  en: [["early", "late"], ["open", "close"], ["yes", "no"], ["see", "watch"], ["last", "next"], ["much", "little"], ["hi", "hello"], ["thanks", "thank"], ["later", "late"]],
-  ko: [["아버지", "어머니"], ["먹다", "마시다"], ["보다", "만나다"], ["가다", "살다"], ["맛있다", "재미있다"], ["집", "학교"]],
+  en: [["early", "late"], ["open", "close"], ["yes", "no"], ["see", "watch"], ["last", "next"], ["much", "little"], ["hi", "hello"], ["thanks", "thank"], ["later", "late"], ["morning", "night"], ["cook", "cut"], ["stop", "start"]],
+  ko: [["아버지", "어머니"], ["먹다", "마시다"], ["보다", "만나다"], ["가다", "살다"], ["맛있다", "재미있다"], ["집", "학교"], ["출근하다", "퇴근하다"], ["오전", "점심"], ["달리다", "타다"], ["울다", "슬프다"]],
 };
+
+// ---------- Thèmes de situation (PEDAGOGIE §12, ROADMAP « thèmes et situations ») ----------
+// Un thème = des mots qui vont ensemble dans une scène. Chaque texte porte themes[].
+// Les mots d'un thème sont déduits de ses textes (themeWords dans app.js) : le socle de
+// fréquence (mots présents dans 3 thèmes ou plus, et les particules) n'appartient à aucun thème.
+// fill : saveur de Mochi associée (CHARTE-GRAPHIQUE §8), uniquement pour l'illustration.
+const THEMES = [
+  { id: "cafe", name: "Au café", icon: "☕", flavor: "Matcha", fill: "#B9DDB0" },
+  { id: "rencontre", name: "Rencontrer quelqu'un", icon: "👋", flavor: "Sakura", fill: "#F6C1D3" },
+  { id: "transports", name: "Les transports", icon: "🚇", flavor: "Myrtille", fill: "#B9CBF3" },
+  { id: "cuisine", name: "Cuisine", icon: "🍳", flavor: "Kaki", fill: "#F7C29A" },
+  { id: "sport", name: "Le sport", icon: "⚽", flavor: "Yuzu", fill: "#F9DE8A" },
+  { id: "series", name: "Séries & K-drama", icon: "📺", flavor: "Ube", fill: "#CDB8EE" },
+  { id: "gaming", name: "Gaming", icon: "🎮", flavor: "Sésame noir", fill: "#5B5160", dark: true },
+  { id: "travail", name: "Au travail", icon: "💼", flavor: "Injeolmi", fill: "#E7CC98" },
+];
 
 // ---------- Contenus d'input (§3, §5) ----------
 // Formats conversationnels en priorité (§7). Registre 해요체 par défaut en coréen (§6).
 const TEXTS = {
   en: [
     {
-      id: "en-cafe", title: "Au café", icon: "☕", kind: "Dialogue",
+      id: "en-cafe", themes: ["cafe"], title: "Au café", icon: "☕", kind: "Dialogue",
       sentences: [
         ["Hi! Can I have a coffee, please?", "Salut ! Je peux avoir un café, s'il vous plaît ?"],
         ["Sure. Do you want milk?", "Bien sûr. Vous voulez du lait ?"],
@@ -112,7 +174,7 @@ const TEXTS = {
       ],
     },
     {
-      id: "en-neighbor", title: "La nouvelle voisine", icon: "🏠", kind: "Dialogue",
+      id: "en-neighbor", themes: ["rencontre", "travail"], title: "La nouvelle voisine", icon: "🏠", kind: "Dialogue",
       sentences: [
         ["Hello, I'm=i+be @Sam. I live next door.", "Bonjour, je suis Sam. J'habite à côté."],
         ["Oh, nice to meet you! I'm=i+be @Léa.", "Oh, enchantée ! Je suis Léa."],
@@ -123,7 +185,7 @@ const TEXTS = {
       ],
     },
     {
-      id: "en-weekend", title: "Le week-end", icon: "🎬", kind: "Dialogue",
+      id: "en-weekend", themes: ["series"], title: "Le week-end", icon: "🎬", kind: "Dialogue",
       sentences: [
         ["What did=do you do last weekend?", "Qu'est-ce que tu as fait le week-end dernier ?"],
         ["I went=go to the cinema with my sister.", "Je suis allé au cinéma avec ma sœur."],
@@ -134,7 +196,7 @@ const TEXTS = {
       ],
     },
     {
-      id: "en-library", title: "À la bibliothèque", icon: "📚", kind: "Dialogue",
+      id: "en-library", themes: [], title: "À la bibliothèque", icon: "📚", kind: "Dialogue",
       sentences: [
         ["Excuse me, where is=be the library?", "Excusez-moi, où est la bibliothèque ?"],
         ["It's=it+be on the second floor, next to the elevator.", "Elle est au deuxième étage, à côté de l'ascenseur."],
@@ -144,10 +206,78 @@ const TEXTS = {
         ["Have a nice day!", "Bonne journée !"],
       ],
     },
+    {
+      id: "en-bus", themes: ["transports"], title: "Dans le bus", icon: "🚌", kind: "Dialogue",
+      sentences: [
+        ["Excuse me, does=do this bus go to the station?", "Excusez-moi, ce bus va à la gare ?"],
+        ["No, you need the number twelve.", "Non, il vous faut le 12."],
+        ["Where can I take it?", "Où est-ce que je peux le prendre ?"],
+        ["The stop is=be across the street.", "L'arrêt est de l'autre côté de la rue."],
+        ["How long does=do it take?", "Ça prend combien de temps ?"],
+        ["About ten minutes=minute. You can buy a ticket on the bus.", "Environ dix minutes. Vous pouvez acheter un ticket dans le bus."],
+        ["Great, thanks a lot!", "Super, merci beaucoup !"],
+      ],
+    },
+    {
+      id: "en-dinner", themes: ["cuisine"], title: "On cuisine ce soir", icon: "🍝", kind: "Dialogue",
+      sentences: [
+        ["What are=be we cooking=cook tonight?", "Qu'est-ce qu'on cuisine ce soir ?"],
+        ["Let's=let+us make pasta with tomatoes=tomato.", "Faisons des pâtes à la tomate."],
+        ["Good idea. Can you cut the onions=onion?", "Bonne idée. Tu peux couper les oignons ?"],
+        ["Sure. Is=be there any garlic?", "Bien sûr. Il y a de l'ail ?"],
+        ["Yes, in the kitchen, next to the bread.", "Oui, dans la cuisine, à côté du pain."],
+        ["Oh, it smells=smell delicious!", "Oh, ça sent super bon !"],
+        ["Dinner is=be ready in five minutes=minute.", "Le dîner est prêt dans cinq minutes."],
+      ],
+    },
+    {
+      id: "en-football", themes: ["sport"], title: "Un match de foot", icon: "⚽", kind: "Dialogue",
+      sentences: [
+        ["Do you want to play football on Saturday?", "Tu veux jouer au foot samedi ?"],
+        ["I'd=i+would love to, but I'm=i+be not very good.", "J'adorerais, mais je ne suis pas très bon."],
+        ["It doesn't=do+not matter. We just play for fun.", "Ce n'est pas grave. On joue juste pour s'amuser."],
+        ["OK! What time does=do the game start?", "D'accord ! Le match commence à quelle heure ?"],
+        ["At ten, in the park near the school.", "À dix heures, dans le parc près de l'école."],
+        ["Don't=do+not forget your shoes=shoe and some water!", "N'oublie pas tes chaussures et de l'eau !"],
+      ],
+    },
+    {
+      id: "en-online", themes: ["gaming"], title: "Une partie en ligne", icon: "🎮", kind: "Dialogue",
+      sentences: [
+        ["Are=be you online? Let's=let+us play together.", "Tu es en ligne ? On joue ensemble ?"],
+        ["Give me five minutes=minute. I'm=i+be eating=eat.", "Donne-moi cinq minutes. Je mange."],
+        ["OK. I'll=i+will create the team.", "D'accord. Je crée l'équipe."],
+        ["Wait, my connection is=be really slow today.", "Attends, ma connexion est vraiment lente aujourd'hui."],
+        ["No problem. We can start later.", "Pas de problème. On peut commencer plus tard."],
+        ["Ready? Let's=let+us win this time!", "Prêt ? Cette fois, on gagne !"],
+      ],
+    },
+    {
+      id: "en-office", themes: ["travail"], title: "Premier jour au bureau", icon: "💼", kind: "Dialogue",
+      sentences: [
+        ["Good morning! You must be the new designer.", "Bonjour ! Tu dois être la nouvelle graphiste."],
+        ["Yes, I started=start today. I'm=i+be a bit nervous.", "Oui, j'ai commencé aujourd'hui. Je suis un peu stressée."],
+        ["Don't=do+not worry, the team is=be very friendly.", "Ne t'inquiète pas, l'équipe est très sympa."],
+        ["Your desk is=be here, by the window.", "Ton bureau est ici, près de la fenêtre."],
+        ["We have a meeting at eleven.", "On a une réunion à onze heures."],
+        ["After that, we usually eat lunch together.", "Après ça, on déjeune souvent ensemble."],
+      ],
+    },
+    {
+      id: "en-series", themes: ["series"], title: "Une série à voir", icon: "📺", kind: "Dialogue",
+      sentences: [
+        ["Have you seen=see this new series?", "Tu as vu cette nouvelle série ?"],
+        ["Not yet. Is=be it good?", "Pas encore. Elle est bien ?"],
+        ["It's=it+be amazing! The story is=be a bit sad, but beautiful.", "Elle est géniale ! L'histoire est un peu triste, mais belle."],
+        ["How many episodes=episode are=be there?", "Il y a combien d'épisodes ?"],
+        ["Sixteen. I watched=watch four last night.", "Seize. J'en ai regardé quatre hier soir."],
+        ["Four? You need to sleep more!", "Quatre ? Tu as besoin de dormir plus !"],
+      ],
+    },
   ],
   ko: [
     {
-      id: "ko-cafe", title: "Au café", icon: "🧋", kind: "Dialogue",
+      id: "ko-cafe", themes: ["cafe"], title: "Au café", icon: "🧋", kind: "Dialogue",
       sentences: [
         ["안녕하세요!", "Bonjour !"],
         ["아메리카노 한=하나 잔 주세요=주다.", "Un americano, s'il vous plaît."],
@@ -158,7 +288,7 @@ const TEXTS = {
       ],
     },
     {
-      id: "ko-intro", title: "Se présenter", icon: "🙋", kind: "Monologue",
+      id: "ko-intro", themes: ["rencontre"], title: "Se présenter", icon: "🙋", kind: "Monologue",
       sentences: [
         ["안녕하세요. 저|는 @민지|예요=이다.", "Bonjour. Je suis Minji."],
         ["저|는 한국 사람|이에요=이다.", "Je suis coréenne."],
@@ -169,7 +299,7 @@ const TEXTS = {
       ],
     },
     {
-      id: "ko-family", title: "Ma famille", icon: "👨‍👩‍👧", kind: "Monologue",
+      id: "ko-family", themes: ["rencontre"], title: "Ma famille", icon: "👨‍👩‍👧", kind: "Monologue",
       sentences: [
         ["우리 가족|은 네=넷 명|이에요=이다.", "Dans ma famille, nous sommes quatre."],
         ["아버지|는 회사원|이에요=이다.", "Mon père est employé de bureau."],
@@ -180,7 +310,7 @@ const TEXTS = {
       ],
     },
     {
-      id: "ko-weekend", title: "Le week-end", icon: "🌶️", kind: "Récit",
+      id: "ko-weekend", themes: ["cuisine", "series"], title: "Le week-end", icon: "🌶️", kind: "Récit",
       sentences: [
         ["토요일|에 친구|를 만났어요=만나다.", "Samedi, j'ai vu une amie."],
         ["우리|는 시장|에서 떡볶이|를 먹었어요=먹다.", "On a mangé des tteokbokki au marché."],
@@ -188,6 +318,73 @@ const TEXTS = {
         ["그리고 영화|를 봤어요=보다.", "Et puis on a regardé un film."],
         ["영화|가 정말 재미있었어요=재미있다.", "Le film était vraiment bien."],
         ["다음 주|에|도 만나요=만나다.", "On se revoit la semaine prochaine aussi."],
+      ],
+    },
+    {
+      id: "ko-subway", themes: ["transports"], title: "Dans le métro", icon: "🚇", kind: "Dialogue",
+      sentences: [
+        ["실례합니다=실례하다.", "Excusez-moi."],
+        ["@강남역|에 어떻게 가요=가다?", "Comment on va à la station Gangnam ?"],
+        ["이호선|을 타세요=타다.", "Prenez la ligne 2."],
+        ["몇 정거장|이에요=이다?", "C'est à combien d'arrêts ?"],
+        ["다섯 정거장|이에요=이다. 십 분 걸려요=걸리다.", "Cinq arrêts. Ça prend dix minutes."],
+        ["교통 카드|가 있어요=있다?", "Vous avez une carte de transport ?"],
+        ["네, 있어요=있다. 감사합니다=감사하다!", "Oui, j'en ai une. Merci !"],
+      ],
+    },
+    {
+      id: "ko-jjigae", themes: ["cuisine"], title: "Le kimchi-jjigae", icon: "🍲", kind: "Récit",
+      sentences: [
+        ["오늘|은 김치찌개|를 만들어요=만들다.", "Aujourd'hui, je fais un kimchi-jjigae."],
+        ["먼저 김치|를 잘라요=자르다.", "D'abord, je coupe le kimchi."],
+        ["그리고 돼지고기|와 두부|를 넣어요=넣다.", "Ensuite, je mets le porc et le tofu."],
+        ["물|을 붓고=붓다 이십 분 끓여요=끓이다.", "Je verse de l'eau et je fais cuire vingt minutes."],
+        ["조금 매워요=맵다. 하지만 정말 맛있어요=맛있다!", "C'est un peu piquant. Mais c'est vraiment bon !"],
+        ["밥|이랑 같이 먹어요=먹다.", "On le mange avec du riz."],
+      ],
+    },
+    {
+      id: "ko-sport", themes: ["sport"], title: "Le sport", icon: "🏃", kind: "Monologue",
+      sentences: [
+        ["저|는 매일 아침 운동해요=운동하다.", "Je fais du sport tous les matins."],
+        ["보통 공원|에서 달려요=달리다.", "D'habitude, je cours au parc."],
+        ["주말|에|는 친구|하고 축구|를 해요=하다.", "Le week-end, je joue au foot avec des amis."],
+        ["축구|는 힘들어요=힘들다. 그래도 재미있어요=재미있다.", "Le foot, c'est dur. Mais c'est amusant."],
+        ["운동 후|에 물|을 많이 마셔요=마시다.", "Après le sport, je bois beaucoup d'eau."],
+        ["건강|이 제일 중요해요=중요하다!", "La santé, c'est le plus important !"],
+      ],
+    },
+    {
+      id: "ko-game", themes: ["gaming"], title: "On joue ?", icon: "🎮", kind: "Dialogue",
+      sentences: [
+        ["지금 게임해요=게임하다?", "Tu joues en ce moment ?"],
+        ["네, 같이 해요=하다!", "Oui, jouons ensemble !"],
+        ["잠깐만요=잠깐만. 밥|을 먹고=먹다 있어요=있다.", "Une seconde. Je suis en train de manger."],
+        ["괜찮아요=괜찮다. 기다릴게요=기다리다.", "Pas de souci. Je t'attends."],
+        ["인터넷|이 너무 느려요=느리다.", "Internet est trop lent."],
+        ["이번|에|는 꼭 이겨요=이기다!", "Cette fois, on gagne, c'est sûr !"],
+      ],
+    },
+    {
+      id: "ko-work", themes: ["travail"], title: "Au bureau", icon: "💼", kind: "Monologue",
+      sentences: [
+        ["저|는 회사|에서 일해요=일하다.", "Je travaille dans une entreprise."],
+        ["아홉 시|에 출근해요=출근하다.", "J'arrive au travail à neuf heures."],
+        ["오전|에|는 회의|가 많아요=많다.", "Le matin, il y a beaucoup de réunions."],
+        ["점심|은 동료|들|하고 같이 먹어요=먹다.", "Le midi, je mange avec mes collègues."],
+        ["일|이 바빠요=바쁘다. 그래도 회사|가 좋아요=좋다.", "Le travail est chargé. Mais j'aime bien mon entreprise."],
+        ["여섯 시|에 퇴근해요=퇴근하다.", "Je quitte le travail à six heures."],
+      ],
+    },
+    {
+      id: "ko-drama", themes: ["series"], title: "Un K-drama", icon: "📺", kind: "Monologue",
+      sentences: [
+        ["요즘 한국 드라마|를 봐요=보다.", "En ce moment, je regarde un drama coréen."],
+        ["주인공|이 정말 멋있어요=멋있다.", "Le personnage principal est vraiment classe."],
+        ["이야기|가 조금 슬퍼요=슬프다.", "L'histoire est un peu triste."],
+        ["그래서 많이 울었어요=울다.", "Alors j'ai beaucoup pleuré."],
+        ["한국어 자막|으로 봐요=보다.", "Je le regarde avec les sous-titres coréens."],
+        ["드라마|로 한국어|를 공부해요=공부하다!", "J'apprends le coréen avec les dramas !"],
       ],
     },
   ],

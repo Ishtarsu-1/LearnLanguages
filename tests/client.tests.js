@@ -310,3 +310,28 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
   ok(viewProfile().includes("#/admin"), "lien admin dans le profil");
   ui.admin = null; account = a; K.hangulDone = hd; K.hangulDays = days; K.grammarDone = gd;
 }
+{ // Thèmes de situation et saveurs
+  for (const lang of ["en", "ko"]) {
+    const W = themeWords(lang);
+    for (const th of THEMES) ok(W[th.id].length >= 8, `${lang}: thème ${th.id} trop pauvre (${W[th.id].length} mots)`);
+    ok(!Object.values(W).flat().some((l) => KO_PARTICLES.has(l)), `${lang}: pas de particule dans les thèmes`);
+    for (const t of TEXTS[lang]) for (const x of t.themes || []) ok(THEMES.some((th) => th.id === x), `${lang}: thème inconnu ${x}`);
+  }
+  ok(!themeWords("en").cafe.includes("the") && !themeWords("en").cafe.includes("be"), "le socle n'appartient à aucun thème");
+  ok(themeWords("ko").transports.includes("정거장") && themeWords("en").cuisine.includes("garlic"), "mots de scène");
+  // Saveur débloquée à 10 mots solides
+  const L = state.langs.ko, saved = { ...L.known }, w = themeWords("ko").sport;
+  ok(!themeProgress("ko").find((p) => p.id === "sport").unlocked || w.filter((l) => L.known[l]).length >= 10, "saveur verrouillée au départ");
+  w.slice(0, 10).forEach((l) => (L.known[l] = true));
+  const sp = themeProgress("ko").find((p) => p.id === "sport");
+  ok(sp.unlocked && sp.solid >= 10 && tabThemes("ko").includes("Saveur Yuzu débloquée"), "saveur débloquée");
+  L.known = saved;
+  // Favoris : bascule + bibliothèque
+  const favs0 = [...state.settings.themes];
+  actions["theme-fav"]({ dataset: { t: "gaming" } }); ok(state.settings.themes.includes("gaming"), "favori ajouté");
+  ok(tabLibrary("en").includes("Tes thèmes ⭐"), "bibliothèque : favoris signalés");
+  actions["lib-theme"]({ dataset: { t: "gaming" } }); ok(tabLibrary("en").includes("Une partie en ligne") && !tabLibrary("en").includes("Au café</h3>") , "filtre par thème");
+  actions["lib-theme"]({ dataset: { t: "" } }); actions["theme-fav"]({ dataset: { t: "gaming" } });
+  ok(state.settings.themes.join() === favs0.join(), "favori retiré");
+  ok(flatten(state).kv["settings.themes"] !== undefined, "favoris synchronisés");
+}

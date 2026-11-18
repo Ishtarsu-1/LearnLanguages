@@ -31,13 +31,13 @@
 | ~~**P1**~~ | ~~Test de niveau à l'inscription~~ ✅ fait | 🟡 | 🆓 | — |
 | **P1** | Vraies voix (TTS neuronal, plusieurs voix) (🟢 relais serveur + cache + Profil › Audio faits ; reste : déployer Kokoro / MeloTTS) | 🟡 | 🆓 | backend |
 | **P1** | Analyseur morphologique coréen côté serveur | 🟡 | 🆓 | backend |
-| **P1** | Beaucoup plus de contenu + thèmes et situations | 🔴 | 🆓 | analyseur |
+| **P1** | Beaucoup plus de contenu + thèmes et situations (🟢 thèmes faits, 10 textes par langue ; reste : volume) | 🔴 | 🆓 | analyseur |
 | ~~**P1**~~ | ~~Ordre d'introduction des nouveaux mots (anti-interférence)~~ ✅ fait | 🟢 | 🆓 | thèmes |
 | **P1** | Nouveaux types d'exercices + alternance (alternance ✅) | 🟡 | 🆓 | — |
 | **P1** | Paires minimales multi-voix (✅ avec les voix du navigateur ; reste : vraies voix) | 🟡 | 🆓 | vraies voix |
 | **P1** | Bibliothèque de lectures graduées (lecture + écoute) | 🔴 | 🆓 | contenu, voix |
 | **P1** | Génération de textes calibrés par LLM | 🔴 | 🆓/💶 | LLM + analyseur |
-| **P2** | Mochi, la mascotte, et la collection de Mochis | 🟡 | 🆓 | charte graphique |
+| **P2** | Mochi, la mascotte, et la collection de Mochis (🟢 saveurs par thème dans l'onglet Thèmes ; reste : accessoires) | 🟡 | 🆓 | charte graphique |
 | ~~**P2**~~ | ~~Série flexible + quêtes hebdomadaires~~ ✅ fait (reste : récompenses cosmétiques) | 🟡 | 🆓 | — |
 | **P2** | Mode histoire | 🔴 | 🆓 | bibliothèque |
 | ~~**P2**~~ | ~~Application installable (PWA) + hors ligne~~ ✅ fait | 🟡 | 🆓 | — |
@@ -149,6 +149,8 @@ Obligatoire selon le §3 pour tout contenu qui n'est pas annoté à la main.
 - « Vie de tous les jours » n'est pas un thème : c'est le **socle de fréquence** (les ~1 000 mots les plus courants), qui reste prioritaire pour tout le monde. Les thèmes viennent **en plus**, selon les centres d'intérêt choisis.
 - Modèle de données : chaque lexème a `themes[]` (situations) et `semantic_group` (ex. `fruit`, `couleur`, `jour`). Chaque texte a `themes[]`.
 - Interface : à l'inscription et dans les paramètres, l'utilisateur choisit 2 ou 3 thèmes. Le lecteur et la génération de textes les privilégient. Une page « Thèmes » montre la progression de chacun (mots solides / total).
+
+**Fait** : 8 thèmes de situation (`THEMES`, avec leur saveur de Mochi), `themes[]` sur chaque texte, 12 nouveaux textes (6 par langue : transports, cuisine, sport, gaming, travail, séries), ~160 mots ajoutés au lexique, groupes anti-interférence étendus. Onglet « 🍡 Thèmes » : mots solides par thème, saveur débloquée à 10 mots solides, thèmes favoris (synchronisés). Bibliothèque : filtre par thème, favoris en tête à zone de couverture égale. Les mots d'un thème sont déduits de ses textes (le socle, présent dans 3 thèmes ou plus, n'appartient à aucun thème). Reste : le volume (50 textes par langue), le choix des thèmes à l'inscription, les paliers 50/100.
 
 **Outil interne d'annotation** : coller un texte, obtenir les lemmes et particules (analyseur), les thèmes suggérés, corriger à la main.
 

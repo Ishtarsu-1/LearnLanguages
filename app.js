@@ -24,7 +24,7 @@ const langDefaults = () => ({
 });
 const defaultState = () => ({
   name: "", avatar: "🐰", goal: 10, lastLang: null,
-  settings: { retention: 0.9, newPerDay: 12, cognateWeight: 0.8, particleColors: true, speed: 1, textScale: 1, zen: false, theme: "auto", voices: {} },
+  settings: { retention: 0.9, newPerDay: 12, cognateWeight: 0.8, particleColors: true, speed: 1, textScale: 1, zen: false, theme: "auto", voices: {}, themes: [] },
   langs: Object.fromEntries(Object.keys(LANGUAGES).map((k) => [k, langDefaults()])),
   cards: [], logs: [],
   history: {}, // { "AAAA-MM-JJ": { en: { sec, rev, prod, read } } } : suivi d'activité
@@ -884,8 +884,8 @@ function viewHome() {
 
 // ---------- Tableau de bord d'une langue ----------
 const TABS = {
-  en: [["aujourdhui", "☀️ Aujourd'hui"], ["lire", "📖 Lire"], ["revisions", "🧠 Réviser"], ["produire", "💬 Produire"], ["mots", "📒 Mots"], ["oreille", "🎧 Oreille"], ["fauxamis", "🎭 Faux amis"]],
-  ko: [["aujourdhui", "☀️ Aujourd'hui"], ["parcours", "🗺️ Parcours"], ["lire", "📖 Lire"], ["revisions", "🧠 Réviser"], ["produire", "💬 Produire"], ["mots", "📒 Mots"], ["oreille", "🎧 Oreille"]],
+  en: [["aujourdhui", "☀️ Aujourd'hui"], ["lire", "📖 Lire"], ["themes", "🍡 Thèmes"], ["revisions", "🧠 Réviser"], ["produire", "💬 Produire"], ["mots", "📒 Mots"], ["oreille", "🎧 Oreille"], ["fauxamis", "🎭 Faux amis"]],
+  ko: [["aujourdhui", "☀️ Aujourd'hui"], ["parcours", "🗺️ Parcours"], ["lire", "📖 Lire"], ["themes", "🍡 Thèmes"], ["revisions", "🧠 Réviser"], ["produire", "💬 Produire"], ["mots", "📒 Mots"], ["oreille", "🎧 Oreille"]],
 };
 // Vues des onglets (d'autres fichiers, comme exercises.js, peuvent en ajouter)
 const TAB_VIEWS = {};
@@ -1014,7 +1014,7 @@ function stepCard(n, icon, title, done, desc, action) {
   </div>`;
 }
 
-Object.assign(TAB_VIEWS, { aujourdhui: (l) => tabToday(l), parcours: (l) => tabPath(l), lire: (l) => tabLibrary(l), revisions: (l) => tabReviews(l), produire: (l) => tabProduce(l), mots: (l) => tabWords(l), oreille: (l) => tabEar(l), fauxamis: (l) => tabFauxAmis(l) });
+Object.assign(TAB_VIEWS, { aujourdhui: (l) => tabToday(l), parcours: (l) => tabPath(l), lire: (l) => tabLibrary(l), themes: (l) => tabThemes(l), revisions: (l) => tabReviews(l), produire: (l) => tabProduce(l), mots: (l) => tabWords(l), oreille: (l) => tabEar(l), fauxamis: (l) => tabFauxAmis(l) });
 
 function tabToday(lang) {
   if (hangulGate(lang)) {
@@ -1100,17 +1100,73 @@ function registerSwitcher() {
 }
 
 // ---------- Bibliothèque (§3) ----------
-function tabLibrary(lang) {
-  const list = rankedTexts(lang);
+// ---------- Thèmes de situation et collection de Mochis (§12, ROADMAP « Mochidex ») ----------
+// Mots d'un thème : lemmes de ses textes, sauf le socle (mots présents dans 3 thèmes ou plus,
+// mots des textes sans thème) et les particules. Calculé une fois par langue.
+const THEME_WORDS_CACHE = {};
+function themeWords(lang) {
+  if (THEME_WORDS_CACHE[lang]) return THEME_WORDS_CACHE[lang];
+  const themesOf = {}, socle = new Set();
+  for (const t of TEXTS[lang]) for (const s of t.sentences) for (const w of parseSentence(s[0], lang)) for (const g of w.segs) {
+    if (g.particle) continue;
+    for (const l of g.lemmas) { if (!(t.themes || []).length) socle.add(l); for (const th of t.themes || []) (themesOf[l] ||= new Set()).add(th); }
+  }
+  const out = Object.fromEntries(THEMES.map((th) => [th.id, []]));
+  for (const [l, ths] of Object.entries(themesOf)) if (ths.size < 3 && !socle.has(l) && !KO_PARTICLES.has(l)) for (const th of ths) out[th].push(l);
+  return (THEME_WORDS_CACHE[lang] = out);
+}
+// Paliers de « mots solides » (stabilité FSRS ≥ 7 jours ou marqués connus) : 10 débloque la saveur
+const FLAVOR_STEPS = [10, 50, 100];
+function themeProgress(lang, stab = stabilityMap(lang)) {
+  const words = themeWords(lang);
+  return THEMES.map((th) => {
+    const w = words[th.id], solid = w.filter((l) => lemmaStatus(lang, l, stab) === "known").length;
+    const texts = TEXTS[lang].filter((t) => (t.themes || []).includes(th.id));
+    const need = Math.min(FLAVOR_STEPS[0], w.length || FLAVOR_STEPS[0]);
+    return { ...th, words: w, solid, texts, unlocked: w.length > 0 && solid >= need, need, fav: state.settings.themes.includes(th.id) };
+  });
+}
+const flavorMochi = (th, mood = "happy", locked = false) =>
+  `<span class="flavor ${locked ? "locked" : ""}" style="--mochi-fill:${th.fill}${th.dark && !locked ? ";--mochi-ink:#FBF4EA" : ""}">${mochi("small", mood)}</span>`;
+function tabThemes(lang) {
+  const P = themeProgress(lang), got = P.filter((p) => p.unlocked).length;
   return `
-    <div class="card" style="margin-bottom:16px"><p style="margin:0">Classés selon <b>ton</b> vocabulaire (${knownCount(lang)} mots connus). La zone idéale : <b>92–98 %</b> de mots connus.</p></div>
+    <div class="card" style="margin-bottom:16px"><p style="margin:0">Un <b>thème</b> regroupe des mots qui vont ensemble dans une scène (commander, chaud, emporter…). Chaque thème a sa <b>saveur de Mochi</b> : tu la débloques avec <b>${FLAVOR_STEPS[0]} mots solides</b> du thème (révisés et retenus au moins une semaine).
+      Choisis tes thèmes préférés ⭐ : la bibliothèque les met en avant.</p>
+      <p class="muted" style="margin:8px 0 0"><small>${got} / ${THEMES.length} saveurs débloquées · les mots de tous les jours restent prioritaires, quel que soit le thème.</small></p></div>
+    <div class="theme-grid">
+      ${P.map((p) => `<div class="card theme-card ${p.unlocked ? "unlocked" : ""}">
+        <button class="fav ${p.fav ? "on" : ""}" data-act="theme-fav" data-t="${p.id}" aria-pressed="${p.fav}" title="${p.fav ? "Retirer des favoris" : "Thème préféré"}">${p.fav ? "★" : "☆"}</button>
+        ${flavorMochi(p, p.unlocked ? "proud" : "curious", !p.unlocked)}
+        <h3>${p.icon} ${esc(p.name)}</h3>
+        <small class="muted">${p.unlocked ? `Saveur ${esc(p.flavor)} débloquée !` : `Saveur ${esc(p.flavor)} · encore ${Math.max(0, p.need - p.solid)} mot(s) solide(s)`}</small>
+        <div class="cov"><div class="bar"><span style="width:${p.words.length ? (p.solid / p.words.length) * 100 : 0}%"></span></div><b>${p.solid} / ${p.words.length}</b></div>
+        <div class="theme-texts">${p.texts.length ? p.texts.map((t) => `<a class="chip" href="#/lang/${lang}/lire/${t.id}">${t.icon} ${esc(t.title)}${state.langs[lang].readTexts[t.id] ? " ✓" : ""}</a>`).join("") : `<small class="muted">Textes à venir</small>`}</div>
+      </div>`).join("")}
+    </div>`;
+}
+const themeOf = (id) => THEMES.find((t) => t.id === id);
+
+function tabLibrary(lang) {
+  const favs = state.settings.themes, filter = ui.libTheme && THEMES.some((t) => t.id === ui.libTheme) ? ui.libTheme : null;
+  // Les thèmes favoris passent devant, à zone de couverture égale (on ne sort jamais de la bonne zone pour un thème)
+  const isFav = (t) => (t.themes || []).some((x) => favs.includes(x));
+  const list = rankedTexts(lang).filter(({ t }) => !filter || (t.themes || []).includes(filter))
+    .sort((a, b) => a.z.order - b.z.order || isFav(b.t) - isFav(a.t));
+  const used = THEMES.filter((th) => TEXTS[lang].some((t) => (t.themes || []).includes(th.id)));
+  return `
+    <div class="card" style="margin-bottom:16px"><p style="margin:0">Classés selon <b>ton</b> vocabulaire (${knownCount(lang)} mots connus). La zone idéale : <b>92–98 %</b> de mots connus.${favs.length ? " Tes thèmes ⭐ passent devant." : ""}</p></div>
+    <div class="choice-row lib-filter" role="group" aria-label="Filtrer par thème">
+      <button class="chip ${filter ? "" : "active"}" data-act="lib-theme" data-t="">Tous</button>
+      ${used.map((th) => `<button class="chip ${filter === th.id ? "active" : ""}" data-act="lib-theme" data-t="${th.id}">${th.icon} ${esc(th.name)}${favs.includes(th.id) ? " ⭐" : ""}</button>`).join("")}
+    </div>
     <div class="text-list">
       ${list.map(({ t, c, z }) => `
         <a class="card text-item" href="#/lang/${lang}/lire/${t.id}">
           <span class="ti-icon">${t.icon}</span>
           <div>
             <h3>${esc(t.title)} ${state.langs[lang].readTexts[t.id] ? '<small class="muted">· lu ✓</small>' : ""}</h3>
-            <small class="muted">${t.kind} · ${t.sentences.length} phrases · 🔊 audio</small>
+            <small class="muted">${t.kind} · ${t.sentences.length} phrases · 🔊 audio${(t.themes || []).map((x) => ` · ${themeOf(x)?.icon || ""} ${esc(themeOf(x)?.name || x)}`).join("")}</small>
             <div class="cov"><div class="bar"><span style="width:${pct(c)}%"></span></div><b>${pct(c)} %</b></div>
           </div>
           <span class="zone ${z.k}">${z.label}</span>
@@ -2332,6 +2388,12 @@ const actions = {
   "logout-others": async () => {
     try { await api("POST", "/api/logout-others"); toast("Autres appareils déconnectés ✓"); loadSessions(); } catch (e) { toast(e.message); }
   },
+  "theme-fav": (el) => {
+    const id = el.dataset.t, cur = state.settings.themes;
+    state.settings.themes = cur.includes(id) ? cur.filter((x) => x !== id) : [...cur, id];
+    save(); render();
+  },
+  "lib-theme": (el) => { ui.libTheme = el.dataset.t || null; render(); },
   "admin-refresh": () => { ui.admin = null; render(); },
   "forgot-again": () => { ui.forgotSent = null; render(); },
   "resend-verify": async () => {
