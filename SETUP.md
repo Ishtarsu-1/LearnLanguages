@@ -124,7 +124,7 @@ Si un modèle plus léger obtient **le même score** qu'Opus, mets-le dans `MOCH
 
 [Ollama](https://ollama.com) fait tourner un modèle de langage sur ton propre ordinateur.
 
-1. **Installe Ollama** (s'il n'est pas déjà là : `ollama --version`) : suis les instructions de https://ollama.com/download pour ton système, puis vérifie qu'il tourne avec `curl http://localhost:11434/api/version`.
+1. **Installe Ollama** (s'il n'est pas déjà là : `ollama --version`) : suis les instructions de https://ollama.com/download pour ton système, puis vérifie qu'il tourne avec `curl http://127.0.0.1:11434/api/version`.
 2. **Télécharge le modèle** (4,7 Go) :
    ```bash
    ollama pull qwen2.5:7b-instruct
@@ -177,7 +177,7 @@ Sous Linux, Chromium et Firefox passent par `speech-dispatcher`. Sans lui, **auc
 
 ```bash
 docker run -d --restart unless-stopped -p 127.0.0.1:8880:8880 --name kokoro ghcr.io/remsky/kokoro-fastapi-cpu:latest
-curl http://localhost:8880/health   # attendre qu'il réponde
+curl http://127.0.0.1:8880/health   # attendre qu'il réponde
 ```
 
 **Coréen : MeloTTS** (licence MIT, CPU). Kokoro ne parle pas coréen. `tools/melotts_server.py` expose MeloTTS avec le même protocole :
@@ -198,7 +198,7 @@ Au premier lancement, MeloTTS télécharge son modèle (~1 Go). Ensuite, une phr
 Puis dans `.env` :
 
 ```
-TTS_URL_EN=http://localhost:8880/v1
+TTS_URL_EN=http://127.0.0.1:8880/v1
 TTS_VOICES_EN=af_heart,af_bella,am_michael,am_fenrir,bf_emma,bm_george
 TTS_URL_KO=http://127.0.0.1:8881/v1
 TTS_VOICES_KO=KR
@@ -207,12 +207,60 @@ TTS_MODEL_KO=melotts
 
 Relance `npm start`. La ligne de démarrage affiche `voix : en ×4, ko ×1`, et le Profil › Audio indique « 🎙️ Voix neuronales du serveur ». Si le moteur ne répond pas, Mochi repasse automatiquement sur la voix du navigateur.
 
-- La liste exacte des voix Kokoro est disponible sur `http://localhost:8880/v1/audio/voices`. Mets-en 2 à 6, variées (homme, femme, accents), pour l'écoute multi-voix.
+- La liste exacte des voix Kokoro est disponible sur `http://127.0.0.1:8880/v1/audio/voices`. Mets-en 2 à 6, variées (homme, femme, accents), pour l'écoute multi-voix.
 - Les voix Kokoro les mieux notées : `af_heart` (A), `af_bella` (A-), puis `bf_emma`, `am_michael`, `am_fenrir`, `bm_george` (préfixes : a = américain, b = britannique, f / m = femme / homme).
 - Kokoro redémarre tout seul avec Docker. `tools/melotts_server.py`, lui, est à relancer après un redémarrage du PC.
 - MeloTTS n'a qu'une voix coréenne : Mochi en fait 4 « locuteurs » en variant la hauteur et le débit.
-- La génération est limitée à 40 phrases par minute et par adresse IP. Les phrases déjà en cache sont servies sans limite.
-- Le cache se vide en supprimant `data/tts/`. Il est régénéré à la demande.
+- Mets toujours **`127.0.0.1`** dans les adresses, pas `localhost` : Kokoro et MeloTTS n'écoutent que sur `127.0.0.1`, et sous Windows, `localhost` est d'abord essayé en IPv6, ce qui ajoute du délai.
+- La génération au clic est limitée à 40 phrases par minute et par adresse IP. Les phrases déjà en cache sont servies sans limite.
+- Le cache se vide en supprimant `data/tts/`. Relance ensuite la pré-génération.
+
+### Pré-générer tout l'audio (à faire après chaque ajout de contenu et avant chaque mise en ligne)
+
+Le contenu est fixe : rien ne devrait être généré au premier clic (sur processeur, la première écoute d'une phrase peut prendre plusieurs secondes). Le script génère d'avance **toutes** les phrases que le site peut lire (textes, livres, histoire, missions, mots, oreille, grammaire, Hangul…), pour **chaque voix** configurée :
+
+```bash
+npm run tts:pregen -- --dry-run           # combien de phrases, combien déjà en cache
+npm run tts:pregen                        # tout (≈ 600 phrases par voix en anglais, 540 en coréen)
+npm run tts:pregen -- --lang en --voices af_heart,bf_emma
+```
+
+Il appelle les moteurs directement (pas besoin que le site tourne, pas de limite de débit), affiche la progression et le temps restant (`en · af_heart · 412/579 · reste ~6 min`), et reprend là où il s'est arrêté si tu l'interromps. La liste des phrases vient de la même fonction que le site (`spokenSentences()` dans `audio.js`) : les deux ne peuvent pas diverger. Seules les phrases imprévisibles (réponses de l'IA, phrase corrigée de l'apprenant, syllabes de l'atelier) restent générées au clic.
+
+### Quand une voix tarde quand même
+
+- Au démarrage, `npm start` **préchauffe** chaque moteur (une phrase courte pour charger le modèle) et affiche sa vitesse : `Voix en : prête (0,4 s) · Voix ko : prête (0,7 s)`, ou un avertissement clair si un moteur ne répond pas. Le site, lui, est disponible tout de suite.
+- Les **clics passent avant le préchargement** : une seule génération à la fois par moteur, et la demande d'un clic passe devant toutes celles du préchargement en attente.
+- Pendant le chargement, le bouton 🔊 pulse doucement. Si l'audio du serveur n'est pas arrivé au bout de **5 s**, le site lit la phrase avec la voix de l'appareil pour cette fois. Le serveur, lui, termine la génération : la phrase sera en cache au clic suivant.
+- Le serveur abandonne une génération au bout de 15 s (`TTS_TIMEOUT_MS`).
+
+### Windows (PowerShell)
+
+Testé sur Windows 11 avec une carte NVIDIA. Lance d'abord `npm run doctor` : il détecte ta machine et affiche les commandes adaptées.
+
+1. **Docker Desktop** avec le moteur **WSL 2**, et le **pilote NVIDIA** à jour. Vérifie la carte avec `nvidia-smi`.
+2. **Kokoro sur la carte graphique** (bien plus rapide que l'image CPU) :
+   ```powershell
+   docker run -d --restart unless-stopped --gpus all -p 127.0.0.1:8880:8880 --name kokoro ghcr.io/remsky/kokoro-fastapi-gpu:latest
+   ```
+3. **MeloTTS** (Python 3.10, avec [uv](https://docs.astral.sh/uv/)) :
+   ```powershell
+   uv venv --python 3.10 $HOME\melotts
+   & $HOME\melotts\Scripts\Activate.ps1      # si refusé : Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+   uv pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu121 --reinstall
+   python -c "import torch; print(torch.cuda.is_available())"   # doit afficher True
+   uv pip install git+https://github.com/myshell-ai/MeloTTS.git
+   uv pip uninstall unidic; Remove-Item -Recurse -Force $HOME\melotts\Lib\site-packages\unidic
+   uv pip install unidic-lite python-mecab-ko
+   $env:DEVICE="cuda"; python tools\melotts_server.py
+   ```
+4. **Ollama pour Windows** (https://ollama.com/download) utilise la carte graphique tout seul. Vérifie avec `ollama ps` : la colonne doit indiquer **100% GPU**.
+5. **Mesure la vitesse** d'une phrase (sous PowerShell, écris bien `curl.exe` : `curl` tout court est un alias d'une autre commande) :
+   ```powershell
+   curl.exe -s -o NUL -w "%{time_total} s`n" -X POST http://127.0.0.1:8880/v1/audio/speech -H "Content-Type: application/json" -d "{\"model\":\"kokoro\",\"input\":\"Hello there.\",\"voice\":\"af_heart\"}"
+   ```
+
+MeloTTS ne redémarre pas tout seul : après chaque redémarrage du PC, lance `tools\start-voices.ps1` (Windows) ou `tools/start-voices.sh` (Linux, macOS). Ils démarrent MeloTTS avec le bon environnement (et le conteneur Kokoro s'il est arrêté).
 
 ## 6 quater. E-mails (mot de passe oublié, vérification de l'adresse)
 
@@ -295,7 +343,7 @@ Si le serveur reçoit un `X-Forwarded-For` alors que `TRUST_PROXY` est vide, il 
 | `MOCHI_LLM_PROVIDER` | `claude` | Moteur du correcteur : `claude` ou `ollama` |
 | `ANTHROPIC_API_KEY` | — | Clé API Claude (moteur `claude`) |
 | `MOCHI_MODEL` | `claude-opus-5-5`, ou `qwen2.5:7b-instruct` avec Ollama | Modèle utilisé pour les corrections |
-| `OLLAMA_URL` | `http://localhost:11434` | Adresse d'Ollama |
+| `OLLAMA_URL` | `http://127.0.0.1:11434` | Adresse d'Ollama |
 | `OLLAMA_TIMEOUT_MS` | `180000` | Délai maximum d'une correction locale |
 | `MOCHI_LLM_DAILY` | `30` | Corrections max par compte et par jour (les réponses du cache ne comptent pas) |
 | `MOCHI_LLM_GLOBAL_DAILY` | `500` | Appels à l'IA max par jour pour tout le site ; au-delà, correcteur hors ligne |
@@ -303,6 +351,7 @@ Si le serveur reçoit un `X-Forwarded-For` alors que `TRUST_PROXY` est vide, il 
 | `TTS_URL`, `TTS_URL_EN`, `TTS_URL_KO` | — | Moteur de voix (section 6 ter) ; sans valeur, voix du navigateur |
 | `TTS_VOICES_EN`, `TTS_VOICES_KO` | — | Voix proposées, séparées par des virgules |
 | `TTS_MODEL`, `TTS_MODEL_EN`, `TTS_MODEL_KO` | `kokoro` | Champ `model` envoyé au moteur |
+| `TTS_TIMEOUT_MS` | `15000` | Délai maximum d'une génération (une fois lancée) |
 | `RESEND_API_KEY` | — | Envoi réel des e-mails (section 6 quater) ; sans clé, ils s'affichent dans le terminal |
 | `MAIL_FROM` | `Mochi <onboarding@resend.dev>` | Expéditeur des e-mails |
 | `PUBLIC_URL` | `http://localhost:PORT` | Adresse du site, pour les liens envoyés par e-mail |

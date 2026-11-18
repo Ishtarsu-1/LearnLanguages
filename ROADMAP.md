@@ -29,7 +29,7 @@
 | ~~**P0**~~ | ~~Synchro sans perte entre appareils~~ ✅ fait | 🟡 | — | — |
 | ~~**P1**~~ | ~~Feedback de production par LLM~~ ✅ fait (cache, plafond global ✅ ; reste : évaluer un modèle plus léger) | 🔴 | — | backend |
 | ~~**P1**~~ | ~~Test de niveau à l'inscription~~ ✅ fait | 🟡 | 🆓 | — |
-| **P1** | Vraies voix (TTS neuronal, plusieurs voix) (🟢 relais serveur + cache + Profil › Audio faits ; reste : déployer Kokoro / MeloTTS) | 🟡 | 🆓 | backend |
+| ~~**P1**~~ | ~~Vraies voix (TTS neuronal, plusieurs voix)~~ ✅ fait : relais serveur, cache, pré-génération, préchauffage, file prioritaire, repli rapide (reste : installer les moteurs sur la machine de production, surlignage mot à mot) | 🟡 | 🆓 | backend |
 | **P1** | Analyseur morphologique coréen côté serveur | 🟡 | 🆓 | backend |
 | **P1** | Beaucoup plus de contenu + thèmes et situations (🟢 thèmes faits, 10 textes par langue ; reste : volume) | 🔴 | 🆓 | analyseur |
 | ~~**P1**~~ | ~~Ordre d'introduction des nouveaux mots (anti-interférence)~~ ✅ fait | 🟢 | 🆓 | thèmes |
@@ -121,7 +121,10 @@ Le calcul de couverture du §3 ne veut rien dire si le site croit qu'un francoph
 - Le résultat est modifiable à tout moment (« Je connais déjà ce mot » dans le lecteur).
 - 5 minutes maximum, sautable. Le test sert aussi de **premier moment agréable** : afficher à la fin « Tu comprends déjà ~X % d'un épisode de sitcom ».
 
-### Vraies voix 🟡 🆓
+### ✅ Vraies voix (fait, CORRECTIFS v0.4 lot 7)
+Fait : relais vers Kokoro / MeloTTS avec cache disque ; **pré-génération** de toutes les phrases fixes (`npm run tts:pregen`, liste partagée avec le client : `spokenSentences()`) ; préchauffage des moteurs au démarrage ; **file par moteur** (une génération à la fois, clics prioritaires sur le préchargement `p=low`) ; indicateur de chargement et repli sur la voix de l'appareil après 5 s ; délai serveur 15 s (`TTS_TIMEOUT_MS`) ; guide Windows et `tools/start-voices.*`. Reste : stocker l'audio sur R2, surlignage mot à mot.
+
+Spécification d'origine :
 La synthèse vocale du navigateur varie énormément d'un appareil à l'autre (§5 : audio natif ou TTS de haute qualité).
 - Générer l'audio **au moment de la création du contenu** (pas à la volée), le stocker sur R2 et le servir via `audio_url`.
 - **Coréen : MeloTTS** (licence MIT, tourne sur CPU). **Anglais : Kokoro** (licence Apache 2.0, plusieurs voix) ou MeloTTS (accents américain, britannique, australien, indien). Détails dans la stack gratuite.

@@ -6,7 +6,7 @@
 //  - Le reste de l'API n'est jamais mis en cache : la synchro gère le hors-ligne
 //    (les changements attendent le retour du réseau, voir syncNow dans sync.js).
 // ============================================================
-const VERSION = "mochi-v10";
+const VERSION = "mochi-v11";
 const SHELL = `${VERSION}-shell`, STATIC = `${VERSION}-static`, AUDIO = "mochi-audio"; // l'audio survit aux mises à jour
 const SHELL_FILES = [
   "/", "/state.js", "/sync.js", "/ui.js", "/audio.js", "/reader.js", "/fsrs-cards.js", "/today.js", "/lessons.js", "/profile.js", "/router.js", "/actions.js", "/app.js", "/content.js", "/exercises.js", "/placement.js", "/library.js", "/missions.js", "/story.js", "/keyboard.js", "/hangul.js", "/cosmetics.js", "/tour.js", "/legal.js", "/styles.css", "/tokens.css",
@@ -35,13 +35,13 @@ async function networkFirst(req) {
     return (await cache.match(req, { ignoreSearch: true })) || (req.mode === "navigate" ? cache.match("/") : Response.error());
   }
 }
-async function cacheFirst(req, name, max) {
+async function cacheFirst(req, name, max, key = req) {
   const cache = await caches.open(name);
-  const hit = await cache.match(req);
+  const hit = await cache.match(key);
   if (hit) return hit;
   const res = await fetch(req);
   if (res.ok) {
-    await cache.put(req, res.clone());
+    await cache.put(key, res.clone());
     if (max) cache.keys().then((keys) => keys.length > max && Promise.all(keys.slice(0, keys.length - max).map((k) => cache.delete(k))));
   }
   return res;
@@ -50,7 +50,11 @@ async function cacheFirst(req, name, max) {
 self.addEventListener("fetch", (e) => {
   const req = e.request, url = new URL(req.url);
   if (req.method !== "GET" || url.origin !== location.origin) return;
-  if (url.pathname === "/api/tts") return e.respondWith(cacheFirst(req, AUDIO, AUDIO_MAX));
+  if (url.pathname === "/api/tts") {
+    // Même clé pour le préchargement (p=low) et le clic : l'audio préchargé sert au clic
+    const key = new URL(url); key.searchParams.delete("p");
+    return e.respondWith(cacheFirst(req, AUDIO, AUDIO_MAX, key.href));
+  }
   if (url.pathname.startsWith("/api/")) return; // jamais en cache
   if (url.pathname.startsWith("/fonts/") && url.pathname.endsWith(".woff2")) return e.respondWith(cacheFirst(req, STATIC));
   if (url.pathname.startsWith("/avatars/") || url.pathname.startsWith("/icons/")) return e.respondWith(cacheFirst(req, STATIC));

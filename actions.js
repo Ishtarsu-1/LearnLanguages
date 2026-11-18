@@ -261,6 +261,7 @@ $app.addEventListener("click", (e) => {
   const el = e.target.closest("[data-act]");
   if (!el || !el.dataset.act || !actions[el.dataset.act]) return;
   if (el.tagName === "BUTTON" || el.dataset.act === "locked" || el.dataset.act === "jump") e.preventDefault?.();
+  ui.lastClick = { el, t: Date.now() }; // pour l'indicateur de chargement de l'audio (audio.js)
   actions[el.dataset.act](el, e);
 });
 let nameTimer;

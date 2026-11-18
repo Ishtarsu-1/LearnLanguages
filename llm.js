@@ -13,7 +13,7 @@ const { betaZodOutputFormat } = require("@anthropic-ai/sdk/helpers/beta/zod");
 
 const PROVIDER = (process.env.MOCHI_LLM_PROVIDER || "claude").toLowerCase();
 const MODEL = process.env.MOCHI_MODEL || (PROVIDER === "ollama" ? "qwen2.5:7b-instruct" : "claude-opus-5-5");
-const OLLAMA_URL = (process.env.OLLAMA_URL || "http://localhost:11434").replace(/\/$/, "");
+const OLLAMA_URL = (process.env.OLLAMA_URL || "http://127.0.0.1:11434").replace(/\/$/, "");
 const OLLAMA_TIMEOUT = Number(process.env.OLLAMA_TIMEOUT_MS) || 180_000; // CPU : une correction peut prendre ~1 min
 const ENGINE = PROVIDER === "ollama" ? `Ollama (${MODEL})` : "Claude";
 // Repli serveur en cas de refus : seulement sur les modèles qui l'acceptent (pas Haiku)
@@ -189,6 +189,17 @@ async function getFeedbackOllama(input) {
   return f;
 }
 
+// Préchauffage d'Ollama (lot 7.2) : un appel sans prompt charge le modèle en mémoire.
+// Renvoie la durée en ms, ou null si le moteur n'est pas Ollama.
+async function warmup(timeoutMs = 120e3) {
+  if (PROVIDER !== "ollama") return null;
+  const t0 = Date.now();
+  const r = await fetch(`${OLLAMA_URL}/api/generate`, { method: "POST", headers: { "Content-Type": "application/json" }, signal: AbortSignal.timeout(timeoutMs), body: JSON.stringify({ model: MODEL, prompt: "", keep_alive: "30m" }) });
+  if (!r.ok) throw new Error(r.status === 404 ? `modèle ${MODEL} absent (ollama pull ${MODEL})` : `HTTP ${r.status}`);
+  await r.arrayBuffer();
+  return Date.now() - t0;
+}
+
 // ============================================================
 //  Jeu de rôle du mode histoire (missions.js) : l'IA joue un personnage,
 //  reformule les erreurs (recast) et dit quand le but de la mission est atteint.
@@ -278,4 +289,4 @@ async function roleplay(mission, history, meta = {}) {
 // Version du prompt (entre dans la clé du cache : changer le prompt invalide les anciennes réponses)
 const PROMPT_VERSION = require("node:crypto").createHash("sha256").update(SYSTEM + OLLAMA_EXTRA + OLLAMA_REMINDER).digest("hex").slice(0, 12);
 
-module.exports = { getFeedback, costOf, PROMPT_VERSION, postProcess, LlmUnavailable, FeedbackSchema, userMessage, SYSTEM, MODEL, PROVIDER, ENGINE, roleplay, RoleplaySchema, roleplayMessage, ROLEPLAY_SYSTEM };
+module.exports = { getFeedback, costOf, PROMPT_VERSION, warmup, OLLAMA_URL, postProcess, LlmUnavailable, FeedbackSchema, userMessage, SYSTEM, MODEL, PROVIDER, ENGINE, roleplay, RoleplaySchema, roleplayMessage, ROLEPLAY_SYSTEM };

@@ -6,7 +6,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node --env-file-if-exists=.env server.js",
-    "test": "node tests/run.js"
+    "test": "node tests/run.js",
+    "tts:pregen": "node --env-file-if-exists=.env tools/pregen-tts.js"
   },
   "engines": {
     "node": ">=22.5"

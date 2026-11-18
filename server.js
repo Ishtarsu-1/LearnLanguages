@@ -308,6 +308,7 @@ const RATE_LIMITS = {
   forgot: { free: 5, max: 15 * 60e3, window: 3600e3 },        // demandes de réinitialisation (par IP et par adresse)
   verify: { free: 3, max: 15 * 60e3, window: 3600e3 },        // renvois de l'e-mail de vérification
   tts: { free: 40, max: 60e3, window: 60e3, flat: true },      // 40 phrases générées par minute (le cache, lui, est libre)
+  "tts-low": { free: 60, max: 60e3, window: 60e3, flat: true }, // préchargement : compté à part, pour ne pas manger le quota des clics
 };
 db.prepare("DELETE FROM login_attempts WHERE window_start < ?").run(Date.now() - 86400e3);
 const attemptGet = db.prepare("SELECT * FROM login_attempts WHERE key = ?");
@@ -510,11 +511,18 @@ async function api(req, res, url) {
     if (bad) return fail(res, 400, bad);
     let file = tts.cached(lang, voice, text);
     if (!file) {
-      const wait = waitFor(`tts:${ip}`);
+      // p=low : préchargement (prefetchAudio). Passe après les clics, limité à part,
+      // et refusé si la file du moteur est déjà longue.
+      const low = url.searchParams.get("p") === "low", key = `${low ? "tts-low" : "tts"}:${ip}`;
+      if (low && tts.waiting(lang, "low") > 20) return fail(res, 503, "Le moteur de voix est occupé, réessaie plus tard.", { "Retry-After": "30" });
+      const wait = waitFor(key);
       if (wait) return tooMany(res, wait);
-      recordAttempt(`tts:${ip}`);
-      try { file = await tts.generate(lang, voice, text); }
+      recordAttempt(key);
+      // La génération n'est pas liée à la requête : si le client abandonne (repli sur la voix
+      // de l'appareil après quelques secondes), le fichier arrive quand même dans le cache.
+      try { file = await tts.generate(lang, voice, text, low ? "low" : "high"); }
       catch (e) { console.error("TTS :", e.message); return fail(res, 502, "Le moteur de voix ne répond pas."); }
+      if (res.destroyed) return;
     }
     return serveFile(res, file, ttsMod.typeOf(file), "private, max-age=31536000, immutable");
   }
@@ -785,5 +793,25 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
+// Préchauffage des moteurs (lot 7.2), en arrière-plan : ne bloque jamais le démarrage.
+// Un premier appel charge le modèle, un second mesure la vitesse réelle d'une phrase courte.
+const engines = { tts: {}, llm: null }; // état et latence, pour l'adaptation (lot 8.4) et l'admin
+const secs = (ms) => `${(ms / 1000).toLocaleString("fr-FR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} s`;
+async function warmEngines(log = console.log) {
+  const jobs = Object.keys(tts.info()).map(async (lang) => {
+    try { await tts.warm(lang, 0); engines.tts[lang] = { ok: true, ms: await tts.warm(lang, 1) }; }
+    catch (e) { engines.tts[lang] = { ok: false, error: e.cause?.code || e.message }; }
+  });
+  const llmJob = llm.PROVIDER === "ollama" && LLM_ON
+    ? llm.warmup().then((ms) => { engines.llm = { ok: true, ms }; }, (e) => { engines.llm = { ok: false, error: e.cause?.code || e.message }; })
+    : null;
+  await Promise.all([...jobs, llmJob]);
+  const parts = Object.entries(engines.tts).map(([l, x]) => (x.ok ? `Voix ${l} : prête (${secs(x.ms)})` : `⚠️ Voix ${l} : le moteur ne répond pas (${x.error}) → voix du navigateur`));
+  if (engines.llm) parts.push(engines.llm.ok ? `Ollama : prêt (${secs(engines.llm.ms)})` : `⚠️ Ollama ne répond pas (${engines.llm.error}) → correcteur hors ligne`);
+  if (parts.length) log(parts.join(" · "));
+  return engines;
+}
+
 if (require.main === module) server.listen(PORT, HOST, () => console.log(`Mochi → http://${HOST && HOST !== "0.0.0.0" && HOST !== "::" ? HOST : "localhost"}:${PORT} · correcteur : ${LLM_ON ? llm.ENGINE : "désactivé"} · e-mails : ${mail.mode} · voix : ${tts.enabled ? Object.entries(tts.info()).map(([l, v]) => `${l} ×${v.length}`).join(", ") : "navigateur"}`));
-module.exports = { server, db, mail, clientIp, limiter: { waitFor, recordAttempt, clearAttempts } };
+if (require.main === module) warmEngines().catch((e) => console.error("Préchauffage :", e.message));
+module.exports = { server, db, mail, clientIp, warmEngines, engines, tts, limiter: { waitFor, recordAttempt, clearAttempts } };

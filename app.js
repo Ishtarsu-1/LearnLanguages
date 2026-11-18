@@ -25,21 +25,28 @@ const rememberAccount = (d) => { try { if (d) localStorage.setItem(LAST_ACCOUNT,
   route();
   if (account) syncNow();
   if (typeof navigator !== "undefined" && "serviceWorker" in navigator && location.protocol?.startsWith("http")) navigator.serviceWorker.register("/sw.js").catch(() => {});
-  setTimeout(prefetchAudio, 8000);
+  // Préchargement de l'audio : seulement quand la page est inactive, et pas si le serveur
+  // annonce des voix lentes (il les garde pour les clics).
+  if (!features.ttsSlow) {
+    const whenIdle = typeof requestIdleCallback === "function" ? (f) => setTimeout(() => requestIdleCallback(f, { timeout: 20000 }), 3000) : (f) => setTimeout(f, 8000);
+    whenIdle(prefetchAudio);
+  }
 })();
 
 // Pré-télécharge l'audio des cartes à revoir dans les 2 prochains jours (vraies voix),
-// pour réviser hors ligne. Lentement, pour ne pas épuiser la limite de génération.
+// pour réviser hors ligne. En basse priorité (p=low : les clics passent devant côté serveur),
+// lentement, et on s'arrête dès que l'utilisateur lance une lecture.
 async function prefetchAudio() {
   if (typeof navigator === "undefined" || !navigator.onLine || !("caches" in window)) return;
+  const plays = audioPlays;
   const soon = Date.now() + 2 * 864e5, seen = new Set();
   const list = state.cards.filter((c) => c.context && new Date(c.due) <= soon && audioSource(c.lang) === "server")
     .map((c) => ttsUrl(c.context, c.lang, defaultServerVoice(c.lang))).filter((u) => !seen.has(u) && seen.add(u));
   const cache = await caches.open("mochi-audio");
   for (const u of list.slice(0, 15)) {
-    if (!navigator.onLine) return;
+    if (!navigator.onLine || audioPlays !== plays) return;
     if (await cache.match(u)) continue;
-    try { await fetch(u); } catch { return; } // le service worker range la réponse dans son cache
+    try { const r = await fetch(`${u}&p=low`); if (!r.ok) return; } catch { return; } // le service worker range la réponse (même clé que le clic)
     await new Promise((r) => setTimeout(r, 3000));
   }
 }

@@ -843,6 +843,11 @@ mark.todo { background: var(--honey-50); color: var(--warning); font-weight: 800
 .consent input { flex: none; width: 20px; height: 20px; }
 .consent input { margin-top: 3px; }
 
+/* Audio en cours de chargement (bouton 🔊, aria-busy) : pulsation douce (charte §12) */
+[aria-busy="true"].loading { cursor: progress; animation: audio-wait 1.1s ease-in-out infinite; }
+@keyframes audio-wait { 50% { opacity: .5; } }
+@media (prefers-reduced-motion: reduce) { [aria-busy="true"].loading { animation: none; opacity: .6; } }
+
 /* ---------- Utilitaires ----------
    Remplacent les anciens attributs style="…" : la CSP n'autorise plus les styles inline.
    !important : ils gardent la priorité qu'avait l'attribut style. Générés une fois, à étendre à la main. */
