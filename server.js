@@ -85,6 +85,10 @@ db.exec(`
     day TEXT NOT NULL, count INTEGER NOT NULL,
     PRIMARY KEY (user_id, day)
   );
+  -- Limitation des tentatives (connexion, inscription, correcteur) : survit aux redémarrages
+  CREATE TABLE IF NOT EXISTS login_attempts (
+    key TEXT PRIMARY KEY, count INTEGER NOT NULL, window_start INTEGER NOT NULL, blocked_until INTEGER NOT NULL DEFAULT 0
+  );
   CREATE INDEX IF NOT EXISTS sync_kv_rev ON sync_kv (user_id, rev);
   CREATE INDEX IF NOT EXISTS sync_cards_rev ON sync_cards (user_id, rev);
   CREATE INDEX IF NOT EXISTS review_logs_rev ON review_logs (user_id, rev);
@@ -117,7 +121,7 @@ function send(res, status, body, headers = {}) {
   res.writeHead(status, { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store", ...headers });
   res.end(json);
 }
-const fail = (res, status, error) => send(res, status, { error });
+const fail = (res, status, error, headers) => send(res, status, { error }, headers);
 
 function readBody(req, limit) {
   return new Promise((ok, ko) => {
@@ -174,18 +178,36 @@ function currentSession(req) {
   return { session: s, user };
 }
 
-// Limitation des tentatives de connexion (en mémoire)
-const attempts = new Map();
-function tooManyAttempts(key) {
-  const a = attempts.get(key);
-  if (!a || Date.now() - a.first > 15 * 60e3) return false;
-  return a.count >= 10;
+// Limitation des tentatives, stockée dans SQLite (un redémarrage ne remet rien à zéro).
+// Freinage progressif plutôt que blocage sec : après `free` échecs, chaque nouvel échec
+// impose une attente qui double (1 s, 2 s, 4 s…) jusqu'à `max`. Une clé par compte
+// plafonnée bas empêche de verrouiller durablement le compte de quelqu'un d'autre.
+const RATE_LIMITS = {
+  "login-ip": { free: 10, max: 15 * 60e3, window: 3600e3 },
+  "login-email": { free: 5, max: 60e3, window: 3600e3 },
+  signup: { free: 10, max: 15 * 60e3, window: 3600e3 },
+  feedback: { free: 10, max: 60e3, window: 60e3, flat: true }, // 10 corrections par minute, pas de rafales
+};
+db.prepare("DELETE FROM login_attempts WHERE window_start < ?").run(Date.now() - 86400e3);
+const attemptGet = db.prepare("SELECT * FROM login_attempts WHERE key = ?");
+const attemptPut = db.prepare("INSERT INTO login_attempts (key, count, window_start, blocked_until) VALUES (?, ?, ?, ?) ON CONFLICT (key) DO UPDATE SET count = excluded.count, window_start = excluded.window_start, blocked_until = excluded.blocked_until");
+const limitOf = (key) => RATE_LIMITS[key.slice(0, key.indexOf(":"))];
+// Renvoie le nombre de secondes à attendre (0 = autorisé)
+function waitFor(key, t = Date.now()) {
+  const a = attemptGet.get(key);
+  if (!a || t - a.window_start > limitOf(key).window) return 0;
+  return Math.max(0, Math.ceil((a.blocked_until - t) / 1000));
 }
-function recordFailure(key) {
-  const a = attempts.get(key);
-  if (!a || Date.now() - a.first > 15 * 60e3) attempts.set(key, { first: Date.now(), count: 1 });
-  else a.count++;
+function recordAttempt(key, t = Date.now()) {
+  const L = limitOf(key), a = attemptGet.get(key);
+  const fresh = !a || t - a.window_start > L.window;
+  const count = fresh ? 1 : a.count + 1;
+  const over = count - L.free;
+  const delay = over <= 0 ? 0 : L.flat ? L.window - (t - (fresh ? t : a.window_start)) : Math.min(L.max, 1000 * 2 ** (over - 1));
+  attemptPut.run(key, count, fresh ? t : a.window_start, delay ? t + delay : 0);
 }
+const clearAttempts = (key) => db.prepare("DELETE FROM login_attempts WHERE key = ?").run(key);
+const tooMany = (res, secs) => fail(res, 429, `Trop de tentatives, réessaie dans ${secs < 60 ? `${secs} s` : `${Math.ceil(secs / 60)} min`}.`, { "Retry-After": String(secs) });
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 function validCredentials(email, password) {
@@ -298,8 +320,9 @@ async function api(req, res, url) {
     const { email, password, name } = await readJson(req);
     const err = validCredentials(email, password);
     if (err) return fail(res, 400, err);
-    if (tooManyAttempts(`signup:${ip}`)) return fail(res, 429, "Trop de tentatives, réessaie dans quelques minutes.");
-    recordFailure(`signup:${ip}`); // compte aussi les inscriptions réussies : limite le spam
+    const wait = waitFor(`signup:${ip}`);
+    if (wait) return tooMany(res, wait);
+    recordAttempt(`signup:${ip}`); // compte aussi les inscriptions réussies : limite le spam
     if (db.prepare("SELECT 1 FROM users WHERE email = ?").get(email.trim())) return fail(res, 409, "Un compte existe déjà avec cette adresse.");
     const info = db.prepare("INSERT INTO users (email, pass, name, created_at) VALUES (?, ?, ?, ?)").run(email.trim(), await hashPassword(password), cleanName(name), now());
     createSession(res, Number(info.lastInsertRowid), req);
@@ -310,11 +333,12 @@ async function api(req, res, url) {
     const { email, password } = await readJson(req);
     if (typeof email !== "string" || typeof password !== "string") return fail(res, 400, "E-mail et mot de passe requis.");
     const keys = [`login-ip:${ip}`, `login-email:${email.toLowerCase()}`];
-    if (keys.some(tooManyAttempts)) return fail(res, 429, "Trop de tentatives, réessaie dans 15 minutes.");
+    const wait = Math.max(...keys.map((k) => waitFor(k)));
+    if (wait) return tooMany(res, wait);
     const user = db.prepare("SELECT * FROM users WHERE email = ?").get(email.trim());
     const good = await verifyPassword(password, user ? user.pass : DUMMY_HASH);
-    if (!user || !good) { keys.forEach(recordFailure); return fail(res, 401, "E-mail ou mot de passe incorrect."); }
-    keys.forEach((k) => attempts.delete(k));
+    if (!user || !good) { keys.forEach((k) => recordAttempt(k)); return fail(res, 401, "E-mail ou mot de passe incorrect."); }
+    clearAttempts(keys[1]); // l'IP garde son compteur : un attaquant ne le remet pas à zéro avec son propre compte
     createSession(res, user.id, req);
     return send(res, 200, `{"user":${JSON.stringify(publicUser({ ...user, last_login_at: now() }))},"legacy_state":${legacyState(user)},"features":{"llm":${LLM_ON},"engine":${JSON.stringify(llm.ENGINE)}}}`);
   }
@@ -340,6 +364,9 @@ async function api(req, res, url) {
       || (b.who != null && !str(b.who, 80)) || (b.register != null && !str(b.register, 30)) || (b.reference != null && !str(b.reference, 300))) {
       return fail(res, 400, "Requête invalide.");
     }
+    const wait = waitFor(`feedback:${uid}`);
+    if (wait) return tooMany(res, wait);
+    recordAttempt(`feedback:${uid}`);
     const day = now().slice(0, 10);
     const used = db.prepare("SELECT count FROM llm_usage WHERE user_id = ? AND day = ?").get(uid, day)?.count || 0;
     if (used >= LLM_DAILY) return fail(res, 429, `Tu as utilisé tes ${LLM_DAILY} corrections du jour. Reviens demain !`);
@@ -453,4 +480,4 @@ const server = http.createServer(async (req, res) => {
 });
 
 if (require.main === module) server.listen(PORT, () => console.log(`Mochi → http://localhost:${PORT} · correcteur : ${LLM_ON ? llm.ENGINE : "désactivé"}`));
-module.exports = { server, db };
+module.exports = { server, db, limiter: { waitFor, recordAttempt, clearAttempts } };

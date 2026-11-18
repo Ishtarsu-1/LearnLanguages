@@ -58,7 +58,23 @@ server.listen(0, "127.0.0.1", async () => {
     // rate limit
     cookie = "";
     for (let i = 0; i < 10; i++) await call("POST", "/api/login", { email: "x@y.fr", password: "nope" });
-    ok((await call("POST", "/api/login", { email: "x@y.fr", password: "nope" })).status === 429, "rate limit");
+    r = await call("POST", "/api/login", { email: "x@y.fr", password: "nope" });
+    ok(r.status === 429 && Number(r.headers.get("retry-after")) > 0, "rate limit + Retry-After");
+    // stockée en base : survit à un redémarrage
+    ok(require(path.join((process.argv[2] || path.join(__dirname, "..")), "server.js")).db.prepare("SELECT count FROM login_attempts WHERE key = 'login-email:x@y.fr'").get()?.count >= 6, "compteur persistant");
+    // freinage progressif, plafonné par compte (on simule le temps)
+    const { limiter: L } = require(path.join((process.argv[2] || path.join(__dirname, "..")), "server.js"));
+    let t = 1e12;
+    for (let i = 0; i < 5; i++) L.recordAttempt("login-email:z@z.fr", t);
+    ok(L.waitFor("login-email:z@z.fr", t) === 0, "5 essais gratuits");
+    L.recordAttempt("login-email:z@z.fr", t); ok(L.waitFor("login-email:z@z.fr", t) === 1, "puis 1 s");
+    L.recordAttempt("login-email:z@z.fr", t); ok(L.waitFor("login-email:z@z.fr", t) === 2, "puis 2 s");
+    for (let i = 0; i < 20; i++) L.recordAttempt("login-email:z@z.fr", t);
+    ok(L.waitFor("login-email:z@z.fr", t) === 60, "plafond 60 s par compte");
+    ok(L.waitFor("login-email:z@z.fr", t + 2 * 3600e3) === 0, "fenêtre expirée");
+    for (let i = 0; i < 10; i++) L.recordAttempt("feedback:1", t);
+    ok(L.waitFor("feedback:1", t) === 0, "10 corrections/min OK");
+    L.recordAttempt("feedback:1", t + 20e3); ok(L.waitFor("feedback:1", t + 20e3) === 40, "11e : attendre la fin de la minute");
     // suppression
     cookie = devB;
     ok((await call("DELETE", "/api/me", { password: "motdepasse1" })).status === 401, "delete mauvais mdp");
