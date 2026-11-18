@@ -220,6 +220,19 @@ for (const lang of ["en", "ko"]) {
     } else if (kind === "dictee") {
       document.getElementById = (id) => (id === "ex-answer" ? { value: q.s.text.toUpperCase() === q.s.text ? q.s.text : q.s.text.toLowerCase() } : { value: "", innerHTML: "", classList: { add() {}, remove() {}, toggle() {} }, focus() {} });
       actions["ex-check"](); ok(E.result.ok, `dictée ${lang} (casse ignorée)`);
+    } else if (["trou", "forme", "traduction"].includes(kind)) {
+      const ans = kind === "traduction" ? q.s.text : q.answer;
+      ok(ans && h.includes('id="ex-answer"'), `${kind} : champ de saisie`);
+      document.getElementById = (id) => (id === "ex-answer" ? { value: ans } : { value: "", innerHTML: "", classList: { add() {}, remove() {}, toggle() {} }, focus() {} });
+      actions["ex-check"](); ok(E.result.ok, `${kind} ${lang} : bonne réponse acceptée`);
+    } else if (kind === "paires") {
+      ok(q.words.length === 5 && new Set(q.words.map((w) => LEXICON[lang][w].fr)).size === 5, "5 paires distinctes");
+      actions["pair-l"]({ dataset: { i: "0" } }); actions["pair-r"]({ dataset: { i: "1" } }); ok(q.errors === 1 && !q.matched.length, "mauvaise association");
+      q.words.forEach((_, i) => { actions["pair-l"]({ dataset: { i: String(i) } }); actions["pair-r"]({ dataset: { i: String(i) } }); });
+      ok(q.matched.length === 5, "toutes les paires");
+    } else if (kind === "confusion" && q.empty) {
+      ok(h.includes("les deux") && !h.includes("ex-next"), "confusion : fermé tant que les deux mots ne sont pas connus");
+      continue;
     } else {
       ok(q.options.includes(q.answer) && new Set(q.options).size === q.options.length, `${kind} options valides`);
       actions["ex-pick"]({ dataset: { o: q.answer } }); ok(E.picked === q.answer, `${kind} réponse`);
@@ -476,4 +489,32 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
   ok(hub.includes("Parcours") && hub.includes("Écouter les sons") && hub.includes("Mes mots") && !hub.includes("Faux amis"), "S'entraîner (coréen) : outils en cartes");
   ok(viewLanguage("en", "pratique").includes("Faux amis"), "faux amis seulement en anglais");
   ok(sectionOf("aujourdhui") === "today" && sectionOf("histoire") === "read" && sectionOf("oreille") === "practice" && navOfTab("lire") === "lire", "sections et barre du bas");
+}
+{ // Nouveaux exercices : détails
+  state.langs.ko.hangulDone = true;
+  // Phrase à trou : pas de mot-outil, le trou est rendu
+  for (let i = 0; i < 30; i++) { newExercise("en", "trou"); ok(!["the", "a", "be", "i", "you"].includes(ui.ex.q.g.lemmas[0]), "trou : pas de mot-outil " + ui.ex.q.g.lemmas[0]); }
+  ok(blankHtml(toSentence("I like coffee.", "en"), 2, 0).includes("＿＿") && blankHtml(toSentence("I like coffee.", "en"), 2, 0, "coffee", "right").includes('class="blank right">coffee'), "rendu du trou");
+  // La bonne forme : toujours une forme fléchie différente du mot de base
+  for (let i = 0; i < 20; i++) { newExercise("ko", "forme"); const q = ui.ex.q; ok(q.answer !== q.g.lemmas[0] && q.g.lemmas[0].endsWith("다"), "forme ko : verbe conjugué"); }
+  // Particule : la paire (은/는…) est toujours proposée, explication de la règle
+  for (let i = 0; i < 20; i++) { newExercise("ko", "particule"); const q = ui.ex.q; if (PARTICLE_PAIR[q.answer]) ok(q.options.includes(PARTICLE_PAIR[q.answer]), "particule : paire proposée"); }
+  newExercise("ko", "particule"); const pq = ui.ex.q, wrong = pq.options.find((o) => o !== pq.answer), gid = PARTICLE_GRAMMAR[pq.answer];
+  const before = gid ? state.langs.ko.grammarMiss[gid] || 0 : 0;
+  actions["ex-pick"]({ dataset: { o: wrong } });
+  ok(tabExercises("ko").includes("particule de") || tabExercises("ko").includes("particule"), "explication de la particule");
+  if (gid) ok(state.langs.ko.grammarMiss[gid] === before + 1, "particule ratée → grammaire renforcée");
+  // Ne pas confondre : s'ouvre quand les deux mots d'une paire sont connus
+  const L = state.langs.en, k0 = { ...L.known };
+  L.known.early = true; L.known.late = true;
+  ok(EX_MORE.confusion.ready("en"), "paire early/late connue → exercice ouvert");
+  newExercise("en", "confusion"); ok(!ui.ex.q.empty && ui.ex.q.options.includes("early") || ui.ex.q.options.length === 2, "confusion : deux options");
+  L.known = k0;
+  // Traduction hors IA : comparaison locale, reformulation affichée
+  const accT = account; account = null; // sans IA : correction locale
+  newExercise("en", "traduction"); const tq = ui.ex.q;
+  document.getElementById = (id) => (id === "ex-answer" ? { value: "something else entirely" } : { value: "", innerHTML: "", classList: { add() {}, remove() {}, toggle() {} }, focus() {} });
+  actions["ex-check"](); ok(ui.ex.result.local && !ui.ex.result.ok && tabExercises("en").includes("traduction possible"), "traduction : correction locale"); account = accT;
+  // Menu groupé
+  ok(tabExercises("ko").includes("✍️ Écrit") && tabExercises("ko").includes("Changer d'exercice"), "menu regroupé");
 }

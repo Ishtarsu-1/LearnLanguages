@@ -26,6 +26,7 @@
 | Clavier | Clavier coréen intégré (두벌식) sous chaque champ coréen : à l'écran ou avec le clavier physique (AZERTY ou QWERTY), syllabes composées automatiquement |
 | Syllabes | Module Hangul en 10 jours (consonnes doubles, voyelles composées, 받침, écriture au clavier), atelier des syllabes (schéma du bloc, 7 sons finaux, décomposition d'un mot) |
 | Ma Mochi | 9 accessoires cosmétiques (tête, cou, visage) gagnés par les bonnes pratiques (quêtes, lecture, écoute, écriture, régularité, Hangul), portés partout sur le site |
+| Exercices | 12 types regroupés (écoute, écrit, grammaire, vocabulaire) : dictée, compréhension orale, phrase à trou, traduction corrigée par reformulation, bonne forme, bonne particule, remettre dans l'ordre, registre, ne pas confondre, associe, faux amis, mélange |
 | Audio | Voix du navigateur ou vraies voix du serveur (Kokoro, MeloTTS, cache disque), Profil › Audio : état, choix et test des voix, aide si aucune voix |
 
 ---

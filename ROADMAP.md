@@ -33,7 +33,7 @@
 | **P1** | Analyseur morphologique coréen côté serveur | 🟡 | 🆓 | backend |
 | **P1** | Beaucoup plus de contenu + thèmes et situations (🟢 thèmes faits, 10 textes par langue ; reste : volume) | 🔴 | 🆓 | analyseur |
 | ~~**P1**~~ | ~~Ordre d'introduction des nouveaux mots (anti-interférence)~~ ✅ fait | 🟢 | 🆓 | thèmes |
-| **P1** | Nouveaux types d'exercices + alternance (alternance ✅) | 🟡 | 🆓 | — |
+| ~~**P1**~~ | ~~Nouveaux types d'exercices + alternance~~ ✅ (12 types ; reste : dialogue entier + questions) | 🟡 | 🆓 | — |
 | **P1** | Paires minimales multi-voix (✅ avec les voix du navigateur ; reste : vraies voix) | 🟡 | 🆓 | vraies voix |
 | **P1** | Bibliothèque de lectures graduées (lecture + écoute) (🟢 moteur + 2 livres ; reste : volume, surlignage mot à mot) | 🔴 | 🆓 | contenu, voix |
 | **P1** | Génération de textes calibrés par LLM | 🔴 | 🆓/💶 | LLM + analyseur |
@@ -164,7 +164,7 @@ Application directe du §12.
 - Une fois les deux mots solides (stabilité FSRS ≥ 7 jours), on peut proposer un exercice de **discrimination** qui les oppose volontairement.
 
 ### Nouveaux types d'exercices + alternance 🟡 🆓
-Faits (onglet « 🎯 Exercices », `exercises.js`) : ✅ dictée, ✅ remettre dans l'ordre, ✅ compréhension orale (audio → sens), ✅ choix du registre (coréen), ✅ faux amis (anglais).
+Faits (onglet « 🎯 Exercices », `exercises.js`) : ✅ dictée, ✅ remettre dans l'ordre, ✅ compréhension orale (audio → sens), ✅ choix du registre (coréen), ✅ faux amis (anglais), ✅ **phrase à trou** (rappel écrit, indice à la demande), ✅ **traduis** FR → langue cible (recast par l'IA si connecté, sinon comparaison locale), ✅ **la bonne forme** (conjugaison / accord en contexte), ✅ **la bonne particule** (coréen : rôle + règle consonne/voyelle ; une erreur renforce le point de grammaire dans le Mélange), ✅ **ne pas confondre** (discrimination §12, ouvert seulement quand les deux mots d'une paire sont connus), ✅ **associe** (5 mots ↔ sens). Menu regroupé (Écoute · Écrit · Grammaire · Vocabulaire), Mélange recommandé.
 
 Tous en **rappel actif** (§1), avec une phrase de contexte et de l'audio (§2) :
 - ~~**Dictée**~~ ✅
