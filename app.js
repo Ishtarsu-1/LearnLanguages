@@ -20,7 +20,8 @@ const COMING_SOON = [
 ];
 
 const GOALS = [{ min: 5, label: "Tranquille" }, { min: 10, label: "Régulier" }, { min: 15, label: "Sérieux" }, { min: 20, label: "Intense" }];
-const AVATARS = ["🐰", "🐱", "🐻", "🐼", "🦊", "🐥", "🐸", "🐨"];
+// "mochi" : la mascotte elle-même (avec ses accessoires), avatar par défaut
+const AVATARS = ["mochi", "🐰", "🐱", "🐻", "🐼", "🦊", "🐥", "🐸", "🐨"];
 const KNOWN_STABILITY = 7; // jours : au-delà, un mot en révision compte comme « connu » (§3)
 const HAS_FSRS = typeof FSRS !== "undefined";
 
@@ -32,7 +33,7 @@ const langDefaults = () => ({
   hangulDone: false, hangulDays: {}, grammarDone: {}, grammarMiss: {}, earStats: {}, errors: {}, prodDone: {}, quests: {}, books: {},
 });
 const defaultState = () => ({
-  name: "", avatar: "🐰", goal: 10, lastLang: null,
+  name: "", avatar: "mochi", goal: 10, lastLang: null,
   settings: { retention: 0.9, newPerDay: 12, cognateWeight: 0.8, particleColors: true, speed: 1, textScale: 1, zen: false, theme: "auto", voices: {}, themes: [], look: {}, lookSeen: [], tourDone: false },
   langs: Object.fromEntries(Object.keys(LANGUAGES).map((k) => [k, langDefaults()])),
   cards: [], logs: [],
@@ -303,9 +304,10 @@ async function applyAuth(data, { isNew } = {}) {
   }
   await syncNow();
 }
+const avatarGlyph = (a) => (AVATARS.includes(a) && a !== "mochi" ? a : mochi("avatar-mochi", "happy"));
 const displayAvatar = (cls = "") => (account?.avatar_url
   ? `<img class="avatar-img ${cls}" src="${esc(account.avatar_url)}" alt="Photo de profil" />`
-  : `<span class="${cls}">${state.avatar}</span>`);
+  : `<span class="${cls}">${avatarGlyph(state.avatar)}</span>`);
 
 // Suivi d'activité par jour
 function track(lang, key, n = 1) {
@@ -325,6 +327,9 @@ const today = (d = new Date()) => `${d.getFullYear()}-${String(d.getMonth() + 1)
 const yesterday = () => today(new Date(Date.now() - 864e5));
 const shuffle = (a) => { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 const pct = (x) => Math.round(x * 100);
+// Nombres affichés au format français : « 1,5 h », « 1 234 mots » (espace fine insécable)
+const num1 = (n) => Number(n).toLocaleString("fr-FR", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+const num0 = (n) => Math.round(Number(n)).toLocaleString("fr-FR");
 const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
 const isKo = (lang) => lang === "ko";
 const koCls = (lang) => (isKo(lang) ? "ko" : "en");
@@ -691,7 +696,7 @@ function fmtInterval(due, now) {
   if (m < 60) return `${Math.max(1, Math.round(m))} min`;
   if (m < 1440) return `${Math.round(m / 60)} h`;
   const d = m / 1440;
-  return d < 31 ? `${Math.round(d)} j` : d < 365 ? `${Math.round(d / 30)} mois` : `${(d / 365).toFixed(1)} an`;
+  return d < 31 ? `${Math.round(d)} j` : d < 365 ? `${Math.round(d / 30)} mois` : `${num1(d / 365)} an`;
 }
 
 function rateCard(cardId, rating) {
@@ -895,8 +900,8 @@ function viewHome() {
           <div><h2>${l.name}</h2><div class="hello ${koCls(id)}">${l.hello}</div></div>
           <p class="muted" style="margin:0">${l.tagline}</p>
           <div class="meta">
-            <span class="tag c">${knownCount(id)} mots connus</span>
-            <span class="tag">${L.started ? `⏱️ ${(L.seconds / 3600).toFixed(1)} h` : "Débutant"}</span>
+            <span class="tag c">${num0(knownCount(id))} mots connus</span>
+            <span class="tag">${L.started ? `⏱️ ${num1(L.seconds / 3600)} h` : "Débutant"}</span>
           </div>
         </a>`;
       }).join("")}
@@ -963,14 +968,12 @@ function practiceTools(lang) {
   ];
   return tools.filter(Boolean);
 }
+// Une seule navigation principale par écran : le menu du haut (ordinateur) ou la barre
+// du bas (mobile). Ici, seulement la sous-navigation de « Lire » et le retour d'un outil.
 function langNav(lang, tab) {
-  const sec = sectionOf(tab), due = reviewCount(lang);
-  const main = [["today", "aujourdhui", "☀️", "Aujourd'hui"], ["read", "histoire", "📖", "Lire"], ["practice", "pratique", "🎯", "S'entraîner"]];
+  const sec = sectionOf(tab);
   const tool = sec === "practice" && tab !== "pratique" ? practiceTools(lang).find(([k]) => k === tab) : null;
-  return `<nav class="section-nav" aria-label="Sections">
-      ${main.map(([id, k, ico, label]) => `<a class="sec ${sec === id ? "active" : ""}" href="#/lang/${lang}/${k}" ${sec === id ? 'aria-current="page"' : ""}><span class="sec-ico" aria-hidden="true">${ico}</span><span>${label}</span>${id === "practice" && due ? `<span class="sec-badge" title="Cartes à revoir">${due}</span>` : ""}</a>`).join("")}
-    </nav>
-    ${sec === "read" ? `<nav class="sub-nav" aria-label="Lire">${READ_TABS.map(([k, ico, label]) => `<a class="${k === tab ? "active" : ""}" href="#/lang/${lang}/${k}" ${k === tab ? 'aria-current="page"' : ""}>${ico} ${label}</a>`).join("")}</nav>` : ""}
+  return `${sec === "read" ? `<nav class="sub-nav" aria-label="Lire">${READ_TABS.map(([k, ico, label]) => `<a class="${k === tab ? "active" : ""}" href="#/lang/${lang}/${k}" ${k === tab ? 'aria-current="page"' : ""}>${ico} ${label}</a>`).join("")}</nav>` : ""}
     ${tool ? `<div class="tool-head"><a class="lnk" href="#/lang/${lang}/pratique">← S'entraîner</a><h2>${tool[1]} ${tool[2]}</h2></div>` : ""}`;
 }
 function tabPractice(lang) {
@@ -995,9 +998,9 @@ function viewLanguage(lang, tab) {
   return `
   <section class="view">
     <div class="lang-header">
-      <span class="flag">${l.flag}</span>
-      <div><h1>${l.name}</h1><div class="muted ${koCls(lang)}" style="font-weight:800">${l.native}</div></div>
-      <div class="right"><a class="btn ghost small" href="#/">Changer de langue</a></div>
+      <span class="flag" aria-hidden="true">${l.flag}</span>
+      <div class="lang-title"><h1>${l.name}</h1><div class="muted native ${koCls(lang)}">${l.native}</div></div>
+      <div class="right"><a class="btn ghost small" href="#/" aria-label="Changer de langue"><span class="long">Changer de langue</span><span class="short" aria-hidden="true">Changer</span></a></div>
     </div>
     <div class="dash-grid">
       <div>
@@ -1012,10 +1015,10 @@ function viewLanguage(lang, tab) {
         </div>
         <div class="card">
           <div class="stat-grid">
-            <div class="stat"><span class="ico">⏱️</span><div><b>${hours.toFixed(1)} h</b><small>d'apprentissage</small></div></div>
-            <div class="stat"><span class="ico">📒</span><div><b>${knownCount(lang)}</b><small>mots connus</small></div></div>
+            <div class="stat"><span class="ico">⏱️</span><div><b>${num1(hours)} h</b><small>d'apprentissage</small></div></div>
+            <div class="stat"><span class="ico">📒</span><div><b>${num0(knownCount(lang))}</b><small>mots connus</small></div></div>
             <div class="stat"><span class="ico">📅</span><div><b>${currentStreak(L)}</b><small>semaine(s) régulière(s)</small></div></div>
-            <div class="stat"><span class="ico">⭐</span><div><b>${L.xp}</b><small>XP</small></div></div>
+            <div class="stat"><span class="ico">⭐</span><div><b>${num0(L.xp)}</b><small>XP</small></div></div>
           </div>
         </div>
         ${weekCard(L)}
@@ -1023,7 +1026,7 @@ function viewLanguage(lang, tab) {
         <div class="card">
           <h3>Vers le ${lvl[0]}</h3>
           <div class="bar" style="margin:10px 0 6px"><span style="width:${Math.min(100, (hours / lvl[1]) * 100)}%"></span></div>
-          <small class="muted">${hours.toFixed(1)} h sur ${lvl[2]} estimées. C'est un marathon : chaque session compte.</small>
+          <small class="muted">${num1(hours)} h sur ${num0(lvl[2])} estimées. C'est un marathon : chaque session compte.</small>
         </div>
       </aside>
     </div>
@@ -1261,7 +1264,7 @@ function tabLibrary(lang) {
     .sort((a, b) => a.z.order - b.z.order || isFav(b.t) - isFav(a.t));
   const used = THEMES.filter((th) => TEXTS[lang].some((t) => (t.themes || []).includes(th.id)));
   return `
-    <div class="card" style="margin-bottom:16px"><p style="margin:0">Classés selon <b>ton</b> vocabulaire (${knownCount(lang)} mots connus). La zone idéale : <b>92–98 %</b> de mots connus.${favs.length ? " Tes thèmes ⭐ passent devant." : ""}</p></div>
+    <div class="card" style="margin-bottom:16px"><p style="margin:0">Classés selon <b>ton</b> vocabulaire (${num0(knownCount(lang))} mots connus). La zone idéale : <b>92–98 %</b> de mots connus.${favs.length ? " Tes thèmes ⭐ passent devant." : ""}</p></div>
     <div class="choice-row lib-filter" role="group" aria-label="Filtrer par thème">
       <button class="chip ${filter ? "" : "active"}" data-act="lib-theme" data-t="">Tous</button>
       ${used.map((th) => `<button class="chip ${filter === th.id ? "active" : ""}" data-act="lib-theme" data-t="${th.id}">${th.icon} ${esc(th.name)}${favs.includes(th.id) ? " ⭐" : ""}</button>`).join("")}
@@ -1931,7 +1934,7 @@ function viewProfile() {
     ${activityCard()}
 
     <h2 class="section-title">${account?.avatar_url ? "Avatar (si tu retires ta photo)" : "Choisis ton avatar"}</h2>
-    <div class="choice-row">${AVATARS.map((a) => `<button class="choice ${a === state.avatar ? "active" : ""}" data-act="avatar" data-v="${a}" style="font-size:1.6rem">${a}</button>`).join("")}</div>
+    <div class="choice-row">${AVATARS.map((a) => `<button class="choice avatar-choice ${a === state.avatar ? "active" : ""}" data-act="avatar" data-v="${a}" aria-label="${a === "mochi" ? "Mochi" : a}" ${a === state.avatar ? 'aria-pressed="true"' : 'aria-pressed="false"'}>${avatarGlyph(a)}</button>`).join("")}</div>
 
     ${typeof lookCard === "function" ? lookCard() : ""}
 
@@ -1946,8 +1949,8 @@ function viewProfile() {
         return `<div class="card">
           <h3>${l.flag} ${l.name}</h3>
           <div class="stat-grid" style="margin:12px 0">
-            <div class="stat"><span class="ico">⏱️</span><div><b>${h.toFixed(1)} h</b><small>cumulées</small></div></div>
-            <div class="stat"><span class="ico">📒</span><div><b>${knownCount(id)}</b><small>mots connus</small></div></div>
+            <div class="stat"><span class="ico">⏱️</span><div><b>${num1(h)} h</b><small>cumulées</small></div></div>
+            <div class="stat"><span class="ico">📒</span><div><b>${num0(knownCount(id))}</b><small>mots connus</small></div></div>
           </div>
           <p class="muted" style="margin:0 0 10px"><small>Tu comprends ~${pct(cov)} % des mots de nos ${id === "en" ? "dialogues" : "textes"}.</small></p>
           ${LEVEL_HOURS[id].steps.map(([lvl, hrs, txt]) => `<div class="lvl"><span>${lvl}</span><div class="bar"><span style="width:${Math.min(100, (h / hrs) * 100)}%"></span></div><small class="muted">${txt}</small></div>`).join("")}
@@ -2079,7 +2082,7 @@ function activityCard() {
   return `<div class="card">
     <div class="stat-grid">
       <div class="stat"><span class="ico">📅</span><div><b>${days.length}</b><small>jours actifs</small></div></div>
-      <div class="stat"><span class="ico">⏱️</span><div><b>${(tot.sec / 3600).toFixed(1)} h</b><small>au total</small></div></div>
+      <div class="stat"><span class="ico">⏱️</span><div><b>${num1(tot.sec / 3600)} h</b><small>au total</small></div></div>
       <div class="stat"><span class="ico">🗓️</span><div><b>${Math.round(week / 60)} min</b><small>ces 7 derniers jours</small></div></div>
       <div class="stat"><span class="ico">🧠</span><div><b>${state.logs.length}</b><small>révisions</small></div></div>
       <div class="stat"><span class="ico">💬</span><div><b>${tot.prod}</b><small>phrases produites</small></div></div>
@@ -2153,7 +2156,7 @@ function viewAdmin() {
     api("GET", "/api/admin/stats").then((d) => { ui.admin = { d }; }).catch((e) => { ui.admin = { err: e.message }; }).finally(() => { if (location.hash === "#/admin") render(); });
   }
   const d = ui.admin.d, fmtDate = (x) => (x ? new Date(x).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "2-digit" }) : "—");
-  const kb = (b) => (b > 1e6 ? `${(b / 1e6).toFixed(1)} Mo` : `${Math.round(b / 1e3)} Ko`);
+  const kb = (b) => (b > 1e6 ? `${num1(b / 1e6)} Mo` : `${Math.round(b / 1e3)} Ko`);
   const stat = (ico, n, label) => `<div class="stat"><span class="ico">${ico}</span><div><b>${n}</b><small>${label}</small></div></div>`;
   const features = d ? [
     ["Correcteur IA (Produire)", d.llm.engine ? `✅ ${esc(d.llm.engine)}` : "❌ désactivé", d.llm.engine ? `Aujourd'hui : ${d.llm.today} / ${d.llm.globalDaily} appel(s) à l'IA, ${d.llm.cacheHits} servie(s) depuis le cache (${Math.round(d.llm.hitRate * 100)} %), coût estimé ${d.llm.cost.toLocaleString("fr-FR", { style: "currency", currency: "USD", maximumFractionDigits: 2 })} · ${d.llm.total} appel(s) au total · ${d.llm.daily} max / compte / jour · ${d.llm.cacheSize} réponse(s) en cache` : ""],
@@ -2359,11 +2362,21 @@ function route() {
 
   document.body.dataset.lang = lang || state.lastLang || "ko";
   applyDisplay();
-  $app.innerHTML = html + (typeof legalFooter === "function" ? legalFooter() + cookieNotice() : ""); // legal.js
+  $app.innerHTML = html + (typeof legalFooter === "function" ? legalFooter() : ""); // legal.js
   const logo = document.getElementById("logo-o"); if (logo && !logo.innerHTML) logo.innerHTML = LOGO_FACE;
   $app.querySelectorAll(".ko, .en").forEach((e) => { if (!e.classList.contains("lang-card")) e.lang = e.classList.contains("ko") ? "ko" : "en"; });
   if (!hashChanged) $app.querySelector(".view")?.classList.add("still");
-  document.querySelectorAll("[data-nav]").forEach((a) => a.classList.toggle("active", a.dataset.nav === nav));
+  // Navigation principale : état actif (aria-current) et pastille des cartes à revoir
+  const due = lang ? reviewCount(lang) : 0;
+  document.querySelectorAll("[data-nav]").forEach((a) => {
+    const on = a.dataset.nav === nav;
+    a.classList.toggle("active", on);
+    if (on) a.setAttribute?.("aria-current", "page"); else a.removeAttribute?.("aria-current");
+    if (a.dataset.nav !== "reviser" || !a.querySelector) return;
+    let b = a.querySelector(".nav-badge");
+    if (due && !b) { b = document.createElement("span"); b.className = "nav-badge"; a.append(b); }
+    if (b) { if (due) { b.textContent = due; b.title = "Cartes à revoir"; } else b.remove(); }
+  });
   renderTopStats(lang);
   renderTopUser();
   if (account && parts[0] === "profil") loadSessions();
@@ -2380,6 +2393,9 @@ const render = route;
 function renderTopUser() {
   const el = document.getElementById("topbar-user");
   if (!el) return;
+  // Barre du bas : l'avatar (Mochi par défaut) à la place de l'icône du profil
+  const ico = document.querySelector?.('.bottomnav [data-nav="profil"] > span');
+  if (ico) ico.innerHTML = displayAvatar("nav-avatar");
   if (account) { el.hidden = false; el.href = "#/profil"; el.innerHTML = `${displayAvatar("mini-avatar")}<span>${esc(account.name || "Profil")}</span>`; }
   else if (serverOn) { el.hidden = false; el.href = "#/connexion"; el.innerHTML = "<span>Se connecter</span>"; }
   else el.hidden = true;

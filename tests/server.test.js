@@ -20,6 +20,8 @@ server.listen(0, "127.0.0.1", async () => {
       ok(/script-src 'self'(;|$)/.test(csp) && /frame-ancestors 'none'/.test(csp) && /object-src 'none'/.test(csp), "CSP sur GET / : " + csp);
       ok(r.headers.get("permissions-policy")?.includes("camera=()") && r.headers.get("cross-origin-opener-policy") === "same-origin", "Permissions-Policy + COOP");
       ok(r.headers.get("strict-transport-security") === null, "pas de HSTS sans COOKIE_SECURE");
+      const html = await r.text();
+      ok((html.match(/data-nav="(aujourdhui|lire|reviser)"/g) || []).length === 6, "une navigation en haut (ordinateur) et une en bas (mobile), mêmes entrées");
     }
     { // Adresse IP du client derrière un proxy (TRUST_PROXY)
       const { clientIp } = require(path.join((process.argv[2] || path.join(__dirname, "..")), "server.js"));
@@ -56,6 +58,7 @@ server.listen(0, "127.0.0.1", async () => {
     ok((await call("POST", "/api/signup", { email: "sans@cgu.fr", password: "motdepasse1" })).status === 400, "conditions non acceptées → refus");
     let r = await call("POST", "/api/signup", { email: "Lea@Test.fr", password: "motdepasse1", accept: true, name: "Léa" });
     ok(r.status === 201 && r.data.user.name === "Léa" && cookie.startsWith("mochi_sid="), "signup " + JSON.stringify(r.data));
+    ok(r.data.user.avatar_emoji === "mochi", "avatar par défaut : Mochi");
     ok(require(path.join((process.argv[2] || path.join(__dirname, "..")), "server.js")).db.prepare("SELECT terms_version, terms_accepted_at FROM users WHERE email = 'Lea@Test.fr'").get().terms_accepted_at, "acceptation des conditions enregistrée");
     ok(/HttpOnly/.test(r.headers.get("set-cookie")) && /SameSite=Lax/.test(r.headers.get("set-cookie")), "cookie flags");
     const c1 = cookie;

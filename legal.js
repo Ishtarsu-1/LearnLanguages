@@ -147,7 +147,7 @@ function legalPrivacy() {
 function legalCookies() {
   const row = (name, where, why, keep) => `<tr><th scope="row"><code>${name}</code></th><td>${where}</td><td>${why}</td><td>${keep}</td></tr>`;
   return `
-  <p><b>Mochi n'utilise aucun cookie publicitaire, aucune mesure d'audience et aucun traceur de réseau social.</b> Il n'utilise que ce qui est strictement nécessaire à son fonctionnement. Ces éléments sont dispensés de consentement (article 82 de la loi Informatique et Libertés, lignes directrices de la CNIL) : c'est pourquoi aucun bandeau ne te demande d'accepter quoi que ce soit.</p>
+  <p><b>Mochi n'utilise aucun cookie publicitaire, aucune mesure d'audience et aucun traceur de réseau social.</b> Il n'utilise que ce qui est strictement nécessaire à son fonctionnement. Ces éléments sont dispensés de consentement (article 82 de la loi Informatique et Libertés, lignes directrices de la CNIL) : c'est pourquoi aucun bandeau ne te demande d'accepter quoi que ce soit : une simple ligne en bas de chaque page t'en informe.</p>
   <h2>Ce qui est déposé sur ton appareil</h2>
   <div class="table-scroll"><table class="legal-table">
     <thead><tr><th>Nom</th><th>Type</th><th>À quoi ça sert</th><th>Durée</th></tr></thead>
@@ -157,7 +157,6 @@ function legalCookies() {
       ${row("mochi-user-…, mochi-sync-…", "Stockage local", "Copie de ta progression (compte) pour aller vite et fonctionner hors ligne, état de la synchronisation", "Jusqu'à la suppression du compte ou l'effacement du navigateur")}
       ${row("mochi-last-account", "Stockage local", "Te reconnaître hors ligne (appli installée)", "Effacé à la déconnexion")}
       ${row("mochi-ko-kbd", "Stockage local", "Se souvenir si le clavier coréen est ouvert", "Jusqu'à ce que tu l'effaces")}
-      ${row("mochi-notice", "Stockage local", "Ne plus afficher le message d'information sur les cookies", "Jusqu'à ce que tu l'effaces")}
       ${row("mochi-v…, mochi-audio", "Cache de l'application (service worker)", "Faire fonctionner le site hors ligne, garder l'audio déjà écouté", "Jusqu'à la mise à jour du site ou l'effacement du navigateur")}
     </tbody>
   </table></div>
@@ -178,15 +177,13 @@ function viewLegal(page) {
   </section>`;
 }
 
-// Pied de page (liens légaux) et petit message d'information sur les cookies (sans consentement à demander)
+// Pied de page : liens légaux et une ligne discrète d'information sur les cookies.
+// Les cookies strictement nécessaires sont dispensés de consentement : on informe, sans bandeau
+// ni bouton (à revoir si un outil de mesure d'audience est ajouté un jour).
 function legalFooter() {
-  return `<footer class="site-footer"><nav aria-label="Informations légales">${Object.entries(LEGAL_PAGES).map(([k, t]) => `<a href="#/legal/${k}">${t}</a>`).join("")}</nav><small class="muted">Mochi · version de test</small></footer>`;
+  return `<footer class="site-footer">
+    <p class="cookie-line">🍪 Mochi n'utilise que des cookies nécessaires · <a class="lnk" href="#/legal/cookies">En savoir plus</a></p>
+    <nav aria-label="Informations légales">${Object.entries(LEGAL_PAGES).map(([k, t]) => `<a href="#/legal/${k}">${t}</a>`).join("")}</nav><small class="muted">Mochi · version de test</small></footer>`;
 }
-function cookieNotice() {
-  let seen = false; try { seen = localStorage.getItem("mochi-notice") === "1"; } catch {}
-  if (seen || /^#\/legal/.test(location.hash)) return "";
-  return `<div class="cookie-notice" role="status"><p>🍪 Mochi n'utilise <b>aucun cookie publicitaire ni de mesure d'audience</b>, seulement ce qui est nécessaire pour fonctionner. <a class="lnk" href="#/legal/cookies">En savoir plus</a></p><button class="btn small" data-act="notice-ok">OK</button></div>`;
-}
-Object.assign(actions, {
-  "notice-ok": () => { try { localStorage.setItem("mochi-notice", "1"); } catch {} render(); },
-});
+// Ancien bandeau (« OK ») : on nettoie la clé qu'il laissait
+try { localStorage.removeItem("mochi-notice"); } catch {}

@@ -34,7 +34,7 @@ const LLM_ON = process.env.MOCHI_LLM !== "off";
 const LLM_DAILY = Number(process.env.MOCHI_LLM_DAILY) || 30; // corrections par compte et par jour (coût)
 const LLM_GLOBAL_DAILY = Number(process.env.MOCHI_LLM_GLOBAL_DAILY) || 500; // appels à l'IA par jour, tout le site
 const LLM_CACHE_DAYS = 90;
-const EMOJIS = ["🐰", "🐱", "🐻", "🐼", "🦊", "🐥", "🐸", "🐨"];
+const EMOJIS = ["mochi", "🐰", "🐱", "🐻", "🐼", "🦊", "🐥", "🐸", "🐨"]; // "mochi" : la mascotte (défaut)
 
 fs.mkdirSync(AVATAR_DIR, { recursive: true });
 const db = new DatabaseSync(path.join(DATA, "mochi.db"));
@@ -447,7 +447,7 @@ async function api(req, res, url) {
     recordAttempt(`signup:${ip}`); // compte aussi les inscriptions réussies : limite le spam
     if (db.prepare("SELECT 1 FROM users WHERE email = ?").get(email.trim())) return fail(res, 409, "Un compte existe déjà avec cette adresse.");
     const t = now();
-    const info = db.prepare("INSERT INTO users (email, pass, name, created_at, terms_version, terms_accepted_at) VALUES (?, ?, ?, ?, ?, ?)").run(email.trim(), await hashPassword(password), cleanName(name), t, TERMS_VERSION, t);
+    const info = db.prepare("INSERT INTO users (email, pass, name, avatar_emoji, created_at, terms_version, terms_accepted_at) VALUES (?, ?, ?, 'mochi', ?, ?, ?)").run(email.trim(), await hashPassword(password), cleanName(name), t, TERMS_VERSION, t);
     createSession(res, Number(info.lastInsertRowid), req);
     sendMail(db.prepare("SELECT * FROM users WHERE id = ?").get(info.lastInsertRowid), "verify");
     return send(res, 201, { user: publicUser(db.prepare("SELECT * FROM users WHERE id = ?").get(info.lastInsertRowid)), legacy_state: null, features: JSON.parse(featuresJson()) });

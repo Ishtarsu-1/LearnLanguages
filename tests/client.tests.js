@@ -321,7 +321,7 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
   ok(!tabPath("ko").includes("🔒</span>") && !tabPath("ko").includes('data-act="locked"'), "admin : parcours sans cadenas");
   ui.admin = { d: { users: { total: 3, verified: 1, admins: 1, new7: 1, new30: 2, active7: 2 }, sessions: 2, cards: [{ lang: "ko", n: 5 }], reviews: { total: 9 }, llm: { engine: "Ollama", today: 1, total: 4, daily: 30, globalDaily: 500, cacheHits: 3, hitRate: 0.75, cost: 0.0425, cacheSize: 7 }, tts: { voices: { en: ["af_heart"] }, files: 3, bytes: 2e6 }, mail: "console", list: [{ email: "x@y.fr", name: "X", created_at: "2026-11-01", cards: 5, reviews: 9, verified: 0, admin: 1 }] } };
   const v = viewAdmin();
-  ok(v.includes("Tableau de bord") && v.includes("Points de grammaire") && v.includes("x@y.fr") && v.includes("2.0 Mo") && v.includes(`#/lang/ko/grammaire/${KO_GRAMMAR[0].id}`), "tableau de bord");
+  ok(v.includes("Tableau de bord") && v.includes("Points de grammaire") && v.includes("x@y.fr") && v.includes("2,0 Mo") && v.includes(`#/lang/ko/grammaire/${KO_GRAMMAR[0].id}`), "tableau de bord");
   ok(v.includes("1 / 500") && v.includes("(75 %)") && /0,04\s?\$/.test(v), "admin : appels IA, taux de cache, coût du jour");
   ok(viewProfile().includes("#/admin"), "lien admin dans le profil");
   ui.admin = null; account = a; K.hangulDone = hd; K.hangulDays = days; K.grammarDone = gd;
@@ -483,9 +483,9 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
   account = { id: 1, is_admin: true }; ok(ACCESSORIES.every((a) => accUnlocked(a)), "admin : tout débloqué"); account = acc;
   L.quests = q0; state.settings.look = look0; state.settings.lookSeen = seen0;
 }
-{ // Navigation d'une langue : 3 sections + sous-menus
+{ // Navigation d'une langue : une seule navigation principale (menu du haut / barre du bas) + sous-menus
   const v = viewLanguage("en", "revisions");
-  ok((v.match(/class="sec /g) || []).length === 3 && !v.includes('class="tabs"'), "3 sections au lieu de 11 boutons");
+  ok(!v.includes("section-nav") && !v.includes('class="sec ') && !v.includes('class="tabs"'), "pas de 2e barre de sections dans la page");
   ok(v.includes("← S'entraîner") && v.includes("🧠 Réviser"), "fil d'Ariane dans un outil");
   ok(viewLanguage("en", "themes").includes("Bibliothèque") && viewLanguage("en", "themes").includes('class="sub-nav"'), "sous-menu de Lire");
   const hub = viewLanguage("ko", "pratique");
@@ -532,11 +532,10 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
   // Coréen sans Hangul : l'alphabet au lieu de la lecture
   state.langs.ko.hangulDone = false; location.hash = "#/lang/ko/aujourdhui";
   ok(TOUR[ui.tour.i].doneWhen(), "langue choisie → étape validée");
-  tourNext(); ok(TOUR[ui.tour.i].target === ".section-nav", "étape 3 : les 3 sections");
+  tourNext(); ok(TOUR[ui.tour.i].target === ".topnav, .bottomnav", "étape 3 : les 3 sections");
   tourNext(); ok(/hangul/.test(TOUR[ui.tour.i].target), "coréen sans Hangul : on montre l'alphabet");
   location.hash = "#/lang/ko/hangul/1"; tourNext(); ok(TOUR[ui.tour.i].title === "Touche une lettre", "leçon de Hangul");
-  tourNext(); ok(/pratique/.test(TOUR[ui.tour.i].target), "la lecture est sautée tant que le Hangul n'est pas fait");
-  ok(location.hash === "#/lang/ko/aujourdhui", "retour sur la page de la langue (barre des sections)");
+  tourNext(); ok(/reviser/.test(TOUR[ui.tour.i].target), "la lecture est sautée tant que le Hangul n'est pas fait");
   // Anglais, débutant complet : les premiers mots (pas de texte illisible)
   location.hash = "#/lang/en/aujourdhui"; ui.tour.i = 0; tourGo(5);
   ok(TOUR[ui.tour.i].target.includes("learn-first") && !TOUR[ui.tour.i].doneWhen, "anglais débutant : premiers mots ou test");
@@ -607,10 +606,9 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
   features = { llm: true, engine: "Ollama (qwen)", tts: { en: ["a"] }, mail: "resend" };
   ok(!/Anthropic/.test(legalPrivacy()) && /sur le serveur de Mochi/.test(legalPrivacy()) && /Resend/.test(legalPrivacy()), "confidentialité : Ollama local, Resend actif");
   features = f0;
-  ok(legalCookies().includes("mochi_sid") && legalCookies().includes("aucune mesure d'audience") && legalCookies().includes("mochi-ko-kbd"), "cookies : inventaire");
+  ok(legalCookies().includes("mochi_sid") && legalCookies().includes("aucune mesure d'audience") && legalCookies().includes("mochi-ko-kbd") && !legalCookies().includes("mochi-notice"), "cookies : inventaire");
   ok(legalFooter().includes("#/legal/confidentialite"), "pied de page");
-  location.hash = "#/"; ok(cookieNotice().includes("notice-ok"), "information cookies affichée");
-  actions["notice-ok"](); ok(cookieNotice() === "", "puis masquée");
+  ok(legalFooter().includes("cookies nécessaires") && legalFooter().includes("#/legal/cookies") && !legalFooter().includes('class="btn'), "information cookies : une ligne dans le pied de page, sans bouton");
   serverOn = true; const acc = account; account = null;
   ok(viewAuth("inscription").includes('name="accept" required') && viewAuth("inscription").includes("#/legal/cgu") && !viewAuth("connexion").includes('name="accept"'), "inscription : case obligatoire");
   account = acc; location.hash = "";
@@ -642,3 +640,10 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
   location.hash = "";
 }
 console.log(fails ? `${fails} échec(s)` : "OK : parcours débutant");
+// Nombres au format français
+ok(num1(1.5) === "1,5" && num1(0) === "0,0" && num0(1234).replace(/\s/g, " ") === "1 234" && /^1\u202f234$/.test(num0(1234)), "nombres au format français : " + num0(1234));
+// Avatar : Mochi par défaut, les emojis restent au choix
+{
+  ok(defaultState().avatar === "mochi" && displayAvatar().includes("avatar-mochi"), "avatar par défaut : Mochi (SVG)");
+  const a0 = state.avatar; state.avatar = "🦊"; ok(displayAvatar().includes("🦊") && !displayAvatar().includes("<svg"), "emoji choisi"); state.avatar = a0;
+}

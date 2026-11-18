@@ -15,7 +15,7 @@ const tourBeginner = () => !tourGated() && isBeginner(tourLang(), rankedTexts(to
 const onLangPage = () => !!currentLang();
 const goLang = (tab = "aujourdhui") => { location.hash = `#/lang/${tourLang()}/${tab}`; };
 // Pages sans la barre des sections (lecteur, leçon…) : on revient sur la page de la langue
-const ensureNav = () => { if (!onLangPage() || !document.querySelector?.(".section-nav")) goLang(); };
+const ensureNav = () => { if (!onLangPage()) goLang(); };
 
 // Chaque étape : target (sélecteur du vrai élément) ou center ; doneWhen (action faite → étape suivante)
 // ou next (bouton « Suivant ») ; skipIf (étape sans objet) ; enter (amener la bonne page).
@@ -25,7 +25,7 @@ const TOUR = [
     enter() { if (!/^#?\/?$/.test(location.hash)) location.hash = "#/"; } },
   { target: ".lang-grid", title: "Choisis ta langue", text: "Clique sur la carte de la langue que tu veux apprendre. Tu pourras faire l'autre plus tard (les langues grisées arrivent bientôt).",
     doneWhen: onLangPage, enter() { if (onLangPage()) location.hash = "#/"; } },
-  { target: ".section-nav", title: "Les 3 sections", next: true,
+  { target: ".topnav, .bottomnav", title: "Les 3 sections", next: true,
     text: "☀️ <b>Aujourd'hui</b> : ta séance guidée. 📖 <b>Lire</b> : textes, livres, histoire. 🎯 <b>S'entraîner</b> : révisions et exercices.",
     enter: ensureNav },
   // Coréen sans Hangul : l'alphabet d'abord
@@ -48,7 +48,7 @@ const TOUR = [
     doneWhen: () => state.cards.length > (ui.tour?.cards0 ?? 0) || !!document.querySelector?.(".wordpanel .tag") },
   { skipIf: () => tourGated() || !document.querySelector?.(".player"), target: ".player", title: "Écoute", next: true,
     text: "<b>▶ Tout écouter</b> lit le texte avec une vraie voix. Tu peux ralentir, masquer le texte, ou répéter en même temps (shadowing)." },
-  { target: '.section-nav a[href$="/pratique"]', title: "S'entraîner", text: "Quand tu as lu, place à l'entraînement : clique sur « S'entraîner ».",
+  { target: '[data-nav="reviser"]', title: "S'entraîner", text: "Quand tu as lu, place à l'entraînement : clique sur « S'entraîner ».",
     doneWhen: () => /\/pratique$/.test(location.hash), enter: ensureNav },
   { target: ".tool-grid", title: "Tes outils", next: true,
     text: "<b>Réviser</b> revient au bon moment, puis des exercices variés : phrases à trou, traduction, écoute… Pas d'idée ? La séance du jour te guide.",
