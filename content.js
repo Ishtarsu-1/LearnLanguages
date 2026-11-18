@@ -72,6 +72,30 @@ const LEXICON = {
   },
 };
 
+// ---------- Anti-interférence (§12) ----------
+// Catégories sémantiques : jamais deux nouveaux mots du même groupe le même jour
+// (apprendre « tous les fruits » d'un coup crée de la confusion).
+const SEMANTIC_GROUPS = {
+  en: {
+    nombre: ["three", "four", "second"], jour: ["sunday", "weekend", "day"], boisson: ["coffee", "tea", "milk"],
+    moment: ["early", "late", "later", "last", "next"], salutation: ["hi", "hello"], remerciement: ["thanks", "thank", "please", "excuse"],
+    pronom: ["i", "you", "it", "we", "she", "me", "my"], interrogatif: ["what", "how", "where"], oui_non: ["yes", "no", "sure"],
+    lieu: ["hospital", "university", "cinema", "library", "home"], metier: ["nurse", "student"], quantite: ["much", "little", "too", "all"],
+    perception: ["see", "watch"], ouverture: ["open", "close"],
+  },
+  ko: {
+    nombre_natif: ["하나", "넷", "다섯", "스물"], compteur: ["명", "살", "잔", "원"], famille: ["아버지", "어머니", "언니", "가족"],
+    boisson: ["커피", "아메리카노"], lieu: ["집", "학교", "카페", "시장"], jour: ["토요일", "주말", "주"],
+    metier: ["학생", "선생님", "회사원"], adjectif_gout: ["맛있다", "맵다"], pronom: ["저", "우리"],
+    deplacement: ["가다", "살다"], consommer: ["먹다", "마시다"], voir: ["보다", "만나다"],
+  },
+};
+// Paires d'opposés et quasi-synonymes : jamais introduites le même jour
+const CONFUSABLE = {
+  en: [["early", "late"], ["open", "close"], ["yes", "no"], ["see", "watch"], ["last", "next"], ["much", "little"], ["hi", "hello"], ["thanks", "thank"], ["later", "late"]],
+  ko: [["아버지", "어머니"], ["먹다", "마시다"], ["보다", "만나다"], ["가다", "살다"], ["맛있다", "재미있다"], ["집", "학교"]],
+};
+
 // ---------- Contenus d'input (§3, §5) ----------
 // Formats conversationnels en priorité (§7). Registre 해요체 par défaut en coréen (§6).
 const TEXTS = {

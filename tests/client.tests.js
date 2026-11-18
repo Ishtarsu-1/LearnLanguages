@@ -107,6 +107,21 @@ render1("#/profil");
   const mig = normalizeState({ langs: { en: { streak: 3, lastStreakDay: today() } } });
   ok(Object.keys(mig.langs.en.fullDays).length === 3 && mig.langs.en.fullDays[yesterday()], "migration série quotidienne");
 }
+// Anti-interférence (§12)
+{
+  const saved = JSON.stringify(state);
+  state.cards = []; state.langs.en.introduced = { date: null, count: 0 }; state.langs.en.session = {};
+  const mk = (lemma) => addCard("en", { lemma, before: "", surface: lemma, after: ".", contextFr: "", fr: "", source: "t" });
+  ["coffee", "tea", "milk", "early", "late", "door"].forEach(mk);
+  let ids = newCards("en").map((c) => c.lemma);
+  ok(ids.join() === "coffee,early,door", "1 mot par groupe, pas de paire confusable : " + ids);
+  rateCard(newCards("en")[0].id, 3); // coffee introduit aujourd'hui
+  ids = newCards("en").map((c) => c.lemma);
+  ok(!ids.includes("tea") && !ids.includes("milk") && ids.includes("early"), "groupe déjà pris aujourd'hui : " + ids);
+  state.langs.en.introduced.date = "2000-01-01"; // un autre jour
+  ok(newCards("en").some((c) => c.lemma === "tea"), "le lendemain, le groupe est libre");
+  Object.assign(state, JSON.parse(saved));
+}
 // Retour après une absence : révisions plafonnées, pas de nouvelles cartes
 {
   const saved = JSON.stringify(state);

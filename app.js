@@ -508,9 +508,48 @@ function reviewQueue(lang) {
   const all = dueCards(lang), s = session(lang);
   return s.cap == null ? all : all.slice(0, Math.max(0, s.cap - (s.reviewed || 0)));
 }
+// Anti-interférence (§12) : au plus 1 nouveau mot par groupe sémantique et par jour,
+// et jamais deux mots confusables le même jour. Les mots écartés attendent demain.
+const GROUP_OF = {}, CONF_OF = {};
+for (const lang of Object.keys(SEMANTIC_GROUPS)) {
+  GROUP_OF[lang] = {}; CONF_OF[lang] = {};
+  for (const [g, ws] of Object.entries(SEMANTIC_GROUPS[lang])) for (const w of ws) GROUP_OF[lang][w] = g;
+  for (const [a, b] of CONFUSABLE[lang]) { (CONF_OF[lang][a] ||= new Set()).add(b); (CONF_OF[lang][b] ||= new Set()).add(a); }
+}
+const lemmaParts = (lemma) => String(lemma).split(" + ");
+function interferes(lang, lemma, taken) {
+  for (const l of lemmaParts(lemma)) {
+    if (taken.lemmas.has(l)) return false; // même mot (cartes sœurs) : pas une interférence
+    const g = GROUP_OF[lang]?.[l];
+    if (g && taken.groups.has(g)) return true;
+    for (const c of CONF_OF[lang]?.[l] || []) if (taken.lemmas.has(c)) return true;
+  }
+  return false;
+}
+function takeLemma(lang, lemma, taken) {
+  for (const l of lemmaParts(lemma)) { taken.lemmas.add(l); const g = GROUP_OF[lang]?.[l]; if (g) taken.groups.add(g); }
+}
+function introducedToday(lang) {
+  const I = state.langs[lang].introduced, taken = { lemmas: new Set(), groups: new Set() };
+  if (I.date === today()) for (const l of I.lemmas || []) takeLemma(lang, l, taken);
+  return taken;
+}
+function waitingNew(lang) {
+  const shown = newCards(lang);
+  if (shown.length >= newAllowance(lang) || session(lang).cap != null) return 0;
+  return state.cards.filter((c) => c.lang === lang && c.fsrs.state === 0 && c.type === "recog").length - shown.filter((c) => c.type === "recog").length;
+}
 function newCards(lang) {
   if (session(lang).cap != null) return [];
-  return state.cards.filter((c) => c.lang === lang && c.fsrs.state === 0).slice(0, newAllowance(lang));
+  const taken = introducedToday(lang), out = [], max = newAllowance(lang);
+  for (const c of state.cards) {
+    if (out.length >= max) break;
+    if (c.lang !== lang || c.fsrs.state !== 0) continue;
+    if (c.type === "recog" && interferes(lang, c.lemma, taken)) continue;
+    takeLemma(lang, c.lemma, taken);
+    out.push(c);
+  }
+  return out;
 }
 function reviewCount(lang) { return reviewQueue(lang).length + newCards(lang).length; }
 
@@ -534,7 +573,11 @@ function rateCard(cardId, rating) {
     elapsed_days: log.elapsed_days, scheduled_days: log.scheduled_days, state: log.state,
   });
   const s = session(c.lang); s.reviewed = (s.reviewed || 0) + 1;
-  if (wasNew) { if (L.introduced.date !== today()) L.introduced = { date: today(), count: 0 }; L.introduced.count++; }
+  if (wasNew) {
+    if (L.introduced.date !== today()) L.introduced = { date: today(), count: 0, lemmas: [] };
+    L.introduced.count++;
+    (L.introduced.lemmas ||= []).push(c.lemma);
+  }
   // Production/écoute débloquées après 2 réussites sur des révisions espacées (pas les étapes du jour 1)
   if (c.type === "recog" && rating >= 3 && prevState === 2 && ++c.successes >= 2) unlockSiblings(c);
   L.xp += 2;
@@ -1024,6 +1067,7 @@ function tabReviews(lang) {
       ${mochi("small", due + fresh ? "happy" : "sleepy")}
       <h2>${due + fresh ? `${due + fresh} carte(s) à réviser` : "Tout est à jour"}</h2>
       <p class="muted">${due} à revoir · ${fresh} nouvelle(s) (max ${state.settings.newPerDay} / jour)<br/>Rétention visée : ${pct(state.settings.retention)} %</p>
+      ${waitingNew(lang) ? `<p class="muted"><small>${waitingNew(lang)} mot(s) proche(s) d'un mot déjà vu aujourd'hui attendent demain : les apprendre ensemble les mélangerait.</small></p>` : ""}
       ${due + fresh && HAS_FSRS ? `<a class="btn" href="#/lang/${lang}/revisions/go">Commencer</a>` : `<a class="btn ghost" href="#/lang/${lang}/lire">Lire un texte pour capturer des mots</a>`}
     </div>
     <div class="stat-grid card" style="margin-top:16px">
@@ -1820,9 +1864,11 @@ const actions = {
   "add-frequent": () => {
     const lang = currentLang(), stab = stabilityMap(lang);
     let n = 0;
+    const taken = { lemmas: new Set(), groups: new Set() };
     for (const l of Object.keys(LEXICON[lang])) {
       if (n >= 5) break;
-      if (lemmaStatus(lang, l, stab) !== "new") continue;
+      if (lemmaStatus(lang, l, stab) !== "new" || interferes(lang, l, taken)) continue; // §12 : des mots variés
+      takeLemma(lang, l, taken);
       const ctx = findContext(lang, l);
       if (ctx && captureSeg(lang, ctx.s, ctx.w, ctx.g, ctx.source)) n++;
     }
