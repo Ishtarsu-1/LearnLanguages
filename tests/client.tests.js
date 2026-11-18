@@ -98,9 +98,10 @@ render1("#/lang/ko/oreille"); actions["ear-play"](); render1("#/lang/ko/oreille"
   ok(state.langs.ko.earStats[key].n === 1 && state.langs.ko.earStats[key].ok === 0, "score par contraste");
   ok(tabEar("ko").includes("Réécoute les deux") && tabEar("ko").includes("Mes scores par son"), "réécoute + scores");
   state.langs.ko.earStats[key] = { n: 20, ok: 2 };
-  let hits = 0; for (let i = 0; i < 300; i++) if (EAR.ko.pairs[pickPair("ko")].label === key) hits++;
+  // 2000 tirages : l'écart attendu (~22 % contre 17 %) ressort à coup sûr (300 tirages échouaient ~1 fois sur 100)
+  let hits = 0; for (let i = 0; i < 2000; i++) if (EAR.ko.pairs[pickPair("ko")].label === key) hits++;
   const share = EAR.ko.pairs.filter((p) => p.label === key).length / EAR.ko.pairs.length;
-  ok(hits / 300 > share, `contraste faible favorisé (${hits}/300 vs ${share.toFixed(2)})`);
+  ok(hits / 2000 > share, `contraste faible favorisé (${hits}/2000 vs ${share.toFixed(2)})`);
   actions["ear-next"]();
 }
 location.hash = "#/lang/en/fauxamis"; actions["add-faux"](); render1("#/lang/en/fauxamis");
@@ -519,25 +520,31 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
   // Menu groupé
   ok(tabExercises("ko").includes("✍️ Écrit") && tabExercises("ko").includes("Changer d'exercice"), "menu regroupé");
 }
-{ // Visite guidée de la première visite
+{ // Visite guidée interactive
   const s0 = state.settings.tourDone, cards0 = state.cards, started = Object.fromEntries(Object.entries(state.langs).map(([k, L]) => [k, L.started]));
+  const hd = state.langs.ko.hangulDone, acc = account; account = null;
   state.cards = []; Object.values(state.langs).forEach((L) => (L.started = false)); state.settings.tourDone = false;
   ok(tourShouldShow(), "nouveau venu : visite proposée");
-  let made = null; const body = document.body, gid = document.getElementById;
-  document.body = { ...body, appendChild: (x) => (made = x) };
-  const realCreate = document.createElement; document.createElement = () => ({ id: "", className: "", innerHTML: "", querySelector: () => ({ focus() {} }) });
-  document.getElementById = (id) => (id === "tour" ? null : gid(id));
-  openTour();
-  ok(made && made.innerHTML.includes("Bienvenue sur Mochi") && made.innerHTML.includes('role="dialog"') && made.innerHTML.includes("Passer la visite"), "étape 1 : dialogue accessible");
-  document.getElementById = (id) => (id === "tour" ? made : null);
-  for (let i = 1; i < TOUR_STEPS.length; i++) { ui.tour.i = i; renderTour(); }
-  ok(made.innerHTML.includes("C'est parti") && made.innerHTML.includes("5 jours sur 7"), "dernière étape");
-  made.remove = () => {}; closeTour();
+  location.hash = "#/"; openTour();
+  ok(ui.tour.i === 0 && TOUR[0].center, "étape 1 : bienvenue");
+  tourNext(); ok(TOUR[ui.tour.i].target === ".lang-grid" && !TOUR[ui.tour.i].doneWhen(), "étape 2 : choisir sa langue (action attendue)");
+  // Coréen sans Hangul : l'alphabet au lieu de la lecture
+  state.langs.ko.hangulDone = false; location.hash = "#/lang/ko/aujourdhui";
+  ok(TOUR[ui.tour.i].doneWhen(), "langue choisie → étape validée");
+  tourNext(); ok(TOUR[ui.tour.i].target === ".section-nav", "étape 3 : les 3 sections");
+  tourNext(); ok(/hangul/.test(TOUR[ui.tour.i].target), "coréen sans Hangul : on montre l'alphabet");
+  location.hash = "#/lang/ko/hangul/1"; tourNext(); ok(TOUR[ui.tour.i].title === "Touche une lettre", "leçon de Hangul");
+  tourNext(); ok(/pratique/.test(TOUR[ui.tour.i].target), "la lecture est sautée tant que le Hangul n'est pas fait");
+  ok(location.hash === "#/lang/ko/aujourdhui", "retour sur la page de la langue (barre des sections)");
+  // Anglais : le parcours lecture est proposé
+  location.hash = "#/lang/en/aujourdhui"; ui.tour.i = 0; tourGo(5);
+  ok(TOUR[ui.tour.i].target.includes("/lire/") && TOUR[ui.tour.i].doneWhen && !TOUR[ui.tour.i].doneWhen(), "anglais : ouvrir un texte (action attendue)");
+  location.hash = "#/lang/en/lire/en-cafe"; ok(TOUR[ui.tour.i].doneWhen(), "texte ouvert → étape validée");
+  closeTour(true);
   ok(state.settings.tourDone && !tourShouldShow() && ui.tour === null, "visite terminée : plus proposée");
-  ok(flatten(state).kv["settings.tourDone"] === true, "synchronisée (pas revue sur un autre appareil)");
-  state.settings.tourDone = false; state.langs.en.started = true; ok(!tourShouldShow(), "déjà de la progression : pas de visite imposée");
+  ok(flatten(state).kv["settings.tourDone"] === true, "synchronisée");
   ok(viewHome().includes('data-tour="open"') && viewProfile().includes("Revoir la visite"), "on peut la revoir");
-  document.body = body; document.createElement = realCreate; document.getElementById = gid;
+  state.langs.ko.hangulDone = hd; account = acc; location.hash = "";
   state.settings.tourDone = s0; state.cards = cards0; Object.entries(started).forEach(([k, v]) => (state.langs[k].started = v));
 }
 { // Repères pour francophones + l'alphabet d'abord

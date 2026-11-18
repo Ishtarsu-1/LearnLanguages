@@ -4,7 +4,7 @@ const dir = process.argv[2] || path.join(__dirname, "..");
 const el = () => ({ value: "", innerHTML: "", textContent: "", classList: { add() {}, remove() {}, toggle() {} }, dataset: {}, addEventListener() {}, querySelector: () => null, querySelectorAll: () => [], focus() {} });
 const store = {};
 const ctx = {
-  console, setTimeout, clearTimeout, setInterval: () => 0, Date, Math, JSON, URL, Blob: function () {},
+  console, setTimeout, clearTimeout, setInterval: () => 0, clearInterval() {}, Date, Math, JSON, URL, Blob: function () {},
   localStorage: { getItem: (k) => store[k] ?? null, setItem: (k, v) => (store[k] = v), removeItem: (k) => delete store[k] },
   location: { hash: "" }, document: { getElementById: () => el(), querySelectorAll: () => [], documentElement: { dataset: {}, style: { setProperty() {} } }, body: { dataset: {}, classList: { toggle() {} } }, addEventListener() {}, hidden: false },
   addEventListener() {}, confirm: () => true, window: null, scrollTo() {},

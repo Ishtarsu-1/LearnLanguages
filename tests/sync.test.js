@@ -9,7 +9,7 @@ function device(base, name) {
   const store = {}; let cookie = "";
   const el = () => ({ value: "", innerHTML: "", textContent: "", hidden: false, classList: { add() {}, remove() {}, toggle() {} }, dataset: {}, addEventListener() {}, querySelector: () => null, querySelectorAll: () => [], focus() {} });
   const ctx = {
-    console, setTimeout, clearTimeout, setInterval: () => 0, Date, Math, JSON, URL, Blob: function () {}, Promise,
+    console, setTimeout, clearTimeout, setInterval: () => 0, clearInterval() {}, Date, Math, JSON, URL, Blob: function () {}, Promise,
     localStorage: { getItem: (k) => store[k] ?? null, setItem: (k, v) => (store[k] = String(v)), removeItem: (k) => delete store[k] },
     location: { hash: "" },
     document: { getElementById: () => el(), querySelector: () => null, querySelectorAll: () => [], documentElement: { dataset: {}, style: { setProperty() {} } }, body: { dataset: {}, classList: { toggle() {} } }, addEventListener() {}, hidden: false },

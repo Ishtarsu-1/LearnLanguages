@@ -27,7 +27,7 @@
 | Syllabes | Module Hangul en 10 jours (consonnes doubles, voyelles composées, 받침, écriture au clavier), atelier des syllabes (schéma du bloc, 7 sons finaux, décomposition d'un mot) |
 | Ma Mochi | 9 accessoires cosmétiques (tête, cou, visage) gagnés par les bonnes pratiques (quêtes, lecture, écoute, écriture, régularité, Hangul), portés partout sur le site |
 | Exercices | 12 types regroupés (écoute, écrit, grammaire, vocabulaire) : dictée, compréhension orale, phrase à trou, traduction corrigée par reformulation, bonne forme, bonne particule, remettre dans l'ordre, registre, ne pas confondre, associe, faux amis, mélange |
-| Accueil | Visite guidée en 6 étapes à la première visite (langue, séance du jour, lire, s'entraîner, progresser), passable, à revoir depuis l'accueil ou le profil |
+| Accueil | Visite guidée **interactive** à la première visite : un projecteur éclaire le vrai élément et l'utilisateur fait lui-même (choisir sa langue, ouvrir un texte, toucher un mot, l'ajouter aux révisions, aller dans S'entraîner) ; en coréen sans Hangul, elle montre l'alphabet. Passable, à revoir depuis l'accueil ou le profil |
 | Audio | Voix du navigateur ou vraies voix du serveur (Kokoro, MeloTTS, cache disque), Profil › Audio : état, choix et test des voix, aide si aucune voix |
 
 ---

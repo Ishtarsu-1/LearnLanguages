@@ -47,7 +47,7 @@ server.listen(0, "127.0.0.1", async () => {
     const el = () => ({ value: "", innerHTML: "", classList: { add() {}, remove() {}, toggle() {} }, dataset: {}, addEventListener() {}, querySelector: () => null, querySelectorAll: () => [], focus() {} });
     let fetchMode = "ok";
     const ctx = {
-      console, setTimeout, clearTimeout, setInterval: () => 0, Date, Math, JSON, URL, Blob: function () {}, Promise,
+      console, setTimeout, clearTimeout, setInterval: () => 0, clearInterval() {}, Date, Math, JSON, URL, Blob: function () {}, Promise,
       localStorage: { getItem: (k) => store[k] ?? null, setItem: (k, v) => (store[k] = v), removeItem: (k) => delete store[k] },
       location: { hash: "" }, document: { getElementById: () => el(), querySelector: () => null, querySelectorAll: () => [], documentElement: { dataset: {}, style: { setProperty() {} } }, body: { dataset: {}, classList: { toggle() {} } }, addEventListener() {}, hidden: false },
       addEventListener() {}, confirm: () => true, scrollTo() {},
