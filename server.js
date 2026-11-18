@@ -102,6 +102,7 @@ db.exec(`
 // Migration : colonnes de synchro sur users
 const userCols = db.prepare("PRAGMA table_info(users)").all().map((c) => c.name);
 if (!userCols.includes("sync_rev")) db.exec("ALTER TABLE users ADD COLUMN sync_rev INTEGER NOT NULL DEFAULT 0");
+if (!userCols.includes("is_admin")) db.exec("ALTER TABLE users ADD COLUMN is_admin INTEGER NOT NULL DEFAULT 0"); // attribué par tools/admin.js
 if (!userCols.includes("email_verified_at")) db.exec("ALTER TABLE users ADD COLUMN email_verified_at TEXT");
 db.exec(`CREATE TABLE IF NOT EXISTS email_tokens (
   token_hash TEXT PRIMARY KEY,
@@ -194,7 +195,7 @@ function publicUser(u) {
   return {
     id: u.id, email: u.email, name: u.name, avatar_emoji: u.avatar_emoji,
     avatar_url: u.avatar_file ? `/avatars/${u.avatar_file}` : null,
-    created_at: u.created_at, last_login_at: u.last_login_at, email_verified: !!u.email_verified_at,
+    created_at: u.created_at, last_login_at: u.last_login_at, email_verified: !!u.email_verified_at, is_admin: !!u.is_admin,
   };
 }
 
@@ -525,6 +526,33 @@ async function api(req, res, url) {
     recordAttempt(`verify:${uid}`);
     sendMail(auth.user, "verify");
     return send(res, 200, { ok: true });
+  }
+  // Tableau de bord admin : chiffres globaux, jamais de contenu personnel au-delà de la liste des comptes
+  if (route === "GET /api/admin/stats") {
+    if (!auth.user.is_admin) return fail(res, 403, "Réservé aux administrateurs.");
+    const one = (sql, ...a) => db.prepare(sql).get(...a);
+    const t7 = new Date(Date.now() - 7 * 864e5).toISOString(), t30 = new Date(Date.now() - 30 * 864e5).toISOString();
+    let ttsFiles = 0, ttsBytes = 0;
+    try { for (const f of fs.readdirSync(path.join(DATA, "tts"))) { ttsFiles++; ttsBytes += fs.statSync(path.join(DATA, "tts", f)).size; } } catch {}
+    return send(res, 200, {
+      users: {
+        total: one("SELECT count(*) n FROM users").n,
+        verified: one("SELECT count(*) n FROM users WHERE email_verified_at IS NOT NULL").n,
+        admins: one("SELECT count(*) n FROM users WHERE is_admin = 1").n,
+        new7: one("SELECT count(*) n FROM users WHERE created_at > ?", t7).n,
+        new30: one("SELECT count(*) n FROM users WHERE created_at > ?", t30).n,
+        active7: one("SELECT count(DISTINCT user_id) n FROM sessions WHERE last_seen_at > ?", t7).n,
+      },
+      sessions: one("SELECT count(*) n FROM sessions WHERE expires_at > ?", now()).n,
+      cards: db.prepare("SELECT json_extract(data, '$.lang') lang, count(*) n FROM sync_cards GROUP BY 1").all(),
+      reviews: { total: one("SELECT count(*) n FROM review_logs").n },
+      llm: { today: one("SELECT COALESCE(sum(count), 0) n FROM llm_usage WHERE day = ?", now().slice(0, 10)).n, total: one("SELECT COALESCE(sum(count), 0) n FROM llm_usage").n, engine: LLM_ON ? llm.ENGINE : null, daily: LLM_DAILY },
+      tts: { voices: tts.info(), files: ttsFiles, bytes: ttsBytes },
+      mail: mail.mode,
+      list: db.prepare(`SELECT u.id, u.email, u.name, u.created_at, u.last_login_at, u.email_verified_at IS NOT NULL verified, u.is_admin admin,
+          (SELECT count(*) FROM sync_cards c WHERE c.user_id = u.id) cards, (SELECT count(*) FROM review_logs r WHERE r.user_id = u.id) reviews
+        FROM users u ORDER BY u.created_at DESC LIMIT 100`).all(),
+    });
   }
   if (route === "GET /api/sessions") {
     const rows = db.prepare("SELECT token_hash, created_at, last_seen_at, user_agent FROM sessions WHERE user_id = ? AND expires_at > ? ORDER BY last_seen_at DESC").all(uid, now());

@@ -296,3 +296,17 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
   ok(JSON.parse(localStorage.getItem(LAST_ACCOUNT)).user.id === 9, "compte mémorisé");
   const a = account; account = { id: 9 }; signOutLocal(); ok(localStorage.getItem(LAST_ACCOUNT) === null, "oublié à la déconnexion"); account = a;
 }
+{ // Admin : toutes les leçons ouvertes, tableau de bord
+  const a = account, K = state.langs.ko, hd = K.hangulDone, days = K.hangulDays, gd = K.grammarDone;
+  K.hangulDone = false; K.hangulDays = {}; K.grammarDone = {};
+  account = { id: 1, email: "a@b.fr", created_at: new Date().toISOString(), email_verified: true, is_admin: false };
+  ok(hangulGate("ko") && viewHangul(3).includes("Un jour à la fois") && viewGrammar(KO_GRAMMAR[2].id).includes("Un point à la fois") && viewAdmin().includes("Introuvable") === viewNotFound().includes("Introuvable"), "non-admin : verrous");
+  account.is_admin = true;
+  ok(!hangulGate("ko") && !viewHangul(3).includes("Un jour à la fois") && !viewGrammar(KO_GRAMMAR[2].id).includes("Un point à la fois"), "admin : leçons ouvertes");
+  ok(!tabPath("ko").includes("🔒</span>") && !tabPath("ko").includes('data-act="locked"'), "admin : parcours sans cadenas");
+  ui.admin = { d: { users: { total: 3, verified: 1, admins: 1, new7: 1, new30: 2, active7: 2 }, sessions: 2, cards: [{ lang: "ko", n: 5 }], reviews: { total: 9 }, llm: { engine: "Ollama", today: 1, total: 4, daily: 60 }, tts: { voices: { en: ["af_heart"] }, files: 3, bytes: 2e6 }, mail: "console", list: [{ email: "x@y.fr", name: "X", created_at: "2026-11-01", cards: 5, reviews: 9, verified: 0, admin: 1 }] } };
+  const v = viewAdmin();
+  ok(v.includes("Tableau de bord") && v.includes("Points de grammaire") && v.includes("x@y.fr") && v.includes("2.0 Mo") && v.includes(`#/lang/ko/grammaire/${KO_GRAMMAR[0].id}`), "tableau de bord");
+  ok(viewProfile().includes("#/admin"), "lien admin dans le profil");
+  ui.admin = null; account = a; K.hangulDone = hd; K.hangulDays = days; K.grammarDone = gd;
+}

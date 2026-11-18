@@ -205,6 +205,18 @@ PUBLIC_URL=https://ton-domaine.fr
 
 `PUBLIC_URL` sert à construire les liens des e-mails. Elle n'est jamais déduite de la requête : sinon, un attaquant pourrait faire pointer le lien de réinitialisation vers son propre site.
 
+## 6 quinquies. Comptes administrateurs
+
+Un admin accède à **toutes les leçons sans prérequis** (Hangul, grammaire, parcours) et au **tableau de bord** `#/admin` (lien en bas du profil) : comptes, usage du correcteur et des voix, état des fonctionnalités, quantité de contenu par langue, liens directs vers chaque leçon.
+
+```bash
+node tools/admin.js add prenom@exemple.fr      # le compte doit exister (inscription sur le site)
+node tools/admin.js list
+node tools/admin.js remove prenom@exemple.fr
+```
+
+Aucun mot de passe ne passe par cet outil : il modifie seulement le droit admin dans `data/mochi.db`. Recharge la page après coup.
+
 ## 7. Toutes les variables d'environnement
 
 | Variable | Par défaut | Rôle |

@@ -62,6 +62,19 @@ server.listen(0, "127.0.0.1", async () => {
     const etok = tokenIn(mail.outbox.at(-1), "reinitialiser");
     db.prepare("UPDATE email_tokens SET expires_at = ? WHERE kind = 'reset'").run(new Date(Date.now() - 1000).toISOString());
     ok((await call("POST", "/api/password/reset", { token: etok, password: "nouveaumdp2" })).status === 400, "lien expiré");
+    // Admin : refusé aux comptes normaux, accordé par tools/admin.js
+    r = await call("POST", "/api/login", { email: "zoe@test.fr", password: "nouveaumdp1" });
+    const ckz = r.cookie;
+    ok(r.data.user.is_admin === false && (await call("GET", "/api/admin/stats", undefined, ckz)).status === 403, "stats admin refusées");
+    ok((await call("GET", "/api/admin/stats")).status === 401, "stats admin : connexion requise");
+    const { execFileSync } = require("child_process");
+    const out = execFileSync(process.execPath, [path.join(__dirname, "..", "tools", "admin.js"), "add", "ZOE@test.fr"], { env: { ...process.env }, encoding: "utf8" });
+    ok(/est admin/.test(out), "outil admin " + out);
+    let bad = false; try { execFileSync(process.execPath, [path.join(__dirname, "..", "tools", "admin.js"), "add", "personne@test.fr"], { stdio: "pipe" }); } catch { bad = true; }
+    ok(bad, "outil admin : compte inexistant refusé");
+    ok((await call("GET", "/api/me", undefined, ckz)).data.user.is_admin === true, "is_admin exposé");
+    r = await call("GET", "/api/admin/stats", undefined, ckz);
+    ok(r.status === 200 && r.data.users.total >= 1 && r.data.users.admins === 1 && r.data.list[0].email && r.data.mail === "console" && !("pass" in r.data.list[0]), "stats admin " + JSON.stringify(r.data).slice(0, 200));
     // Limitation : 5 demandes libres par adresse, puis freinage
     let last; for (let i = 0; i < 6; i++) last = await call("POST", "/api/password/forgot", { email: "spam@test.fr" });
     ok(last.status === 429, "limitation des demandes");

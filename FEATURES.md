@@ -19,6 +19,7 @@
 | Comptes | Mot de passe oublié (lien par e-mail, usage unique, 30 min), confirmation de l'adresse (bandeau non bloquant) |
 | Motivation | Série hebdomadaire 5/7, quêtes de la semaine (3 par langue, +50 XP) |
 | Appli | Installable (PWA), marche hors ligne (révisions, lecture), synchro au retour du réseau, audio des cartes dues pré-téléchargé |
+| Admin | Comptes admin (`tools/admin.js`) : toutes les leçons ouvertes, tableau de bord `#/admin` (comptes, usage, fonctionnalités, contenu, accès direct) |
 | Audio | Voix du navigateur ou vraies voix du serveur (Kokoro, MeloTTS, cache disque), Profil › Audio : état, choix et test des voix, aide si aucune voix |
 
 ---

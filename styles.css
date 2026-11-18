@@ -592,3 +592,14 @@ code { background: var(--surface-2); padding: 2px 6px; border-radius: var(--radi
 .quests .q-body b { font-size: var(--text-sm); }
 .quests li.done .bar span { background: var(--success); }
 .quests .q-body .bar { flex: none; height: 8px; }
+
+/* Tableau de bord admin */
+.admin-grid { grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+.admin-table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
+.admin-table th, .admin-table td { text-align: left; padding: 8px 10px 8px 0; border-bottom: 1px solid var(--border); vertical-align: top; }
+.admin-table tr:last-child th, .admin-table tr:last-child td { border-bottom: none; }
+.admin-table th { font-weight: 700; white-space: nowrap; }
+.admin-table.users td, .admin-table.users th { white-space: nowrap; }
+.table-scroll { overflow-x: auto; }
+.admin-links p { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 0 0 12px; }
+.admin-links b { margin-right: 4px; }

@@ -890,7 +890,9 @@ const TABS = {
 // Vues des onglets (d'autres fichiers, comme exercises.js, peuvent en ajouter)
 const TAB_VIEWS = {};
 const GATED_TABS = ["lire", "revisions", "produire", "mots"]; // coréen : après le Hangul
-const hangulGate = (lang) => isKo(lang) && !state.langs.ko.hangulDone;
+// Admin (tools/admin.js) : toutes les leçons sont ouvertes, sans prérequis
+const isAdmin = () => !!account?.is_admin;
+const hangulGate = (lang) => isKo(lang) && !state.langs.ko.hangulDone && !isAdmin();
 function gateCard() {
   const n = Object.keys(state.langs.ko.hangulDays).length;
   return `<div class="card empty">${mochi("small", "curious")}
@@ -1054,7 +1056,7 @@ function tabPath(lang) {
       <div class="bar"><span style="width:${K.hangulDone ? 100 : (hDone / HANGUL_DAYS.length) * 100}%"></span></div>
       <div class="day-grid">
         ${HANGUL_DAYS.map((d, i) => {
-          const done = K.hangulDays[i + 1], open = i === 0 || K.hangulDays[i] || K.hangulDone;
+          const done = K.hangulDays[i + 1], open = i === 0 || K.hangulDays[i] || K.hangulDone || isAdmin();
           return `<a class="day ${done ? "done" : ""} ${open ? "" : "locked"}" href="#/lang/ko/hangul/${i + 1}" data-act="${open ? "" : "locked"}">
             <small>Jour ${i + 1}</small><b>${d.title}</b><span class="ko">${d.sub}</span></a>`;
         }).join("")}
@@ -1067,7 +1069,7 @@ function tabPath(lang) {
       <p class="muted" style="margin:10px 0 14px">Particules, terminaisons, niveaux de politesse : c'est la phase où presque tout le monde trouve ça dur. C'est normal. On avance <b>un point à la fois</b>, avec beaucoup d'exemples avant de produire.</p>
       <div class="gram-list">
         ${KO_GRAMMAR.map((g, i) => {
-          const done = K.grammarDone[g.id], open = K.hangulDone && (i === 0 || K.grammarDone[KO_GRAMMAR[i - 1].id]);
+          const done = K.grammarDone[g.id], open = isAdmin() || (K.hangulDone && (i === 0 || K.grammarDone[KO_GRAMMAR[i - 1].id]));
           return `<a class="gram ${done ? "done" : ""} ${open ? "" : "locked"}" href="#/lang/ko/grammaire/${g.id}" data-act="${open ? "" : "locked"}">
             <span class="gram-n">${done ? "✓" : open ? i + 1 : "🔒"}</span><span class="ko">${g.title}</span></a>`;
         }).join("")}
@@ -1591,7 +1593,7 @@ function viewHangul(day) {
   const d = HANGUL_DAYS[day - 1];
   const K = state.langs.ko;
   if (!d) return viewNotFound();
-  if (day > 1 && !K.hangulDays[day - 1] && !K.hangulDone) return `<section class="view lesson-shell"><div class="card empty">${mochi("small", "focused")}<h2>Un jour à la fois</h2><p class="muted">Termine d'abord le jour ${day - 1}.</p><a class="btn" href="#/lang/ko/hangul/${day - 1}">Jour ${day - 1}</a></div></section>`;
+  if (day > 1 && !K.hangulDays[day - 1] && !K.hangulDone && !isAdmin()) return `<section class="view lesson-shell"><div class="card empty">${mochi("small", "focused")}<h2>Un jour à la fois</h2><p class="muted">Termine d'abord le jour ${day - 1}.</p><a class="btn" href="#/lang/ko/hangul/${day - 1}">Jour ${day - 1}</a></div></section>`;
   const key = `hangul-${day}`;
   if (ui.quiz?.key === key && ui.quiz.started) return viewQuiz("#/lang/ko/parcours", `Jour ${day}`);
   const intro = d.kind === "jamo"
@@ -1617,7 +1619,7 @@ function viewGrammar(id) {
   const g = KO_GRAMMAR[i];
   if (!g) return viewNotFound();
   const K = state.langs.ko;
-  if (!K.hangulDone || (i > 0 && !K.grammarDone[KO_GRAMMAR[i - 1].id])) return `<section class="view lesson-shell"><div class="card empty">${mochi("small", "focused")}<h2>Un point à la fois</h2><p class="muted">Termine d'abord le point précédent : c'est comme ça qu'on passe le cap.</p><a class="btn" href="#/lang/ko/parcours">Parcours</a></div></section>`;
+  if (!isAdmin() && (!K.hangulDone || (i > 0 && !K.grammarDone[KO_GRAMMAR[i - 1].id]))) return `<section class="view lesson-shell"><div class="card empty">${mochi("small", "focused")}<h2>Un point à la fois</h2><p class="muted">Termine d'abord le point précédent : c'est comme ça qu'on passe le cap.</p><a class="btn" href="#/lang/ko/parcours">Parcours</a></div></section>`;
   const key = `gram-${id}`;
   if (ui.quiz?.key === key && ui.quiz.started) return viewQuiz("#/lang/ko/parcours", g.title);
   const ex = g.examples.map((src) => toSentence(src, "ko"));
@@ -1736,6 +1738,7 @@ function viewProfile() {
       <button class="btn ghost small" data-act="export">Exporter mes données (JSON)</button>
       <button class="btn ghost small" data-act="reset">Réinitialiser ma progression</button>
       <a class="btn ghost small" href="#/pourquoi">🔬 Pourquoi ça marche ?</a>
+      ${isAdmin() ? `<a class="btn small" href="#/admin">🛠️ Tableau de bord admin</a>` : ""}
     </div>
 
     ${account ? `
@@ -1854,6 +1857,75 @@ function viewAuth(mode) {
       ${signup && (cards || xp) ? `<p class="muted center"><small>✨ Ta progression actuelle (${cards} carte(s), ${xp} XP) sera rattachée à ton compte.</small></p>` : ""}
     </form>
     <p class="center muted">${signup ? `Déjà un compte ? <a class="lnk" href="#/connexion">Se connecter</a>` : `<a class="lnk" href="#/mot-de-passe-oublie">Mot de passe oublié ?</a> · Pas encore de compte ? <a class="lnk" href="#/inscription">Créer un compte</a>`}</p>
+  </section>`;
+}
+
+// ---------- Tableau de bord admin ----------
+// Contenu : calculé ici depuis content.js & co. Comptes et usage : GET /api/admin/stats.
+function contentStats() {
+  const sentences = (l) => TEXTS[l].reduce((a, t) => a + t.parsed.length, 0);
+  return Object.keys(LANGUAGES).map((l) => ({
+    lang: l,
+    rows: [
+      ["📖 Textes", TEXTS[l].length, `${sentences(l)} phrases`],
+      ["📒 Mots du lexique", Object.keys(LEXICON[l]).length, `${Object.keys(SEMANTIC_GROUPS[l] || {}).length} catégories, ${(CONFUSABLE[l] || []).length} paires de contraires`],
+      ["💬 Exercices de production", PRODUCTION[l].length, `${(FREE_PROMPTS[l] || []).length} sujets libres`],
+      ["🎧 Paires de sons", EAR[l].pairs.length, ""],
+      ["🎯 Types d'exercices", Object.keys(EX_KINDS).length, "communs aux deux langues"],
+      ...(l === "ko" ? [["🔤 Jours de Hangul", HANGUL_DAYS.length, ""], ["🧱 Points de grammaire", KO_GRAMMAR.length, `${Object.keys(REGISTERS).length} registres`], ["🧭 Test de niveau", KO_LOANS.length, "mots d'emprunt"]]
+        : [["🎭 Faux amis", FAUX_AMIS.length, ""], ["🧭 Test de niveau", EN_BANDS.length * EN_BANDS[0].length, `${EN_BANDS.length} tranches + ${EN_FAKE.length} faux mots`]]),
+    ],
+  }));
+}
+function viewAdmin() {
+  if (!isAdmin()) return viewNotFound();
+  const A = ui.admin;
+  if (!A) {
+    ui.admin = { loading: true };
+    api("GET", "/api/admin/stats").then((d) => { ui.admin = { d }; }).catch((e) => { ui.admin = { err: e.message }; }).finally(() => { if (location.hash === "#/admin") render(); });
+  }
+  const d = ui.admin.d, fmtDate = (x) => (x ? new Date(x).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "2-digit" }) : "—");
+  const kb = (b) => (b > 1e6 ? `${(b / 1e6).toFixed(1)} Mo` : `${Math.round(b / 1e3)} Ko`);
+  const stat = (ico, n, label) => `<div class="stat"><span class="ico">${ico}</span><div><b>${n}</b><small>${label}</small></div></div>`;
+  const features = d ? [
+    ["Correcteur IA (Produire)", d.llm.engine ? `✅ ${esc(d.llm.engine)}` : "❌ désactivé", d.llm.engine ? `${d.llm.today} correction(s) aujourd'hui, ${d.llm.total} au total · ${d.llm.daily} max / compte / jour` : ""],
+    ["Vraies voix", Object.keys(d.tts.voices).length ? `✅ ${Object.entries(d.tts.voices).map(([l, v]) => `${LANGUAGES[l].flag} ×${v.length}`).join(" ")}` : "🔈 navigateur", `${d.tts.files} phrase(s) en cache (${kb(d.tts.bytes)})`],
+    ["E-mails", d.mail === "resend" ? "✅ Resend" : "🖥️ terminal (pas d'envoi)", d.mail === "resend" ? "" : "RESEND_API_KEY absent"],
+    ["Appli installable / hors ligne", "serviceWorker" in (globalThis.navigator || {}) ? "✅" : "❌ navigateur non compatible", ""],
+    ["FSRS (révisions espacées)", HAS_FSRS ? "✅ ts-fsrs 5.2.3" : "⚠️ non chargé", ""],
+  ] : [];
+  return `<section class="view">
+    <h1>🛠️ Tableau de bord</h1>
+    <p class="muted">Visible seulement par les admins. Toutes les leçons sont ouvertes pour toi, sans prérequis.</p>
+
+    <h2 class="section-title">Comptes et usage</h2>
+    ${ui.admin.err ? `<div class="card"><p class="form-err">${esc(ui.admin.err)}</p></div>` : !d ? `<div class="card"><p class="muted">Chargement…</p></div>` : `
+    <div class="card"><div class="stat-grid admin-grid">
+      ${stat("👥", d.users.total, "comptes")}${stat("✉️", d.users.verified, "adresses confirmées")}
+      ${stat("🆕", `${d.users.new7} / ${d.users.new30}`, "nouveaux (7 j / 30 j)")}${stat("🔥", d.users.active7, "actifs sur 7 jours")}
+      ${stat("🃏", d.cards.reduce((a, x) => a + x.n, 0), d.cards.map((x) => `${LANGUAGES[x.lang]?.flag || "?"} ${x.n}`).join(" · ") || "cartes")}${stat("🧠", d.reviews.total, "révisions enregistrées")}
+    </div></div>
+
+    <h2 class="section-title">Fonctionnalités</h2>
+    <div class="card"><table class="admin-table"><tbody>${features.map(([n, st, info]) => `<tr><th scope="row">${n}</th><td>${st}</td><td class="muted">${info}</td></tr>`).join("")}</tbody></table></div>`}
+
+    <h2 class="section-title">Contenu</h2>
+    <div class="lang-grid">${contentStats().map((c) => `<div class="card"><h3>${LANGUAGES[c.lang].flag} ${LANGUAGES[c.lang].name}</h3>
+      <table class="admin-table"><tbody>${c.rows.map(([n, v, info]) => `<tr><th scope="row">${n}</th><td><b>${v}</b></td><td class="muted">${info}</td></tr>`).join("")}</tbody></table></div>`).join("")}</div>
+
+    <h2 class="section-title">Accès direct aux leçons</h2>
+    <div class="card admin-links">
+      <p><b>🇰🇷 Hangul</b> ${HANGUL_DAYS.map((x, i) => `<a class="chip" href="#/lang/ko/hangul/${i + 1}">J${i + 1}</a>`).join("")}</p>
+      <p><b>🇰🇷 Grammaire</b> ${KO_GRAMMAR.map((g, i) => `<a class="chip ko" href="#/lang/ko/grammaire/${g.id}">${i + 1}. ${esc(g.title)}</a>`).join("")}</p>
+      ${Object.keys(LANGUAGES).map((l) => `<p><b>${LANGUAGES[l].flag} Textes</b> ${TEXTS[l].map((t) => `<a class="chip" href="#/lang/${l}/lire/${t.id}">${esc(t.title)}</a>`).join("")}</p>`).join("")}
+      <p><b>Onglets</b> ${Object.keys(LANGUAGES).flatMap((l) => TABS[l].map(([k, n]) => `<a class="chip" href="#/lang/${l}/${k}">${LANGUAGES[l].flag} ${n}</a>`)).join("")}</p>
+    </div>
+
+    ${d ? `<h2 class="section-title">Comptes (${d.list.length}${d.list.length === 100 ? "+" : ""})</h2>
+    <div class="card table-scroll"><table class="admin-table users"><thead><tr><th>E-mail</th><th>Prénom</th><th>Inscrit</th><th>Dernière connexion</th><th>Cartes</th><th>Révisions</th></tr></thead><tbody>
+      ${d.list.map((u) => `<tr><td>${esc(u.email)} ${u.admin ? "🛠️" : ""} ${u.verified ? "" : `<span title="adresse non confirmée">✉️?</span>`}</td><td>${esc(u.name)}</td><td>${fmtDate(u.created_at)}</td><td>${fmtDate(u.last_login_at)}</td><td>${u.cards}</td><td>${u.reviews}</td></tr>`).join("")}
+    </tbody></table></div>` : ""}
+    <p style="margin-top:20px"><button class="btn ghost small" data-act="admin-refresh">↻ Actualiser</button></p>
   </section>`;
 }
 
@@ -1995,6 +2067,7 @@ function route() {
   } else if (parts[0] === "profil") { html = viewProfile(); nav = "profil"; }
   else if (parts[0] === "connexion" || parts[0] === "inscription") { html = viewAuth(parts[0]); nav = "profil"; }
   else if (parts[0] === "pourquoi") { html = viewWhy(); nav = "pourquoi"; }
+  else if (parts[0] === "admin") { html = viewAdmin(); nav = "profil"; }
   else if (parts[0] === "mot-de-passe-oublie") { html = viewForgot(); nav = "profil"; }
   else if (parts[0] === "reinitialiser" && parts[1]) { html = viewReset(parts[1]); nav = "profil"; }
   else if (parts[0] === "verifier" && parts[1]) {
@@ -2259,6 +2332,7 @@ const actions = {
   "logout-others": async () => {
     try { await api("POST", "/api/logout-others"); toast("Autres appareils déconnectés ✓"); loadSessions(); } catch (e) { toast(e.message); }
   },
+  "admin-refresh": () => { ui.admin = null; render(); },
   "forgot-again": () => { ui.forgotSent = null; render(); },
   "resend-verify": async () => {
     try { const r = await api("POST", "/api/email/resend", {}); if (r.already) account.email_verified = true; toast(r.already ? "Adresse déjà confirmée ✓" : "E-mail renvoyé ✉️"); render(); }
