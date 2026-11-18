@@ -48,6 +48,11 @@ server.listen(0, "127.0.0.1", async () => {
       // Tous les fichiers précachés par le service worker existent (sinon l'installation échoue)
       const list = JSON.parse((await sw.text()).match(/const SHELL_FILES = (\[[\s\S]*?\]);/)[1].replace(/,\s*\]/, "]"));
       for (const f of list) ok((await fetch(base + f)).status === 200, "précache " + f);
+      // Chaque script de index.html est servi et précaché (sinon : page cassée hors ligne)
+      for (const f of require("./scripts.js")(process.argv[2] || path.join(__dirname, ".."))) {
+        ok((await fetch(base + "/" + f)).status === 200, "script servi " + f);
+        ok(list.includes("/" + f), "script précaché " + f);
+      }
     }
     ok((await fetch(base + "/data/mochi.db")).status === 404, "db non servie");
     ok((await fetch(base + "/../package.json")).status === 404, "traversal");
