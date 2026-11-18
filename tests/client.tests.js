@@ -253,8 +253,8 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
   actions.theme({ dataset: { v: "auto" } }); ok(document.documentElement.dataset.theme === undefined, "thème auto");
 }
 { // Navigation principale (charte §7)
-  state.lastLang = "ko"; location.hash = "#/reviser"; route(); ok(location.hash === "#/lang/ko/revisions", "Réviser → onglet de la dernière langue");
-  location.hash = "#/lire"; route(); ok(location.hash === "#/lang/ko/lire", "Lire");
+  state.lastLang = "ko"; location.hash = "#/reviser"; route(); ok(location.hash === "#/lang/ko/pratique", "S'entraîner → section de la dernière langue");
+  location.hash = "#/lire"; route(); ok(location.hash === "#/lang/ko/histoire", "Lire");
   const last = state.lastLang; state.lastLang = null; location.hash = "#/aujourdhui"; route(); ok(location.hash === "#/aujourdhui", "sans langue : accueil"); state.lastLang = last;
 }
 { // Mot de passe oublié, réinitialisation, bandeau de vérification
@@ -466,4 +466,14 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
   ok(flatten(state).kv["settings.look"]?.head === "cap", "tenue synchronisée");
   account = { id: 1, is_admin: true }; ok(ACCESSORIES.every((a) => accUnlocked(a)), "admin : tout débloqué"); account = acc;
   L.quests = q0; state.settings.look = look0; state.settings.lookSeen = seen0;
+}
+{ // Navigation d'une langue : 3 sections + sous-menus
+  const v = viewLanguage("en", "revisions");
+  ok((v.match(/class="sec /g) || []).length === 3 && !v.includes('class="tabs"'), "3 sections au lieu de 11 boutons");
+  ok(v.includes("← S'entraîner") && v.includes("🧠 Réviser"), "fil d'Ariane dans un outil");
+  ok(viewLanguage("en", "themes").includes("Bibliothèque") && viewLanguage("en", "themes").includes('class="sub-nav"'), "sous-menu de Lire");
+  const hub = viewLanguage("ko", "pratique");
+  ok(hub.includes("Parcours") && hub.includes("Écouter les sons") && hub.includes("Mes mots") && !hub.includes("Faux amis"), "S'entraîner (coréen) : outils en cartes");
+  ok(viewLanguage("en", "pratique").includes("Faux amis"), "faux amis seulement en anglais");
+  ok(sectionOf("aujourdhui") === "today" && sectionOf("histoire") === "read" && sectionOf("oreille") === "practice" && navOfTab("lire") === "lire", "sections et barre du bas");
 }

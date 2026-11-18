@@ -221,7 +221,7 @@ Dans les textes débutants (désactivable, §6 de `PEDAGOGIE.md`), chaque partic
   - `--shadow-2` : `0 4px 12px rgb(42 34 48 / 0.08), 0 2px 4px rgb(42 34 48 / 0.05)`
   - `--shadow-3` : `0 12px 32px rgb(42 34 48 / 0.12)` (modales)
   - En mode sombre, on remplace les ombres par une bordure `--border` plus claire et une surface plus claire.
-- **Mise en page** : mobile d'abord. Points de rupture : 480, 768, 1024, 1280 px. Contenu centré, largeur max 1120 px. Barre de navigation en bas sur mobile (4 onglets max : Aujourd'hui, Lire, Réviser, Profil), latérale sur ordinateur.
+- **Mise en page** : mobile d'abord. Points de rupture : 480, 768, 1024, 1280 px. Contenu centré, largeur max 1120 px. Barre de navigation en bas sur mobile (4 onglets max : Aujourd'hui, Lire, S'entraîner, Profil), latérale sur ordinateur. Dans une langue, **3 sections seulement** (Aujourd'hui · Lire · S'entraîner) : jamais un mur de boutons de même poids. Lire a un sous-menu (Histoire, Bibliothèque, Thèmes) ; S'entraîner présente ses outils en grandes cartes avec une phrase qui dit à quoi chacun sert.
 - **Zones tactiles** : au moins 44 × 44 px.
 
 ---

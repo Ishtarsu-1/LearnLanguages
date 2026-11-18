@@ -926,6 +926,47 @@ function gateCard() {
     <p><button class="linkish" data-act="skip-hangul">Je lis déjà le Hangul</button></p></div>`;
 }
 
+// ---------- Navigation d'une langue : 3 sections, pas un mur de boutons ----------
+// Aujourd'hui (la séance guidée) · Lire (histoire, bibliothèque, thèmes) · S'entraîner (outils en cartes).
+// Les identifiants d'onglets (#/lang/xx/revisions…) ne changent pas : les anciens liens marchent.
+const READ_TABS = [["histoire", "🎬", "Histoire"], ["lire", "📚", "Bibliothèque"], ["themes", "🍡", "Thèmes"]];
+const sectionOf = (tab) => (tab === "aujourdhui" ? "today" : READ_TABS.some(([k]) => k === tab) ? "read" : "practice");
+// Outils de la section « S'entraîner » : nom en clair, à quoi ça sert, et un indicateur
+function practiceTools(lang) {
+  const L = state.langs[lang], due = reviewCount(lang), mine = state.cards.filter((c) => c.lang === lang).length;
+  const K = state.langs.ko, hDone = Object.keys(K.hangulDays).length, gDone = KO_GRAMMAR.filter((g) => K.grammarDone[g.id]).length;
+  const tools = [
+    isKo(lang) && ["parcours", "🗺️", "Parcours", "L'alphabet puis la grammaire, un pas à la fois.", K.hangulDone ? `Grammaire ${gDone}/${KO_GRAMMAR.length}` : `Hangul ${hDone}/${HANGUL_DAYS.length}`],
+    ["revisions", "🧠", "Réviser", "Les mots à revoir aujourd'hui, au bon moment pour ne pas les oublier.", due ? `${due} à revoir` : "À jour ✓", due > 0],
+    ["exercices", "🎯", "Exercices", "Dictée, phrases à remettre dans l'ordre, compréhension… tout mélangé.", ""],
+    ["produire", "💬", "Écrire", "Écris une phrase : Mochi te propose une version plus naturelle.", ""],
+    ["oreille", "🎧", "Écouter les sons", "Distingue les sons qui se ressemblent, avec plusieurs voix.", ""],
+    !isKo(lang) && ["fauxamis", "🎭", "Faux amis", "Les mots qui ressemblent au français… mais ne veulent pas dire la même chose.", ""],
+    ["mots", "📒", "Mes mots", "Tous les mots que tu apprends, et ceux que tu connais déjà.", mine ? `${mine} carte${mine > 1 ? "s" : ""}` : ""],
+    ["niveau", "🧭", "Test de niveau", "5 minutes pour savoir où tu en es.", L.placement ? "Fait ✓" : ""],
+  ];
+  return tools.filter(Boolean);
+}
+function langNav(lang, tab) {
+  const sec = sectionOf(tab), due = reviewCount(lang);
+  const main = [["today", "aujourdhui", "☀️", "Aujourd'hui"], ["read", "histoire", "📖", "Lire"], ["practice", "pratique", "🎯", "S'entraîner"]];
+  const tool = sec === "practice" && tab !== "pratique" ? practiceTools(lang).find(([k]) => k === tab) : null;
+  return `<nav class="section-nav" aria-label="Sections">
+      ${main.map(([id, k, ico, label]) => `<a class="sec ${sec === id ? "active" : ""}" href="#/lang/${lang}/${k}" ${sec === id ? 'aria-current="page"' : ""}><span class="sec-ico" aria-hidden="true">${ico}</span><span>${label}</span>${id === "practice" && due ? `<span class="sec-badge" title="Cartes à revoir">${due}</span>` : ""}</a>`).join("")}
+    </nav>
+    ${sec === "read" ? `<nav class="sub-nav" aria-label="Lire">${READ_TABS.map(([k, ico, label]) => `<a class="${k === tab ? "active" : ""}" href="#/lang/${lang}/${k}" ${k === tab ? 'aria-current="page"' : ""}>${ico} ${label}</a>`).join("")}</nav>` : ""}
+    ${tool ? `<div class="tool-head"><a class="lnk" href="#/lang/${lang}/pratique">← S'entraîner</a><h2>${tool[1]} ${tool[2]}</h2></div>` : ""}`;
+}
+function tabPractice(lang) {
+  return `<p class="muted" style="margin:0 0 14px">Choisis un exercice. Pas d'idée ? <a class="lnk" href="#/lang/${lang}/aujourdhui">La séance du jour</a> te guide pas à pas.</p>
+    <div class="tool-grid">
+      ${practiceTools(lang).map(([k, ico, title, desc, badge, hot]) => `<a class="card tool-card" href="#/lang/${lang}/${k}">
+        <span class="tool-ico" aria-hidden="true">${ico}</span>
+        <div><h3>${title}</h3><p class="muted">${desc}</p>${badge ? `<span class="tag ${hot ? "hot" : ""}">${badge}</span>` : ""}</div>
+      </a>`).join("")}
+    </div>`;
+}
+
 function viewLanguage(lang, tab) {
   const l = LANGUAGES[lang];
   const L = state.langs[lang];
@@ -944,7 +985,7 @@ function viewLanguage(lang, tab) {
     </div>
     <div class="dash-grid">
       <div>
-        <div class="tabs">${TABS[lang].map(([k, label]) => `<a class="tab ${k === tab ? "active" : ""}" href="#/lang/${lang}/${k}">${label}</a>`).join("")}</div>
+        ${langNav(lang, tab)}
         ${fsrsWarning()}
         ${body}
       </div>
@@ -1038,7 +1079,7 @@ function stepCard(n, icon, title, done, desc, action) {
   </div>`;
 }
 
-Object.assign(TAB_VIEWS, { aujourdhui: (l) => tabToday(l), parcours: (l) => tabPath(l), lire: (l) => tabLibrary(l), themes: (l) => tabThemes(l), revisions: (l) => tabReviews(l), produire: (l) => tabProduce(l), mots: (l) => tabWords(l), oreille: (l) => tabEar(l), fauxamis: (l) => tabFauxAmis(l) });
+Object.assign(TAB_VIEWS, { pratique: (l) => tabPractice(l), aujourdhui: (l) => tabToday(l), parcours: (l) => tabPath(l), lire: (l) => tabLibrary(l), themes: (l) => tabThemes(l), revisions: (l) => tabReviews(l), produire: (l) => tabProduce(l), mots: (l) => tabWords(l), oreille: (l) => tabEar(l), fauxamis: (l) => tabFauxAmis(l) });
 
 function tabToday(lang) {
   if (hangulGate(lang)) {
@@ -2159,8 +2200,8 @@ function viewNotFound() {
 //  ROUTEUR
 // ============================================================
 // Onglets de la barre de navigation (charte §7 : 4 au maximum)
-const NAV_TABS = { aujourdhui: "aujourdhui", lire: "lire", reviser: "revisions" };
-const NAV_OF_TAB = { aujourdhui: "aujourdhui", lire: "lire", revisions: "reviser" };
+const NAV_TABS = { aujourdhui: "aujourdhui", lire: "histoire", reviser: "pratique" };
+const navOfTab = (tab) => ({ today: "aujourdhui", read: "lire", practice: "reviser" })[sectionOf(tab || "aujourdhui")];
 function route() {
   const parts = location.hash.replace(/^#\/?/, "").split("/").filter(Boolean);
   const hashChanged = ui.lastHash !== location.hash;
@@ -2185,7 +2226,7 @@ function route() {
     html = viewVerify(parts[1]); nav = "profil";
   }
   else if (parts[0] === "lang" && LANGUAGES[parts[1]]) {
-    lang = parts[1]; nav = NAV_OF_TAB[parts[2]] || "aujourdhui";
+    lang = parts[1]; nav = navOfTab(parts[2]);
     state.lastLang = lang; state.langs[lang].started = true; save();
     const [, , tab, a] = parts;
     if (tab === "lire" && a) html = viewReader(lang, a);
@@ -2194,7 +2235,7 @@ function route() {
     else if (tab === "hangul" && isKo(lang)) html = viewHangul(Number(a) || 1);
     else if (tab === "atelier" && isKo(lang)) html = viewAtelier();
     else if (tab === "grammaire" && isKo(lang)) html = viewGrammar(a);
-    else html = viewLanguage(lang, TABS[lang].some(([k]) => k === tab) ? tab : "aujourdhui");
+    else html = viewLanguage(lang, tab === "pratique" || TABS[lang].some(([k]) => k === tab) ? tab : "aujourdhui");
   } else html = viewNotFound();
 
   document.body.dataset.lang = lang || state.lastLang || "ko";
