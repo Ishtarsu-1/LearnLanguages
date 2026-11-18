@@ -89,7 +89,8 @@ ui.prod.ex = PRODUCTION.ko[3]; ui.prod.result = null;
 document.getElementById = (id) => (id === "prod-text" ? { value: "서울에서 살아요" } : { innerHTML: "", classList: { add() {}, remove() {}, toggle() {} }, focus() {} });
 actions["check-prod"](); ok(ui.prod.result.perfect, "variante acceptée");
 actions["add-frequent"](); render1("#/lang/ko/mots");
-actions["ear-play"](); render1("#/lang/ko/oreille");
+state.langs.ko.hangulDone = true; // l'écoute coréenne attend le Hangul
+render1("#/lang/ko/oreille"); actions["ear-play"](); render1("#/lang/ko/oreille");
 { // HVPT : au moins 4 voix, score par contraste, contraste faible plus fréquent
   ok(speakers("ko").length >= 4, "au moins 4 voix");
   const G = ui.ear, key = EAR.ko.pairs[G.i].label;
@@ -445,9 +446,9 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
   // Atelier
   ui.atelier = { l: "ㅇ", v: "ㅗ", f: "ㅅ" };
   const v = viewAtelier();
-  ok(v.includes(">옷<") && v.includes("≈ « ot »") && v.includes("se prononce [t]") && v.includes("au-dessus"), "atelier : 옷, son final, voyelle horizontale");
+  ok(v.includes(">옷<") && v.includes("≈ « ôt »") && v.includes("se prononce [t]") && v.includes("au-dessus"), "atelier : 옷, son final, voyelle horizontale");
   ui.atelier = { l: "ㄱ", v: "ㅘ", f: "" }; ok(viewAtelier().includes(">과<") && viewAtelier().includes("bd-v2"), "atelier : voyelle composée");
-  ok(decomposeView("한국").split("atl-piece").length === 3 && decomposeView("한국").includes("≈ guk"), "décomposition d'un mot");
+  ok(decomposeView("한국").split("atl-piece").length === 3 && decomposeView("한국").includes("≈ gouk"), "décomposition d'un mot");
   ok(tabPath("ko").includes("#/lang/ko/atelier"), "lien vers l'atelier dans le Parcours");
   ui.quiz = null; ui.atelier = null;
 }
@@ -538,4 +539,15 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
   ok(viewHome().includes('data-tour="open"') && viewProfile().includes("Revoir la visite"), "on peut la revoir");
   document.body = body; document.createElement = realCreate; document.getElementById = gid;
   state.settings.tourDone = s0; state.cards = cards0; Object.entries(started).forEach(([k, v]) => (state.langs[k].started = v));
+}
+{ // Repères pour francophones + l'alphabet d'abord
+  const rom = Object.fromEntries(HANGUL_DAYS.filter((d) => d.kind === "jamo").flatMap((d) => d.items.map(([c, r]) => [c, r])));
+  ok(rom["ㅜ"] === "ou" && /ô/.test(rom["ㅗ"]) && /ouvert/.test(rom["ㅓ"]) && /eu/.test(rom["ㅡ"]), "voyelles : repères francophones (ㅜ = ou, pas « u »)");
+  ok(/souffl/.test(rom["ㅋ"]) && /tendu/.test(rom["ㄲ"]), "consonnes : soufflée / tendue");
+  ok(sylRom("ㅅ", "ㅜ", "") === "sou" && sylRom("ㄱ", "ㅓ", "") === "go" && sylRom("ㅋ", "ㅓ", "") === "kho", "atelier : 수 = sou, 커 = kho");
+  const hd = state.langs.ko.hangulDone, acc = account; account = null; state.langs.ko.hangulDone = false;
+  for (const tab of ["histoire", "themes", "oreille", "lire", "revisions", "exercices"]) ok(viewLanguage("ko", tab).includes("D'abord, le Hangul"), `coréen : ${tab} attend le Hangul`);
+  ok(!viewLanguage("ko", "parcours").includes("D'abord, le Hangul") && !viewLanguage("en", "histoire").includes("D'abord, le Hangul"), "le parcours (et l'anglais) restent ouverts");
+  ok(viewHangul(1).includes("Comment lire les repères"), "explication des repères");
+  state.langs.ko.hangulDone = hd; account = acc;
 }

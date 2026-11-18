@@ -6,8 +6,9 @@
 //  + correction des exercices « écris ce que tu entends » du module Hangul.
 // ============================================================
 const VERT_V = [..."ㅏㅐㅑㅒㅓㅔㅕㅖㅣ"], HORIZ_V = [..."ㅗㅛㅜㅠㅡ"]; // les autres (ㅘ ㅝ ㅢ…) sont mixtes
-const CHO_ROM = { ㄱ: "g", ㄲ: "kk", ㄴ: "n", ㄷ: "d", ㄸ: "tt", ㄹ: "r", ㅁ: "m", ㅂ: "b", ㅃ: "pp", ㅅ: "s", ㅆ: "ss", ㅇ: "", ㅈ: "j", ㅉ: "jj", ㅊ: "ch", ㅋ: "k", ㅌ: "t", ㅍ: "p", ㅎ: "h" };
-const JUNG_ROM = { ㅏ: "a", ㅐ: "ae", ㅑ: "ya", ㅒ: "yae", ㅓ: "eo", ㅔ: "e", ㅕ: "yeo", ㅖ: "ye", ㅗ: "o", ㅘ: "wa", ㅙ: "wae", ㅚ: "oe", ㅛ: "yo", ㅜ: "u", ㅝ: "wo", ㅞ: "we", ㅟ: "wi", ㅠ: "yu", ㅡ: "eu", ㅢ: "ui", ㅣ: "i" };
+// Repères francophones (voir HANGUL_DAYS) : ô fermé / o ouvert, ou, eu ; h = soufflée ; doublée = tendue
+const CHO_ROM = { ㄱ: "g", ㄲ: "kk", ㄴ: "n", ㄷ: "d", ㄸ: "tt", ㄹ: "r", ㅁ: "m", ㅂ: "b", ㅃ: "pp", ㅅ: "s", ㅆ: "ss", ㅇ: "", ㅈ: "dj", ㅉ: "ttch", ㅊ: "tch", ㅋ: "kh", ㅌ: "th", ㅍ: "ph", ㅎ: "h" };
+const JUNG_ROM = { ㅏ: "a", ㅐ: "è", ㅑ: "ya", ㅒ: "yè", ㅓ: "o", ㅔ: "é", ㅕ: "yo", ㅖ: "yé", ㅗ: "ô", ㅘ: "oua", ㅙ: "ouè", ㅚ: "oué", ㅛ: "yô", ㅜ: "ou", ㅝ: "ouo", ㅞ: "oué", ㅟ: "oui", ㅠ: "you", ㅡ: "eu", ㅢ: "eui", ㅣ: "i" };
 // Les 7 sons possibles en fin de syllabe
 const FINAL_SOUND = { ㄱ: "k", ㄲ: "k", ㅋ: "k", ㄳ: "k", ㄺ: "k", ㄴ: "n", ㄵ: "n", ㄶ: "n", ㄷ: "t", ㅅ: "t", ㅆ: "t", ㅈ: "t", ㅊ: "t", ㅌ: "t", ㅎ: "t", ㄹ: "l", ㄼ: "l", ㄽ: "l", ㄾ: "l", ㅀ: "l", ㅁ: "m", ㄻ: "m", ㅂ: "p", ㅍ: "p", ㅄ: "p", ㄿ: "p", ㅇ: "ng" };
 const sylRom = (l, v, f) => (CHO_ROM[l] ?? "") + JUNG_ROM[v] + (f ? FINAL_SOUND[f] : "");
@@ -41,7 +42,7 @@ function viewAtelier() {
         ${blockDiagram(A.l, A.v, A.f)}
       </div>
       <p class="center" style="margin:6px 0 0"><span class="ko">${A.l} + ${A.v}${A.f ? ` + ${A.f}` : ""}</span> = <b class="ko">${syl}</b> · se prononce ≈ « ${rom} »</p>
-      <p class="muted center" style="margin:6px 0 0"><small>${SHAPE_FR[vowelShape(A.v)]}${A.l === "ㅇ" ? " ㅇ au début est muet." : ""}${A.f ? ` En bas, ${A.f} se prononce [${FINAL_SOUND[A.f]}].` : ""} Touche la syllabe pour l'entendre.</small></p>
+      <p class="muted center" style="margin:6px 0 0"><small>${SHAPE_FR[vowelShape(A.v)]}${A.v === "ㅓ" ? " ㅓ = o ouvert (porte), à ne pas confondre avec ㅗ = ô fermé (beau)." : A.v === "ㅡ" ? " ㅡ = « eu » avec les lèvres étirées, pas arrondies." : ""}${A.l === "ㅇ" ? " ㅇ au début est muet." : ""}${A.f ? ` En bas, ${A.f} se prononce [${FINAL_SOUND[A.f]}].` : ""} Touche la syllabe pour l'entendre.</small></p>
     </div>
     <h2 class="section-title">1. La consonne du début</h2>
     <div class="choice-row atl-row">${HG_CHO.map((x) => chip("l", x)).join("")}</div>

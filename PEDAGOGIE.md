@@ -136,6 +136,7 @@ L'input seul ne suffit pas : des critiques récentes de Krashen insistent sur le
 
 1. **Module Hangul (≈ 7 jours)** — 14 consonnes + 10 voyelles de base, puis construction des blocs syllabiques. Très gamifié, feedback instantané.
    - **[OBLIGATOIRE] Aucune romanisation** dans le parcours après ce module (la romanisation peut apparaître uniquement comme aide temporaire *pendant* le module Hangul, puis disparaît).
+   - L'aide temporaire est écrite **pour des francophones**, pas en romanisation officielle (pensée pour l'anglais : son « u » se lirait comme dans « lune » alors que ㅜ se dit « ou »). Convention : ô fermé / o ouvert, ou, eu ; consonne + h = soufflée ; consonne doublée = tendue. L'audio passe d'abord, le repère écrit n'est qu'une aide (l'écrit influence la prononciation : Hayes-Harb & Barrios ; Bassetti 2008).
 2. **Registre poli 해요체 (terminaisons en -요)** comme registre **par défaut** de tout le contenu débutant.
 3. **Particules de base** : 은/는, 이/가, 을/를, puis 에, 에서, 도, etc.
 4. **Les deux systèmes de nombres** (natifs 하나, 둘… et sino-coréens 일, 이…) introduits tôt, avec leurs usages (heures, âge, prix, etc.).

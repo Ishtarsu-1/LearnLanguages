@@ -221,6 +221,8 @@ for (const lang of Object.keys(STORIES)) for (const b of STORIES[lang]) register
 TABS.en.splice(1, 0, ["histoire", "🎬 Histoire"]);
 TABS.ko.splice(2, 0, ["histoire", "🎬 Histoire"]);
 TAB_VIEWS.histoire = (lang) => tabStory(lang);
+// Coréen : comme lire et réviser, l'histoire, les thèmes et l'écoute des sons attendent le Hangul (§6)
+GATED_TABS.push("histoire", "themes", "oreille");
 function tabStory(lang) {
   return STORIES[lang].map((b) => {
     const done = b.chapters.filter((_, i) => chapterDone(lang, b, i)).length;

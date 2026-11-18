@@ -475,19 +475,23 @@ const EAR = {
 
 // ---------- Module Hangul (§6, ≈ 7 jours) ----------
 // La romanisation n'est autorisée QUE dans ce module.
+// Repères de prononciation pour FRANCOPHONES (pas la romanisation officielle, pensée pour
+// l'anglais : son « u » se lirait comme dans « lune » alors que ㅜ se dit « ou »).
+// Convention : ô fermé (beau) ≠ o ouvert (porte) ; consonne + h = soufflée (kh, th, ph) ;
+// consonne doublée = tendue (kk, tt, pp). Aide temporaire : elle disparaît après le module.
 const HANGUL_DAYS = [
-  { title: "Les voyelles de base", sub: "ㅏ ㅓ ㅗ ㅜ ㅡ ㅣ", kind: "jamo", items: [["ㅏ", "a", "아"], ["ㅓ", "eo", "어"], ["ㅗ", "o", "오"], ["ㅜ", "u", "우"], ["ㅡ", "eu", "으"], ["ㅣ", "i", "이"]] },
-  { title: "Premières consonnes", sub: "ㄱ ㄴ ㄷ ㄹ ㅁ", kind: "jamo", items: [["ㄱ", "g/k", "가"], ["ㄴ", "n", "나"], ["ㄷ", "d/t", "다"], ["ㄹ", "r/l", "라"], ["ㅁ", "m", "마"]] },
-  { title: "Consonnes, suite", sub: "ㅂ ㅅ ㅇ ㅈ ㅎ", kind: "jamo", items: [["ㅂ", "b/p", "바"], ["ㅅ", "s", "사"], ["ㅇ", "muet / ng", "아"], ["ㅈ", "j", "자"], ["ㅎ", "h", "하"]] },
-  { title: "Les voyelles en « y »", sub: "ㅑ ㅕ ㅛ ㅠ", kind: "jamo", items: [["ㅑ", "ya", "야"], ["ㅕ", "yeo", "여"], ["ㅛ", "yo", "요"], ["ㅠ", "yu", "유"]] },
-  { title: "Les aspirées", sub: "ㅊ ㅋ ㅌ ㅍ", kind: "jamo", items: [["ㅊ", "ch", "차"], ["ㅋ", "k (soufflé)", "카"], ["ㅌ", "t (soufflé)", "타"], ["ㅍ", "p (soufflé)", "파"]] },
-  { title: "Construire des syllabes", sub: "Consonne + voyelle", kind: "build", items: [["나", "na"], ["모", "mo"], ["수", "su"], ["리", "ri"], ["하", "ha"], ["져", "jyeo"], ["커", "keo"], ["드", "deu"]] },
-  { title: "Consonnes finales & mots", sub: "받침 + premiers mots", kind: "words", items: [["한국", "hanguk"], ["사람", "saram"], ["친구", "chingu"], ["학생", "haksaeng"], ["김치", "gimchi"], ["커피", "keopi"], ["엄마", "eomma"], ["밥", "bap"]] },
+  { title: "Les voyelles de base", sub: "ㅏ ㅓ ㅗ ㅜ ㅡ ㅣ", kind: "jamo", items: [["ㅏ", "a", "아"], ["ㅓ", "o ouvert (porte)", "어"], ["ㅗ", "ô fermé (beau)", "오"], ["ㅜ", "ou", "우"], ["ㅡ", "eu, lèvres étirées", "으"], ["ㅣ", "i", "이"]] },
+  { title: "Premières consonnes", sub: "ㄱ ㄴ ㄷ ㄹ ㅁ", kind: "jamo", items: [["ㄱ", "k doux (≈ g)", "가"], ["ㄴ", "n", "나"], ["ㄷ", "t doux (≈ d)", "다"], ["ㄹ", "r léger / l", "라"], ["ㅁ", "m", "마"]] },
+  { title: "Consonnes, suite", sub: "ㅂ ㅅ ㅇ ㅈ ㅎ", kind: "jamo", items: [["ㅂ", "p doux (≈ b)", "바"], ["ㅅ", "s", "사"], ["ㅇ", "muet / ng", "아"], ["ㅈ", "tch doux (≈ dj)", "자"], ["ㅎ", "h soufflé", "하"]] },
+  { title: "Les voyelles en « y »", sub: "ㅑ ㅕ ㅛ ㅠ", kind: "jamo", items: [["ㅑ", "ya", "야"], ["ㅕ", "yo ouvert", "여"], ["ㅛ", "yô fermé", "요"], ["ㅠ", "you", "유"]] },
+  { title: "Les aspirées", sub: "ㅊ ㅋ ㅌ ㅍ", kind: "jamo", items: [["ㅊ", "tch soufflé", "차"], ["ㅋ", "k soufflé (kh)", "카"], ["ㅌ", "t soufflé (th)", "타"], ["ㅍ", "p soufflé (ph)", "파"]] },
+  { title: "Construire des syllabes", sub: "Consonne + voyelle", kind: "build", items: [["나", "na"], ["모", "mô"], ["수", "sou"], ["리", "ri"], ["하", "ha"], ["져", "djo"], ["커", "kho"], ["드", "deu"]] },
+  { title: "Consonnes finales & mots", sub: "받침 + premiers mots", kind: "words", items: [["한국", "han-gouk"], ["사람", "sa-ram"], ["친구", "tchin-gou"], ["학생", "hak-sèng"], ["김치", "gim-tchi"], ["커피", "kho-phi"], ["엄마", "om-ma"], ["밥", "bap"]] },
   // Jours ajoutés après coup : à la suite (la progression est enregistrée par numéro de jour)
-  { title: "Les consonnes doubles", sub: "ㄲ ㄸ ㅃ ㅆ ㅉ", kind: "jamo", items: [["ㄲ", "kk (tendu)", "까"], ["ㄸ", "tt (tendu)", "따"], ["ㅃ", "pp (tendu)", "빠"], ["ㅆ", "ss (tendu)", "싸"], ["ㅉ", "jj (tendu)", "짜"]] },
-  { title: "Les voyelles composées", sub: "ㅐ ㅔ ㅘ ㅝ ㅚ ㅟ ㅢ", kind: "jamo", items: [["ㅐ", "ae", "애"], ["ㅔ", "e", "에"], ["ㅘ", "wa", "와"], ["ㅝ", "wo", "워"], ["ㅚ", "oe", "외"], ["ㅟ", "wi", "위"], ["ㅢ", "ui", "의"]] },
+  { title: "Les consonnes doubles", sub: "ㄲ ㄸ ㅃ ㅆ ㅉ", kind: "jamo", items: [["ㄲ", "k tendu (kk)", "까"], ["ㄸ", "t tendu (tt)", "따"], ["ㅃ", "p tendu (pp)", "빠"], ["ㅆ", "s tendu (ss)", "싸"], ["ㅉ", "tch tendu", "짜"]] },
+  { title: "Les voyelles composées", sub: "ㅐ ㅔ ㅘ ㅝ ㅚ ㅟ ㅢ", kind: "jamo", items: [["ㅐ", "è (≈ ㅔ)", "애"], ["ㅔ", "é (≈ ㅐ)", "에"], ["ㅘ", "oua", "와"], ["ㅝ", "ouo", "워"], ["ㅚ", "oué", "외"], ["ㅟ", "oui", "위"], ["ㅢ", "eui", "의"]] },
   { title: "Construire avec le 받침", sub: "Consonne + voyelle + consonne, et taper", kind: "buildFinal",
-    items: [["한", "han"], ["국", "guk"], ["밥", "bap"], ["말", "mal"], ["산", "san"], ["곰", "gom"], ["빵", "ppang"], ["옷", "ot"]],
+    items: [["한", "han"], ["국", "gouk"], ["밥", "bap"], ["말", "mal"], ["산", "san"], ["곰", "gôm"], ["빵", "ppang"], ["옷", "ôt"]],
     type: [["엄마", "maman"], ["친구", "ami"], ["한국", "Corée"], ["김치", "kimchi"], ["사랑", "amour"]] },
 ];
 // Voyelles qui se prononcent pareil aujourd'hui (Séoul) : jamais opposées dans un exercice d'écoute

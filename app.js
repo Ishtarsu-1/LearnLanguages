@@ -1738,7 +1738,9 @@ function viewHangul(day) {
   if (ui.quiz?.key === key && ui.quiz.started) return viewQuiz("#/lang/ko/parcours", `Jour ${day}`);
   const intro = d.kind === "jamo"
     ? `<div class="alpha-grid">${d.items.map(([ch, rom, say]) => `<button class="alpha ko" data-act="say" data-text="${say}" data-lang="ko"><span>${ch}<small>${K.hangulDone ? "" : rom}</small></span></button>`).join("")}</div>
-       <p class="muted"><small>Touche une lettre pour l'entendre (dans une syllabe : ${d.items[0][2]}).</small></p>`
+       <p class="muted"><small>Touche une lettre pour l'entendre (dans une syllabe : ${d.items[0][2]}). <b>Écoute d'abord</b> : les repères écrits ne sont qu'une aide.</small></p>
+       <details class="fr-guide"><summary>Comment lire les repères ?</summary><p class="muted"><small>Ils sont pensés pour un francophone (la romanisation officielle, faite pour l'anglais, trompe : son « u » se lirait comme dans « lune » alors que ㅜ se dit « ou »).<br/>
+       <b>ô</b> = o fermé (beau) · <b>o</b> = o ouvert (porte) · <b>ou</b> comme « loup » · <b>eu</b> lèvres étirées · une consonne suivie de <b>h</b> est soufflée (kh, th, ph) · une consonne <b>doublée</b> est tendue, sans souffle (kk, tt, pp). Ils disparaissent à la fin du module.</small></p></details>`
     : d.kind === "build"
     ? `<p>Une syllabe coréenne = un bloc. Tout dépend de la forme de la voyelle :</p>
        <ul><li>voyelle <b>verticale</b> (ㅏ ㅓ ㅣ ㅑ ㅕ…) : la consonne va <b>à gauche</b> → ㄴ + ㅏ = <b class="ko">나</b></li>
