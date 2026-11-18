@@ -747,7 +747,7 @@ code { background: var(--surface-2); padding: 2px 6px; border-radius: var(--radi
 .acc-ghost { fill: var(--surface-2); stroke: var(--border); stroke-width: 1.5; }
 
 /* Navigation d'une langue : 3 sections (pas un mur de boutons) */
-@media (max-width: 480px) { .sub-nav { display: flex; gap: 6px; flex-wrap: wrap; margin: -4px 0 var(--space-4); }
+.sub-nav { display: flex; gap: 6px; flex-wrap: wrap; margin: -4px 0 var(--space-4); }
 .sub-nav a { padding: 8px 14px; min-height: 40px; display: inline-flex; align-items: center; border-radius: var(--radius-full); border: 1px solid var(--border); background: var(--surface); color: var(--ink-muted); font-weight: 700; }
 .sub-nav a.active { background: var(--primary-soft); color: var(--primary); border-color: var(--primary); }
 .tool-head { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; margin: -4px 0 var(--space-4); }
@@ -839,6 +839,50 @@ mark.todo { background: var(--honey-50); color: var(--warning); font-weight: 800
 .site-footer a:hover { color: var(--primary); }
 .site-footer .cookie-line { margin: 0; font-size: var(--text-sm); color: var(--ink-muted); text-align: center; }
 .site-footer .cookie-line a { color: var(--primary); font-size: inherit; min-height: 0; display: inline; }
-@media (max-width: 760px) { .consent { display: flex !important; flex-direction: row !important; gap: 10px; align-items: flex-start !important; font-weight: 600 !important; font-size: var(--text-sm); }
+.consent { display: flex !important; flex-direction: row !important; gap: 10px; align-items: flex-start !important; font-weight: 600 !important; font-size: var(--text-sm); }
 .consent input { flex: none; width: 20px; height: 20px; }
 .consent input { margin-top: 3px; }
+
+/* ---------- Utilitaires ----------
+   Remplacent les anciens attributs style="…" : la CSP n'autorise plus les styles inline.
+   !important : ils gardent la priorité qu'avait l'attribut style. Générés une fois, à étendre à la main. */
+.m-0 { margin: 0 !important; }
+.mx-0 { margin-left: 0 !important; margin-right: 0 !important; }
+.mb-0 { margin-bottom: 0 !important; }
+.mb-10 { margin-bottom: 10px !important; }
+.mb-12 { margin-bottom: 12px !important; }
+.mb-14 { margin-bottom: 14px !important; }
+.mb-16 { margin-bottom: 16px !important; }
+.mb-4 { margin-bottom: 4px !important; }
+.mb-6 { margin-bottom: 6px !important; }
+.mb-8 { margin-bottom: 8px !important; }
+.mt-0 { margin-top: 0 !important; }
+.mt-10 { margin-top: 10px !important; }
+.mt-12 { margin-top: 12px !important; }
+.mt-14 { margin-top: 14px !important; }
+.mt-16 { margin-top: 16px !important; }
+.mt-18 { margin-top: 18px !important; }
+.mt-2 { margin-top: 2px !important; }
+.mt-20 { margin-top: 20px !important; }
+.mt-28 { margin-top: 28px !important; }
+.mt-30 { margin-top: 30px !important; }
+.mt-36 { margin-top: 36px !important; }
+.mt-4 { margin-top: 4px !important; }
+.mt-6 { margin-top: 6px !important; }
+.mt-8 { margin-top: 8px !important; }
+.mt-n6 { margin-top: -6px !important; }
+.d-flex { display: flex !important; }
+.fs-085rem { font-size: .85rem !important; }
+.fs-09rem { font-size: .9rem !important; }
+.fs-1-3rem { font-size: 1.3rem !important; }
+.fs-1-4rem { font-size: 1.4rem !important; }
+.fs-1-5rem { font-size: 1.5rem !important; }
+.fw-800 { font-weight: 800 !important; }
+.gap-10 { gap: 10px !important; }
+.grow { flex: 1 !important; }
+.maxw-320 { max-width: 320px !important; }
+.minw-220 { min-width: 220px !important; }
+.minw-240 { min-width: 240px !important; }
+.ta-center { text-align: center !important; }
+.w-full { width: 100% !important; }
+.wrap { flex-wrap: wrap !important; }

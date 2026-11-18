@@ -12,8 +12,8 @@ function tabPath(lang) {
   return `
     <div class="card phase ${K.hangulDone ? "done" : ""}">
       <div class="phase-head"><b>Phase 1 · Le Hangul</b><span class="tag">${K.hangulDone ? "Terminé ✓" : `${hDone} / ${HANGUL_DAYS.length} jours`}</span></div>
-      <p style="margin:8px 0 0"><a class="btn ghost small" href="#/lang/ko/atelier">🧪 Atelier des syllabes</a></p>
-      <div class="bar"><span style="width:${K.hangulDone ? 100 : (hDone / HANGUL_DAYS.length) * 100}%"></span></div>
+      <p class="mt-8 mb-0 mx-0"><a class="btn ghost small" href="#/lang/ko/atelier">🧪 Atelier des syllabes</a></p>
+      <div class="bar"><span data-bar-w="${K.hangulDone ? 100 : (hDone / HANGUL_DAYS.length) * 100}"></span></div>
       <div class="day-grid">
         ${HANGUL_DAYS.map((d, i) => {
           const done = K.hangulDays[i + 1], open = i === 0 || K.hangulDays[i] || K.hangulDone || isAdmin();
@@ -23,10 +23,10 @@ function tabPath(lang) {
       </div>
     </div>
 
-    <div class="card phase" style="margin-top:18px">
+    <div class="card phase mt-18">
       <div class="phase-head"><b>Phase 2 · Les briques de la phrase</b><span class="tag">${gDone} / ${KO_GRAMMAR.length}</span></div>
-      <div class="bar"><span style="width:${(gDone / KO_GRAMMAR.length) * 100}%"></span></div>
-      <p class="muted" style="margin:10px 0 14px">Particules, terminaisons, niveaux de politesse : c'est la phase où presque tout le monde trouve ça dur. C'est normal. On avance <b>un point à la fois</b>, avec beaucoup d'exemples avant de produire.</p>
+      <div class="bar"><span data-bar-w="${(gDone / KO_GRAMMAR.length) * 100}"></span></div>
+      <p class="muted mt-10 mb-14 mx-0">Particules, terminaisons, niveaux de politesse : c'est la phase où presque tout le monde trouve ça dur. C'est normal. On avance <b>un point à la fois</b>, avec beaucoup d'exemples avant de produire.</p>
       <div class="gram-list">
         ${KO_GRAMMAR.map((g, i) => {
           const done = K.grammarDone[g.id], open = isAdmin() || (K.hangulDone && (i === 0 || K.grammarDone[KO_GRAMMAR[i - 1].id]));
@@ -36,7 +36,7 @@ function tabPath(lang) {
       </div>
     </div>
 
-    <div class="card phase ${phase2Done ? "" : "dim"}" style="margin-top:18px">
+    <div class="card phase ${phase2Done ? "" : "dim"} mt-18">
       <div class="phase-head"><b>Phase 3 · Les autres registres</b><span class="tag">${phase2Done ? "Bientôt" : "🔒 Après la phase 2"}</span></div>
       <ul class="muted ko">${KO_PHASE3.map((x) => `<li>${x}</li>`).join("")}</ul>
     </div>
@@ -55,7 +55,7 @@ function registerSwitcher() {
         <button class="reg-ko ko" data-act="say" data-text="${esc(p[who])}" data-lang="ko">${esc(p[who])} 🔊</button>
         <small class="muted">${esc(p.note)}</small></div>`).join("")}
     </div>
-    <p class="muted" style="margin:12px 0 0"><small>Dans le parcours, on reste au registre poli (해요체), le plus utile au quotidien.</small></p>
+    <p class="muted mt-12 mb-0 mx-0"><small>Dans le parcours, on reste au registre poli (해요체), le plus utile au quotidien.</small></p>
   </div>`;
 }
 
@@ -87,20 +87,20 @@ function themeProgress(lang, stab = stabilityMap(lang)) {
   });
 }
 const flavorMochi = (th, mood = "happy", locked = false) =>
-  `<span class="flavor ${locked ? "locked" : ""}" style="--mochi-fill:${th.fill}${th.dark && !locked ? ";--mochi-ink:#FBF4EA" : ""}">${mochi("small", mood, false)}</span>`;
+  `<span class="flavor ${locked ? "locked" : ""}" data-vars="--mochi-fill:${th.fill}${th.dark && !locked ? ";--mochi-ink:#FBF4EA" : ""}">${mochi("small", mood, false)}</span>`;
 function tabThemes(lang) {
   const P = themeProgress(lang), got = P.filter((p) => p.unlocked).length;
   return `
-    <div class="card" style="margin-bottom:16px"><p style="margin:0">Un <b>thème</b> regroupe des mots qui vont ensemble dans une scène (commander, chaud, emporter…). Chaque thème a sa <b>saveur de Mochi</b> : tu la débloques avec <b>${FLAVOR_STEPS[0]} mots solides</b> du thème (révisés et retenus au moins une semaine).
+    <div class="card mb-16"><p class="m-0">Un <b>thème</b> regroupe des mots qui vont ensemble dans une scène (commander, chaud, emporter…). Chaque thème a sa <b>saveur de Mochi</b> : tu la débloques avec <b>${FLAVOR_STEPS[0]} mots solides</b> du thème (révisés et retenus au moins une semaine).
       Choisis tes thèmes préférés ⭐ : la bibliothèque les met en avant.</p>
-      <p class="muted" style="margin:8px 0 0"><small>${got} / ${THEMES.length} saveurs débloquées · les mots de tous les jours restent prioritaires, quel que soit le thème.</small></p></div>
+      <p class="muted mt-8 mb-0 mx-0"><small>${got} / ${THEMES.length} saveurs débloquées · les mots de tous les jours restent prioritaires, quel que soit le thème.</small></p></div>
     <div class="theme-grid">
       ${P.map((p) => `<div class="card theme-card ${p.unlocked ? "unlocked" : ""}">
         <button class="fav ${p.fav ? "on" : ""}" data-act="theme-fav" data-t="${p.id}" aria-pressed="${p.fav}" title="${p.fav ? "Retirer des favoris" : "Thème préféré"}">${p.fav ? "★" : "☆"}</button>
         ${flavorMochi(p, p.unlocked ? "proud" : "curious", !p.unlocked)}
         <h3>${p.icon} ${esc(p.name)}</h3>
         <small class="muted">${p.unlocked ? `Saveur ${esc(p.flavor)} débloquée !` : `Saveur ${esc(p.flavor)} · encore ${Math.max(0, p.need - p.solid)} mot(s) solide(s)`}</small>
-        <div class="cov"><div class="bar"><span style="width:${p.words.length ? (p.solid / p.words.length) * 100 : 0}%"></span></div><b>${p.solid} / ${p.words.length}</b></div>
+        <div class="cov"><div class="bar"><span data-bar-w="${p.words.length ? (p.solid / p.words.length) * 100 : 0}"></span></div><b>${p.solid} / ${p.words.length}</b></div>
         <div class="theme-texts">${p.texts.length ? p.texts.map((t) => `<a class="chip" href="#/lang/${lang}/lire/${t.id}">${t.icon} ${esc(t.title)}${state.langs[lang].readTexts[t.id] ? " ✓" : ""}</a>`).join("") : `<small class="muted">Textes à venir</small>`}</div>
       </div>`).join("")}
     </div>`;
@@ -115,7 +115,7 @@ function tabLibrary(lang) {
     .sort((a, b) => a.z.order - b.z.order || isFav(b.t) - isFav(a.t));
   const used = THEMES.filter((th) => TEXTS[lang].some((t) => (t.themes || []).includes(th.id)));
   return `
-    <div class="card" style="margin-bottom:16px"><p style="margin:0">Classés selon <b>ton</b> vocabulaire (${num0(knownCount(lang))} mots connus). La zone idéale : <b>92–98 %</b> de mots connus.${favs.length ? " Tes thèmes ⭐ passent devant." : ""}</p></div>
+    <div class="card mb-16"><p class="m-0">Classés selon <b>ton</b> vocabulaire (${num0(knownCount(lang))} mots connus). La zone idéale : <b>92–98 %</b> de mots connus.${favs.length ? " Tes thèmes ⭐ passent devant." : ""}</p></div>
     <div class="choice-row lib-filter" role="group" aria-label="Filtrer par thème">
       <button class="chip ${filter ? "" : "active"}" data-act="lib-theme" data-t="">Tous</button>
       ${used.map((th) => `<button class="chip ${filter === th.id ? "active" : ""}" data-act="lib-theme" data-t="${th.id}">${th.icon} ${esc(th.name)}${favs.includes(th.id) ? " ⭐" : ""}</button>`).join("")}
@@ -128,7 +128,7 @@ function tabLibrary(lang) {
           <div>
             <h3>${esc(t.title)} ${state.langs[lang].readTexts[t.id] ? '<small class="muted">· lu ✓</small>' : ""}</h3>
             <small class="muted">${t.kind} · ${t.sentences.length} phrases · 🔊 audio${(t.themes || []).map((x) => ` · ${themeOf(x)?.icon || ""} ${esc(themeOf(x)?.name || x)}`).join("")}</small>
-            <div class="cov"><div class="bar"><span style="width:${pct(c)}%"></span></div><b>${pct(c)} %</b></div>
+            <div class="cov"><div class="bar"><span data-bar-w="${pct(c)}"></span></div><b>${pct(c)} %</b></div>
           </div>
           <span class="zone ${z.k}">${z.label}</span>
         </a>`).join("")}
@@ -180,7 +180,7 @@ function viewReader(lang, textId) {
   <section class="view reader ${R.hide ? "hide-text" : ""}">
     <div class="lesson-top">
       <a class="close" href="${t.book ? `#/lang/${lang}/livre/${t.book}` : `#/lang/${lang}/lire`}" aria-label="Retour" data-act="stop">←</a>
-      <div style="flex:1"><h1 style="font-size:1.4rem">${t.icon} ${esc(t.title)}</h1></div>
+      <div class="grow"><h1 class="fs-1-4rem">${t.icon} ${esc(t.title)}</h1></div>
       <span class="zone ${z.k}">${z.label}</span>
     </div>
     <p class="cov-line">Tu connais <b>~${pct(c)} %</b> des mots de ce texte.${c < 0.9 ? " C'est beaucoup de mots nouveaux : le glossaire ci-dessous va t'aider." : c > 0.98 ? " Parfait pour gagner en fluidité." : ""}</p>
@@ -188,7 +188,7 @@ function viewReader(lang, textId) {
     ${c < 0.9 && unknown.size ? `<details class="card gloss" ${R.glossOpen ? "open" : ""}>
       <summary><b>📖 Glossaire</b> · ${unknown.size} mots inconnus</summary>
       <div class="gloss-grid">${[...unknown.keys()].map((l) => `<div><b class="${koCls(lang)}">${esc(l)}</b> <span class="muted">${esc(lexFr(lang, l))}</span></div>`).join("")}</div>
-      <button class="btn small" data-act="capture-all" style="margin-top:12px">+ Ajouter les ${unknown.size} mots aux révisions</button>
+      <button class="btn small mt-12" data-act="capture-all">+ Ajouter les ${unknown.size} mots aux révisions</button>
     </details>` : ""}
 
     <div class="player card">
@@ -220,7 +220,7 @@ function viewReader(lang, textId) {
 
     ${panel}
 
-    <div style="text-align:center;margin-top:28px">
+    <div class="ta-center mt-28">
       <button class="btn" data-act="finish-read">J'ai fini ✓</button>
     </div>
   </section>`;
@@ -239,7 +239,7 @@ function tabReviews(lang) {
       ${waitingNew(lang) ? `<p class="muted"><small>${waitingNew(lang)} mot(s) proche(s) d'un mot déjà vu aujourd'hui attendent demain : les apprendre ensemble les mélangerait.</small></p>` : ""}
       ${due + fresh && HAS_FSRS ? `<a class="btn" href="#/lang/${lang}/revisions/go">Commencer</a>` : `<a class="btn ghost" href="#/lang/${lang}/lire">Lire un texte pour capturer des mots</a>`}
     </div>
-    <div class="stat-grid card" style="margin-top:16px">
+    <div class="stat-grid card mt-16">
       <div class="stat"><span class="ico">🃏</span><div><b>${total}</b><small>cartes au total</small></div></div>
       <div class="stat"><span class="ico">👁️</span><div><b>${byType("recog")}</b><small>reconnaissance</small></div></div>
       <div class="stat"><span class="ico">✍️</span><div><b>${byType("prod") + byType("cloze")}</b><small>production</small></div></div>
@@ -304,7 +304,7 @@ function myCardsList(lang) {
       }).join("")}
     </div>
     <p class="muted" id="card-none" hidden>Aucun mot ne correspond.</p>`
-    : `<div class="card"><p class="muted" style="margin:0">Aucun mot pour l'instant. Pendant la lecture, touche un mot inconnu puis « + Ajouter aux révisions » : il apparaîtra ici, avec sa phrase.</p></div>`}`;
+    : `<div class="card"><p class="muted m-0">Aucun mot pour l'instant. Pendant la lecture, touche un mot inconnu puis « + Ajouter aux révisions » : il apparaîtra ici, avec sa phrase.</p></div>`}`;
 }
 
 function startReview(lang) {
@@ -318,14 +318,14 @@ function viewReviewSession(lang) {
   if (!ui.review || ui.review.lang !== lang) startReview(lang);
   const R = ui.review;
   const progress = R.done / (R.done + R.queue.length || 1);
-  const top = `<div class="lesson-top"><a class="close" href="#/lang/${lang}/revisions" aria-label="Quitter">✕</a><div class="progress"><span style="width:${pct(progress)}%"></span></div><span class="chip">${R.queue.length}</span></div>`;
+  const top = `<div class="lesson-top"><a class="close" href="#/lang/${lang}/revisions" aria-label="Quitter">✕</a><div class="progress"><span data-bar-w="${pct(progress)}"></span></div><span class="chip">${R.queue.length}</span></div>`;
   if (!R.queue.length) {
     if (R.done) bumpSession(lang, "review");
     const ex = currentExercise(lang);
-    return `<section class="view lesson-shell">${top}<div class="card empty" style="margin-top:30px">${mochi()}
+    return `<section class="view lesson-shell">${top}<div class="card empty mt-30">${mochi()}
       <h2>Révisions terminées !</h2><p class="muted">${R.done} carte(s) revue(s). FSRS a planifié les prochaines juste avant que tu les oublies.</p>
       <a class="btn" href="#/lang/${lang}/produire">Maintenant, produis une phrase 💬</a>
-      <p class="muted" style="margin-top:14px"><small>Prochain exercice : « ${esc(ex.prompt)} »</small></p></div></section>`;
+      <p class="muted mt-14"><small>Prochain exercice : « ${esc(ex.prompt)} »</small></p></div></section>`;
   }
   const c = state.cards.find((x) => x.id === R.queue[0]);
   const k = koCls(lang);
@@ -415,10 +415,10 @@ function tabProduce(lang) {
     ${modes}
     <div class="card prod">
       ${ex.who ? `<div class="who"><span class="tag">👤 ${esc(ex.who)}</span>${isKo(lang) ? `<span class="tag">Registre : poli en -요</span>` : ""}</div>` : ""}
-      <h2 style="margin:10px 0 14px">${esc(ex.prompt)}</h2>
-      ${P.mode === "free" && recent.length ? `<p class="muted" style="margin:-6px 0 12px">Essaie de réutiliser un de tes mots récents 👇</p>` : ""}
+      <h2 class="mt-10 mb-14 mx-0">${esc(ex.prompt)}</h2>
+      ${P.mode === "free" && recent.length ? `<p class="muted mt-n6 mb-12 mx-0">Essaie de réutiliser un de tes mots récents 👇</p>` : ""}
       <textarea id="prod-text" class="input ${k}" rows="${P.mode === "free" ? 3 : 2}" maxlength="500" placeholder="${isKo(lang) ? "한국어로 써 보세요…" : "Write in English…"}" ${r || P.loading ? "disabled" : ""}>${esc(P.text)}</textarea>
-      ${recent.length ? `<p class="muted" style="margin:10px 0 0"><small>Tes mots récents : ${recent.map((w) => `<span class="tag ${k}">${esc(w)}</span>`).join(" ")}</small></p>` : ""}
+      ${recent.length ? `<p class="muted mt-10 mb-0 mx-0"><small>Tes mots récents : ${recent.map((w) => `<span class="tag ${k}">${esc(w)}</span>`).join(" ")}</small></p>` : ""}
       ${r || P.loading ? "" : `<div class="wp-actions"><button class="btn" data-act="check-prod">Vérifier</button><button class="btn ghost small" data-act="next-ex">Autre phrase</button></div>`}
     </div>
     ${fb}
@@ -523,13 +523,13 @@ function tabWords(lang) {
   const counts = { known: 0, learning: 0, cognate: 0, new: 0 };
   lemmas.forEach((l) => counts[lemmaStatus(lang, l, stab)]++);
   return `
-    <div class="card" style="margin-bottom:16px">
+    <div class="card mb-16">
       <div class="stat-grid">
         <div class="stat"><span class="ico">✅</span><div><b>${counts.known}</b><small>connus</small></div></div>
         <div class="stat"><span class="ico">🔄</span><div><b>${counts.learning}</b><small>en révision</small></div></div>
         ${lang === "en" ? `<div class="stat"><span class="ico">🤝</span><div><b>${counts.cognate}</b><small>transparents</small></div></div>` : ""}
       </div>
-      <p class="muted" style="margin:12px 0"><small>Un mot devient « connu » quand FSRS estime que tu le retiens au moins ${KNOWN_STABILITY} jours, ou si tu le marques toi-même. Les mots sont classés par fréquence : on apprend d'abord les plus utiles.</small></p>
+      <p class="muted mt-12 mb-12 mx-0"><small>Un mot devient « connu » quand FSRS estime que tu le retiens au moins ${KNOWN_STABILITY} jours, ou si tu le marques toi-même. Les mots sont classés par fréquence : on apprend d'abord les plus utiles.</small></p>
       ${next.length ? `<button class="btn small" data-act="add-frequent">+ Apprendre les ${next.length} prochains mots fréquents</button>` : ""}
       <a class="btn ghost small" href="#/lang/${lang}/revisions">📋 Voir mes mots en révision</a>
     </div>
@@ -568,24 +568,24 @@ function tabEar(lang) {
   return `
     <div class="card">
       <h3>Qu'est-ce que tu entends ?</h3>
-      <p class="muted" style="margin:4px 0 14px">${esc(pair.label)} · score ${G.score}/${G.n}${G.target ? ` · voix ${G.who + 1}/${nVoices}` : ""}</p>
+      <p class="muted mt-4 mb-14 mx-0">${esc(pair.label)} · score ${G.score}/${G.n}${G.target ? ` · voix ${G.who + 1}/${nVoices}` : ""}</p>
       <button class="big-audio" data-act="ear-play" aria-label="Écouter">🔊</button>
-      <div class="choice-row center" style="margin-top:16px">
+      <div class="choice-row center mt-16">
         ${pair.items.map((w) => {
           const cls = G.picked ? (w === G.target ? "right" : w === G.picked ? "wrong" : "") : "";
           return `<button class="choice ${k} ${cls}" data-act="ear-pick" data-w="${esc(w)}" ${G.target ? "" : "disabled"} ${isKo(lang) ? 'lang="ko"' : 'lang="en"'}>${G.picked ? (w === G.target ? "✓ " : w === G.picked ? "✗ " : "") : ""}${esc(w)}</button>`;
         }).join("")}
       </div>
-      ${G.picked ? `<p class="center muted" style="margin:12px 0 0">${G.picked === G.target ? "Bien entendu !" : `Presque ! C'était <b class="${k}">${esc(G.target)}</b>. Réécoute les deux :`}</p>
-        <div class="choice-row center" style="margin-top:8px">${pair.items.map((w) => `<button class="btn ghost small ${k}" data-act="ear-replay" data-w="${esc(w)}">🔊 ${esc(w)}</button>`).join("")}</div>
+      ${G.picked ? `<p class="center muted mt-12 mb-0 mx-0">${G.picked === G.target ? "Bien entendu !" : `Presque ! C'était <b class="${k}">${esc(G.target)}</b>. Réécoute les deux :`}</p>
+        <div class="choice-row center mt-8">${pair.items.map((w) => `<button class="btn ghost small ${k}" data-act="ear-replay" data-w="${esc(w)}">🔊 ${esc(w)}</button>`).join("")}</div>
         <div class="wp-actions center"><button class="btn small" data-act="ear-next">Suivant →</button></div>` : !G.target ? `<p class="muted center"><small>Appuie sur 🔊 pour commencer. Chaque mot est prononcé par plusieurs voix : c'est ce qui entraîne vraiment l'oreille.</small></p>` : ""}
     </div>
     ${scores.length ? `<h2 class="section-title">Mes scores par son</h2><div class="card">${scores.map((x) => `
-      <div class="reg-row"><b class="${k}">${esc(x.k)}</b><span class="bar ear-bar" style="flex:1"><span style="width:${pct(x.ok / x.n)}%"></span></span><small class="muted">${x.ok}/${x.n}${x.n >= 4 && x.ok / x.n < 0.7 ? " · à travailler" : ""}</small></div>`).join("")}
+      <div class="reg-row"><b class="${k}">${esc(x.k)}</b><span class="bar ear-bar grow"><span data-bar-w="${pct(x.ok / x.n)}"></span></span><small class="muted">${x.ok}/${x.n}${x.n >= 4 && x.ok / x.n < 0.7 ? " · à travailler" : ""}</small></div>`).join("")}
       <p class="muted"><small>Les sons les plus faibles reviennent plus souvent.</small></p></div>` : ""}
     ${E.notes.map((n) => `<h2 class="section-title">${esc(n.t)}</h2><div class="card">${n.lines.map(([a, b]) => `
       <div class="reg-row"><button class="reg-ko ${k}" data-act="say" data-text="${esc(a.replace(/[A-Z]{2,}/g, (m) => m.toLowerCase()))}" data-lang="${lang}">${esc(a)} 🔊</button><small class="muted">${esc(b)}</small></div>`).join("")}</div>`).join("")}
-    <div class="card tip" style="margin-top:18px">🎙️ Pour le <b>shadowing</b>, ouvre un texte dans « Lire » et active le mode 🎙️.</div>`;
+    <div class="card tip mt-18">🎙️ Pour le <b>shadowing</b>, ouvre un texte dans « Lire » et active le mode 🎙️.</div>`;
 }
 
 // ---------- Faux amis (§7) ----------
@@ -593,8 +593,8 @@ function tabFauxAmis(lang) {
   const has = (l) => state.cards.some((c) => c.lang === "en" && c.lemma === l);
   const missing = FAUX_AMIS.filter((f) => !has(f.lemma)).length;
   return `
-    <div class="card" style="margin-bottom:16px"><p style="margin:0">Ils ressemblent au français mais ne veulent pas dire la même chose. Chaque carte garde sa phrase d'exemple et son audio.</p>
-    ${missing ? `<button class="btn small" style="margin-top:12px" data-act="add-faux">+ Ajouter les ${missing} faux amis aux révisions</button>` : `<p class="muted"><small>Tous les faux amis sont dans tes révisions ✓</small></p>`}</div>
+    <div class="card mb-16"><p class="m-0">Ils ressemblent au français mais ne veulent pas dire la même chose. Chaque carte garde sa phrase d'exemple et son audio.</p>
+    ${missing ? `<button class="btn small mt-12" data-act="add-faux">+ Ajouter les ${missing} faux amis aux révisions</button>` : `<p class="muted"><small>Tous les faux amis sont dans tes révisions ✓</small></p>`}</div>
     <div class="word-list">${FAUX_AMIS.map((f) => `
       <div class="word-row faux">
         <button class="w-say" data-act="say" data-text="${esc(f.s)}" data-lang="en">${esc(f.lemma)} 🔊</button>
@@ -610,11 +610,11 @@ function startQuiz(key, questions, onDone) {
 function viewQuiz(backHref, title) {
   const Q = ui.quiz;
   const done = Q.total - new Set(Q.queue).size;
-  const top = `<div class="lesson-top"><a class="close" href="${backHref}" aria-label="Quitter">✕</a><div class="progress"><span style="width:${pct(done / Q.total)}%"></span></div></div>`;
+  const top = `<div class="lesson-top"><a class="close" href="${backHref}" aria-label="Quitter">✕</a><div class="progress"><span data-bar-w="${pct(done / Q.total)}"></span></div></div>`;
   if (!Q.queue.length) {
     const score = Q.total - Q.failed.size;
     if (!Q.finished) { Q.finished = true; Q.onDone(score); }
-    return `<section class="view lesson-shell">${top}<div class="card empty" style="margin-top:30px">${mochi()}
+    return `<section class="view lesson-shell">${top}<div class="card empty mt-30">${mochi()}
       <h2>${esc(title)} : terminé !</h2><p class="muted">${score} / ${Q.total} du premier coup. Les erreurs ont été reposées jusqu'à la bonne réponse.</p>
       <a class="btn" href="${backHref}">Continuer</a></div></section>`;
   }
@@ -627,19 +627,19 @@ function viewQuiz(backHref, title) {
       <button class="big-audio" data-act="say" data-text="${q.target}" data-lang="ko">🔊</button>
       <div class="build-preview ko ${A ? (A.ok ? "right" : "wrong") : ""}">${comp}</div>
       <div class="choice-row center">${q.leads.map((x) => `<button class="choice ko ${Q.build.l === x ? "active" : ""}" data-act="build-l" data-x="${x}" ${A ? "disabled" : ""}>${x}</button>`).join("")}</div>
-      <div class="choice-row center" style="margin-top:10px">${q.vowels.map((x) => `<button class="choice ko ${Q.build.v === x ? "active" : ""}" data-act="build-v" data-x="${x}" ${A ? "disabled" : ""}>${x}</button>`).join("")}</div>
-      ${q.finals ? `<p class="muted" style="margin:12px 0 0"><small>Consonne du bas (받침) :</small></p><div class="choice-row center" style="margin-top:6px">${q.finals.map((x) => `<button class="choice ko ${Q.build.f === x ? "active" : ""}" data-act="build-f" data-x="${x}" ${A ? "disabled" : ""}>${x}</button>`).join("")}</div>` : ""}
-      ${A ? (A.ok ? `<p class="ok-msg">Bien joué !</p>` : `<p class="ko-msg">C'était <b class="ko">${q.target}</b> = ${q.target_l} + ${q.target_v}${q.target_f ? ` + ${q.target_f}` : ""}</p>`) : `<div class="center" style="margin-top:16px"><button class="btn" data-act="build-check" ${Q.build.l && Q.build.v && (!q.finals || Q.build.f) ? "" : "disabled"}>Vérifier</button></div>`}`;
+      <div class="choice-row center mt-10">${q.vowels.map((x) => `<button class="choice ko ${Q.build.v === x ? "active" : ""}" data-act="build-v" data-x="${x}" ${A ? "disabled" : ""}>${x}</button>`).join("")}</div>
+      ${q.finals ? `<p class="muted mt-12 mb-0 mx-0"><small>Consonne du bas (받침) :</small></p><div class="choice-row center mt-6">${q.finals.map((x) => `<button class="choice ko ${Q.build.f === x ? "active" : ""}" data-act="build-f" data-x="${x}" ${A ? "disabled" : ""}>${x}</button>`).join("")}</div>` : ""}
+      ${A ? (A.ok ? `<p class="ok-msg">Bien joué !</p>` : `<p class="ko-msg">C'était <b class="ko">${q.target}</b> = ${q.target_l} + ${q.target_v}${q.target_f ? ` + ${q.target_f}` : ""}</p>`) : `<div class="center mt-16"><button class="btn" data-act="build-check" ${Q.build.l && Q.build.v && (!q.finals || Q.build.f) ? "" : "disabled"}>Vérifier</button></div>`}`;
   } else if (q.type) {
     body = `<p class="q-label">Écris ce que tu entends <span class="muted">(${esc(q.fr)})</span></p>
       <button class="big-audio" data-act="say" data-text="${q.target}" data-lang="ko">🔊</button>
       ${A ? `<p class="${A.ok ? "ok-msg" : "ko-msg"}">${A.ok ? "Bien joué !" : `Tu as écrit <b class="ko">${esc(A.picked || "…")}</b> · c'était <b class="ko">${q.target}</b>`}</p>`
         : `<form class="type-form" data-quiz-type="1"><input class="input answer ko" id="quiz-type" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="한글로…" />
-          <p class="muted" style="margin:6px 0 0"><small>Pas de clavier coréen ? Ouvre « ⌨️ 한글 » juste en dessous.</small></p>
-          <div class="center" style="margin-top:12px"><button class="btn">Vérifier</button></div></form>`}`;
+          <p class="muted mt-6 mb-0 mx-0"><small>Pas de clavier coréen ? Ouvre « ⌨️ 한글 » juste en dessous.</small></p>
+          <div class="center mt-12"><button class="btn">Vérifier</button></div></form>`}`;
   } else {
     body = `<p class="q-label">${q.ask}</p>${q.prompt}
-      <div class="choice-row center" style="margin-top:16px">${q.options.map((o) => {
+      <div class="choice-row center mt-16">${q.options.map((o) => {
         const cls = A ? (o === q.answer ? "right" : o === A.picked ? "wrong" : "") : "";
         return `<button class="choice ${q.optCls || ""} ${cls}" data-act="quiz-pick" data-o="${esc(o)}" ${A ? "disabled" : ""}>${esc(o)}</button>`;
       }).join("")}</div>
@@ -721,8 +721,8 @@ function viewHangul(day) {
     : `<p>Une consonne peut se placer <b>sous</b> le bloc : c'est le 받침 (consonne finale).</p>
        <div class="build-demo ko"><span>하 + ㄴ = <b>한</b></span><span>구 + ㄱ = <b>국</b></span><span>바 + ㅂ = <b>밥</b></span></div>`;
   return `<section class="view lesson-shell">
-    <div class="lesson-top"><a class="close" href="#/lang/ko/parcours" aria-label="Quitter">✕</a><div style="flex:1"><small class="muted">Hangul · jour ${day} / ${HANGUL_DAYS.length}</small><h1 style="font-size:1.4rem">${d.title}</h1></div></div>
-    <div class="card" style="margin-top:18px">${intro}</div>
+    <div class="lesson-top"><a class="close" href="#/lang/ko/parcours" aria-label="Quitter">✕</a><div class="grow"><small class="muted">Hangul · jour ${day} / ${HANGUL_DAYS.length}</small><h1 class="fs-1-4rem">${d.title}</h1></div></div>
+    <div class="card mt-18">${intro}</div>
     <p class="muted"><small>💡 La romanisation n'est qu'une aide temporaire pendant ce module. Elle disparaîtra ensuite.</small></p>
     ${d.kind === "build" || d.kind === "buildFinal" || d.kind === "words" ? `<p class="center"><a class="btn ghost small" href="#/lang/ko/atelier">🧪 Atelier des syllabes : assemble-les toi-même</a></p>` : ""}
     <div class="center"><button class="btn" data-act="start-hangul" data-day="${day}">Je m'entraîne</button></div>
@@ -741,13 +741,13 @@ function viewGrammar(id) {
   const ex = g.examples.map((src) => toSentence(src, "ko"));
   const frOf = (src) => TEXTS.ko.flatMap((t) => t.sentences).find(([s]) => s === src)?.[1] || "";
   return `<section class="view lesson-shell">
-    <div class="lesson-top"><a class="close" href="#/lang/ko/parcours" aria-label="Quitter">✕</a><div style="flex:1"><small class="muted">Phase 2 · point ${i + 1} / ${KO_GRAMMAR.length}</small><h1 class="ko" style="font-size:1.4rem">${g.title}</h1></div></div>
-    <div class="card" style="margin-top:18px"><p style="margin:0">${esc(g.explain)}</p></div>
+    <div class="lesson-top"><a class="close" href="#/lang/ko/parcours" aria-label="Quitter">✕</a><div class="grow"><small class="muted">Phase 2 · point ${i + 1} / ${KO_GRAMMAR.length}</small><h1 class="ko fs-1-4rem">${g.title}</h1></div></div>
+    <div class="card mt-18"><p class="m-0">${esc(g.explain)}</p></div>
     <h2 class="section-title">Écoute d'abord</h2>
     <div class="sentences">${ex.map((s, j) => `
       <div class="sentence"><div class="s-tools"><button data-act="say" data-text="${esc(s.text)}" data-lang="ko">🔊</button></div>
         <div class="s-body"><p class="s-text ko">${s.words.map((w) => esc(w.pre) + w.segs.map((x) => `<span class="w ${x.particle ? `pt pt-${particleFn(x.surface)[0]}` : ""}">${esc(x.surface)}</span>`).join("") + esc(w.post)).join(" ")}</p>
         <p class="s-fr">${esc(frOf(g.examples[j]))}</p></div></div>`).join("")}</div>
-    <div class="center" style="margin-top:20px"><button class="btn" data-act="start-gram" data-id="${id}">Je m'entraîne</button></div>
+    <div class="center mt-20"><button class="btn" data-act="start-gram" data-id="${id}">Je m'entraîne</button></div>
   </section>`;
 }

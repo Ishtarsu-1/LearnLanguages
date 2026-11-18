@@ -228,9 +228,9 @@ function tabStory(lang) {
     const done = b.chapters.filter((_, i) => chapterDone(lang, b, i)).length;
     return `<div class="card story-head">
         ${mochi("small", done ? "proud" : "curious")}
-        <div><h2 class="section-title" style="margin:0"><span class="${koCls(lang)}">${esc(b.title)}</span></h2>
-          <p class="muted" style="margin:4px 0 8px">${esc(b.fr)} · ${done} / ${b.chapters.length} chapitres</p>
-          <p style="margin:0">${esc(b.summary)}</p></div>
+        <div><h2 class="section-title m-0"><span class="${koCls(lang)}">${esc(b.title)}</span></h2>
+          <p class="muted mt-4 mb-8 mx-0">${esc(b.fr)} · ${done} / ${b.chapters.length} chapitres</p>
+          <p class="m-0">${esc(b.summary)}</p></div>
       </div>
       <p class="muted"><small>Chaque chapitre : lire et écouter, 2 questions, puis une mission de conversation. Le suivant s'ouvre quand ses mots clés sont en révision${isKo(lang) ? " et que tu as vu le point de grammaire du chapitre (Parcours)" : ""}.</small></p>
       ${chapterList(lang, b)}`;
@@ -271,11 +271,11 @@ function viewMission(lang, b, i) {
     input = `<p class="muted"><small>Choisis ta réplique :</small></p>
       <div class="choice-col">${S.order.map((x) => { const [t, good] = step.choices[x]; return `<button class="choice ${k} ${S.wrong === x ? "wrong" : ""}" data-act="mission-pick" data-x="${x}" ${S.wrong === x ? "disabled" : ""}>${esc(t)}</button>`; }).join("")}</div>
       ${S.wrong !== null ? `<p class="ko-msg">${esc(step.choices[S.wrong][2])}</p>` : ""}
-      ${llmReady() ? `<button class="btn ghost small" data-act="mission-mode" data-m="ai" style="margin-top:10px">Parler librement avec l'IA</button>` : `<p class="muted"><small>Connecte-toi pour parler librement avec l'IA.</small></p>`}`;
+      ${llmReady() ? `<button class="btn ghost small mt-10" data-act="mission-mode" data-m="ai">Parler librement avec l'IA</button>` : `<p class="muted"><small>Connecte-toi pour parler librement avec l'IA.</small></p>`}`;
   }
   return `<section class="view lesson-shell">
     <div class="lesson-top"><a class="close" href="${back}" aria-label="Quitter" data-act="stop">✕</a>
-      <div style="flex:1"><h1 style="font-size:1.3rem">${M.icon} ${esc(M.title)}</h1></div>
+      <div class="grow"><h1 class="fs-1-3rem">${M.icon} ${esc(M.title)}</h1></div>
       <span class="tag">${S.mode === "ai" ? "✨ IA" : "🧭 Guidé"}</span></div>
     <div class="card tip">🎯 <b>Mission</b> : ${esc(M.goal_fr)}</div>
     <div class="chat" aria-live="polite">${S.log.map(bubble).join("")}${S.loading ? `<div class="bubble npc loading">${mochi("small", "thinking")}</div>` : ""}</div>

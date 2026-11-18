@@ -35,27 +35,27 @@ function viewAtelier() {
   const chip = (kind, x, label = x) => `<button class="chip ko ${A[kind] === x ? "active" : ""}" data-act="atl-pick" data-k="${kind}" data-x="${x}" aria-pressed="${A[kind] === x}">${label}</button>`;
   const back = "#/lang/ko/parcours";
   return `<section class="view lesson-shell">
-    <div class="lesson-top"><a class="close" href="${back}" aria-label="Retour">←</a><div style="flex:1"><small class="muted">Hangul</small><h1 style="font-size:1.4rem">🧪 Atelier des syllabes</h1></div></div>
+    <div class="lesson-top"><a class="close" href="${back}" aria-label="Retour">←</a><div class="grow"><small class="muted">Hangul</small><h1 class="fs-1-4rem">🧪 Atelier des syllabes</h1></div></div>
     <div class="card atelier-main">
       <div class="atl-result">
         <button class="atl-syl ko" data-act="say" data-text="${syl}" data-lang="ko" aria-label="Écouter ${syl}">${syl}</button>
         ${blockDiagram(A.l, A.v, A.f)}
       </div>
-      <p class="center" style="margin:6px 0 0"><span class="ko">${A.l} + ${A.v}${A.f ? ` + ${A.f}` : ""}</span> = <b class="ko">${syl}</b> · se prononce ≈ « ${rom} »</p>
-      <p class="muted center" style="margin:6px 0 0"><small>${SHAPE_FR[vowelShape(A.v)]}${A.v === "ㅓ" ? " ㅓ = o ouvert (porte), à ne pas confondre avec ㅗ = ô fermé (beau)." : A.v === "ㅡ" ? " ㅡ = « eu » avec les lèvres étirées, pas arrondies." : ""}${A.l === "ㅇ" ? " ㅇ au début est muet." : ""}${A.f ? ` En bas, ${A.f} se prononce [${FINAL_SOUND[A.f]}].` : ""} Touche la syllabe pour l'entendre.</small></p>
+      <p class="center mt-6 mb-0 mx-0"><span class="ko">${A.l} + ${A.v}${A.f ? ` + ${A.f}` : ""}</span> = <b class="ko">${syl}</b> · se prononce ≈ « ${rom} »</p>
+      <p class="muted center mt-6 mb-0 mx-0"><small>${SHAPE_FR[vowelShape(A.v)]}${A.v === "ㅓ" ? " ㅓ = o ouvert (porte), à ne pas confondre avec ㅗ = ô fermé (beau)." : A.v === "ㅡ" ? " ㅡ = « eu » avec les lèvres étirées, pas arrondies." : ""}${A.l === "ㅇ" ? " ㅇ au début est muet." : ""}${A.f ? ` En bas, ${A.f} se prononce [${FINAL_SOUND[A.f]}].` : ""} Touche la syllabe pour l'entendre.</small></p>
     </div>
     <h2 class="section-title">1. La consonne du début</h2>
     <div class="choice-row atl-row">${HG_CHO.map((x) => chip("l", x)).join("")}</div>
     <h2 class="section-title">2. La voyelle</h2>
-    <p class="muted" style="margin:-6px 0 8px"><small>Verticales · horizontales · composées</small></p>
+    <p class="muted mt-n6 mb-8 mx-0"><small>Verticales · horizontales · composées</small></p>
     <div class="choice-row atl-row">${[...VERT_V, ...HORIZ_V, ...HG_JUNG.filter((x) => vowelShape(x) === "mix")].map((x) => chip("v", x)).join("")}</div>
     <h2 class="section-title">3. La consonne du bas (받침), si tu veux</h2>
     <div class="choice-row atl-row">${chip("f", "", "aucune")}${HG_JONG.slice(1).map((x) => chip("f", x)).join("")}</div>
-    <div class="card tip" style="margin-top:16px">🔊 <b>En bas, il n'y a que 7 sons</b> : [k] [n] [t] [l] [m] [p] [ng]. Essaie ㅅ, ㅈ, ㅊ, ㅌ ou ㅎ en bas : ils se disent tous [t].</div>
+    <div class="card tip mt-16">🔊 <b>En bas, il n'y a que 7 sons</b> : [k] [n] [t] [l] [m] [p] [ng]. Essaie ㅅ, ㅈ, ㅊ, ㅌ ou ㅎ en bas : ils se disent tous [t].</div>
 
     <h2 class="section-title">Décompose un mot</h2>
     <div class="card">
-      <p style="margin:0 0 8px">Écris un mot coréen (avec le clavier du site si besoin) : chaque syllabe est démontée lettre par lettre.</p>
+      <p class="mt-0 mb-8 mx-0">Écris un mot coréen (avec le clavier du site si besoin) : chaque syllabe est démontée lettre par lettre.</p>
       <input class="input ko" id="atelier-word" maxlength="20" autocomplete="off" spellcheck="false" placeholder="ex. 한국어" value="${esc(A.word || "")}" />
       <div id="atelier-out" class="atl-out">${decomposeView(A.word || "")}</div>
     </div>

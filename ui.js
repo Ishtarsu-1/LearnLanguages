@@ -19,6 +19,23 @@ const koCls = (lang) => (isKo(lang) ? "ko" : "en");
 // Fonction d'une particule coréenne, pour la couleur et le soulignement (charte §5)
 const PARTICLE_FN = { 은: "topic", 는: "topic", 이: "subject", 가: "subject", 을: "object", 를: "object", 에: "place", 에서: "place", 에게: "place", 한테: "place", 께: "place" };
 const PARTICLE_LABEL = { topic: "particule de thème", subject: "particule de sujet", object: "particule d'objet", place: "particule de lieu, de temps ou de destinataire", other: "particule" };
+// Styles dynamiques sans attribut style="…" (interdit par la CSP) : les templates posent
+// data-bar-w (largeur en %, barres de progression) ou data-vars (« --nom:valeur;… »), appliqués
+// ici par le CSSOM, que la CSP autorise. Un observateur couvre tout ce qui est inséré dans la page.
+function applyDynStyles(root) {
+  const els = root?.querySelectorAll ? [...(root.matches?.("[data-bar-w],[data-vars]") ? [root] : []), ...root.querySelectorAll("[data-bar-w],[data-vars]")] : [];
+  for (const el of els) {
+    if (el.dataset.barW !== undefined) el.style.width = `${Number(el.dataset.barW) || 0}%`;
+    if (el.dataset.vars) for (const d of el.dataset.vars.split(";")) {
+      const i = d.indexOf(":");
+      if (i > 0) el.style.setProperty(d.slice(0, i).trim(), d.slice(i + 1).trim());
+    }
+  }
+}
+if (typeof MutationObserver === "function" && document.body) {
+  new MutationObserver((list) => { for (const m of list) for (const n of m.addedNodes) if (n.nodeType === 1) applyDynStyles(n); })
+    .observe(document.body, { childList: true, subtree: true });
+}
 // Réglages d'affichage (charte §6, §14) : taille du texte et lecture zen
 function applyDisplay() {
   document.body.classList.toggle("no-pt", !state.settings.particleColors);
@@ -59,7 +76,7 @@ function mochi(cls = "", mood = "happy", dressed = true) {
   </svg>`;
 }
 // Petit visage pour le logotype (le premier « o » de « mochi »)
-const LOGO_FACE = '<svg viewBox="0 0 40 34" aria-hidden="true"><path d="M2 22 C2 9 10 3 20 3 C30 3 38 9 38 22 C38 31 31 32 20 32 C9 32 2 31 2 22 Z" class="mo-body"/><circle cx="14" cy="21" r="2" class="mo-ink"/><circle cx="26" cy="21" r="2" class="mo-ink"/><path d="M18 25 q2 2 4 0" class="mo-line" style="stroke-width:1.5"/><ellipse cx="9" cy="25" rx="3" ry="1.8" class="mo-cheek"/><ellipse cx="31" cy="25" rx="3" ry="1.8" class="mo-cheek"/></svg>';
+const LOGO_FACE = '<svg viewBox="0 0 40 34" aria-hidden="true"><path d="M2 22 C2 9 10 3 20 3 C30 3 38 9 38 22 C38 31 31 32 20 32 C9 32 2 31 2 22 Z" class="mo-body"/><circle cx="14" cy="21" r="2" class="mo-ink"/><circle cx="26" cy="21" r="2" class="mo-ink"/><path d="M18 25 q2 2 4 0" class="mo-line" stroke-width="1.5"/><ellipse cx="9" cy="25" rx="3" ry="1.8" class="mo-cheek"/><ellipse cx="31" cy="25" rx="3" ry="1.8" class="mo-cheek"/></svg>';
 
 let toastTimer;
 function toast(msg) {

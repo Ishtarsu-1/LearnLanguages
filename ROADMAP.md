@@ -62,7 +62,7 @@
 - Où héberger gratuitement : voir la section « Stack 100 % gratuite » (Oracle Cloud Always Free, avec ses limites).
 - **Sauvegardes continues de la base SQLite avec Litestream** vers un stockage objet (Cloudflare R2, voir la stack gratuite). On peut restaurer la base à la seconde près au lieu de perdre jusqu'à une journée. Les photos et fichiers audio vont directement sur R2.
 - Faire **un test de restauration** sur une machine vierge et le documenter dans `docs/restauration.md`. Une sauvegarde qu'on n'a jamais restaurée ne compte pas.
-- ✅ En-têtes de sécurité : Content-Security-Policy (`script-src 'self'`, aucun script inline ; `style-src 'unsafe-inline'` temporaire, voir la dette technique), `Referrer-Policy`, `Permissions-Policy` (micro pour le shadowing, rien d'autre), `Cross-Origin-Opener-Policy`, HSTS si `COOKIE_SECURE=1`.
+- ✅ En-têtes de sécurité : Content-Security-Policy stricte (`script-src 'self'`, `style-src 'self'` : aucun script ni style inline), `Referrer-Policy`, `Permissions-Policy` (micro pour le shadowing, rien d'autre), `Cross-Origin-Opener-Policy`, HSTS si `COOKIE_SECURE=1`.
 - ✅ IP réelle du client derrière le proxy (`TRUST_PROXY`, dernière entrée de `X-Forwarded-For`, IPv6 par /64) : sans elle, la limitation des tentatives serait commune à tous les visiteurs. `HOST=127.0.0.1` en production. Section Caddy dans `SETUP.md`.
 - Logs d'erreurs et page de statut (Uptime Kuma, auto-hébergé et gratuit).
 - Pages légales : mentions légales et politique de confidentialité. Le RGPD (export et suppression) est déjà en place. **Lister chaque sous-traitant** qui reçoit des données (fournisseur de LLM, service d'e-mail, hébergeur). Les phrases écrites par les utilisateurs partent vers le LLM, et ça doit figurer dans la politique de confidentialité.
@@ -336,7 +336,7 @@ Tout ce qu'il faut pour faire tourner Mochi sans payer, avec les limites à conn
 ## Dette technique à surveiller
 
 - ✅ **Découpage d'`app.js`** (fait) : 12 scripts classiques chargés dans l'ordre par `index.html` (`state.js`, `sync.js`, `ui.js`, `audio.js`, `reader.js`, `fsrs-cards.js`, `today.js`, `lessons.js`, `profile.js`, `router.js`, `actions.js`, `app.js` pour le démarrage), sans bundler ni changement de comportement. Les tests lisent la liste dans `index.html` et vérifient que chaque script est servi et précaché. Prochaine étape possible : modules ES.
-- **Migrer les attributs `style="…"`** des templates vers des classes (ou `element.style.setProperty`), puis retirer `'unsafe-inline'` de `style-src` dans la CSP. (CORRECTIFS v0.3, lot 6.2)
+- ✅ **Styles inline migrés** (fait) : plus aucun `style="…"` dans les vues (classes utilitaires en fin de `styles.css`, `data-bar-w` / `data-vars` appliqués par le CSSOM dans `ui.js`) ; `'unsafe-inline'` retiré de la CSP. Un test vérifie qu'aucune vue n'en réintroduit.
 - Les tests (`node tests/run.js`) simulent le navigateur et FSRS : il manque des tests dans un vrai navigateur (Playwright).
 - ~~La limitation des tentatives de connexion est gardée en mémoire~~ → remontée en P0.
 - ~~Les couleurs et tailles sont codées en dur~~ ✅ `tokens.css` + `styles.css` migré (plus aucune couleur en dur). Restent hors charte : ~~la navigation Aujourd'hui / Lire / Réviser / Profil~~ ✅ (reste : barre latérale sur ordinateur, aujourd'hui en haut), les icônes Lucide à la place des émojis, ~~le sélecteur clair / sombre explicite~~ ✅ (Profil › Affichage), les modales avec piège du focus.

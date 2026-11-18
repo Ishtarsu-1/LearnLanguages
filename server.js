@@ -747,10 +747,10 @@ function serveFile(res, file, type, cache) {
   });
 }
 
-// Content-Security-Policy : aucun script inline dans le site, donc script-src strict.
-// style-src 'unsafe-inline' est temporaire (attributs style="…" à migrer, ROADMAP « Dette technique »).
+// Content-Security-Policy : aucun script ni style inline dans le site. Les styles dynamiques
+// passent par le CSSOM (data-bar-w / data-vars, voir applyDynStyles dans ui.js), que la CSP autorise.
 const CSP = [
-  "default-src 'self'", "script-src 'self'", "style-src 'self' 'unsafe-inline'",
+  "default-src 'self'", "script-src 'self'", "style-src 'self'",
   "img-src 'self' data: blob:", "media-src 'self' blob:", "font-src 'self'", "connect-src 'self'",
   "worker-src 'self'", "manifest-src 'self'", "object-src 'none'", "base-uri 'none'",
   "form-action 'self'", "frame-ancestors 'none'",

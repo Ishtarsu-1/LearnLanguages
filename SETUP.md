@@ -284,7 +284,7 @@ PUBLIC_URL=https://mochi.example.fr
 - **`HOST=127.0.0.1`** : le serveur Node n'écoute que la machine elle-même. Personne ne peut le joindre sans passer par Caddy (et donc sans HTTPS). C'est la valeur par défaut quand `NODE_ENV=production`.
 - **`TRUST_PROXY`** : derrière Caddy, toutes les requêtes arrivent de `127.0.0.1`. Sans cette variable, la limitation des tentatives (connexion, inscription, voix) serait **commune à tous les visiteurs** : 10 connexions ratées par n'importe qui freineraient tout le monde. Avec elle, Mochi lit l'adresse réelle dans l'en-tête `X-Forwarded-For`, mais **uniquement** si la requête vient d'un proxy listé, et prend la **dernière** adresse de l'en-tête (celle ajoutée par Caddy ; les précédentes peuvent être inventées par le client). Les adresses IPv6 sont regroupées par bloc `/64`.
 - **`COOKIE_SECURE=1`** : cookie de session marqué `Secure`, et en-tête `Strict-Transport-Security` (HSTS) envoyé.
-- Le serveur envoie aussi une **Content-Security-Policy** stricte pour les scripts (aucun script inline, aucun domaine externe), `Permissions-Policy` (micro autorisé pour le shadowing, caméra et géolocalisation coupées) et `Cross-Origin-Opener-Policy`.
+- Le serveur envoie aussi une **Content-Security-Policy** stricte (aucun script ni style inline, aucun domaine externe), `Permissions-Policy` (micro autorisé pour le shadowing, caméra et géolocalisation coupées) et `Cross-Origin-Opener-Policy`.
 
 Si le serveur reçoit un `X-Forwarded-For` alors que `TRUST_PROXY` est vide, il l'ignore et l'écrit une fois dans la console : c'est le signe qu'il manque la variable.
 

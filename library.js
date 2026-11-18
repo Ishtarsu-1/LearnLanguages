@@ -175,7 +175,7 @@ function bookCards(lang) {
       <div>
         <h3><span class="${koCls(lang)}">${esc(b.title)}</span> <small class="muted">· ${esc(b.fr)}</small></h3>
         <small class="muted">Livre ${b.level} · ${b.chapters.length} chapitres · ${words} mots${done ? ` · ${done}/${b.chapters.length} lus` : ""}</small>
-        <div class="cov"><div class="bar"><span style="width:${pct(c)}%"></span></div><b>${pct(c)} %</b></div>
+        <div class="cov"><div class="bar"><span data-bar-w="${pct(c)}"></span></div><b>${pct(c)} %</b></div>
       </div>
       <span class="zone ${z.k}">${z.label}</span>
     </a>`;
@@ -197,7 +197,7 @@ function chapterList(lang, b) {
         return `<div class="chapter-row">
           <a class="card chapter ${done ? "done" : ""} ${open ? "" : "locked"}" href="${next.href}" data-act="${open ? "" : "locked"}" ${lock ? `title="${esc(lock)}"` : ""}>
             <span class="ch-n">${done ? "✓" : open ? i + 1 : "🔒"}</span>
-            <div style="flex:1"><b class="${koCls(lang)}">${esc(ch.title)}</b><br/><small class="muted">${ch.sentences.length} phrases · ~${pct(c)} % de mots connus${qd ? ` · questions ${L.books[`${b.id}:${i + 1}`]}/${ch.questions.length}` : read ? " · lu, questions à faire" : ""}${M ? ` · ${M.icon} ${md ? "mission réussie" : `mission : ${esc(M.title)}`}` : ""}</small>
+            <div class="grow"><b class="${koCls(lang)}">${esc(ch.title)}</b><br/><small class="muted">${ch.sentences.length} phrases · ~${pct(c)} % de mots connus${qd ? ` · questions ${L.books[`${b.id}:${i + 1}`]}/${ch.questions.length}` : read ? " · lu, questions à faire" : ""}${M ? ` · ${M.icon} ${md ? "mission réussie" : `mission : ${esc(M.title)}`}` : ""}</small>
               ${lock && (i === 0 || chapterDone(lang, b, i - 1)) ? `<br/><small class="lock-why">🔒 ${esc(lock)}</small>` : ""}</div>
             ${next.tag ? `<span class="tag">${next.tag}</span>` : ""}
           </a>
@@ -225,9 +225,9 @@ function viewBook(lang, bookId, sub, n) {
   }
   return `<section class="view">
     <div class="lesson-top"><a class="close" href="#/lang/${lang}/${b.story ? "histoire" : "lire"}" aria-label="Retour">←</a>
-      <div style="flex:1"><h1 style="font-size:1.5rem">${b.icon} <span class="${koCls(lang)}">${esc(b.title)}</span></h1><p class="muted" style="margin:2px 0 0">${esc(b.fr)} · livre ${b.level}</p></div></div>
-    <div class="card" style="margin:16px 0"><p style="margin:0">${esc(b.summary)}</p>
-      <p class="muted" style="margin:8px 0 0"><small>Lis et écoute chaque chapitre, puis réponds à 2 ou 3 questions. Le chapitre suivant s'ouvre ensuite.</small></p></div>
+      <div class="grow"><h1 class="fs-1-5rem">${b.icon} <span class="${koCls(lang)}">${esc(b.title)}</span></h1><p class="muted mt-2 mb-0 mx-0">${esc(b.fr)} · livre ${b.level}</p></div></div>
+    <div class="card mt-16 mb-16 mx-0"><p class="m-0">${esc(b.summary)}</p>
+      <p class="muted mt-8 mb-0 mx-0"><small>Lis et écoute chaque chapitre, puis réponds à 2 ou 3 questions. Le chapitre suivant s'ouvre ensuite.</small></p></div>
     ${chapterList(lang, b)}
   </section>`;
 }

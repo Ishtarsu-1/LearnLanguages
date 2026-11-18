@@ -135,25 +135,25 @@ function tabExercises(lang) {
   } else if (kind === "ecoute") {
     body = `<p class="q-label">Écoute. Que veut dire cette phrase ?</p><div class="center">${play()}</div>
       ${choices(q.options, q.answer, E.picked, "")}
-      ${E.picked ? `<p class="q-sentence ${k}" style="margin-top:12px">${esc(q.s.text)}</p>${next}` : ""}`;
+      ${E.picked ? `<p class="q-sentence ${k} mt-12">${esc(q.s.text)}</p>${next}` : ""}`;
   } else if (kind === "registre") {
     body = `<p class="q-label">Tu parles à : <b>${esc(q.who)}</b>. Comment dis-tu « ${esc(q.p.fr)} » ?</p>
       ${choices(q.options, q.answer, E.picked, "ko")}
-      ${E.picked ? `<p class="muted" style="margin-top:12px">${esc(q.reg)} · ${esc(q.p.note)}</p>${next}` : ""}
+      ${E.picked ? `<p class="muted mt-12">${esc(q.reg)} · ${esc(q.p.note)}</p>${next}` : ""}
       <p class="muted"><small>Pour reconnaître les registres. Dans le parcours, on produit au registre poli (해요체).</small></p>`;
   } else if (kind === "faux") {
     body = `<p class="q-label">Que veut dire le mot surligné ?</p>
       <p class="q-sentence">${esc(q.f.s).replace(new RegExp(q.f.lemma, "i"), (m) => `<mark>${esc(m)}</mark>`)}</p>
       <button class="btn ghost small" data-act="say" data-text="${esc(q.f.s)}" data-lang="en">🔊 Phrase</button>
       ${choices(q.options, q.answer, E.picked, "")}
-      ${E.picked ? `<p class="muted" style="margin-top:12px">${esc(q.f.sfr)}</p><p class="note">⚠️ ${esc(q.f.fr)}</p>${next}` : ""}`;
+      ${E.picked ? `<p class="muted mt-12">${esc(q.f.sfr)}</p><p class="note">⚠️ ${esc(q.f.fr)}</p>${next}` : ""}`;
   }
   if (EX_MORE[kind]) body = EX_MORE[kind].view(lang, E);
   if (kind === "grammaire") {
     body = `<p class="q-label">Choisis la bonne forme.</p>
       <p class="q-sentence ko" lang="ko">${esc(q.it.q)}</p><p class="muted">${esc(q.it.fr)}</p>
       ${choices(q.options, q.answer, E.picked, "ko")}
-      ${E.picked ? `<p class="muted" style="margin-top:12px"><b>${esc(q.g.title)}</b> · ${esc(q.g.explain)}</p>${next}` : ""}`;
+      ${E.picked ? `<p class="muted mt-12"><b>${esc(q.g.title)}</b> · ${esc(q.g.explain)}</p>${next}` : ""}`;
   }
   const mixInfo = q.mix ? `<p class="muted center"><small>🔀 ${EX_KINDS[kind]?.label || "Grammaire"} · les exercices et les points de grammaire déjà vus sont mélangés : c'est plus dur, et c'est pour ça que ça marche.</small></p>` : "";
   return `${menu}<div class="card review-card ex-card">${body}</div>${mixInfo}`;

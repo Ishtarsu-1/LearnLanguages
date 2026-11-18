@@ -647,3 +647,9 @@ ok(num1(1.5) === "1,5" && num1(0) === "0,0" && num0(1234).replace(/\s/g, " ") ==
   ok(defaultState().avatar === "mochi" && displayAvatar().includes("avatar-mochi"), "avatar par défaut : Mochi (SVG)");
   const a0 = state.avatar; state.avatar = "🦊"; ok(displayAvatar().includes("🦊") && !displayAvatar().includes("<svg"), "emoji choisi"); state.avatar = a0;
 }
+// CSP sans 'unsafe-inline' : plus aucun attribut style="…" dans les vues
+{
+  const html = [viewHome(), viewLanguage("en", "aujourdhui"), viewLanguage("ko", "parcours"), viewLanguage("en", "themes"), viewLanguage("en", "lire"), viewProfile(), viewWhy()].join("");
+  ok(!/ style="/.test(html), "aucun style inline dans les vues");
+  ok(/data-bar-w="[0-9.]+"/.test(viewLanguage("ko", "parcours")), "barres de progression : data-bar-w");
+}

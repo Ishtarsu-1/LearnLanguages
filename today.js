@@ -162,9 +162,9 @@ function viewHome() {
       ${mochi()}
       <div>
         <span class="bubble">${greeting()} ! Je suis Mochi 🍡</span>
-        <h1 style="margin-top:14px">Quelle langue veux-tu <em>apprendre</em> aujourd'hui ?</h1>
+        <h1 class="mt-14">Quelle langue veux-tu <em>apprendre</em> aujourd'hui ?</h1>
         <p class="muted">Lire, réviser au bon moment, parler. Quelques minutes par jour.</p>
-        ${cont ? `<a class="btn" style="margin-top:18px" href="#/lang/${state.lastLang}">Continuer ${cont.flag} ${cont.name}</a>` : ""}
+        ${cont ? `<a class="btn mt-18" href="#/lang/${state.lastLang}">Continuer ${cont.flag} ${cont.name}</a>` : ""}
       </div>
     </div>
 
@@ -177,7 +177,7 @@ function viewHome() {
           <span class="deco">${l.deco}</span>
           <span class="flag">${l.flag}</span>
           <div><h2>${l.name}</h2><div class="hello ${koCls(id)}">${l.hello}</div></div>
-          <p class="muted" style="margin:0">${l.tagline}</p>
+          <p class="muted m-0">${l.tagline}</p>
           <div class="meta">
             <span class="tag c">${num0(knownCount(id))} mots connus</span>
             <span class="tag">${L.started ? `⏱️ ${num1(L.seconds / 3600)} h` : "Débutant"}</span>
@@ -189,7 +189,7 @@ function viewHome() {
           <span class="soon-badge">🔒 Bientôt</span>
           <span class="flag">${l.flag}</span>
           <div><h2>${l.name}</h2><div class="hello" lang="${l.lang}">${l.hello}</div></div>
-          <p class="muted" style="margin:0">En préparation</p>
+          <p class="muted m-0">En préparation</p>
         </button>`).join("")}
     </div>
 
@@ -202,7 +202,7 @@ function viewHome() {
         ["💬", "4 · Produire", "Tu écris une phrase, on te renvoie la version naturelle."],
       ].map(([i, t, d]) => `<div class="card feature"><div class="ico">${i}</div><div><h3>${t}</h3><p class="muted">${d}</p></div></div>`).join("")}
     </div>
-    <p style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn ghost small" data-tour="open">🧭 Visite guidée du site</button><a class="btn ghost small" href="#/pourquoi">Pourquoi ça marche ? →</a></p>
+    <p class="mt-20 d-flex gap-10 wrap"><button class="btn ghost small" data-tour="open">🧭 Visite guidée du site</button><a class="btn ghost small" href="#/pourquoi">Pourquoi ça marche ? →</a></p>
   </section>`;
 }
 
@@ -256,7 +256,7 @@ function langNav(lang, tab) {
     ${tool ? `<div class="tool-head"><a class="lnk" href="#/lang/${lang}/pratique">← S'entraîner</a><h2>${tool[1]} ${tool[2]}</h2></div>` : ""}`;
 }
 function tabPractice(lang) {
-  return `<p class="muted" style="margin:0 0 14px">Choisis un exercice. Pas d'idée ? <a class="lnk" href="#/lang/${lang}/aujourdhui">La séance du jour</a> te guide pas à pas.</p>
+  return `<p class="muted mt-0 mb-14 mx-0">Choisis un exercice. Pas d'idée ? <a class="lnk" href="#/lang/${lang}/aujourdhui">La séance du jour</a> te guide pas à pas.</p>
     <div class="tool-grid">
       ${practiceTools(lang).map(([k, ico, title, desc, badge, hot]) => `<a class="card tool-card" href="#/lang/${lang}/${k}">
         <span class="tool-ico" aria-hidden="true">${ico}</span>
@@ -289,8 +289,8 @@ function viewLanguage(lang, tab) {
       </div>
       <aside class="side">
         <div class="card goal">
-          <div class="ring" style="--p:${p}" data-label="${todayMin(L)}/${state.goal}"></div>
-          <div><h3>Objectif du jour</h3><p class="muted" style="margin:4px 0 0">${state.goal} min · <a href="#/profil" class="lnk">modifier</a></p></div>
+          <div class="ring" data-vars="--p:${p}" data-label="${todayMin(L)}/${state.goal}"></div>
+          <div><h3>Objectif du jour</h3><p class="muted mt-4 mb-0 mx-0">${state.goal} min · <a href="#/profil" class="lnk">modifier</a></p></div>
         </div>
         <div class="card">
           <div class="stat-grid">
@@ -304,7 +304,7 @@ function viewLanguage(lang, tab) {
         ${questsCard(lang)}
         <div class="card">
           <h3>Vers le ${lvl[0]}</h3>
-          <div class="bar" style="margin:10px 0 6px"><span style="width:${Math.min(100, (hours / lvl[1]) * 100)}%"></span></div>
+          <div class="bar mt-10 mb-6 mx-0"><span data-bar-w="${Math.min(100, (hours / lvl[1]) * 100)}"></span></div>
           <small class="muted">${num1(hours)} h sur ${num0(lvl[2])} estimées. C'est un marathon : chaque session compte.</small>
         </div>
       </aside>
@@ -361,7 +361,7 @@ function questsCard(lang) {
     <ul>${qs.map((q) => `<li class="${q.done ? "done" : ""}">
       <span class="q-ico" aria-hidden="true">${q.claimed ? "✅" : q.icon}</span>
       <div class="q-body"><b>${esc(q.title)}</b>
-        <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="${q.goal}" aria-valuenow="${q.n}" aria-label="${esc(q.title)}"><span style="width:${(q.n / q.goal) * 100}%"></span></div>
+        <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="${q.goal}" aria-valuenow="${q.n}" aria-label="${esc(q.title)}"><span data-bar-w="${(q.n / q.goal) * 100}"></span></div>
         <small class="muted">${q.n} / ${q.goal}</small></div>
       ${q.done && !q.claimed ? `<button class="btn small" data-act="quest-claim" data-k="${q.key}" data-l="${lang}">+${QUEST_XP} XP</button>` : ""}
     </li>`).join("")}</ul>
@@ -372,7 +372,7 @@ function questsCard(lang) {
 function stepCard(n, icon, title, done, desc, action) {
   return `<div class="card step ${done ? "done" : ""}">
     <div class="step-n">${done ? "✓" : n}</div>
-    <div style="flex:1"><h3>${icon} ${title}</h3><p class="muted">${desc}</p></div>
+    <div class="grow"><h3>${icon} ${title}</h3><p class="muted">${desc}</p></div>
     ${action || ""}
   </div>`;
 }
@@ -390,7 +390,7 @@ function tabToday(lang) {
     const n = Object.keys(state.langs.ko.hangulDays).length, next = Math.min(n + 1, HANGUL_DAYS.length);
     return `<div class="card phase hangul-first">
         <div class="phase-head"><b>Phase 1 · Le Hangul</b><span class="tag">${n} / ${HANGUL_DAYS.length} jours</span></div>
-        <div class="bar"><span style="width:${(n / HANGUL_DAYS.length) * 100}%"></span></div>
+        <div class="bar"><span data-bar-w="${(n / HANGUL_DAYS.length) * 100}"></span></div>
         <p class="muted">L'alphabet coréen s'apprend en ${HANGUL_DAYS.length} petites séances. Ensuite, plus aucune romanisation : tout se lit en Hangul.</p>
         <a class="btn" href="#/lang/ko/hangul/${next}">${n ? `Continuer : jour ${next}` : "Commencer le jour 1"}</a>
       </div>

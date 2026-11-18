@@ -65,9 +65,9 @@ function lookCard() {
   return `<h2 class="section-title">Ma Mochi</h2>
     <div class="card look-card">
       <div class="look-preview">${mochi("", "happy")}</div>
-      <div style="flex:1;min-width:240px">
-        <p style="margin:0 0 4px"><b>${got} / ${ACCESSORIES.length} accessoires</b></p>
-        <p class="muted" style="margin:0 0 12px"><small>Ils se gagnent avec les bonnes habitudes, jamais en payant. Un accessoire par emplacement (${Object.values(SLOTS).join(", ").toLowerCase()}).</small></p>
+      <div class="grow minw-240">
+        <p class="mt-0 mb-4 mx-0"><b>${got} / ${ACCESSORIES.length} accessoires</b></p>
+        <p class="muted mt-0 mb-12 mx-0"><small>Ils se gagnent avec les bonnes habitudes, jamais en payant. Un accessoire par emplacement (${Object.values(SLOTS).join(", ").toLowerCase()}).</small></p>
         <div class="acc-grid">
           ${ACCESSORIES.map((a) => {
             const ok = accUnlocked(a, st), worn = look[a.slot] === a.id, [k, n, label] = a.need;

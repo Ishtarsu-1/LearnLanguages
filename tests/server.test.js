@@ -17,7 +17,7 @@ server.listen(0, "127.0.0.1", async () => {
       const r = await fetch(base + "/");
       ok(r.status === 200, "index");
       const csp = r.headers.get("content-security-policy") || "";
-      ok(/script-src 'self'(;|$)/.test(csp) && /frame-ancestors 'none'/.test(csp) && /object-src 'none'/.test(csp), "CSP sur GET / : " + csp);
+      ok(/script-src 'self'(;|$)/.test(csp) && /style-src 'self'(;|$)/.test(csp) && !csp.includes("unsafe") && /frame-ancestors 'none'/.test(csp) && /object-src 'none'/.test(csp), "CSP sur GET / : " + csp);
       ok(r.headers.get("permissions-policy")?.includes("camera=()") && r.headers.get("cross-origin-opener-policy") === "same-origin", "Permissions-Policy + COOP");
       ok(r.headers.get("strict-transport-security") === null, "pas de HSTS sans COOKIE_SECURE");
       const html = await r.text();
@@ -55,6 +55,11 @@ server.listen(0, "127.0.0.1", async () => {
       }
     }
     ok((await fetch(base + "/data/mochi.db")).status === 404, "db non servie");
+    for (const f of ["styles.css", "tokens.css"]) { // une accolade orpheline avale toute la suite de la feuille
+      const css = fs.readFileSync(path.join(process.argv[2] || path.join(__dirname, ".."), f), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+      let d = 0, neg = false; for (const c of css) { d += c === "{" ? 1 : c === "}" ? -1 : 0; if (d < 0) neg = true; }
+      ok(d === 0 && !neg, `${f} : accolades équilibrées (${d})`);
+    }
     ok((await fetch(base + "/../package.json")).status === 404, "traversal");
     ok((await call("GET", "/api/me")).data.user === null, "me anonyme");
     ok((await call("POST", "/api/signup", { email: "a@b.co", password: "12345678", accept: true }, { csrf: false })).status === 403, "csrf");

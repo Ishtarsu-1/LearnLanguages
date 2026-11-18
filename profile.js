@@ -15,12 +15,12 @@ function viewProfile() {
         <div class="avatar">${displayAvatar()}</div>
         ${account ? `<label class="avatar-edit" title="Changer la photo">📷<input type="file" id="avatar-file" accept="image/*" hidden /></label>` : ""}
       </div>
-      <div style="flex:1;min-width:220px">
-        <label class="muted" for="name" style="font-weight:800;font-size:.9rem">Ton prénom</label><br/>
-        <input id="name" class="input" placeholder="Comment t'appelles-tu ?" value="${esc(state.name)}" maxlength="40" autocomplete="nickname" style="margin-top:6px;width:100%;max-width:320px" />
+      <div class="grow minw-220">
+        <label class="muted fw-800 fs-09rem" for="name">Ton prénom</label><br/>
+        <input id="name" class="input mt-6 w-full maxw-320" placeholder="Comment t'appelles-tu ?" value="${esc(state.name)}" maxlength="40" autocomplete="nickname" />
         ${account ? `
           <p class="muted acct-line">✉️ ${esc(account.email)} · Membre depuis le ${since}</p>
-          <div class="wp-actions" style="margin-top:8px">${syncBadge()}
+          <div class="wp-actions mt-8">${syncBadge()}
             ${account.avatar_url ? `<button class="mini" data-act="remove-photo">Retirer la photo</button>` : ""}
             <button class="mini" data-act="logout">Se déconnecter</button></div>`
         : serverOn ? `
@@ -41,7 +41,7 @@ function viewProfile() {
     ${typeof lookCard === "function" ? lookCard() : ""}
 
     <h2 class="section-title">Objectif quotidien</h2>
-    <div class="choice-row">${GOALS.map((g) => `<button class="choice ${g.min === state.goal ? "active" : ""}" data-act="goal" data-v="${g.min}">${g.label}<br/><span class="muted" style="font-size:.85rem">${g.min} min / jour</span></button>`).join("")}</div>
+    <div class="choice-row">${GOALS.map((g) => `<button class="choice ${g.min === state.goal ? "active" : ""}" data-act="goal" data-v="${g.min}">${g.label}<br/><span class="muted fs-085rem">${g.min} min / jour</span></button>`).join("")}</div>
 
     <h2 class="section-title">Où j'en suis</h2>
     <div class="lang-grid">
@@ -50,12 +50,12 @@ function viewProfile() {
         const cov = coverage(id, TEXTS[id].flatMap((t) => t.parsed));
         return `<div class="card">
           <h3>${l.flag} ${l.name}</h3>
-          <div class="stat-grid" style="margin:12px 0">
+          <div class="stat-grid mt-12 mb-12 mx-0">
             <div class="stat"><span class="ico">⏱️</span><div><b>${num1(h)} h</b><small>cumulées</small></div></div>
             <div class="stat"><span class="ico">📒</span><div><b>${num0(knownCount(id))}</b><small>mots connus</small></div></div>
           </div>
-          <p class="muted" style="margin:0 0 10px"><small>Tu comprends ~${pct(cov)} % des mots de nos ${id === "en" ? "dialogues" : "textes"}.</small></p>
-          ${LEVEL_HOURS[id].steps.map(([lvl, hrs, txt]) => `<div class="lvl"><span>${lvl}</span><div class="bar"><span style="width:${Math.min(100, (h / hrs) * 100)}%"></span></div><small class="muted">${txt}</small></div>`).join("")}
+          <p class="muted mt-0 mb-10 mx-0"><small>Tu comprends ~${pct(cov)} % des mots de nos ${id === "en" ? "dialogues" : "textes"}.</small></p>
+          ${LEVEL_HOURS[id].steps.map(([lvl, hrs, txt]) => `<div class="lvl"><span>${lvl}</span><div class="bar"><span data-bar-w="${Math.min(100, (h / hrs) * 100)}"></span></div><small class="muted">${txt}</small></div>`).join("")}
         </div>`;
       }).join("")}
     </div>
@@ -79,7 +79,7 @@ function viewProfile() {
         <input type="range" min="0.9" max="1.5" step="0.05" value="${S.textScale}" data-set="textScale" /></label>
       <label class="row"><input type="checkbox" ${S.zen ? "checked" : ""} data-set="zen" /> Mode lecture zen (aucun surlignage des mots dans le lecteur)</label>
       <div><span>Thème</span>
-        <div class="choice-row" role="radiogroup" aria-label="Thème" style="margin-top:6px">${[["auto", "🖥️ Comme l'appareil"], ["light", "☀️ Clair"], ["dark", "🌙 Sombre"]].map(([v, l]) => `<button class="choice ${(S.theme || "auto") === v ? "active" : ""}" role="radio" aria-checked="${(S.theme || "auto") === v}" data-act="theme" data-v="${v}">${l}</button>`).join("")}</div></div>
+        <div class="choice-row mt-6" role="radiogroup" aria-label="Thème">${[["auto", "🖥️ Comme l'appareil"], ["light", "☀️ Clair"], ["dark", "🌙 Sombre"]].map(([v, l]) => `<button class="choice ${(S.theme || "auto") === v ? "active" : ""}" role="radio" aria-checked="${(S.theme || "auto") === v}" data-act="theme" data-v="${v}">${l}</button>`).join("")}</div></div>
     </div>
 
     <h2 class="section-title">Audio</h2>
@@ -99,11 +99,11 @@ function viewProfile() {
       <div class="card">
         <h3>Appareils connectés</h3>
         <div id="sessions"><p class="muted">Chargement…</p></div>
-        <button class="mini" data-act="logout-others" style="margin-top:10px">Déconnecter les autres appareils</button>
+        <button class="mini mt-10" data-act="logout-others">Déconnecter les autres appareils</button>
       </div>
     </div>` : ""}
 
-    <div style="margin-top:36px;display:flex;gap:10px;flex-wrap:wrap">
+    <div class="mt-36 d-flex gap-10 wrap">
       <button class="btn ghost small" data-act="export">Exporter mes données (JSON)</button>
       <button class="btn ghost small" data-act="reset">Réinitialiser ma progression</button>
       <a class="btn ghost small" href="#/pourquoi">🔬 Pourquoi ça marche ?</a>
@@ -115,7 +115,7 @@ function viewProfile() {
     ${account ? `
     <details class="card danger">
       <summary><b>Supprimer mon compte</b></summary>
-      <form class="form" data-form="delete" style="margin-top:12px">
+      <form class="form mt-12" data-form="delete">
         <p class="muted">Ton compte, ta photo et toute ta progression seront effacés définitivement du serveur.</p>
         <input class="input" type="password" name="password" placeholder="Confirme avec ton mot de passe" autocomplete="current-password" required />
         <p class="form-err" hidden></p>
@@ -299,7 +299,7 @@ function viewAdmin() {
     <div class="card table-scroll"><table class="admin-table users"><thead><tr><th>E-mail</th><th>Prénom</th><th>Inscrit</th><th>Dernière connexion</th><th>Cartes</th><th>Révisions</th></tr></thead><tbody>
       ${d.list.map((u) => `<tr><td>${esc(u.email)} ${u.admin ? "🛠️" : ""} ${u.verified ? "" : `<span title="adresse non confirmée">✉️?</span>`}</td><td>${esc(u.name)}</td><td>${fmtDate(u.created_at)}</td><td>${fmtDate(u.last_login_at)}</td><td>${u.cards}</td><td>${u.reviews}</td></tr>`).join("")}
     </tbody></table></div>` : ""}
-    <p style="margin-top:20px"><button class="btn ghost small" data-act="admin-refresh">↻ Actualiser</button></p>
+    <p class="mt-20"><button class="btn ghost small" data-act="admin-refresh">↻ Actualiser</button></p>
   </section>`;
 }
 

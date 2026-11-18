@@ -20,7 +20,7 @@
 | Motivation | Série hebdomadaire 5/7, quêtes de la semaine (3 par langue, +50 XP) |
 | Appli | Installable (PWA), marche hors ligne (révisions, lecture), synchro au retour du réseau, audio des cartes dues pré-téléchargé |
 | Admin | Comptes admin (`tools/admin.js`) : toutes les leçons ouvertes, tableau de bord `#/admin` (comptes, usage, appels IA du jour, taux de cache, coût estimé, fonctionnalités, contenu, accès direct) |
-| Sécurité | Content-Security-Policy stricte (aucun script inline), `Permissions-Policy`, `Cross-Origin-Opener-Policy`, HSTS en HTTPS ; derrière Caddy, IP réelle du client lue seulement depuis un proxy de confiance (`TRUST_PROXY`, IPv6 regroupées par /64) |
+| Sécurité | Content-Security-Policy stricte (aucun script ni style inline), `Permissions-Policy`, `Cross-Origin-Opener-Policy`, HSTS en HTTPS ; derrière Caddy, IP réelle du client lue seulement depuis un proxy de confiance (`TRUST_PROXY`, IPv6 regroupées par /64) |
 | Thèmes | 8 thèmes de situation (café, rencontre, transports, cuisine, sport, séries, gaming, travail), 10 textes par langue, saveurs de Mochi à débloquer (10 mots solides), thèmes favoris, bibliothèque filtrable |
 | Livres | Bibliothèque de lectures graduées : livres en chapitres (A1), questions de compréhension, chapitre suivant débloqué, mots inconnus en cartes |
 | Histoire | Mode histoire (Mochi à Séoul / à Londres) : chapitres gradués, missions de conversation avec l'IA ou en mode guidé, déblocage par mots clés et grammaire |
