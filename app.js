@@ -20,7 +20,7 @@ const STORE_KEY = "mochi-state-v2";
 const langDefaults = () => ({
   xp: 0, streak: 0, lastStreakDay: null, seconds: 0, todayDate: null, todaySec: 0, started: false,
   known: {}, unknown: {}, readTexts: {}, fullDays: {}, catchUp: false, session: {}, introduced: { date: null, count: 0 },
-  hangulDone: false, hangulDays: {}, grammarDone: {}, errors: {}, prodDone: {},
+  hangulDone: false, hangulDays: {}, grammarDone: {}, grammarMiss: {}, earStats: {}, errors: {}, prodDone: {},
 });
 const defaultState = () => ({
   name: "", avatar: "🐰", goal: 10, lastLang: null,
@@ -82,7 +82,7 @@ async function api(method, url, body, raw) {
 //   - compteurs: XP, temps, activité → on envoie des deltas, le serveur additionne
 //  « snap » = ce que le serveur connaît déjà ; on n'envoie que la différence.
 // ============================================================
-const MAP_KEYS = ["known", "unknown", "readTexts", "fullDays", "hangulDays", "grammarDone", "errors", "prodDone"];
+const MAP_KEYS = ["known", "unknown", "readTexts", "fullDays", "hangulDays", "grammarDone", "grammarMiss", "earStats", "errors", "prodDone"];
 const CTR_KEYS = ["xp", "seconds"];
 const sync = { status: "idle", timer: null, running: false, again: false, meta: null };
 
@@ -352,14 +352,25 @@ function pickVoice(code) {
   const mine = voices.filter((v) => v.lang.replace("_", "-").toLowerCase().startsWith(code.slice(0, 2)));
   return mine.find((v) => /natural|neural|online|premium|enhanced|google/i.test(v.name)) || mine.find((v) => v.lang === code) || mine[0];
 }
-function speak(text, lang, speed = state.settings.speed) {
+// Toutes les voix d'une langue (pour l'écoute multi-voix, §14)
+const voicesFor = (lang) => voices.filter((v) => v.lang.replace("_", "-").toLowerCase().startsWith(lang));
+// Au moins 4 « locuteurs » par langue : les vraies voix disponibles, complétées par
+// des variations de hauteur et de débit si l'appareil en a moins de 4.
+function speakers(lang) {
+  const vs = voicesFor(lang), out = [];
+  const tweaks = [[1, 1], [0.8, 0.95], [1.25, 1.05], [0.9, 0.9], [1.15, 1]];
+  for (let i = 0; out.length < Math.max(4, vs.length); i++) out.push({ voice: vs[i % (vs.length || 1)] || null, pitch: vs.length > i ? 1 : tweaks[i % tweaks.length][0], rate: vs.length > i ? 1 : tweaks[i % tweaks.length][1] });
+  return out;
+}
+function speak(text, lang, speed = state.settings.speed, who = null) {
   return new Promise((resolve) => {
     if (!("speechSynthesis" in window)) { toast("L'audio n'est pas disponible sur ce navigateur"); return resolve(); }
     const u = new SpeechSynthesisUtterance(text);
     u.lang = LANGUAGES[lang].speechLang;
-    const v = pickVoice(u.lang);
+    const v = who ? who.voice : pickVoice(u.lang);
     if (v) u.voice = v;
-    u.rate = 0.9 * speed;
+    if (who) u.pitch = who.pitch;
+    u.rate = 0.9 * speed * (who ? who.rate : 1);
     u.onend = u.onerror = () => resolve();
     speechSynthesis.cancel();
     speechSynthesis.speak(u);
@@ -1303,23 +1314,44 @@ function tabWords(lang) {
 }
 
 // ---------- Oreille : paires minimales, formes faibles, liaison (§5, §6, §7) ----------
+// Paires minimales multi-voix (HVPT, §14) : plusieurs voix, plusieurs mots par
+// contraste, retour immédiat, réécoute des options et score par contraste.
+const earKey = (pair) => pair.label;
+function pickPair(lang, avoid) {
+  const E = EAR[lang], S = state.langs[lang].earStats;
+  // Plus de poids aux contrastes faibles ou peu travaillés
+  const items = E.pairs.map((p, i) => { const st = S[earKey(p)] || { n: 0, ok: 0 }; return { i, w: i === avoid ? 0.01 : 1 + 3 * (1 - (st.ok + 1) / (st.n + 2)) }; });
+  let r = Math.random() * items.reduce((t, x) => t + x.w, 0);
+  for (const x of items) if ((r -= x.w) < 0) return x.i;
+  return 0;
+}
+function earScores(lang) {
+  const S = state.langs[lang].earStats;
+  return [...new Set(EAR[lang].pairs.map(earKey))].map((k) => ({ k, n: S[k]?.n || 0, ok: S[k]?.ok || 0 }));
+}
 function tabEar(lang) {
   const E = EAR[lang];
-  if (!ui.ear || ui.ear.lang !== lang) ui.ear = { lang, i: Math.floor(Math.random() * E.pairs.length), target: null, picked: null, score: 0, n: 0 };
-  const G = ui.ear, pair = E.pairs[G.i], k = koCls(lang);
+  if (!ui.ear || ui.ear.lang !== lang) ui.ear = { lang, i: pickPair(lang), target: null, picked: null, score: 0, n: 0, who: 0 };
+  const G = ui.ear, pair = E.pairs[G.i], k = koCls(lang), nVoices = speakers(lang).length;
+  const scores = earScores(lang).filter((x) => x.n);
   return `
     <div class="card">
       <h3>Qu'est-ce que tu entends ?</h3>
-      <p class="muted" style="margin:4px 0 14px">${esc(pair.label)} · score ${G.score}/${G.n}</p>
-      <button class="big-audio" data-act="ear-play">🔊</button>
+      <p class="muted" style="margin:4px 0 14px">${esc(pair.label)} · score ${G.score}/${G.n}${G.target ? ` · voix ${G.who + 1}/${nVoices}` : ""}</p>
+      <button class="big-audio" data-act="ear-play" aria-label="Écouter">🔊</button>
       <div class="choice-row center" style="margin-top:16px">
         ${pair.items.map((w) => {
           const cls = G.picked ? (w === G.target ? "right" : w === G.picked ? "wrong" : "") : "";
-          return `<button class="choice ${k} ${cls}" data-act="ear-pick" data-w="${esc(w)}" ${G.target ? "" : "disabled"}>${esc(w)}</button>`;
+          return `<button class="choice ${k} ${cls}" data-act="ear-pick" data-w="${esc(w)}" ${G.target ? "" : "disabled"} ${isKo(lang) ? 'lang="ko"' : 'lang="en"'}>${G.picked ? (w === G.target ? "✓ " : w === G.picked ? "✗ " : "") : ""}${esc(w)}</button>`;
         }).join("")}
       </div>
-      ${G.picked ? `<div class="wp-actions center"><button class="btn small" data-act="ear-next">Suivant →</button></div>` : !G.target ? `<p class="muted center"><small>Appuie sur 🔊 pour commencer.</small></p>` : ""}
+      ${G.picked ? `<p class="center muted" style="margin:12px 0 0">${G.picked === G.target ? "Bien entendu !" : `Presque ! C'était <b class="${k}">${esc(G.target)}</b>. Réécoute les deux :`}</p>
+        <div class="choice-row center" style="margin-top:8px">${pair.items.map((w) => `<button class="btn ghost small ${k}" data-act="ear-replay" data-w="${esc(w)}">🔊 ${esc(w)}</button>`).join("")}</div>
+        <div class="wp-actions center"><button class="btn small" data-act="ear-next">Suivant →</button></div>` : !G.target ? `<p class="muted center"><small>Appuie sur 🔊 pour commencer. Chaque mot est prononcé par plusieurs voix : c'est ce qui entraîne vraiment l'oreille.</small></p>` : ""}
     </div>
+    ${scores.length ? `<h2 class="section-title">Mes scores par son</h2><div class="card">${scores.map((x) => `
+      <div class="reg-row"><b class="${k}">${esc(x.k)}</b><span class="bar ear-bar" style="flex:1"><span style="width:${pct(x.ok / x.n)}%"></span></span><small class="muted">${x.ok}/${x.n}${x.n >= 4 && x.ok / x.n < 0.7 ? " · à travailler" : ""}</small></div>`).join("")}
+      <p class="muted"><small>Les sons les plus faibles reviennent plus souvent.</small></p></div>` : ""}
     ${E.notes.map((n) => `<h2 class="section-title">${esc(n.t)}</h2><div class="card">${n.lines.map(([a, b]) => `
       <div class="reg-row"><button class="reg-ko ${k}" data-act="say" data-text="${esc(a.replace(/[A-Z]{2,}/g, (m) => m.toLowerCase()))}" data-lang="${lang}">${esc(a)} 🔊</button><small class="muted">${esc(b)}</small></div>`).join("")}</div>`).join("")}
     <div class="card tip" style="margin-top:18px">🎙️ Pour le <b>shadowing</b>, ouvre un texte dans « Lire » et active le mode 🎙️.</div>`;
@@ -1887,11 +1919,19 @@ const actions = {
   // Oreille
   "ear-play": () => {
     const G = ui.ear, pair = EAR[G.lang].pairs[G.i];
-    if (!G.target) G.target = pair.items[Math.floor(Math.random() * pair.items.length)];
-    speak(G.target, G.lang, 0.85); render();
+    if (!G.target) { G.target = pair.items[Math.floor(Math.random() * pair.items.length)]; G.who = Math.floor(Math.random() * speakers(G.lang).length); }
+    speak(G.target, G.lang, 0.85, speakers(G.lang)[G.who]); render();
   },
-  "ear-pick": (el) => { const G = ui.ear; if (G.picked) return; G.picked = el.dataset.w; G.n++; if (G.picked === G.target) G.score++; render(); },
-  "ear-next": () => { const G = ui.ear, n = EAR[G.lang].pairs.length; Object.assign(G, { i: (G.i + 1 + Math.floor(Math.random() * (n - 1))) % n, target: null, picked: null }); render(); },
+  "ear-replay": (el) => { const G = ui.ear; speak(el.dataset.w, G.lang, 0.85, speakers(G.lang)[G.who]); },
+  "ear-pick": (el) => {
+    const G = ui.ear; if (G.picked || !G.target) return;
+    G.picked = el.dataset.w; G.n++;
+    const good = G.picked === G.target; if (good) G.score++;
+    const S = state.langs[G.lang].earStats, key = earKey(EAR[G.lang].pairs[G.i]);
+    S[key] = { n: (S[key]?.n || 0) + 1, ok: (S[key]?.ok || 0) + (good ? 1 : 0) };
+    track(G.lang, "ex"); save(); render();
+  },
+  "ear-next": () => { const G = ui.ear; Object.assign(G, { i: pickPair(G.lang, G.i), target: null, picked: null }); render(); },
 
   // Quiz
   "quiz-pick": (el) => { const q = ui.quiz.qs[ui.quiz.queue[0]]; answerQuiz(el.dataset.o === q.answer, el.dataset.o); render(); },

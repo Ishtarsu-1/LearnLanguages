@@ -90,6 +90,18 @@ document.getElementById = (id) => (id === "prod-text" ? { value: "서울에서 �
 actions["check-prod"](); ok(ui.prod.result.perfect, "variante acceptée");
 actions["add-frequent"](); render1("#/lang/ko/mots");
 actions["ear-play"](); render1("#/lang/ko/oreille");
+{ // HVPT : au moins 4 voix, score par contraste, contraste faible plus fréquent
+  ok(speakers("ko").length >= 4, "au moins 4 voix");
+  const G = ui.ear, key = EAR.ko.pairs[G.i].label;
+  actions["ear-pick"]({ dataset: { w: EAR.ko.pairs[G.i].items.find((w) => w !== G.target) } });
+  ok(state.langs.ko.earStats[key].n === 1 && state.langs.ko.earStats[key].ok === 0, "score par contraste");
+  ok(tabEar("ko").includes("Réécoute les deux") && tabEar("ko").includes("Mes scores par son"), "réécoute + scores");
+  state.langs.ko.earStats[key] = { n: 20, ok: 2 };
+  let hits = 0; for (let i = 0; i < 300; i++) if (EAR.ko.pairs[pickPair("ko")].label === key) hits++;
+  const share = EAR.ko.pairs.filter((p) => p.label === key).length / EAR.ko.pairs.length;
+  ok(hits / 300 > share, `contraste faible favorisé (${hits}/300 vs ${share.toFixed(2)})`);
+  actions["ear-next"]();
+}
 location.hash = "#/lang/en/fauxamis"; actions["add-faux"](); render1("#/lang/en/fauxamis");
 ok(state.cards.filter(c => c.source === "faux-amis").length === FAUX_AMIS.length, "faux amis");
 render1("#/profil");
@@ -155,8 +167,10 @@ console.log(fails ? `${fails} échec(s) (comptes)` : "OK : rendu comptes");
 // --- Exercices ---
 for (const lang of ["en", "ko"]) {
   state.langs.ko.hangulDone = true;
-  for (const kind of Object.keys(EX_KINDS).filter((k) => EX_KINDS[k].langs.includes(lang))) {
-    newExercise(lang, kind);
+  for (const asked of [...Object.keys(EX_KINDS).filter((k) => EX_KINDS[k].langs.includes(lang)), "melange", "melange", "melange"]) {
+    newExercise(lang, asked);
+    const kind = ui.ex.q.kind;
+    if (asked === "melange") ok(ui.ex.kind === "melange" && ui.ex.q.mix && kind !== "melange", "mélange → un vrai exercice");
     location.hash = `#/lang/${lang}/exercices`; route();
     const E = ui.ex, q = E.q;
     let h = tabExercises(lang);
@@ -175,4 +189,12 @@ for (const lang of ["en", "ko"]) {
   }
 }
 ok(state.history[today()].en.ex > 0, "exercices comptés dans l'activité");
+// Alternance (§13) : la grammaire déjà vue revient mélangée, les ratés pèsent plus
+KO_GRAMMAR.slice(0, 3).forEach((g) => (state.langs.ko.grammarDone[g.id] = true));
+let gq = null;
+for (let i = 0; i < 200 && !gq; i++) { newExercise("ko", "melange"); if (ui.ex.q.kind === "grammaire") gq = ui.ex.q; }
+ok(gq && KO_GRAMMAR.slice(0, 3).includes(gq.g) && gq.options.includes(gq.answer), "mélange : item de grammaire déjà vue");
+ok(tabExercises("ko").includes("Choisis la bonne forme"), "rendu grammaire mélangée");
+actions["ex-pick"]({ dataset: { o: gq.options.find((o) => o !== gq.answer) } });
+ok(state.langs.ko.grammarMiss[gq.g.id] === 1, "raté compté");
 console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
