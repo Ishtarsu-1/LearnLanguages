@@ -30,7 +30,7 @@ function device(base, name) {
     }),
   };
   vm.createContext(ctx);
-  for (const f of ["content.js", "app.js", "exercises.js", "placement.js", "library.js", "missions.js", "story.js", "keyboard.js", "hangul.js", "cosmetics.js", "tour.js"]) vm.runInContext(fs.readFileSync(path.join(APP, f), "utf8"), ctx, { filename: f });
+  for (const f of ["content.js", "app.js", "exercises.js", "placement.js", "library.js", "missions.js", "story.js", "keyboard.js", "hangul.js", "cosmetics.js", "tour.js", "legal.js"]) vm.runInContext(fs.readFileSync(path.join(APP, f), "utf8"), ctx, { filename: f });
   const run = (code) => vm.runInContext(code, ctx);
   return { run, ctx, name, store, wait: () => sleep(200) };
 }
@@ -47,7 +47,7 @@ server.listen(0, "127.0.0.1", async () => {
       state.langs.en.known.hello = true; state.goal = 15; save();
     `);
     const nCards = A.run(`state.cards.length`), xpA0 = A.run(`state.langs.en.xp`);
-    await A.run(`api("POST", "/api/signup", { email: "sync@test.fr", password: "motdepasse1", name: "Sam" }).then((d) => applyAuth(d, { isNew: true }))`);
+    await A.run(`api("POST", "/api/signup", { email: "sync@test.fr", password: "motdepasse1", accept: true, name: "Sam" }).then((d) => applyAuth(d, { isNew: true }))`);
     ok(A.run(`account && account.email`) === "sync@test.fr", "inscription A");
     ok(db.prepare("SELECT COUNT(*) n FROM sync_cards").get().n === nCards, `cartes envoyées (${nCards})`);
     ok(db.prepare("SELECT COUNT(*) n FROM review_logs").get().n === 5, "5 révisions envoyées");
@@ -108,7 +108,7 @@ server.listen(0, "127.0.0.1", async () => {
 
     // 9. Migration de l'ancien format
     const C = device(base, "C"); await C.wait();
-    await C.run(`api("POST", "/api/signup", { email: "old@test.fr", password: "motdepasse1" })`);
+    await C.run(`api("POST", "/api/signup", { email: "old@test.fr", password: "motdepasse1", accept: true })`);
     const uid = db.prepare("SELECT id FROM users WHERE email = 'old@test.fr'").get().id;
     db.prepare("UPDATE users SET sync_rev = 0 WHERE id = ?").run(uid);
     db.prepare("DELETE FROM sync_kv WHERE user_id = ?").run(uid);

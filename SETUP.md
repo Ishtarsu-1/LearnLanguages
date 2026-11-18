@@ -217,6 +217,25 @@ node tools/admin.js remove prenom@exemple.fr
 
 Aucun mot de passe ne passe par cet outil : il modifie seulement le droit admin dans `data/mochi.db`. Recharge la page après coup.
 
+## 6 sexies. Textes légaux (avant toute mise en ligne)
+
+Les pages **Mentions légales, Conditions d'utilisation (avec la charte de bonne conduite), Confidentialité (RGPD) et Cookies** sont dans `legal.js` (liens en bas de chaque page, `#/legal/…`). Elles décrivent le fonctionnement réel du site, et la page Confidentialité s'adapte aux services activés : elle ne cite Anthropic que si le correcteur Claude est actif, et Resend seulement si les e-mails partent vraiment.
+
+**À faire avant d'ouvrir le site**, en haut de `legal.js` (`LEGAL_INFO`) :
+- `editor` : ton prénom et ton nom (l'éditeur du site) ;
+- `contact` : une adresse e-mail de contact, qui sert aussi aux demandes RGPD ;
+- `host` : où tourne le site. Exemple pour un tunnel Cloudflare : « l'ordinateur personnel de l'éditeur (France), rendu accessible via Cloudflare, Inc., 101 Townsend St, San Francisco, CA 94107, États-Unis ».
+
+Tant qu'un de ces champs n'est pas rempli, il est **surligné** sur les pages, avec un avertissement. Si tu modifies ces textes plus tard, change `LEGAL_INFO.version` et `TERMS_VERSION` (`server.js`).
+
+Ce que le site fait déjà pour être en règle :
+- case obligatoire à l'inscription (conditions, confidentialité, 15 ans ou accord parental), avec la date et la version enregistrées ;
+- un seul cookie, strictement nécessaire (connexion), et ni mesure d'audience ni publicité : **aucun bandeau de consentement n'est requis**, seulement un message d'information ;
+- export de la progression et suppression du compte depuis le profil ;
+- données temporaires (adresses IP, e-mails des tentatives, sessions et liens expirés) purgées toutes les heures.
+
+> Ce sont des modèles sérieux et fidèles au code, pas un avis juridique. Si le site devient public à grande échelle ou commercial, fais-les relire.
+
 ## 7. Toutes les variables d'environnement
 
 | Variable | Par défaut | Rôle |

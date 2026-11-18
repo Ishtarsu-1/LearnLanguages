@@ -592,3 +592,20 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
   ok(tabWords("en").includes("Voir mes mots en révision"), "lien depuis Mes mots");
   state.cards = cards0; location.hash = "";
 }
+{ // Textes légaux, consentement, cookies
+  for (const p of ["mentions", "cgu", "confidentialite", "cookies"]) { location.hash = `#/legal/${p}`; ok(viewLegal(p).includes(LEGAL_PAGES[p]) && viewLegal(p).includes("Dernière mise à jour"), `page ${p}`); }
+  ok(viewLegal("confidentialite").includes("mark class=\"todo\"") && viewLegal("mentions").includes("à compléter"), "champs à compléter signalés");
+  const f0 = features;
+  features = { llm: true, engine: "Claude", tts: {}, mail: "console" };
+  ok(/Anthropic/.test(legalPrivacy()) && !/Resend/.test(legalPrivacy().replace("aucun service d'envoi", "")) && /Transferts hors/.test(legalPrivacy()), "confidentialité : Claude actif → Anthropic + transfert");
+  features = { llm: true, engine: "Ollama (qwen)", tts: { en: ["a"] }, mail: "resend" };
+  ok(!/Anthropic/.test(legalPrivacy()) && /sur le serveur de Mochi/.test(legalPrivacy()) && /Resend/.test(legalPrivacy()), "confidentialité : Ollama local, Resend actif");
+  features = f0;
+  ok(legalCookies().includes("mochi_sid") && legalCookies().includes("aucune mesure d'audience") && legalCookies().includes("mochi-ko-kbd"), "cookies : inventaire");
+  ok(legalFooter().includes("#/legal/confidentialite"), "pied de page");
+  location.hash = "#/"; ok(cookieNotice().includes("notice-ok"), "information cookies affichée");
+  actions["notice-ok"](); ok(cookieNotice() === "", "puis masquée");
+  serverOn = true; const acc = account; account = null;
+  ok(viewAuth("inscription").includes('name="accept" required') && viewAuth("inscription").includes("#/legal/cgu") && !viewAuth("connexion").includes('name="accept"'), "inscription : case obligatoire");
+  account = acc; location.hash = "";
+}

@@ -23,7 +23,7 @@ server.listen(0, "127.0.0.1", async () => {
     ok(R.mode === "resend" && seen.u === "https://api.resend.com/emails" && seen.o.headers.Authorization === "Bearer re_test" && body.to[0] === "x@y.fr" && body.from === "Mochi <a@b.fr>", "envoi Resend");
     ok(body.html.includes("Léa &lt;b&gt;") && !body.html.includes("<b>"), "HTML échappé");
     // Inscription → e-mail de vérification, compte non vérifié
-    let r = await call("POST", "/api/signup", { email: "Zoe@Test.fr", password: "motdepasse1", name: "Zoé" });
+    let r = await call("POST", "/api/signup", { email: "Zoe@Test.fr", password: "motdepasse1", accept: true, name: "Zoé" });
     const ck1 = r.cookie; await tick();
     ok(r.data.user.email_verified === false, "non vérifié à l'inscription");
     let m = mail.outbox.at(-1);

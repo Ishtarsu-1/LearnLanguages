@@ -28,7 +28,7 @@ server.listen(0, "127.0.0.1", async () => {
   const req = { lang: "ko", prompt: "Dis que tu aimes le café.", who: "À un inconnu", register: "haeyo", reference: "저는 커피를 좋아해요.", text: "저는 커피을 좋아해" };
   try {
     ok((await call("POST", "/api/feedback", req)).status === 401, "invité refusé");
-    const su = await call("POST", "/api/signup", { email: "llm@test.fr", password: "motdepasse1" });
+    const su = await call("POST", "/api/signup", { email: "llm@test.fr", password: "motdepasse1", accept: true });
     ok(su.data.features.llm === true, "fonction annoncée au client");
     ok((await call("POST", "/api/feedback", { ...req, text: "x".repeat(501) })).status === 400, "texte trop long");
     ok((await call("POST", "/api/feedback", { ...req, lang: "fr" })).status === 400, "langue invalide");
@@ -62,7 +62,7 @@ server.listen(0, "127.0.0.1", async () => {
       FSRS: { createEmptyCard: (d) => ({ due: d, stability: 0, state: 0, reps: 0 }), fsrs: () => ({}) },
     };
     ctx.window = ctx; vm.createContext(ctx);
-    for (const f of ["content.js", "app.js", "exercises.js", "placement.js", "library.js", "missions.js", "story.js", "keyboard.js", "hangul.js", "cosmetics.js", "tour.js"]) vm.runInContext(fs.readFileSync(path.join(APP, f), "utf8"), ctx);
+    for (const f of ["content.js", "app.js", "exercises.js", "placement.js", "library.js", "missions.js", "story.js", "keyboard.js", "hangul.js", "cosmetics.js", "tour.js", "legal.js"]) vm.runInContext(fs.readFileSync(path.join(APP, f), "utf8"), ctx);
     const run = (c) => vm.runInContext(c, ctx);
     run(`account = { id: 9, email: "a@b.c", name: "", avatar_emoji: "🐰" }; features = { llm: true, engine: "Claude" }; sync.meta = { cursor: 0, epoch: 0, snap: emptySnap(), times: {} }; state.langs.ko.hangulDone = true;`);
     run(`location.hash = "#/lang/ko/produire"; route(); ui.prod.ex = PRODUCTION.ko.find((e) => e.id === "p-ko-3");`);

@@ -1966,6 +1966,7 @@ function viewProfile() {
       <button class="btn ghost small" data-act="reset">Réinitialiser ma progression</button>
       <a class="btn ghost small" href="#/pourquoi">🔬 Pourquoi ça marche ?</a>
       <button class="btn ghost small" data-tour="open">🧭 Revoir la visite guidée</button>
+      <a class="btn ghost small" href="#/legal/confidentialite">🔒 Mes données et confidentialité</a>
       ${isAdmin() ? `<a class="btn small" href="#/admin">🛠️ Tableau de bord admin</a>` : ""}
     </div>
 
@@ -2080,6 +2081,7 @@ function viewAuth(mode) {
       <label>E-mail<input class="input" type="email" name="email" autocomplete="email" required /></label>
       <label>Mot de passe<input class="input" type="password" name="password" autocomplete="${signup ? "new-password" : "current-password"}" ${signup ? 'minlength="8"' : ""} required />
         ${signup ? `<small class="muted">8 caractères minimum.</small>` : ""}</label>
+      ${signup ? `<label class="row consent"><input type="checkbox" name="accept" required /> <span>J'accepte les <a class="lnk" href="#/legal/cgu" target="_blank">conditions d'utilisation</a> et la <a class="lnk" href="#/legal/confidentialite" target="_blank">politique de confidentialité</a>, et j'ai au moins 15 ans (sinon, l'accord d'un parent).</span></label>` : ""}
       <p class="form-err" hidden></p>
       <button class="btn">${signup ? "Créer mon compte" : "Se connecter"}</button>
       ${signup && (cards || xp) ? `<p class="muted center"><small>✨ Ta progression actuelle (${cards} carte(s), ${xp} XP) sera rattachée à ton compte.</small></p>` : ""}
@@ -2298,6 +2300,7 @@ function route() {
   else if (parts[0] === "connexion" || parts[0] === "inscription") { html = viewAuth(parts[0]); nav = "profil"; }
   else if (parts[0] === "pourquoi") { html = viewWhy(); nav = "pourquoi"; }
   else if (parts[0] === "admin") { html = viewAdmin(); nav = "profil"; }
+  else if (parts[0] === "legal") { html = viewLegal(parts[1]); nav = ""; }
   else if (parts[0] === "mot-de-passe-oublie") { html = viewForgot(); nav = "profil"; }
   else if (parts[0] === "reinitialiser" && parts[1]) { html = viewReset(parts[1]); nav = "profil"; }
   else if (parts[0] === "verifier" && parts[1]) {
@@ -2319,7 +2322,7 @@ function route() {
 
   document.body.dataset.lang = lang || state.lastLang || "ko";
   applyDisplay();
-  $app.innerHTML = html;
+  $app.innerHTML = html + (typeof legalFooter === "function" ? legalFooter() + cookieNotice() : ""); // legal.js
   const logo = document.getElementById("logo-o"); if (logo && !logo.innerHTML) logo.innerHTML = LOGO_FACE;
   $app.querySelectorAll(".ko, .en").forEach((e) => { if (!e.classList.contains("lang-card")) e.lang = e.classList.contains("ko") ? "ko" : "en"; });
   if (!hashChanged) $app.querySelector(".view")?.classList.add("still");
@@ -2676,7 +2679,7 @@ $app.addEventListener("submit", async (e) => {
   try {
     const kind = form.dataset.form;
     if (kind === "signup") {
-      await applyAuth(await api("POST", "/api/signup", { email: f.email.trim(), password: f.password, name: f.name }), { isNew: true });
+      await applyAuth(await api("POST", "/api/signup", { email: f.email.trim(), password: f.password, name: f.name, accept: f.accept === "on" }), { isNew: true });
       location.hash = "#/profil"; toast("Compte créé, bienvenue ! 🎉");
     } else if (kind === "login") {
       await applyAuth(await api("POST", "/api/login", { email: f.email.trim(), password: f.password }));

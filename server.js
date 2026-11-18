@@ -103,6 +103,9 @@ db.exec(`
 // Migration : colonnes de synchro sur users
 const userCols = db.prepare("PRAGMA table_info(users)").all().map((c) => c.name);
 if (!userCols.includes("sync_rev")) db.exec("ALTER TABLE users ADD COLUMN sync_rev INTEGER NOT NULL DEFAULT 0");
+// Acceptation des conditions d'utilisation et de la politique de confidentialité (date + version)
+if (!userCols.includes("terms_version")) db.exec("ALTER TABLE users ADD COLUMN terms_version TEXT");
+if (!userCols.includes("terms_accepted_at")) db.exec("ALTER TABLE users ADD COLUMN terms_accepted_at TEXT");
 if (!userCols.includes("is_admin")) db.exec("ALTER TABLE users ADD COLUMN is_admin INTEGER NOT NULL DEFAULT 0"); // attribué par tools/admin.js
 if (!userCols.includes("email_verified_at")) db.exec("ALTER TABLE users ADD COLUMN email_verified_at TEXT");
 db.exec(`CREATE TABLE IF NOT EXISTS email_tokens (
@@ -144,7 +147,18 @@ function sendMail(user, kind) {
   const m = mailer.mails[kind](user.name, link);
   mail.send({ to: user.email, ...m }).catch((e) => console.error("E-mail :", e.message));
 }
-const featuresJson = (loggedIn = true) => JSON.stringify({ llm: loggedIn && LLM_ON, engine: llm.ENGINE, tts: tts.info() });
+// Version des textes légaux acceptés à l'inscription (à changer quand ils évoluent : legal.js)
+const TERMS_VERSION = "2026-11-18";
+// Minimisation (RGPD) : les données temporaires sont purgées toutes les heures, pas seulement au démarrage
+function purgeExpired() {
+  const t = new Date().toISOString();
+  db.prepare("DELETE FROM sessions WHERE expires_at < ?").run(t);
+  db.prepare("DELETE FROM email_tokens WHERE expires_at < ?").run(t);
+  db.prepare("DELETE FROM login_attempts WHERE window_start < ?").run(Date.now() - 86400e3); // IP et e-mails : 24 h max
+  db.prepare("DELETE FROM llm_usage WHERE day < ?").run(new Date(Date.now() - 90 * 864e5).toISOString().slice(0, 10)); // compteurs : 90 jours
+}
+setInterval(purgeExpired, 3600e3).unref();
+const featuresJson = (loggedIn = true) => JSON.stringify({ llm: loggedIn && LLM_ON, engine: llm.ENGINE, tts: tts.info(), mail: mail.mode });
 
 function hashPassword(pw) {
   const salt = crypto.randomBytes(16);
@@ -362,14 +376,16 @@ async function api(req, res, url) {
   const ip = req.socket.remoteAddress || "?";
 
   if (route === "POST /api/signup") {
-    const { email, password, name } = await readJson(req);
+    const { email, password, name, accept } = await readJson(req);
     const err = validCredentials(email, password);
     if (err) return fail(res, 400, err);
+    if (accept !== true) return fail(res, 400, "Accepte les conditions d'utilisation et la politique de confidentialité pour créer un compte.");
     const wait = waitFor(`signup:${ip}`);
     if (wait) return tooMany(res, wait);
     recordAttempt(`signup:${ip}`); // compte aussi les inscriptions réussies : limite le spam
     if (db.prepare("SELECT 1 FROM users WHERE email = ?").get(email.trim())) return fail(res, 409, "Un compte existe déjà avec cette adresse.");
-    const info = db.prepare("INSERT INTO users (email, pass, name, created_at) VALUES (?, ?, ?, ?)").run(email.trim(), await hashPassword(password), cleanName(name), now());
+    const t = now();
+    const info = db.prepare("INSERT INTO users (email, pass, name, created_at, terms_version, terms_accepted_at) VALUES (?, ?, ?, ?, ?, ?)").run(email.trim(), await hashPassword(password), cleanName(name), t, TERMS_VERSION, t);
     createSession(res, Number(info.lastInsertRowid), req);
     sendMail(db.prepare("SELECT * FROM users WHERE id = ?").get(info.lastInsertRowid), "verify");
     return send(res, 201, { user: publicUser(db.prepare("SELECT * FROM users WHERE id = ?").get(info.lastInsertRowid)), legacy_state: null, features: JSON.parse(featuresJson()) });
@@ -614,6 +630,7 @@ const STATIC = {
   "/hangul.js": ["hangul.js", "text/javascript; charset=utf-8"],
   "/cosmetics.js": ["cosmetics.js", "text/javascript; charset=utf-8"],
   "/tour.js": ["tour.js", "text/javascript; charset=utf-8"],
+  "/legal.js": ["legal.js", "text/javascript; charset=utf-8"],
   "/styles.css": ["styles.css", "text/css; charset=utf-8"],
   "/tokens.css": ["tokens.css", "text/css; charset=utf-8"],
   "/fonts/pretendard.css": ["fonts/pretendard.css", "text/css; charset=utf-8"],

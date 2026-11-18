@@ -796,3 +796,23 @@ code { background: var(--surface-2); padding: 2px 6px; border-radius: var(--radi
 .mc-ctxfr { margin: 0; }
 .mc-foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
 .my-card[hidden] { display: none; }
+
+/* Pages légales, pied de page, information cookies */
+.legal-body h2 { font-size: var(--text-xl); margin: 22px 0 8px; }
+.legal-body h2:first-child { margin-top: 0; }
+.legal-body p, .legal-body li { line-height: var(--leading-latin); }
+.legal-body ul { padding-left: 22px; }
+.legal-table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); min-width: 640px; }
+.legal-table th, .legal-table td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--border); }
+.legal-table thead th { color: var(--ink-muted); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: .03em; }
+mark.todo { background: var(--honey-50); color: var(--warning); font-weight: 800; padding: 0 4px; border-radius: 4px; }
+.site-footer { margin: var(--space-7) auto 0; padding: var(--space-5) 16px calc(var(--space-5) + 80px); max-width: 1120px; display: flex; flex-direction: column; align-items: center; gap: 8px; border-top: 1px solid var(--border); }
+.site-footer nav { display: flex; flex-wrap: wrap; gap: 6px 18px; justify-content: center; }
+.site-footer a { color: var(--ink-muted); font-weight: 700; font-size: var(--text-sm); min-height: 32px; display: inline-flex; align-items: center; }
+.site-footer a:hover { color: var(--primary); }
+.cookie-notice { position: fixed; left: 50%; transform: translateX(-50%); bottom: 16px; z-index: 40; width: min(620px, calc(100% - 24px)); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 12px 16px; border-radius: var(--radius-lg); background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow-3); font-size: var(--text-sm); }
+@media (max-width: 760px) { .cookie-notice { bottom: 84px; } }
+.consent { display: flex !important; flex-direction: row !important; gap: 10px; align-items: flex-start !important; font-weight: 600 !important; font-size: var(--text-sm); }
+.consent input { flex: none; width: 20px; height: 20px; }
+.cookie-notice p { flex: 1; min-width: 220px; margin: 0; }
+.consent input { margin-top: 3px; }
