@@ -21,6 +21,7 @@
 | Appli | Installable (PWA), marche hors ligne (révisions, lecture), synchro au retour du réseau, audio des cartes dues pré-téléchargé |
 | Admin | Comptes admin (`tools/admin.js`) : toutes les leçons ouvertes, tableau de bord `#/admin` (comptes, usage, fonctionnalités, contenu, accès direct) |
 | Thèmes | 8 thèmes de situation (café, rencontre, transports, cuisine, sport, séries, gaming, travail), 10 textes par langue, saveurs de Mochi à débloquer (10 mots solides), thèmes favoris, bibliothèque filtrable |
+| Livres | Bibliothèque de lectures graduées : livres en chapitres (A1), questions de compréhension, chapitre suivant débloqué, mots inconnus en cartes |
 | Audio | Voix du navigateur ou vraies voix du serveur (Kokoro, MeloTTS, cache disque), Profil › Audio : état, choix et test des voix, aide si aucune voix |
 
 ---

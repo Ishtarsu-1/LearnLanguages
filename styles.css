@@ -618,3 +618,14 @@ code { background: var(--surface-2); padding: 2px 6px; border-radius: var(--radi
 .lib-filter { margin-bottom: 16px; }
 .lib-filter .chip { cursor: pointer; border: 1px solid var(--border); }
 .lib-filter .chip.active { background: var(--primary-soft); color: var(--primary); border-color: var(--primary); }
+
+/* Bibliothèque : livres et chapitres (§15) */
+.chapter-list { display: flex; flex-direction: column; gap: 12px; }
+.chapter-row { display: flex; flex-direction: column; gap: 6px; }
+.chapter-row > .btn { align-self: flex-start; }
+.chapter { display: flex; align-items: center; gap: 14px; transition: transform .12s; }
+.chapter:hover { transform: translateY(-2px); }
+.chapter .ch-n { width: 40px; height: 40px; flex: none; display: grid; place-items: center; border-radius: var(--radius-full); background: var(--primary-soft); color: var(--primary); font-weight: 800; }
+.chapter.done .ch-n { background: var(--matcha-50); color: var(--success); }
+.chapter.locked { opacity: .6; }
+.chapter.locked .ch-n { background: var(--surface-2); color: var(--ink-muted); }

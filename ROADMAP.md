@@ -35,7 +35,7 @@
 | ~~**P1**~~ | ~~Ordre d'introduction des nouveaux mots (anti-interférence)~~ ✅ fait | 🟢 | 🆓 | thèmes |
 | **P1** | Nouveaux types d'exercices + alternance (alternance ✅) | 🟡 | 🆓 | — |
 | **P1** | Paires minimales multi-voix (✅ avec les voix du navigateur ; reste : vraies voix) | 🟡 | 🆓 | vraies voix |
-| **P1** | Bibliothèque de lectures graduées (lecture + écoute) | 🔴 | 🆓 | contenu, voix |
+| **P1** | Bibliothèque de lectures graduées (lecture + écoute) (🟢 moteur + 2 livres ; reste : volume, surlignage mot à mot) | 🔴 | 🆓 | contenu, voix |
 | **P1** | Génération de textes calibrés par LLM | 🔴 | 🆓/💶 | LLM + analyseur |
 | **P2** | Mochi, la mascotte, et la collection de Mochis (🟢 saveurs par thème dans l'onglet Thèmes ; reste : accessoires) | 🟡 | 🆓 | charte graphique |
 | ~~**P2**~~ | ~~Série flexible + quêtes hebdomadaires~~ ✅ fait (reste : récompenses cosmétiques) | 🟡 | 🆓 | — |
@@ -189,7 +189,9 @@ Application du §14.
 - **Score par contraste** (ㄱ/ㅋ/ㄲ, ㅓ/ㅗ, th/s…) pour repérer les points faibles, affiché dans le profil.
 - Sessions courtes (2 à 3 minutes), à glisser dans la séance du jour quand un contraste est faible.
 
-### Bibliothèque de lectures graduées (lecture + écoute) 🔴 🆓 *(nouveau)*
+### Bibliothèque de lectures graduées (lecture + écoute) 🔴 🆓 *(moteur ✅)*
+Fait : `library.js` (livres en chapitres, niveau, thèmes, vocabulaire propre), chaque chapitre lu dans le lecteur habituel (audio des vraies voix, glossaire, shadowing), questions de compréhension après « J'ai fini » (erreurs reposées), chapitre suivant ouvert ensuite, mots inconnus du chapitre ajoutables en cartes, progression synchronisée (`books`), section « 📚 Livres gradués » dans Lire. Deux livres A1 de 3 chapitres : *The Lost Cat* et *새 친구*. Reste : le volume (livres A2/B1 de 300 à 2 000 mots), le surlignage mot à mot pendant l'écoute (Kokoro-FastAPI fournit des horodatages par mot).
+
 Application du §15.
 - Petits livres de 300 à 2 000 mots, classés par niveau (A1, A2, B1) et par thème, écrits pour rester dans la bonne couverture (~95-98 %).
 - **Mode lecture + écoute** : l'audio joue et le mot en cours est surligné (timestamps des vraies voix).

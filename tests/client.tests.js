@@ -335,3 +335,30 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
   ok(state.settings.themes.join() === favs0.join(), "favori retiré");
   ok(flatten(state).kv["settings.themes"] !== undefined, "favoris synchronisés");
 }
+{ // Bibliothèque de lectures graduées
+  for (const lang of ["en", "ko"]) for (const b of BOOKS[lang]) {
+    ok(b.chapters.length >= 3 && b.chapters.every((ch) => ch.questions.length >= 2 && ch.questions.every((q) => q.options.length >= 2)), `${lang}: livre ${b.id} complet`);
+    for (const ch of b.chapters) for (const [src] of ch.sentences) for (const w of parseSentence(src, lang)) for (const g of w.segs) for (const l of g.lemmas) ok(LEXICON[lang][l], `${lang}: lemme manquant « ${l} » dans « ${src} » (${b.id})`);
+    for (const ch of b.chapters) ok(textById(lang, ch.id)?.book === b.id, `${lang}: chapitre ${ch.id} lisible dans le lecteur`);
+  }
+  const lang = "en", b = BOOKS.en[0], L = state.langs.en, acc = account;
+  account = null; L.books = {};
+  ok(tabLibrary("en").includes("Livres gradués") && tabLibrary("en").includes(`#/lang/en/livre/${b.id}`), "livres dans l'onglet Lire");
+  ok(viewBook("en", b.id).includes("🔒") && chapterOpen("en", b, 0) && !chapterOpen("en", b, 1), "chapitres dans l'ordre");
+  ok(viewReader("en", b.chapters[0].id).includes(`#/lang/en/livre/${b.id}`), "retour du lecteur vers le livre");
+  // Lecture du chapitre 1 → questions → chapitre 2 ouvert
+  location.hash = `#/lang/en/lire/${b.chapters[0].id}`; route();
+  actions["finish-read"]();
+  ok(location.hash === `#/lang/en/livre/${b.id}/quiz/1`, "après la lecture : les questions " + location.hash);
+  route();
+  let guard = 0;
+  while (ui.quiz.queue.length && guard++ < 20) { const q = ui.quiz.qs[ui.quiz.queue[0]]; answerQuiz(true, q.answer); nextQuiz(); }
+  viewBook("en", b.id, "quiz", "1"); // écran de fin : enregistre le score
+  ok(L.books[`${b.id}:1`] === b.chapters[0].questions.length && chapterOpen("en", b, 1), "score enregistré, chapitre 2 ouvert");
+  ok(flatten(state).kv[`langs.en.books.${b.id}:1`] !== undefined, "progression synchronisée");
+  const before = state.cards.length;
+  actions["book-capture"]({ dataset: { id: b.chapters[0].id } });
+  ok(state.cards.length > before, "mots inconnus du chapitre en cartes");
+  account = { id: 1, is_admin: true }; ok(chapterOpen("en", b, 2), "admin : tout ouvert"); account = acc;
+  location.hash = ""; ui.quiz = null;
+}

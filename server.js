@@ -580,6 +580,7 @@ const STATIC = {
   "/content.js": ["content.js", "text/javascript; charset=utf-8"],
   "/exercises.js": ["exercises.js", "text/javascript; charset=utf-8"],
   "/placement.js": ["placement.js", "text/javascript; charset=utf-8"],
+  "/library.js": ["library.js", "text/javascript; charset=utf-8"],
   "/styles.css": ["styles.css", "text/css; charset=utf-8"],
   "/tokens.css": ["tokens.css", "text/css; charset=utf-8"],
   "/fonts/pretendard.css": ["fonts/pretendard.css", "text/css; charset=utf-8"],

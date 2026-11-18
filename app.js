@@ -20,7 +20,7 @@ const STORE_KEY = "mochi-state-v2";
 const langDefaults = () => ({
   xp: 0, streak: 0, lastStreakDay: null, seconds: 0, todayDate: null, todaySec: 0, started: false,
   known: {}, unknown: {}, readTexts: {}, fullDays: {}, catchUp: false, session: {}, introduced: { date: null, count: 0 },
-  hangulDone: false, hangulDays: {}, grammarDone: {}, grammarMiss: {}, earStats: {}, errors: {}, prodDone: {}, quests: {},
+  hangulDone: false, hangulDays: {}, grammarDone: {}, grammarMiss: {}, earStats: {}, errors: {}, prodDone: {}, quests: {}, books: {},
 });
 const defaultState = () => ({
   name: "", avatar: "🐰", goal: 10, lastLang: null,
@@ -82,7 +82,7 @@ async function api(method, url, body, raw) {
 //   - compteurs: XP, temps, activité → on envoie des deltas, le serveur additionne
 //  « snap » = ce que le serveur connaît déjà ; on n'envoie que la différence.
 // ============================================================
-const MAP_KEYS = ["known", "unknown", "readTexts", "fullDays", "hangulDays", "grammarDone", "grammarMiss", "earStats", "errors", "prodDone", "quests"];
+const MAP_KEYS = ["known", "unknown", "readTexts", "fullDays", "hangulDays", "grammarDone", "grammarMiss", "earStats", "errors", "prodDone", "quests", "books"];
 const CTR_KEYS = ["xp", "seconds"];
 const sync = { status: "idle", timer: null, running: false, again: false, meta: null };
 
@@ -515,7 +515,9 @@ function splitAround(words, w, g) {
 }
 
 for (const lang of Object.keys(TEXTS)) for (const t of TEXTS[lang]) t.parsed = t.sentences.map(([src, fr]) => toSentence(src, lang, fr));
-const textById = (lang, id) => TEXTS[lang].find((t) => t.id === id);
+// Chapitres des livres (library.js) : lus dans le même lecteur que les textes
+const CHAPTER_TEXTS = Object.fromEntries(Object.keys(LANGUAGES).map((l) => [l, {}]));
+const textById = (lang, id) => TEXTS[lang].find((t) => t.id === id) || CHAPTER_TEXTS[lang][id];
 
 // ---------- Modèle du vocabulaire connu & couverture (§3) ----------
 function stabilityMap(lang) {
@@ -1180,6 +1182,7 @@ function tabLibrary(lang) {
       <button class="chip ${filter ? "" : "active"}" data-act="lib-theme" data-t="">Tous</button>
       ${used.map((th) => `<button class="chip ${filter === th.id ? "active" : ""}" data-act="lib-theme" data-t="${th.id}">${th.icon} ${esc(th.name)}${favs.includes(th.id) ? " ⭐" : ""}</button>`).join("")}
     </div>
+    ${!filter && BOOKS[lang].length ? `<h2 class="section-title">📚 Livres gradués</h2><div class="text-list">${bookCards(lang)}</div><h2 class="section-title">Textes courts</h2>` : ""}
     <div class="text-list">
       ${list.map(({ t, c, z }) => `
         <a class="card text-item" href="#/lang/${lang}/lire/${t.id}">
@@ -1236,7 +1239,7 @@ function viewReader(lang, textId) {
   return `
   <section class="view reader ${R.hide ? "hide-text" : ""}">
     <div class="lesson-top">
-      <a class="close" href="#/lang/${lang}/lire" aria-label="Retour" data-act="stop">←</a>
+      <a class="close" href="${t.book ? `#/lang/${lang}/livre/${t.book}` : `#/lang/${lang}/lire`}" aria-label="Retour" data-act="stop">←</a>
       <div style="flex:1"><h1 style="font-size:1.4rem">${t.icon} ${esc(t.title)}</h1></div>
       <span class="zone ${z.k}">${z.label}</span>
     </div>
@@ -1944,6 +1947,7 @@ function contentStats() {
     lang: l,
     rows: [
       ["📖 Textes", TEXTS[l].length, `${sentences(l)} phrases`],
+      ["📚 Livres gradués", BOOKS[l].length, `${BOOKS[l].reduce((a, b) => a + b.chapters.length, 0)} chapitres`],
       ["📒 Mots du lexique", Object.keys(LEXICON[l]).length, `${Object.keys(SEMANTIC_GROUPS[l] || {}).length} catégories, ${(CONFUSABLE[l] || []).length} paires de contraires`],
       ["💬 Exercices de production", PRODUCTION[l].length, `${(FREE_PROMPTS[l] || []).length} sujets libres`],
       ["🎧 Paires de sons", EAR[l].pairs.length, ""],
@@ -1993,6 +1997,7 @@ function viewAdmin() {
     <div class="card admin-links">
       <p><b>🇰🇷 Hangul</b> ${HANGUL_DAYS.map((x, i) => `<a class="chip" href="#/lang/ko/hangul/${i + 1}">J${i + 1}</a>`).join("")}</p>
       <p><b>🇰🇷 Grammaire</b> ${KO_GRAMMAR.map((g, i) => `<a class="chip ko" href="#/lang/ko/grammaire/${g.id}">${i + 1}. ${esc(g.title)}</a>`).join("")}</p>
+      ${Object.keys(LANGUAGES).map((l) => `<p><b>${LANGUAGES[l].flag} Livres</b> ${BOOKS[l].map((b) => `<a class="chip" href="#/lang/${l}/livre/${b.id}">${b.icon} ${esc(b.title)}</a>`).join("")}</p>`).join("")}
       ${Object.keys(LANGUAGES).map((l) => `<p><b>${LANGUAGES[l].flag} Textes</b> ${TEXTS[l].map((t) => `<a class="chip" href="#/lang/${l}/lire/${t.id}">${esc(t.title)}</a>`).join("")}</p>`).join("")}
       <p><b>Onglets</b> ${Object.keys(LANGUAGES).flatMap((l) => TABS[l].map(([k, n]) => `<a class="chip" href="#/lang/${l}/${k}">${LANGUAGES[l].flag} ${n}</a>`)).join("")}</p>
     </div>
@@ -2155,6 +2160,7 @@ function route() {
     state.lastLang = lang; state.langs[lang].started = true; save();
     const [, , tab, a] = parts;
     if (tab === "lire" && a) html = viewReader(lang, a);
+    else if (tab === "livre" && a) { html = viewBook(lang, a, parts[4], parts[5]); nav = "lire"; }
     else if (tab === "revisions" && a === "go") { if (hashChanged) ui.review = null; html = viewReviewSession(lang); }
     else if (tab === "hangul" && isKo(lang)) html = viewHangul(Number(a) || 1);
     else if (tab === "grammaire" && isKo(lang)) html = viewGrammar(a);
@@ -2278,6 +2284,8 @@ const actions = {
     track(lang, "read");
     bumpSession(lang, "input");
     stopAudio();
+    const t = textById(lang, id);
+    if (t?.book) return finishChapter(lang, t);
     location.hash = reviewCount(lang) ? `#/lang/${lang}/revisions/go` : `#/lang/${lang}/produire`;
   },
 

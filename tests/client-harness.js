@@ -19,6 +19,6 @@ ctx.FSRS = {
 };
 ctx.window = ctx;
 vm.createContext(ctx);
-for (const f of ["content.js", "app.js", "exercises.js", "placement.js"]) vm.runInContext(fs.readFileSync(path.join(dir, f), "utf8"), ctx, { filename: f });
+for (const f of ["content.js", "app.js", "exercises.js", "placement.js", "library.js"]) vm.runInContext(fs.readFileSync(path.join(dir, f), "utf8"), ctx, { filename: f });
 vm.runInContext(fs.readFileSync(path.join(__dirname, "client.tests.js"), "utf8"), ctx, { filename: "client.tests.js" });
 if (vm.runInContext("fails", ctx)) process.exitCode = 1;
