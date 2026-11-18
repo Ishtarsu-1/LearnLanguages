@@ -518,3 +518,24 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
   // Menu groupé
   ok(tabExercises("ko").includes("✍️ Écrit") && tabExercises("ko").includes("Changer d'exercice"), "menu regroupé");
 }
+{ // Visite guidée de la première visite
+  const s0 = state.settings.tourDone, cards0 = state.cards, started = Object.fromEntries(Object.entries(state.langs).map(([k, L]) => [k, L.started]));
+  state.cards = []; Object.values(state.langs).forEach((L) => (L.started = false)); state.settings.tourDone = false;
+  ok(tourShouldShow(), "nouveau venu : visite proposée");
+  let made = null; const body = document.body, gid = document.getElementById;
+  document.body = { ...body, appendChild: (x) => (made = x) };
+  const realCreate = document.createElement; document.createElement = () => ({ id: "", className: "", innerHTML: "", querySelector: () => ({ focus() {} }) });
+  document.getElementById = (id) => (id === "tour" ? null : gid(id));
+  openTour();
+  ok(made && made.innerHTML.includes("Bienvenue sur Mochi") && made.innerHTML.includes('role="dialog"') && made.innerHTML.includes("Passer la visite"), "étape 1 : dialogue accessible");
+  document.getElementById = (id) => (id === "tour" ? made : null);
+  for (let i = 1; i < TOUR_STEPS.length; i++) { ui.tour.i = i; renderTour(); }
+  ok(made.innerHTML.includes("C'est parti") && made.innerHTML.includes("5 jours sur 7"), "dernière étape");
+  made.remove = () => {}; closeTour();
+  ok(state.settings.tourDone && !tourShouldShow() && ui.tour === null, "visite terminée : plus proposée");
+  ok(flatten(state).kv["settings.tourDone"] === true, "synchronisée (pas revue sur un autre appareil)");
+  state.settings.tourDone = false; state.langs.en.started = true; ok(!tourShouldShow(), "déjà de la progression : pas de visite imposée");
+  ok(viewHome().includes('data-tour="open"') && viewProfile().includes("Revoir la visite"), "on peut la revoir");
+  document.body = body; document.createElement = realCreate; document.getElementById = gid;
+  state.settings.tourDone = s0; state.cards = cards0; Object.entries(started).forEach(([k, v]) => (state.langs[k].started = v));
+}

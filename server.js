@@ -613,6 +613,7 @@ const STATIC = {
   "/keyboard.js": ["keyboard.js", "text/javascript; charset=utf-8"],
   "/hangul.js": ["hangul.js", "text/javascript; charset=utf-8"],
   "/cosmetics.js": ["cosmetics.js", "text/javascript; charset=utf-8"],
+  "/tour.js": ["tour.js", "text/javascript; charset=utf-8"],
   "/styles.css": ["styles.css", "text/css; charset=utf-8"],
   "/tokens.css": ["tokens.css", "text/css; charset=utf-8"],
   "/fonts/pretendard.css": ["fonts/pretendard.css", "text/css; charset=utf-8"],

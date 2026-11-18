@@ -6,10 +6,10 @@
 //  - Le reste de l'API n'est jamais mis en cache : la synchro gère le hors-ligne
 //    (les changements attendent le retour du réseau, voir syncNow dans app.js).
 // ============================================================
-const VERSION = "mochi-v7";
+const VERSION = "mochi-v8";
 const SHELL = `${VERSION}-shell`, STATIC = `${VERSION}-static`, AUDIO = "mochi-audio"; // l'audio survit aux mises à jour
 const SHELL_FILES = [
-  "/", "/app.js", "/content.js", "/exercises.js", "/placement.js", "/library.js", "/missions.js", "/story.js", "/keyboard.js", "/hangul.js", "/cosmetics.js", "/styles.css", "/tokens.css",
+  "/", "/app.js", "/content.js", "/exercises.js", "/placement.js", "/library.js", "/missions.js", "/story.js", "/keyboard.js", "/hangul.js", "/cosmetics.js", "/tour.js", "/styles.css", "/tokens.css",
   "/fonts/pretendard.css", "/fonts/jua.css", "/fonts/fredoka.css", "/favicon.svg", "/vendor/ts-fsrs-5.2.3.umd.js",
   "/manifest.webmanifest", "/icons/mochi-192.png",
 ];

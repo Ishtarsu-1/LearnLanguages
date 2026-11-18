@@ -24,7 +24,7 @@ const langDefaults = () => ({
 });
 const defaultState = () => ({
   name: "", avatar: "🐰", goal: 10, lastLang: null,
-  settings: { retention: 0.9, newPerDay: 12, cognateWeight: 0.8, particleColors: true, speed: 1, textScale: 1, zen: false, theme: "auto", voices: {}, themes: [], look: {}, lookSeen: [] },
+  settings: { retention: 0.9, newPerDay: 12, cognateWeight: 0.8, particleColors: true, speed: 1, textScale: 1, zen: false, theme: "auto", voices: {}, themes: [], look: {}, lookSeen: [], tourDone: false },
   langs: Object.fromEntries(Object.keys(LANGUAGES).map((k) => [k, langDefaults()])),
   cards: [], logs: [],
   history: {}, // { "AAAA-MM-JJ": { en: { sec, rev, prod, read } } } : suivi d'activité
@@ -902,7 +902,7 @@ function viewHome() {
         ["💬", "4 · Produire", "Tu écris une phrase, on te renvoie la version naturelle."],
       ].map(([i, t, d]) => `<div class="card feature"><div class="ico">${i}</div><div><h3>${t}</h3><p class="muted">${d}</p></div></div>`).join("")}
     </div>
-    <p style="margin-top:20px"><a class="btn ghost small" href="#/pourquoi">Pourquoi ça marche ? →</a></p>
+    <p style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap"><button class="btn ghost small" data-tour="open">🧭 Visite guidée du site</button><a class="btn ghost small" href="#/pourquoi">Pourquoi ça marche ? →</a></p>
   </section>`;
 }
 
@@ -1887,6 +1887,7 @@ function viewProfile() {
       <button class="btn ghost small" data-act="export">Exporter mes données (JSON)</button>
       <button class="btn ghost small" data-act="reset">Réinitialiser ma progression</button>
       <a class="btn ghost small" href="#/pourquoi">🔬 Pourquoi ça marche ?</a>
+      <button class="btn ghost small" data-tour="open">🧭 Revoir la visite guidée</button>
       ${isAdmin() ? `<a class="btn small" href="#/admin">🛠️ Tableau de bord admin</a>` : ""}
     </div>
 
@@ -2252,6 +2253,7 @@ function route() {
   ui.lastHash = location.hash;
   if (typeof enhanceKoInputs === "function") enhanceKoInputs($app); // clavier coréen (keyboard.js)
   if (typeof checkNewAccessories === "function") checkNewAccessories(); // accessoires gagnés (cosmetics.js)
+  if (typeof maybeStartTour === "function") maybeStartTour(); // visite guidée de la première visite (tour.js)
   const ans = document.getElementById("answer");
   if (ans) ans.focus();
 }
