@@ -19,7 +19,7 @@ const HAS_FSRS = typeof FSRS !== "undefined";
 const STORE_KEY = "mochi-state-v2";
 const langDefaults = () => ({
   xp: 0, streak: 0, lastStreakDay: null, seconds: 0, todayDate: null, todaySec: 0, started: false,
-  known: {}, unknown: {}, readTexts: {}, session: {}, introduced: { date: null, count: 0 },
+  known: {}, unknown: {}, readTexts: {}, fullDays: {}, catchUp: false, session: {}, introduced: { date: null, count: 0 },
   hangulDone: false, hangulDays: {}, grammarDone: {}, errors: {}, prodDone: {},
 });
 const defaultState = () => ({
@@ -34,7 +34,14 @@ function normalizeState(saved) {
   const base = defaultState();
   if (!saved || typeof saved !== "object") return base;
   const langs = {};
-  for (const k of Object.keys(LANGUAGES)) langs[k] = { ...langDefaults(), ...(saved.langs?.[k] || {}) };
+  for (const k of Object.keys(LANGUAGES)) {
+    const L = (langs[k] = { ...langDefaults(), ...(saved.langs?.[k] || {}) });
+    // Ancienne série quotidienne → jours de séance complète (pour la série hebdomadaire)
+    if (L.lastStreakDay && !Object.keys(L.fullDays).length) {
+      const d = new Date(`${L.lastStreakDay}T12:00:00`);
+      for (let i = 0; i < Math.min(L.streak, 400); i++) { L.fullDays[today(d)] = true; d.setDate(d.getDate() - 1); }
+    }
+  }
   return { ...base, ...saved, settings: { ...base.settings, ...saved.settings }, langs, cards: saved.cards || [], logs: saved.logs || [], history: saved.history || {} };
 }
 function loadState(key = STORE_KEY) {
@@ -75,7 +82,7 @@ async function api(method, url, body, raw) {
 //   - compteurs: XP, temps, activité → on envoie des deltas, le serveur additionne
 //  « snap » = ce que le serveur connaît déjà ; on n'envoie que la différence.
 // ============================================================
-const MAP_KEYS = ["known", "unknown", "readTexts", "hangulDays", "grammarDone", "errors", "prodDone"];
+const MAP_KEYS = ["known", "unknown", "readTexts", "fullDays", "hangulDays", "grammarDone", "errors", "prodDone"];
 const CTR_KEYS = ["xp", "seconds"];
 const sync = { status: "idle", timer: null, running: false, again: false, meta: null };
 
@@ -494,8 +501,18 @@ function newAllowance(lang) {
   const I = state.langs[lang].introduced;
   return Math.max(0, state.settings.newPerDay - (I.date === today() ? I.count : 0));
 }
-function newCards(lang) { return state.cards.filter((c) => c.lang === lang && c.fsrs.state === 0).slice(0, newAllowance(lang)); }
-function reviewCount(lang) { return dueCards(lang).length + newCards(lang).length; }
+// Retour après une absence (§16, charte §9) : on plafonne les révisions du jour
+// et on étale le retard sur plusieurs jours, sans nouvelles cartes en attendant.
+const CATCHUP_FIRST = 20, CATCHUP_DAILY = 40;
+function reviewQueue(lang) {
+  const all = dueCards(lang), s = session(lang);
+  return s.cap == null ? all : all.slice(0, Math.max(0, s.cap - (s.reviewed || 0)));
+}
+function newCards(lang) {
+  if (session(lang).cap != null) return [];
+  return state.cards.filter((c) => c.lang === lang && c.fsrs.state === 0).slice(0, newAllowance(lang));
+}
+function reviewCount(lang) { return reviewQueue(lang).length + newCards(lang).length; }
 
 function fmtInterval(due, now) {
   const m = (due - now) / 6e4;
@@ -516,6 +533,7 @@ function rateCard(cardId, rating) {
     id: uid(), card_id: c.id, user_id: "local", lang: c.lang, rating, reviewed_at: now.toISOString(),
     elapsed_days: log.elapsed_days, scheduled_days: log.scheduled_days, state: log.state,
   });
+  const s = session(c.lang); s.reviewed = (s.reviewed || 0) + 1;
   if (wasNew) { if (L.introduced.date !== today()) L.introduced = { date: today(), count: 0 }; L.introduced.count++; }
   // Production/écoute débloquées après 2 réussites sur des révisions espacées (pas les étapes du jour 1)
   if (c.type === "recog" && rating >= 3 && prevState === 2 && ++c.successes >= 2) unlockSiblings(c);
@@ -526,24 +544,63 @@ function rateCard(cardId, rating) {
 }
 
 // ---------- Session du jour, série, temps (§0, §8) ----------
+function lastActiveDay(lang) {
+  return Object.keys(state.history).filter((d) => d < today() && state.history[d][lang]).sort().pop() || null;
+}
+const daysBetween = (a, b) => Math.round((new Date(`${b}T12:00:00`) - new Date(`${a}T12:00:00`)) / 864e5);
 function session(lang) {
   const L = state.langs[lang];
-  if (L.session.date !== today()) L.session = { date: today(), input: false, review: false, production: false, captured: 0 };
+  if (L.session.date !== today()) {
+    const backlog = dueCards(lang).length, last = lastActiveDay(lang);
+    const away = last && daysBetween(last, today()) >= 4;
+    if (!L.catchUp && away && backlog > CATCHUP_FIRST) { L.catchUp = true; L.session = { cap: CATCHUP_FIRST, welcomeBack: backlog }; }
+    else if (L.catchUp && backlog > CATCHUP_DAILY) L.session = { cap: CATCHUP_DAILY };
+    else { L.catchUp = false; L.session = {}; }
+    Object.assign(L.session, { date: today(), input: false, review: false, production: false, captured: 0, reviewed: 0 });
+  }
   return L.session;
+}
+// Une séance compte si elle contient les révisions dues (ou au moins 10) ET un input
+// ou une production (§16). Ouvrir l'appli ne suffit pas.
+function sessionComplete(lang) {
+  const s = session(lang);
+  const reviewOk = s.review || reviewCount(lang) === 0 || (s.reviewed || 0) >= 10;
+  return reviewOk && (s.input || s.production);
 }
 function bumpSession(lang, key) {
   const s = session(lang);
   if (key === "captured") s.captured++; else s[key] = true;
-  const reviewOk = s.review || reviewCount(lang) === 0;
   const L = state.langs[lang];
-  if (s.input && reviewOk && s.production && L.lastStreakDay !== today()) {
-    L.streak = L.lastStreakDay === yesterday() ? L.streak + 1 : 1;
-    L.lastStreakDay = today();
-    toast("🔥 Session complète ! Série : " + L.streak);
+  if (sessionComplete(lang) && !L.fullDays[today()]) {
+    L.fullDays[today()] = true;
+    const w = weekly(L);
+    toast(w.thisWeek === WEEK_GOAL ? `🍡 Semaine régulière réussie ! Série : ${w.streak} semaine(s)` : `✓ Séance complète · ${w.thisWeek}/${WEEK_GOAL} cette semaine`);
   }
   save();
 }
-const currentStreak = (L) => (L.lastStreakDay === today() || L.lastStreakDay === yesterday() ? L.streak : 0);
+
+// Série hebdomadaire (§16) : objectif 5 jours sur 7, 2 jours de repos inclus.
+// Rater un jour ne casse rien ; seule une semaine sous l'objectif remet la série à zéro.
+const WEEK_GOAL = 5;
+function monday(d = new Date()) { const x = new Date(d); x.setHours(12, 0, 0, 0); x.setDate(x.getDate() - ((x.getDay() + 6) % 7)); return x; }
+function weekDays(L, mon) {
+  const d = new Date(mon), out = [];
+  for (let i = 0; i < 7; i++) { out.push({ day: today(d), done: !!L.fullDays[today(d)] }); d.setDate(d.getDate() + 1); }
+  return out;
+}
+function weekly(L) {
+  const mon = monday(), days = weekDays(L, mon);
+  const thisWeek = days.filter((x) => x.done).length;
+  let streak = thisWeek >= WEEK_GOAL ? 1 : 0;
+  for (let i = 1; i < 520; i++) {
+    mon.setDate(mon.getDate() - 7);
+    if (weekDays(L, mon).filter((x) => x.done).length >= WEEK_GOAL) streak++; else break;
+  }
+  const left = days.filter((x) => x.day >= today()).length; // jours restants, aujourd'hui compris
+  const todayDone = !!L.fullDays[today()];
+  return { streak, thisWeek, days, resting: !todayDone && thisWeek >= WEEK_GOAL, reachable: thisWeek + left - (todayDone ? 1 : 0) >= WEEK_GOAL };
+}
+const currentStreak = (L) => weekly(L).streak;
 const todayMin = (L) => (L.todayDate === today() ? Math.floor(L.todaySec / 60) : 0);
 
 let lastActivity = 0;
@@ -731,10 +788,11 @@ function viewLanguage(lang, tab) {
           <div class="stat-grid">
             <div class="stat"><span class="ico">⏱️</span><div><b>${hours.toFixed(1)} h</b><small>d'apprentissage</small></div></div>
             <div class="stat"><span class="ico">📒</span><div><b>${knownCount(lang)}</b><small>mots connus</small></div></div>
-            <div class="stat"><span class="ico">🔥</span><div><b>${currentStreak(L)}</b><small>sessions complètes d'affilée</small></div></div>
+            <div class="stat"><span class="ico">📅</span><div><b>${currentStreak(L)}</b><small>semaine(s) régulière(s)</small></div></div>
             <div class="stat"><span class="ico">⭐</span><div><b>${L.xp}</b><small>XP</small></div></div>
           </div>
         </div>
+        ${weekCard(L)}
         <div class="card">
           <h3>Vers le ${lvl[0]}</h3>
           <div class="bar" style="margin:10px 0 6px"><span style="width:${Math.min(100, (hours / lvl[1]) * 100)}%"></span></div>
@@ -743,6 +801,19 @@ function viewLanguage(lang, tab) {
       </aside>
     </div>
   </section>`;
+}
+
+// Semaine en cours : 7 pastilles, objectif 5 (§16). Jamais de compte à rebours.
+function weekCard(L) {
+  const w = weekly(L), names = ["L", "M", "M", "J", "V", "S", "D"];
+  const msg = w.thisWeek >= WEEK_GOAL ? "Semaine réussie ! Les jours restants sont des jours de repos."
+    : w.reachable ? `Encore ${WEEK_GOAL - w.thisWeek} jour(s) cette semaine. 2 jours de repos sont inclus.`
+    : "Cette semaine ne comptera pas pour la série, et ce n'est pas grave : chaque séance fait progresser.";
+  return `<div class="card week">
+    <h3>Ma semaine · ${w.thisWeek}/${WEEK_GOAL}</h3>
+    <ol class="week-dots" aria-label="Séances complètes cette semaine">${w.days.map((d, i) => `<li class="${d.done ? "done" : ""} ${d.day === today() ? "today" : ""}" title="${d.day}${d.done ? " : séance complète" : ""}"><span aria-hidden="true">${d.done ? "✓" : names[i]}</span><span class="sr-only">${d.day} ${d.done ? "fait" : "pas fait"}</span></li>`).join("")}</ol>
+    <small class="muted">${msg}</small>
+  </div>`;
 }
 
 function stepCard(n, icon, title, done, desc, action) {
@@ -762,12 +833,15 @@ function tabToday(lang) {
   }
   const s = session(lang);
   const best = rankedTexts(lang)[0];
-  const due = dueCards(lang).length, fresh = newCards(lang).length;
+  const due = reviewQueue(lang).length, fresh = newCards(lang).length;
   const reviewDone = s.review || due + fresh === 0;
   const ex = currentExercise(lang);
-  const all = s.input && reviewDone && s.production;
+  const all = sessionComplete(lang);
+  const w = weekly(state.langs[lang]);
   return `
-    ${all ? `<div class="card celebrate">${mochi("small")}<div><h3>Session du jour bouclée 🎉</h3><p class="muted">Tu peux continuer, mais l'essentiel est fait. Reviens demain : tes révisions t'attendront au bon moment.</p></div></div>` : ""}
+    ${s.welcomeBack ? `<div class="card celebrate">${mochi("small")}<div><h3>Content de te revoir !</h3><p class="muted">On reprend en douceur : ${CATCHUP_FIRST} révisions aujourd'hui, le reste plus tard, réparti sur les prochains jours. Pas de nouvelles cartes en attendant.</p></div></div>` : ""}
+    ${all ? `<div class="card celebrate">${mochi("small")}<div><h3>Séance du jour bouclée</h3><p class="muted">${w.thisWeek}/${WEEK_GOAL} jours cette semaine. Tu peux continuer, mais l'essentiel est fait.</p></div></div>`
+      : w.resting ? `<div class="card celebrate">${mochi("small", "sleepy")}<div><h3>Jour de repos possible</h3><p class="muted">Objectif de la semaine atteint. Mochi fait la sieste, ta série est en sécurité. Tu peux quand même pratiquer si tu en as envie.</p></div></div>` : ""}
     ${stepCard(1, "📖", "Lire & écouter", s.input,
       `${esc(best.t.title)} · tu connais ~${pct(best.c)} % des mots${best.z.k === "gloss" ? " (avec glossaire)" : ""}.`,
       `<a class="btn small" href="#/lang/${lang}/lire/${best.t.id}">Lire</a>`)}
@@ -942,7 +1016,7 @@ function viewReader(lang, textId) {
 
 // ---------- Révisions (§1, §2) ----------
 function tabReviews(lang) {
-  const due = dueCards(lang).length, fresh = newCards(lang).length;
+  const due = reviewQueue(lang).length, fresh = newCards(lang).length;
   const total = state.cards.filter((c) => c.lang === lang).length;
   const byType = (t) => state.cards.filter((c) => c.lang === lang && c.type === t).length;
   return `
@@ -962,7 +1036,7 @@ function tabReviews(lang) {
 }
 
 function startReview(lang) {
-  ui.review = { lang, queue: [...dueCards(lang), ...newCards(lang)].map((c) => c.id), revealed: false, typed: "", done: 0 };
+  ui.review = { lang, queue: [...reviewQueue(lang), ...newCards(lang)].map((c) => c.id), revealed: false, typed: "", done: 0 };
 }
 function blank(c) { return `${esc(c.before)}<span class="blank">${"＿".repeat(Math.max(2, [...c.surface].length))}</span>${esc(c.after)}`; }
 function marked(c) { return `${esc(c.before)}<mark>${esc(c.surface)}</mark>${esc(c.after)}`; }
@@ -1619,7 +1693,7 @@ function renderTopStats(lang) {
   const n = reviewCount(lang);
   el.innerHTML = `<span class="chip">${LANGUAGES[lang].flag}</span>
     <a class="chip" href="#/lang/${lang}/revisions" title="Cartes à réviser">🧠 ${n}</a>
-    <span class="chip" title="Sessions complètes d'affilée">🔥 ${currentStreak(L)}</span>`;
+    <span class="chip" title="Semaines régulières d'affilée (5 jours sur 7)">📅 ${currentStreak(L)}</span>`;
 }
 
 // ============================================================

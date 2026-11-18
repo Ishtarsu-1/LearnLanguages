@@ -93,6 +93,35 @@ actions["ear-play"](); render1("#/lang/ko/oreille");
 location.hash = "#/lang/en/fauxamis"; actions["add-faux"](); render1("#/lang/en/fauxamis");
 ok(state.cards.filter(c => c.source === "faux-amis").length === FAUX_AMIS.length, "faux amis");
 render1("#/profil");
+// Série hebdomadaire (§16) : 5 jours sur 7, rater un jour ne casse rien
+{
+  const L = { fullDays: {} }, mon = monday(), d = new Date(mon);
+  const mark = (base, offsets) => offsets.forEach((o) => { const x = new Date(base); x.setDate(x.getDate() + o); L.fullDays[today(x)] = true; });
+  mark(mon, [-7, -6, -5, -3, -1]); // semaine dernière : 5 jours avec des trous
+  mark(mon, [-14, -13, -12, -11]); // il y a 2 semaines : 4 jours → coupe la série
+  ok(weekly(L).streak === 1, "série hebdo = 1 (semaine dernière) : " + weekly(L).streak);
+  ok(weekly(L).thisWeek === 0 && weekly(L).days.length === 7, "semaine en cours vide");
+  mark(mon, [-10]);
+  ok(weekly(L).streak === 2, "2 semaines régulières");
+  // Migration de l'ancienne série quotidienne
+  const mig = normalizeState({ langs: { en: { streak: 3, lastStreakDay: today() } } });
+  ok(Object.keys(mig.langs.en.fullDays).length === 3 && mig.langs.en.fullDays[yesterday()], "migration série quotidienne");
+}
+// Retour après une absence : révisions plafonnées, pas de nouvelles cartes
+{
+  const saved = JSON.stringify(state);
+  const past = new Date(Date.now() - 10 * 864e5);
+  state.history = { [today(past)]: { en: { sec: 60, rev: 1, prod: 0, read: 0 } } };
+  state.langs.en.session = {}; state.langs.en.catchUp = false;
+  const base = state.cards.find((c) => c.lang === "en");
+  for (let i = 0; i < 60; i++) state.cards.push({ ...base, id: "late" + i, fsrs: { ...base.fsrs, state: 2, due: past.toISOString() } });
+  ok(dueCards("en").length >= 60 && reviewQueue("en").length === CATCHUP_FIRST && newCards("en").length === 0, "plafond après absence : " + reviewQueue("en").length);
+  ok(session("en").welcomeBack >= 60, "message de retour");
+  for (let i = 0; i < 5; i++) rateCard(reviewQueue("en")[0].id, 3);
+  ok(reviewQueue("en").length === CATCHUP_FIRST - 5, "le plafond décompte les révisions faites");
+  ok(tabToday("en").includes("Content de te revoir"), "écran de retour");
+  Object.assign(state, JSON.parse(saved)); state.cards = JSON.parse(saved).cards;
+}
 console.log(fails ? `${fails} échec(s)` : "OK : tous les tests passent", "| cartes:", state.cards.length, "logs:", state.logs.length);
 // --- Comptes (rendu) ---
 let html;
