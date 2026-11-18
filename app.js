@@ -1521,7 +1521,7 @@ function tabProduce(lang) {
         <button class="btn small" data-act="next-ex">Phrase suivante →</button>
       </div>
       ${P.why && why ? `<p class="why">💡 ${esc(why)}</p>` : ""}
-      <p class="muted corrector"><small>${r.llm ? `✨ Corrigé par ${esc(P.engine || features.engine || "l'IA")}${P.remaining != null ? ` · ${P.remaining} correction(s) restante(s) aujourd'hui` : ""}` : `Correcteur hors ligne${P.llmError ? ` (${esc(P.llmError)})` : ""} : compare avec des réponses types.`}</small></p>
+      <p class="muted corrector"><small>${r.llm ? `✨ Corrigé par ${esc(P.engine || features.engine || "l'IA")}${P.remaining != null ? ` · ${P.remaining} correction(s) restante(s) aujourd'hui` : ""}` : /pause pour aujourd'hui/.test(P.llmError || "") ? `☕ ${esc(P.llmError)}` : `Correcteur hors ligne${P.llmError ? ` (${esc(P.llmError)})` : ""} : compare avec des réponses types.`}</small></p>
     </div>`;
   }
   const modes = `<div class="seg-ctl mode-ctl">
@@ -2119,7 +2119,7 @@ function viewAdmin() {
   const kb = (b) => (b > 1e6 ? `${(b / 1e6).toFixed(1)} Mo` : `${Math.round(b / 1e3)} Ko`);
   const stat = (ico, n, label) => `<div class="stat"><span class="ico">${ico}</span><div><b>${n}</b><small>${label}</small></div></div>`;
   const features = d ? [
-    ["Correcteur IA (Produire)", d.llm.engine ? `✅ ${esc(d.llm.engine)}` : "❌ désactivé", d.llm.engine ? `${d.llm.today} correction(s) aujourd'hui, ${d.llm.total} au total · ${d.llm.daily} max / compte / jour` : ""],
+    ["Correcteur IA (Produire)", d.llm.engine ? `✅ ${esc(d.llm.engine)}` : "❌ désactivé", d.llm.engine ? `Aujourd'hui : ${d.llm.today} / ${d.llm.globalDaily} appel(s) à l'IA, ${d.llm.cacheHits} servie(s) depuis le cache (${Math.round(d.llm.hitRate * 100)} %), coût estimé ${d.llm.cost.toLocaleString("fr-FR", { style: "currency", currency: "USD", maximumFractionDigits: 2 })} · ${d.llm.total} appel(s) au total · ${d.llm.daily} max / compte / jour · ${d.llm.cacheSize} réponse(s) en cache` : ""],
     ["Vraies voix", Object.keys(d.tts.voices).length ? `✅ ${Object.entries(d.tts.voices).map(([l, v]) => `${LANGUAGES[l].flag} ×${v.length}`).join(" ")}` : "🔈 navigateur", `${d.tts.files} phrase(s) en cache (${kb(d.tts.bytes)})`],
     ["E-mails", d.mail === "resend" ? "✅ Resend" : "🖥️ terminal (pas d'envoi)", d.mail === "resend" ? "" : "RESEND_API_KEY absent"],
     ["Appli installable / hors ligne", "serviceWorker" in (globalThis.navigator || {}) ? "✅" : "❌ navigateur non compatible", ""],

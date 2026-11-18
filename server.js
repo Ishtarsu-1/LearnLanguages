@@ -31,7 +31,9 @@ const SESSION_DAYS = 30;
 const MAX_STATE = 8 * 1024 * 1024;
 const MAX_AVATAR = 1024 * 1024;
 const LLM_ON = process.env.MOCHI_LLM !== "off";
-const LLM_DAILY = Number(process.env.MOCHI_LLM_DAILY) || 60; // corrections par compte et par jour (coût)
+const LLM_DAILY = Number(process.env.MOCHI_LLM_DAILY) || 30; // corrections par compte et par jour (coût)
+const LLM_GLOBAL_DAILY = Number(process.env.MOCHI_LLM_GLOBAL_DAILY) || 500; // appels à l'IA par jour, tout le site
+const LLM_CACHE_DAYS = 90;
 const EMOJIS = ["🐰", "🐱", "🐻", "🐼", "🦊", "🐥", "🐸", "🐨"];
 
 fs.mkdirSync(AVATAR_DIR, { recursive: true });
@@ -96,6 +98,14 @@ db.exec(`
     user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     day TEXT NOT NULL, count INTEGER NOT NULL,
     PRIMARY KEY (user_id, day)
+  );
+  -- Plafond global et suivi du coût de l'IA (tout le site, par jour)
+  CREATE TABLE IF NOT EXISTS llm_global (
+    day TEXT PRIMARY KEY, calls INTEGER NOT NULL DEFAULT 0, cache_hits INTEGER NOT NULL DEFAULT 0, cost REAL NOT NULL DEFAULT 0
+  );
+  -- Cache des corrections : une même phrase pour le même exercice n'appelle l'IA qu'une fois
+  CREATE TABLE IF NOT EXISTS llm_cache (
+    key TEXT PRIMARY KEY, response_json TEXT NOT NULL, created_at TEXT NOT NULL
   );
   -- Limitation des tentatives (connexion, inscription, correcteur) : survit aux redémarrages
   CREATE TABLE IF NOT EXISTS login_attempts (
@@ -192,8 +202,24 @@ function purgeExpired() {
   db.prepare("DELETE FROM email_tokens WHERE expires_at < ?").run(t);
   db.prepare("DELETE FROM login_attempts WHERE window_start < ?").run(Date.now() - 86400e3); // IP et e-mails : 24 h max
   db.prepare("DELETE FROM llm_usage WHERE day < ?").run(new Date(Date.now() - 90 * 864e5).toISOString().slice(0, 10)); // compteurs : 90 jours
+  db.prepare("DELETE FROM llm_global WHERE day < ?").run(new Date(Date.now() - 365 * 864e5).toISOString().slice(0, 10));
+  db.prepare("DELETE FROM llm_cache WHERE created_at < ?").run(new Date(Date.now() - LLM_CACHE_DAYS * 864e5).toISOString());
 }
+purgeExpired();
 setInterval(purgeExpired, 3600e3).unref();
+// ---------- Coût de l'IA : plafond global, cache ----------
+const today = () => now().slice(0, 10);
+const globalRow = () => db.prepare("SELECT * FROM llm_global WHERE day = ?").get(today()) || { calls: 0, cache_hits: 0, cost: 0 };
+const globalBump = (col, n = 1) => db.prepare(`INSERT INTO llm_global (day, ${col}) VALUES (?, ?) ON CONFLICT (day) DO UPDATE SET ${col} = ${col} + excluded.${col}`).run(today(), n);
+// Réserve un appel sur le plafond global (false : plafond atteint, l'IA fait une pause jusqu'à minuit UTC)
+function globalReserve() {
+  if (globalRow().calls >= LLM_GLOBAL_DAILY) return false;
+  globalBump("calls");
+  return true;
+}
+const LLM_PAUSE = "Le correcteur IA fait une pause pour aujourd'hui, voici la correction simplifiée.";
+const normText = (t) => String(t ?? "").normalize("NFC").trim().replace(/\s+/g, " ");
+const cacheKey = (b) => sha256(JSON.stringify([normText(b.text), normText(b.prompt), normText(b.who), normText(b.register), normText(b.reference), b.lang, llm.PROMPT_VERSION, llm.ENGINE, llm.MODEL]));
 const featuresJson = (loggedIn = true) => JSON.stringify({ llm: loggedIn && LLM_ON, engine: llm.ENGINE, tts: tts.info(), mail: mail.mode });
 
 function hashPassword(pw) {
@@ -517,16 +543,30 @@ async function api(req, res, url) {
     const wait = waitFor(`feedback:${uid}`);
     if (wait) return tooMany(res, wait);
     recordAttempt(`feedback:${uid}`);
-    const day = now().slice(0, 10);
+    const day = today();
     const used = db.prepare("SELECT count FROM llm_usage WHERE user_id = ? AND day = ?").get(uid, day)?.count || 0;
+    const input = { lang: b.lang, prompt: b.prompt, who: b.who || null, register: b.register || null, reference: b.reference || null, text: b.text.trim() };
+    // Déjà corrigée : servie depuis le cache, ne décompte ni le quota du compte ni le plafond global
+    const key = cacheKey(input);
+    const hit = db.prepare("SELECT response_json FROM llm_cache WHERE key = ? AND created_at > ?").get(key, new Date(Date.now() - LLM_CACHE_DAYS * 864e5).toISOString());
+    if (hit) {
+      globalBump("cache_hits");
+      return send(res, 200, { feedback: JSON.parse(hit.response_json), engine: llm.ENGINE, remaining: Math.max(0, LLM_DAILY - used), cached: true });
+    }
     if (used >= LLM_DAILY) return fail(res, 429, `Tu as utilisé tes ${LLM_DAILY} corrections du jour. Reviens demain !`);
+    if (!globalReserve()) return fail(res, 503, LLM_PAUSE, { "X-Mochi-Llm": "pause" });
     db.prepare("INSERT INTO llm_usage (user_id, day, count) VALUES (?, ?, 1) ON CONFLICT (user_id, day) DO UPDATE SET count = count + 1").run(uid, day);
+    const meta = {};
     try {
-      const feedback = await llm.getFeedback({ lang: b.lang, prompt: b.prompt, who: b.who || null, register: b.register || null, reference: b.reference || null, text: b.text.trim() });
+      const feedback = await llm.getFeedback(input, meta);
+      db.prepare("INSERT OR REPLACE INTO llm_cache (key, response_json, created_at) VALUES (?, ?, ?)").run(key, JSON.stringify(feedback), now());
+      if (meta.usage) globalBump("cost", llm.costOf(meta.usage));
       return send(res, 200, { feedback, engine: llm.ENGINE, remaining: LLM_DAILY - used - 1 });
     } catch (e) {
       // Échec : on ne décompte pas la correction
       db.prepare("UPDATE llm_usage SET count = count - 1 WHERE user_id = ? AND day = ?").run(uid, day);
+      globalBump("calls", -1);
+      if (meta.usage) globalBump("cost", llm.costOf(meta.usage));
       if (e instanceof llm.LlmUnavailable) return fail(res, 503, e.message);
       throw e;
     }
@@ -544,15 +584,20 @@ async function api(req, res, url) {
     const wait = waitFor(`feedback:${uid}`);
     if (wait) return tooMany(res, wait);
     recordAttempt(`feedback:${uid}`);
-    const day = now().slice(0, 10);
+    const day = today();
     const used = db.prepare("SELECT count FROM llm_usage WHERE user_id = ? AND day = ?").get(uid, day)?.count || 0;
     if (used >= LLM_DAILY) return fail(res, 429, `Tu as utilisé tes ${LLM_DAILY} échanges avec l'IA aujourd'hui. Le mode guidé reste disponible !`);
+    if (!globalReserve()) return fail(res, 503, "L'IA fait une pause pour aujourd'hui. Le mode guidé reste disponible !", { "X-Mochi-Llm": "pause" });
     db.prepare("INSERT INTO llm_usage (user_id, day, count) VALUES (?, ?, 1) ON CONFLICT (user_id, day) DO UPDATE SET count = count + 1").run(uid, day);
+    const meta = {};
     try {
-      const turn = await llm.roleplay(m, h.map((x) => ({ who: x.who, text: x.text.trim() })));
+      const turn = await llm.roleplay(m, h.map((x) => ({ who: x.who, text: x.text.trim() })), meta);
+      if (meta.usage) globalBump("cost", llm.costOf(meta.usage));
       return send(res, 200, { turn, engine: llm.ENGINE, remaining: LLM_DAILY - used - 1 });
     } catch (e) {
       db.prepare("UPDATE llm_usage SET count = count - 1 WHERE user_id = ? AND day = ?").run(uid, day);
+      globalBump("calls", -1);
+      if (meta.usage) globalBump("cost", llm.costOf(meta.usage));
       if (e instanceof llm.LlmUnavailable) return fail(res, 503, e.message);
       throw e;
     }
@@ -625,7 +670,11 @@ async function api(req, res, url) {
       sessions: one("SELECT count(*) n FROM sessions WHERE expires_at > ?", now()).n,
       cards: db.prepare("SELECT json_extract(data, '$.lang') lang, count(*) n FROM sync_cards GROUP BY 1").all(),
       reviews: { total: one("SELECT count(*) n FROM review_logs").n },
-      llm: { today: one("SELECT COALESCE(sum(count), 0) n FROM llm_usage WHERE day = ?", now().slice(0, 10)).n, total: one("SELECT COALESCE(sum(count), 0) n FROM llm_usage").n, engine: LLM_ON ? llm.ENGINE : null, daily: LLM_DAILY },
+      llm: (() => {
+        const g = globalRow();
+        return { today: g.calls, cacheHits: g.cache_hits, hitRate: g.calls + g.cache_hits ? g.cache_hits / (g.calls + g.cache_hits) : 0, cost: g.cost,
+          total: one("SELECT COALESCE(sum(calls), 0) n FROM llm_global").n, engine: LLM_ON ? llm.ENGINE : null, daily: LLM_DAILY, globalDaily: LLM_GLOBAL_DAILY, cacheSize: one("SELECT count(*) n FROM llm_cache").n };
+      })(),
       tts: { voices: tts.info(), files: ttsFiles, bytes: ttsBytes },
       mail: mail.mode,
       list: db.prepare(`SELECT u.id, u.email, u.name, u.created_at, u.last_login_at, u.email_verified_at IS NOT NULL verified, u.is_admin admin,

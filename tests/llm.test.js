@@ -3,13 +3,15 @@ const vm = require("vm"), fs = require("fs"), path = require("path"), os = requi
 const APP = path.join(__dirname, "..");
 process.env.DATA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), "mochi-llm-"));
 process.env.MOCHI_LLM_DAILY = "3";
+process.env.MOCHI_LLM_GLOBAL_DAILY = "5";
 const llm = require(path.join(APP, "llm.js"));
 const { server } = require(path.join(APP, "server.js"));
 let fails = 0; const ok = (c, m) => { if (!c) { fails++; console.log("FAIL", m); } else console.log("  ok", m); };
 
 let mode = "ok", calls = [];
-llm.getFeedback = async (input) => {
+llm.getFeedback = async (input, meta = {}) => {
   calls.push(input);
+  meta.usage = { input_tokens: 1000, output_tokens: 200 };
   if (mode === "down") throw new llm.LlmUnavailable("LLM non configuré (clé API manquante ou invalide).");
   return { verdict: "errors", recast: "저는 커피를 좋아해요.", errors: [
     { type: "grammaire", original: "커피을", correction: "커피를", particle: "를", explanation: "Après une voyelle, on met 를." },
@@ -35,13 +37,31 @@ server.listen(0, "127.0.0.1", async () => {
     let r = await call("POST", "/api/feedback", req);
     ok(r.status === 200 && r.data.feedback.recast === "저는 커피를 좋아해요." && r.data.remaining === 2, "correction + quota restant");
     ok(calls.at(-1).text === "저는 커피을 좋아해" && calls.at(-1).register === "haeyo", "paramètres transmis");
+    // Cache : même phrase (aux espaces près) → un seul appel au moteur, quota non décompté
+    const n0 = calls.length;
+    r = await call("POST", "/api/feedback", { ...req, text: "  저는  커피을 좋아해 " });
+    ok(r.status === 200 && r.data.cached === true && calls.length === n0, "même phrase : servie depuis le cache, sans appel");
+    ok(r.data.remaining === 2, "le cache ne décompte pas le quota");
+    ok((await call("POST", "/api/feedback", { ...req, who: "À un ami" })).status === 200 && calls.length === n0 + 1, "autre interlocuteur : nouvel appel");
     mode = "down";
-    r = await call("POST", "/api/feedback", req); ok(r.status === 503 && /clé API/.test(r.data.error), "LLM indisponible → 503");
+    r = await call("POST", "/api/feedback", { ...req, text: "저는 차를 좋아해" }); ok(r.status === 503 && /clé API/.test(r.data.error), "LLM indisponible → 503");
     mode = "ok";
-    r = await call("POST", "/api/feedback", req); ok(r.data.remaining === 1, "échec non décompté");
-    await call("POST", "/api/feedback", req);
-    r = await call("POST", "/api/feedback", req); ok(r.status === 429, "quota quotidien atteint");
-
+    r = await call("POST", "/api/feedback", { ...req, text: "저는 차를 좋아해" }); ok(r.data.remaining === 0, "échec non décompté");
+    r = await call("POST", "/api/feedback", { ...req, text: "저는 물을 좋아해" }); ok(r.status === 429, "quota quotidien atteint");
+    r = await call("POST", "/api/feedback", req); ok(r.status === 200 && r.data.cached, "quota atteint : le cache reste servi");
+    // Plafond global (5 appels/jour pour le test) : un autre compte bascule sur le correcteur hors ligne
+    const { db } = require(path.join(APP, "server.js"));
+    const g = db.prepare("SELECT * FROM llm_global").get();
+    ok(g.calls === 3 && g.cache_hits === 2 && g.cost > 0, "compteur global en base " + JSON.stringify(g));
+    cookie = "";
+    await call("POST", "/api/signup", { email: "llm2@test.fr", password: "motdepasse1", accept: true });
+    r = await call("POST", "/api/feedback", { ...req, text: "a" }); r = await call("POST", "/api/feedback", { ...req, text: "b" });
+    const n1 = calls.length;
+    r = await call("POST", "/api/feedback", { ...req, text: "c" });
+    ok(r.status === 503 && /pause pour aujourd'hui/.test(r.data.error) && calls.length === n1, "plafond global → pause, pas d'appel");
+    ok((await call("POST", "/api/feedback", req)).status === 200, "plafond global : le cache reste servi");
+    db.prepare("UPDATE llm_global SET calls = 0").run();
+    db.prepare("DELETE FROM llm_usage").run();
     // --- Client : correcteur Claude, cartes ciblées, repli hors ligne ---
     const store = {};
     const el = () => ({ value: "", innerHTML: "", classList: { add() {}, remove() {}, toggle() {} }, dataset: {}, addEventListener() {}, querySelector: () => null, querySelectorAll: () => [], focus() {} });

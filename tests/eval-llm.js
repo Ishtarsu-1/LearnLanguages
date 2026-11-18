@@ -1,6 +1,8 @@
 // Évaluation RÉELLE du correcteur (appelle le moteur configuré : Ollama ou Claude).
 //   MOCHI_LLM_PROVIDER=ollama node tests/eval-llm.js
 //   node --env-file=.env tests/eval-llm.js        (Claude : consomme des crédits)
+//   MOCHI_MODEL=claude-sonnet-5-5 node --env-file=.env tests/eval-llm.js   (comparer un modèle plus léger)
+//   MOCHI_MODEL=claude-haiku-5-5  node --env-file=.env tests/eval-llm.js
 // Mesure, sur des phrases typiques d'apprenants, si le correcteur trouve les vraies
 // erreurs SANS sur-corriger les phrases justes (§4), et le temps de réponse.
 const llm = require("../llm.js");
@@ -21,12 +23,14 @@ const CASES = [
 ];
 
 (async () => {
-  console.log(`Moteur : ${llm.ENGINE}\n`);
-  let pass = 0, totalMs = 0;
+  console.log(`Moteur : ${llm.ENGINE} · modèle : ${llm.MODEL}\n`);
+  let pass = 0, totalMs = 0, cost = 0;
   for (const c of CASES) {
     const t0 = Date.now();
     let f, err;
-    try { f = await llm.getFeedback({ lang: c.lang, prompt: c.prompt, who: c.who || null, register: c.register || null, reference: null, text: c.text }); } catch (e) { err = e.message; }
+    const meta = {};
+    try { f = await llm.getFeedback({ lang: c.lang, prompt: c.prompt, who: c.who || null, register: c.register || null, reference: null, text: c.text }, meta); } catch (e) { err = e.message; }
+    cost += llm.costOf(meta.usage);
     const ms = Date.now() - t0; totalMs += ms;
     const problems = [];
     if (err) problems.push(`erreur : ${err}`);
@@ -46,5 +50,5 @@ const CASES = [
     if (f?.explanation) console.log(`   💡 ${f.explanation}`);
     for (const p of problems) console.log(`   ⚠️  ${p}`);
   }
-  console.log(`\nScore : ${pass}/${CASES.length} · temps moyen : ${(totalMs / CASES.length / 1000).toFixed(1)} s par correction`);
+  console.log(`\nScore : ${pass}/${CASES.length} · temps moyen : ${(totalMs / CASES.length / 1000).toFixed(1)} s par correction · coût estimé : ${(cost / CASES.length * 100).toFixed(2)} centime(s) de $ par correction`);
 })();

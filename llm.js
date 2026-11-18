@@ -16,6 +16,16 @@ const MODEL = process.env.MOCHI_MODEL || (PROVIDER === "ollama" ? "qwen2.5:7b-in
 const OLLAMA_URL = (process.env.OLLAMA_URL || "http://localhost:11434").replace(/\/$/, "");
 const OLLAMA_TIMEOUT = Number(process.env.OLLAMA_TIMEOUT_MS) || 180_000; // CPU : une correction peut prendre ~1 min
 const ENGINE = PROVIDER === "ollama" ? `Ollama (${MODEL})` : "Claude";
+// Repli serveur en cas de refus : seulement sur les modèles qui l'acceptent (pas Haiku)
+const HAS_FALLBACK = /^claude-(opus-5|sonnet-5-5|fable-5)/.test(MODEL);
+const fallbackOpts = () => (HAS_FALLBACK ? { betas: ["server-side-fallback-2026-07-01"], fallbacks: "default" } : {});
+// Prix publics en $ par million de jetons (entrée, sortie), pour l'estimation du coût dans l'admin
+const PRICES = { "claude-opus-5-5": [4, 20], "claude-sonnet-5-5": [2, 10], "claude-haiku-5-5": [0.1, 0.5] };
+const costOf = (usage) => {
+  if (PROVIDER === "ollama" || !usage) return 0;
+  const [i, o] = PRICES[MODEL] || PRICES["claude-opus-5-5"];
+  return ((usage.input_tokens || 0) * i + (usage.output_tokens || 0) * o) / 1e6;
+};
 let client = null;
 const getClient = () => (client ||= new Anthropic({ timeout: 60_000, maxRetries: 2 }));
 
@@ -71,8 +81,9 @@ function userMessage({ lang, prompt, who, register, reference, text }) {
 
 class LlmUnavailable extends Error {}
 
-async function getFeedback(input) {
-  const f = PROVIDER === "ollama" ? await getFeedbackOllama(input) : await getFeedbackClaude(input);
+// meta (facultatif) reçoit l'usage en jetons, pour l'estimation du coût
+async function getFeedback(input, meta = {}) {
+  const f = PROVIDER === "ollama" ? await getFeedbackOllama(input) : await getFeedbackClaude(input, meta);
   return postProcess(input, f);
 }
 
@@ -106,15 +117,14 @@ function postProcess(input, f) {
 }
 
 // ---------- Moteur Claude ----------
-async function getFeedbackClaude(input) {
+async function getFeedbackClaude(input, meta = {}) {
   let response;
   try {
     response = await getClient().beta.messages.parse({
       model: MODEL,
       max_tokens: 16000,
       // Si un classifieur refuse la requête, l'API la relance sur un modèle de secours
-      betas: ["server-side-fallback-2026-07-01"],
-      fallbacks: "default",
+      ...fallbackOpts(),
       output_config: { effort: "medium", format: betaZodOutputFormat(FeedbackSchema) },
       system: SYSTEM,
       messages: [{ role: "user", content: userMessage(input) }],
@@ -127,6 +137,7 @@ async function getFeedbackClaude(input) {
     if (e instanceof Anthropic.AnthropicError || /authentication method|api ?key/i.test(e?.message || "")) throw new LlmUnavailable("LLM non configuré (clé API manquante).");
     throw e;
   }
+  meta.usage = response.usage;
   if (response.stop_reason === "refusal") throw new LlmUnavailable("Le correcteur n'a pas pu traiter cette phrase.");
   if (!response.parsed_output) throw new LlmUnavailable("Réponse du correcteur illisible.");
   return response.parsed_output;
@@ -214,7 +225,7 @@ function roleplayMessage(m, history) {
   ].join("\n");
 }
 
-async function roleplay(mission, history) {
+async function roleplay(mission, history, meta = {}) {
   const user = roleplayMessage(mission, history);
   let out;
   if (PROVIDER === "ollama") {
@@ -239,7 +250,7 @@ async function roleplay(mission, history) {
     try {
       response = await getClient().beta.messages.parse({
         model: MODEL, max_tokens: 4000,
-        betas: ["server-side-fallback-2026-07-01"], fallbacks: "default",
+        ...fallbackOpts(),
         output_config: { effort: "low", format: betaZodOutputFormat(RoleplaySchema) },
         system: ROLEPLAY_SYSTEM,
         messages: [{ role: "user", content: user }],
@@ -252,6 +263,7 @@ async function roleplay(mission, history) {
       if (e instanceof Anthropic.AnthropicError || /authentication method|api ?key/i.test(e?.message || "")) throw new LlmUnavailable("LLM non configuré (clé API manquante).");
       throw e;
     }
+    meta.usage = response.usage;
     if (response.stop_reason === "refusal" || !response.parsed_output) throw new LlmUnavailable("L'IA n'a pas pu répondre.");
     out = response.parsed_output;
   }
@@ -263,4 +275,7 @@ async function roleplay(mission, history) {
   return out;
 }
 
-module.exports = { getFeedback, postProcess, LlmUnavailable, FeedbackSchema, userMessage, SYSTEM, MODEL, PROVIDER, ENGINE, roleplay, RoleplaySchema, roleplayMessage, ROLEPLAY_SYSTEM };
+// Version du prompt (entre dans la clé du cache : changer le prompt invalide les anciennes réponses)
+const PROMPT_VERSION = require("node:crypto").createHash("sha256").update(SYSTEM + OLLAMA_EXTRA + OLLAMA_REMINDER).digest("hex").slice(0, 12);
+
+module.exports = { getFeedback, costOf, PROMPT_VERSION, postProcess, LlmUnavailable, FeedbackSchema, userMessage, SYSTEM, MODEL, PROVIDER, ENGINE, roleplay, RoleplaySchema, roleplayMessage, ROLEPLAY_SYSTEM };

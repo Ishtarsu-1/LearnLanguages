@@ -82,17 +82,41 @@ Si tu vois plutôt **« Correcteur hors ligne (…) »**, le message entre paren
 Par défaut, le correcteur utilise **Claude Opus 5.5** (4 $ par million de tokens en entrée, 20 $ par million en sortie). Une correction, c'est une phrase courte plus les consignes, soit **environ 1 à 3 centimes** (estimation : le coût réel dépend de la longueur de la réponse et de la réflexion du modèle). Tu peux suivre la dépense exacte dans la console, onglet *Usage*.
 
 Protections déjà en place :
-- **60 corrections maximum par compte et par jour** (`MOCHI_LLM_DAILY` pour changer).
+- **30 corrections maximum par compte et par jour** (`MOCHI_LLM_DAILY` pour changer).
+- **Plafond global : 500 appels à l'IA par jour pour tout le site** (`MOCHI_LLM_GLOBAL_DAILY`). Au-delà, et jusqu'à minuit (UTC), les corrections passent par le correcteur hors ligne avec un message honnête : « Le correcteur IA fait une pause pour aujourd'hui, voici la correction simplifiée ». Le compteur est en base : un redémarrage ne le remet pas à zéro. Avec Opus, 500 appels ≈ 5 à 15 $ par jour au pire.
+- **Cache des réponses** : une même phrase (aux espaces près) pour le même exercice, le même interlocuteur et la même langue n'appelle l'IA qu'une fois. Les réponses sont gardées 90 jours, et une réponse servie depuis le cache **ne décompte pas** le quota. Changer de modèle ou modifier le prompt invalide automatiquement les anciennes réponses.
 - Une correction qui échoue n'est **pas** décomptée.
 - Les invités n'ont pas accès au correcteur Claude.
+- Le **tableau de bord admin** (`#/admin`) affiche les appels du jour, le taux de réponses servies depuis le cache et une estimation du coût du jour (calculée à partir des jetons réellement consommés).
 - Ajoute à ça la **limite de dépense** de la console (étape 3).
 
-Pour réduire le coût, tu peux choisir un modèle moins cher dans `.env`, en échange d'une qualité de correction un peu moindre (surtout pour les nuances de registre en coréen) :
+Pour réduire le coût, tu peux choisir un modèle moins cher dans `.env`, en échange d'une qualité de correction peut-être moindre (surtout pour les nuances de registre en coréen) :
 
 ```
 MOCHI_MODEL=claude-sonnet-5-5   # environ 2 fois moins cher
 MOCHI_MODEL=claude-haiku-5-5    # environ 40 fois moins cher
 ```
+
+### Choisir le modèle : évaluation
+
+Ne change pas le modèle par défaut à l'aveugle : `tests/eval-llm.js` fait corriger 10 phrases typiques d'apprenants (vraies fautes, phrases justes à ne pas sur-corriger, registre coréen) et donne un score, le temps et le coût moyens.
+
+```bash
+node --env-file=.env tests/eval-llm.js                                   # Opus (défaut)
+MOCHI_MODEL=claude-sonnet-5-5 node --env-file=.env tests/eval-llm.js
+MOCHI_MODEL=claude-haiku-5-5  node --env-file=.env tests/eval-llm.js
+```
+
+Si un modèle plus léger obtient **le même score** qu'Opus, mets-le dans `MOCHI_MODEL`.
+
+| Modèle | Score | Temps moyen | Coût moyen |
+|---|---|---|---|
+| `claude-opus-5-5` | à mesurer | | |
+| `claude-sonnet-5-5` | à mesurer | | |
+| `claude-haiku-5-5` | à mesurer | | |
+| Ollama `qwen2.5:7b-instruct` | à mesurer | | gratuit |
+
+> L'évaluation consomme quelques centimes par modèle. Elle n'a pas encore été lancée (aucune clé API sur la machine de développement) : le défaut reste Opus en attendant.
 
 ---
 
@@ -273,7 +297,8 @@ Si le serveur reçoit un `X-Forwarded-For` alors que `TRUST_PROXY` est vide, il 
 | `MOCHI_MODEL` | `claude-opus-5-5`, ou `qwen2.5:7b-instruct` avec Ollama | Modèle utilisé pour les corrections |
 | `OLLAMA_URL` | `http://localhost:11434` | Adresse d'Ollama |
 | `OLLAMA_TIMEOUT_MS` | `180000` | Délai maximum d'une correction locale |
-| `MOCHI_LLM_DAILY` | `60` | Corrections max par compte et par jour |
+| `MOCHI_LLM_DAILY` | `30` | Corrections max par compte et par jour (les réponses du cache ne comptent pas) |
+| `MOCHI_LLM_GLOBAL_DAILY` | `500` | Appels à l'IA max par jour pour tout le site ; au-delà, correcteur hors ligne |
 | `MOCHI_LLM` | activé | Mettre `off` pour couper le correcteur IA |
 | `TTS_URL`, `TTS_URL_EN`, `TTS_URL_KO` | — | Moteur de voix (section 6 ter) ; sans valeur, voix du navigateur |
 | `TTS_VOICES_EN`, `TTS_VOICES_KO` | — | Voix proposées, séparées par des virgules |
