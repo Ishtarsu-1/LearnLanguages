@@ -39,7 +39,7 @@
 | **P1** | Génération de textes calibrés par LLM | 🔴 | 🆓/💶 | LLM + analyseur |
 | **P2** | Mochi, la mascotte, et la collection de Mochis (🟢 saveurs par thème dans l'onglet Thèmes ; reste : accessoires) | 🟡 | 🆓 | charte graphique |
 | ~~**P2**~~ | ~~Série flexible + quêtes hebdomadaires~~ ✅ fait (reste : récompenses cosmétiques) | 🟡 | 🆓 | — |
-| **P2** | Mode histoire (🟢 moteur + 3 chapitres par langue ; reste : la suite de l'histoire) | 🔴 | 🆓 | bibliothèque |
+| **P2** | Mode histoire (🟢 moteur + 5 chapitres par langue ; reste : la suite de l'histoire) | 🔴 | 🆓 | bibliothèque |
 | ~~**P2**~~ | ~~Application installable (PWA) + hors ligne~~ ✅ fait | 🟡 | 🆓 | — |
 | **P2** | Rappels et notifications | 🟡 | 🆓 | PWA |
 | **P2** | Liste d'amis | 🟡 | 🆓 | comptes |
@@ -228,7 +228,7 @@ Fait : série hebdomadaire 5/7 (`fullDays`, migrée depuis l'ancienne série), c
 - **Objectif du jour réglable** (5, 10, 20 minutes), avec la possibilité de le baisser sans pénalité. Un objectif trop ambitieux fait perdre la série plus souvent.
 
 ### Mode histoire 🔴 🆓 *(moteur ✅)*
-Fait : `story.js` + `missions.js`. Onglet « 🎬 Histoire » : *모찌의 서울 일 년* et *Mochi in London*, 3 chapitres chacun (arrivée, logement, café du coin). Chaque chapitre : lecture graduée + questions + **mission de conversation** : jeu de rôle avec l'IA (`POST /api/roleplay`, scénario fixé côté serveur, recast de chaque réplique, indice, détection du but atteint, quota partagé avec le correcteur) ou **mode guidé** à choix (sans compte, sans IA, ou si elle ne répond pas). Chapitre suivant ouvert quand le précédent est fini (questions + mission), ses **mots clés en révision**, et (coréen) le **point de grammaire** du chapitre vu (-요, 은/는, 을/를). Reste : la suite de l'histoire (chapitres 4+), la mission finale « 노래방 ».
+Fait : `story.js` + `missions.js`. Onglet « 🎬 Histoire » : *모찌의 서울 일 년* et *Mochi in London*, 5 chapitres chacun (arrivée, logement, café du coin, cours de coréen / perdue dans Londres, soirée karaoké). Chaque chapitre : lecture graduée + questions + **mission de conversation** : jeu de rôle avec l'IA (`POST /api/roleplay`, scénario fixé côté serveur, recast de chaque réplique, indice, détection du but atteint, quota partagé avec le correcteur) ou **mode guidé** à choix (sans compte, sans IA, ou si elle ne répond pas). Chapitre suivant ouvert quand le précédent est fini (questions + mission), ses **mots clés en révision**, et (coréen) le **point de grammaire** du chapitre vu (-요, 은/는, 을/를). Grammaire coréenne suivie : -요, 은/는, 을/를, 이/가, 에. Reste : la suite de l'histoire (chapitres 6+, en suivant 에서, 도, les nombres, puis la phase 3).
 
 - Un fil narratif par langue. Exemple coréen : Mochi part un an à Séoul (arrivée à l'aéroport, trouver son logement, premier jour de cours, le café du coin, la sortie au 노래방…). Exemple anglais : un stage à Londres ou un road trip.
 - Chaque chapitre est une lecture graduée (bibliothèque), avec dialogues audio, quelques mots nouveaux et une mini-conversation finale avec le LLM (« Commande ton premier 아이스 아메리카노 »).

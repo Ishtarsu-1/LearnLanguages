@@ -20,6 +20,21 @@ addLexicon("en", {
   "so": { fr: "alors, donc ; si" }, "iced": { fr: "glacé" }, "barista": { fr: "barista", cog: true }, "smile": { fr: "sourire" },
   "deep": { fr: "profond" }, "breath": { fr: "respiration, souffle" }, "first": { fr: "premier" }, "order": { fr: "commande ; commander" },
 });
+addLexicon("en", {
+  "visit": { fr: "visiter" }, "museum": { fr: "musée", cog: true }, "phone": { fr: "téléphone", cog: true }, "dead": { fr: "mort ; déchargé (batterie)" },
+  "map": { fr: "plan, carte" }, "man": { fr: "homme" }, "straight": { fr: "tout droit" }, "then": { fr: "puis, ensuite" }, "turn": { fr: "tourner" },
+  "left": { fr: "gauche" }, "bank": { fr: "banque" }, "front": { fr: "avant (in front of = devant)" }, "of": { fr: "de" },
+  "invite": { fr: "inviter", cog: true }, "karaoke": { fr: "karaoké", cog: true }, "bar": { fr: "bar", cog: true }, "shy": { fr: "timide" },
+  "friend": { fr: "ami, amie" }, "sing": { fr: "chanter" }, "pop": { fr: "pop (musique)" }, "song": { fr: "chanson" }, "korean": { fr: "coréen (langue)" },
+  "friday": { fr: "vendredi" }, "everybody": { fr: "tout le monde" }, "clap": { fr: "applaudir" }, "dance": { fr: "danser", cog: true },
+});
+addLexicon("ko", {
+  "월요일": { fr: "lundi" }, "학원": { fr: "école privée, académie (cours du soir)" }, "반": { fr: "classe (groupe d'élèves)" }, "열": { fr: "dix (natif)" },
+  "명": { fr: "personne (compteur)" }, "숫자": { fr: "chiffre, nombre" }, "수업": { fr: "cours" }, "끝나다": { fr: "finir, se terminer" },
+  "떡볶이": { fr: "tteokbokki (gâteaux de riz épicés)" }, "저녁": { fr: "soir, dîner" }, "부르다": { fr: "appeler ; chanter (노래를 부르다)" },
+  "노래방": { fr: "karaoké (salle)" }, "근처": { fr: "près, alentours" }, "처음": { fr: "début, première fois" }, "부끄럽다": { fr: "être gêné, timide" },
+  "케이팝": { fr: "K-pop" }, "밤": { fr: "nuit, soirée" }, "친구": { fr: "ami, amie" },
+});
 addLexicon("ko", {
   "오다": { fr: "venir, arriver" }, "공항": { fr: "aéroport" }, "크다": { fr: "être grand" }, "피곤하다": { fr: "être fatigué" },
   "공항버스": { fr: "bus de l'aéroport" }, "저기": { fr: "là-bas" }, "버스": { fr: "bus" }, "이제": { fr: "maintenant, désormais" },
@@ -83,6 +98,36 @@ const STORIES = {
             { q: "Qu'est-ce que Mochi veut boire ?", options: ["Un americano glacé", "Un thé chaud", "Un jus d'orange"] },
           ],
         },
+        {
+          title: "한국어 수업", grammar: "i-ga", mission: "ko-class", keywords: ["학원", "수업", "끝나다"],
+          sentences: [
+            ["@모찌|는 월요일|에 한국어 학원|에 가요=가다.", "Le lundi, Mochi va à l'académie de coréen."],
+            ["선생님|이 아주 재미있어요=재미있다.", "La professeure est très drôle."],
+            ["반|에 학생|이 열 명 있어요=있다.", "Il y a dix élèves dans la classe."],
+            ["@일본 사람|도 있고=있다 @미국 사람|도 있어요=있다.", "Il y a des Japonais et aussi des Américains."],
+            ["오늘|은 숫자|를 배웠어요=배우다.", "Aujourd'hui, ils ont appris les nombres."],
+            ["수업|이 끝나고=끝나다 친구|들|하고 떡볶이|를 먹었어요=먹다.", "Après le cours, Mochi a mangé des tteokbokki avec ses amis."],
+          ],
+          questions: [
+            { q: "Où va Mochi le lundi ?", options: ["À l'académie de coréen", "À la banque", "Au marché"] },
+            { q: "Qu'ont-ils appris aujourd'hui ?", options: ["Les nombres", "Les couleurs", "Les jours de la semaine"] },
+          ],
+        },
+        {
+          title: "노래방", grammar: "e", mission: "ko-noraebang", keywords: ["노래방", "부르다", "근처"],
+          sentences: [
+            ["금요일 저녁|에 친구|들|이 @모찌|를 불렀어요=부르다.", "Vendredi soir, ses amis ont appelé Mochi."],
+            ["\"우리 노래방|에 가요=가다!\"", "« Allons au karaoké ! »"],
+            ["노래방|은 집 근처|에 있어요=있다.", "Le karaoké est près de chez elle."],
+            ["@모찌|는 처음|에 부끄러웠어요=부끄럽다.", "Au début, Mochi était intimidée."],
+            ["하지만 케이팝|을 같이 불렀어요=부르다.", "Mais ils ont chanté de la K-pop ensemble."],
+            ["정말 재미있는=재미있다 밤|이었어요=이다.", "C'était une soirée vraiment géniale."],
+          ],
+          questions: [
+            { q: "Où vont-ils vendredi soir ?", options: ["Au karaoké", "Au cinéma", "Au restaurant"] },
+            { q: "Que chantent-ils ?", options: ["De la K-pop", "Du rock français", "Des chansons de Noël"] },
+          ],
+        },
       ],
     },
   ],
@@ -134,6 +179,36 @@ const STORIES = {
           questions: [
             { q: "Quel temps fait-il ?", options: ["Chaud", "Froid", "Il pleut"] },
             { q: "Qu'est-ce que Mochi veut ?", options: ["Un café glacé", "Un thé", "Un chocolat chaud"] },
+          ],
+        },
+        {
+          title: "Lost in London", mission: "en-directions", keywords: ["map", "turn", "museum"],
+          sentences: [
+            ["On Saturday, @Mochi wants=want to visit the @British @Museum.", "Samedi, Mochi veut visiter le British Museum."],
+            ["But her phone is=be dead!", "Mais son téléphone est déchargé !"],
+            ["She has=have no map.", "Elle n'a pas de plan."],
+            ["She stops=stop a man in the street.", "Elle arrête un homme dans la rue."],
+            ["\"Go straight, then turn left at the bank.\"", "« Va tout droit, puis tourne à gauche à la banque. »"],
+            ["Ten minutes=minute later, @Mochi is=be in front of the museum.", "Dix minutes plus tard, Mochi est devant le musée."],
+          ],
+          questions: [
+            { q: "Pourquoi Mochi est-elle perdue ?", options: ["Son téléphone est déchargé", "Elle a perdu son sac", "Il pleut"] },
+            { q: "Où faut-il tourner à gauche ?", options: ["À la banque", "À l'école", "Au parc"] },
+          ],
+        },
+        {
+          title: "Karaoke night", mission: "en-karaoke", keywords: ["sing", "song", "shy"],
+          sentences: [
+            ["On Friday evening, @Priya invites=invite @Mochi to a karaoke bar.", "Vendredi soir, Priya invite Mochi dans un bar karaoké."],
+            ["@Mochi is=be a bit shy.", "Mochi est un peu timide."],
+            ["Her friends=friend sing pop songs=song.", "Ses amis chantent des chansons pop."],
+            ["Then @Mochi chooses=choose a song in Korean!", "Puis Mochi choisit une chanson en coréen !"],
+            ["Everybody claps=clap and dances=dance.", "Tout le monde applaudit et danse."],
+            ["What a fun night!", "Quelle soirée géniale !"],
+          ],
+          questions: [
+            { q: "Où va Mochi vendredi soir ?", options: ["Au karaoké", "Au musée", "À la bibliothèque"] },
+            { q: "Dans quelle langue chante Mochi ?", options: ["En coréen", "En français", "En anglais"] },
           ],
         },
       ],
