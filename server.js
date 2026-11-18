@@ -7,6 +7,7 @@ const http = require("node:http");
 const fs = require("node:fs");
 const path = require("node:path");
 const crypto = require("node:crypto");
+const net = require("node:net");
 const { DatabaseSync } = require("node:sqlite");
 const llm = require("./llm.js");
 const ttsMod = require("./tts.js");
@@ -18,6 +19,11 @@ const ROOT = __dirname;
 const DATA = path.resolve(process.env.DATA_DIR || path.join(ROOT, "data"));
 const AVATAR_DIR = path.join(DATA, "avatars");
 const SECURE = process.env.COOKIE_SECURE === "1";
+// Proxys de confiance (ex. Caddy sur la même machine : 127.0.0.1,::1). Vide : on ne lit jamais X-Forwarded-For.
+const TRUST_PROXY = new Set(String(process.env.TRUST_PROXY || "").split(",").map((s) => normIp(s.trim())).filter(Boolean));
+// En production derrière un proxy, le serveur n'écoute que la machine elle-même
+// (sinon : comportement par défaut de Node, toutes les interfaces IPv4 et IPv6)
+const HOST = process.env.HOST || (process.env.NODE_ENV === "production" ? "127.0.0.1" : undefined);
 // Adresse publique du site, pour les liens envoyés par e-mail. Jamais déduite de l'en-tête
 // Host (un attaquant pourrait sinon faire pointer le lien de réinitialisation vers son site).
 const PUBLIC_URL = (process.env.PUBLIC_URL || `http://localhost:${PORT}`).replace(/\/+$/, "");
@@ -119,6 +125,36 @@ if (!userCols.includes("sync_epoch")) db.exec("ALTER TABLE users ADD COLUMN sync
 db.prepare("DELETE FROM sessions WHERE expires_at < ?").run(new Date().toISOString());
 
 // ---------- Utilitaires ----------
+// Adresse IP du client, pour la limitation des tentatives.
+// Derrière un proxy, req.socket.remoteAddress est celle du proxy pour tout le monde :
+// on lit alors la DERNIÈRE entrée de X-Forwarded-For (ajoutée par notre proxy ; les
+// premières peuvent être inventées par le client). IPv6 : regroupées par /64.
+function normIp(a) {
+  a = String(a || "").trim();
+  if (a.startsWith("::ffff:") && net.isIPv4(a.slice(7))) a = a.slice(7);
+  return a;
+}
+function ipKey(a) {
+  if (!net.isIPv6(a)) return a;
+  // Développe « :: » pour obtenir les 8 groupes, puis garde les 4 premiers (préfixe /64)
+  const [head, tail = ""] = a.toLowerCase().split("::");
+  const h = head ? head.split(":") : [], t = tail ? tail.split(":") : [];
+  const groups = a.includes("::") ? [...h, ...Array(8 - h.length - t.length).fill("0"), ...t] : h;
+  return groups.slice(0, 4).map((g) => g.replace(/^0+(?=.)/, "")).join(":") + "::/64";
+}
+let warnedXff = false;
+function clientIp(req, trusted = TRUST_PROXY) {
+  const peer = normIp(req.socket?.remoteAddress) || "?";
+  const xff = req.headers["x-forwarded-for"];
+  if (xff && trusted.has(peer)) {
+    const last = normIp(String(xff).split(",").pop());
+    if (net.isIP(last)) return ipKey(last);
+  } else if (xff && !trusted.size && !warnedXff) {
+    warnedXff = true;
+    console.warn("⚠️  X-Forwarded-For reçu mais TRUST_PROXY n'est pas défini : l'en-tête est ignoré (voir SETUP.md, mise en ligne derrière Caddy).");
+  }
+  return ipKey(peer);
+}
 const now = () => new Date().toISOString();
 const sha256 = (s) => crypto.createHash("sha256").update(s).digest("hex");
 
@@ -373,7 +409,7 @@ async function api(req, res, url) {
   // Protection CSRF : toute requête qui modifie quelque chose doit porter cet en-tête
   // (un autre site ne peut pas l'ajouter sans pré-vol CORS, que l'on n'autorise pas).
   if (req.method !== "GET" && req.headers["x-mochi"] !== "1") return fail(res, 403, "Requête refusée.");
-  const ip = req.socket.remoteAddress || "?";
+  const ip = clientIp(req);
 
   if (route === "POST /api/signup") {
     const { email, password, name, accept } = await readJson(req);
@@ -651,9 +687,22 @@ function serveFile(res, file, type, cache) {
   });
 }
 
+// Content-Security-Policy : aucun script inline dans le site, donc script-src strict.
+// style-src 'unsafe-inline' est temporaire (attributs style="…" à migrer, ROADMAP « Dette technique »).
+const CSP = [
+  "default-src 'self'", "script-src 'self'", "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob:", "media-src 'self' blob:", "font-src 'self'", "connect-src 'self'",
+  "worker-src 'self'", "manifest-src 'self'", "object-src 'none'", "base-uri 'none'",
+  "form-action 'self'", "frame-ancestors 'none'",
+].join("; ");
+
 const server = http.createServer(async (req, res) => {
   res.setHeader("X-Frame-Options", "DENY");
   res.setHeader("Referrer-Policy", "same-origin");
+  res.setHeader("Content-Security-Policy", CSP);
+  res.setHeader("Permissions-Policy", "microphone=(self), camera=(), geolocation=(), payment=()");
+  res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+  if (SECURE) res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
   const url = new URL(req.url, "http://localhost");
   try {
     if (url.pathname.startsWith("/api/")) return await api(req, res, url);
@@ -676,5 +725,5 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-if (require.main === module) server.listen(PORT, () => console.log(`Mochi → http://localhost:${PORT} · correcteur : ${LLM_ON ? llm.ENGINE : "désactivé"} · e-mails : ${mail.mode} · voix : ${tts.enabled ? Object.entries(tts.info()).map(([l, v]) => `${l} ×${v.length}`).join(", ") : "navigateur"}`));
-module.exports = { server, db, mail, limiter: { waitFor, recordAttempt, clearAttempts } };
+if (require.main === module) server.listen(PORT, HOST, () => console.log(`Mochi → http://${HOST && HOST !== "0.0.0.0" && HOST !== "::" ? HOST : "localhost"}:${PORT} · correcteur : ${LLM_ON ? llm.ENGINE : "désactivé"} · e-mails : ${mail.mode} · voix : ${tts.enabled ? Object.entries(tts.info()).map(([l, v]) => `${l} ×${v.length}`).join(", ") : "navigateur"}`));
+module.exports = { server, db, mail, clientIp, limiter: { waitFor, recordAttempt, clearAttempts } };

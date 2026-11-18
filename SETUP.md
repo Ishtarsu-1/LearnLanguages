@@ -236,6 +236,34 @@ Ce que le site fait déjà pour être en règle :
 
 > Ce sont des modèles sérieux et fidèles au code, pas un avis juridique. Si le site devient public à grande échelle ou commercial, fais-les relire.
 
+## 6 septies. Mise en ligne derrière Caddy
+
+En production, Mochi tourne derrière un **reverse proxy** qui gère le HTTPS. Avec [Caddy](https://caddyserver.com) (certificat Let's Encrypt automatique), le `Caddyfile` tient en quatre lignes :
+
+```caddyfile
+mochi.example.fr {
+	encode zstd gzip
+	reverse_proxy 127.0.0.1:8000
+}
+```
+
+Et dans `.env` :
+
+```
+NODE_ENV=production
+HOST=127.0.0.1
+COOKIE_SECURE=1
+TRUST_PROXY=127.0.0.1,::1
+PUBLIC_URL=https://mochi.example.fr
+```
+
+- **`HOST=127.0.0.1`** : le serveur Node n'écoute que la machine elle-même. Personne ne peut le joindre sans passer par Caddy (et donc sans HTTPS). C'est la valeur par défaut quand `NODE_ENV=production`.
+- **`TRUST_PROXY`** : derrière Caddy, toutes les requêtes arrivent de `127.0.0.1`. Sans cette variable, la limitation des tentatives (connexion, inscription, voix) serait **commune à tous les visiteurs** : 10 connexions ratées par n'importe qui freineraient tout le monde. Avec elle, Mochi lit l'adresse réelle dans l'en-tête `X-Forwarded-For`, mais **uniquement** si la requête vient d'un proxy listé, et prend la **dernière** adresse de l'en-tête (celle ajoutée par Caddy ; les précédentes peuvent être inventées par le client). Les adresses IPv6 sont regroupées par bloc `/64`.
+- **`COOKIE_SECURE=1`** : cookie de session marqué `Secure`, et en-tête `Strict-Transport-Security` (HSTS) envoyé.
+- Le serveur envoie aussi une **Content-Security-Policy** stricte pour les scripts (aucun script inline, aucun domaine externe), `Permissions-Policy` (micro autorisé pour le shadowing, caméra et géolocalisation coupées) et `Cross-Origin-Opener-Policy`.
+
+Si le serveur reçoit un `X-Forwarded-For` alors que `TRUST_PROXY` est vide, il l'ignore et l'écrit une fois dans la console : c'est le signe qu'il manque la variable.
+
 ## 7. Toutes les variables d'environnement
 
 | Variable | Par défaut | Rôle |
@@ -255,7 +283,9 @@ Ce que le site fait déjà pour être en règle :
 | `PUBLIC_URL` | `http://localhost:PORT` | Adresse du site, pour les liens envoyés par e-mail |
 | `PORT` | `8000` | Port du serveur |
 | `DATA_DIR` | `./data` | Base de données et photos de profil |
-| `COOKIE_SECURE` | — | Mettre `1` quand le site est servi en HTTPS |
+| `COOKIE_SECURE` | — | Mettre `1` quand le site est servi en HTTPS (active aussi HSTS) |
+| `TRUST_PROXY` | — | Adresses des proxys de confiance, ex. `127.0.0.1,::1` (section 6 septies) |
+| `HOST` | toutes les interfaces ; `127.0.0.1` si `NODE_ENV=production` | Adresse d'écoute du serveur |
 
 ## 8. Données et sauvegarde
 

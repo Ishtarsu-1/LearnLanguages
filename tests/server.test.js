@@ -13,7 +13,30 @@ server.listen(0, "127.0.0.1", async () => {
     return { status: r.status, data: await r.json().catch(() => null), headers: r.headers };
   };
   try {
-    ok((await fetch(base + "/")).status === 200, "index");
+    { // En-têtes de sécurité
+      const r = await fetch(base + "/");
+      ok(r.status === 200, "index");
+      const csp = r.headers.get("content-security-policy") || "";
+      ok(/script-src 'self'(;|$)/.test(csp) && /frame-ancestors 'none'/.test(csp) && /object-src 'none'/.test(csp), "CSP sur GET / : " + csp);
+      ok(r.headers.get("permissions-policy")?.includes("camera=()") && r.headers.get("cross-origin-opener-policy") === "same-origin", "Permissions-Policy + COOP");
+      ok(r.headers.get("strict-transport-security") === null, "pas de HSTS sans COOKIE_SECURE");
+    }
+    { // Adresse IP du client derrière un proxy (TRUST_PROXY)
+      const { clientIp } = require(path.join((process.argv[2] || path.join(__dirname, "..")), "server.js"));
+      const req = (peer, xff) => ({ socket: { remoteAddress: peer }, headers: xff ? { "x-forwarded-for": xff } : {} });
+      const warn = console.warn; console.warn = () => {};
+      ok(clientIp(req("127.0.0.1", "1.2.3.4")) === "127.0.0.1", "sans TRUST_PROXY, X-Forwarded-For ignoré");
+      console.warn = warn;
+      const trusted = new Set(["127.0.0.1"]);
+      ok(clientIp(req("127.0.0.1", "9.9.9.9, 5.6.7.8"), trusted) === "5.6.7.8", "proxy de confiance : dernière entrée");
+      ok(clientIp(req("::ffff:127.0.0.1", "9.9.9.9, 5.6.7.8"), trusted) === "5.6.7.8", "proxy en IPv4 mappée");
+      ok(clientIp(req("127.0.0.1", "abc"), trusted) === "127.0.0.1", "valeur invalide → IP du pair");
+      ok(clientIp(req("10.0.0.9", "5.6.7.8"), trusted) === "10.0.0.9", "pair non fiable → en-tête ignoré");
+      ok(clientIp(req("2001:db8:1:2:aaaa::1")) === clientIp(req("2001:db8:1:2:bbbb::2")), "IPv6 regroupées par /64");
+      ok(clientIp(req("2001:db8:1:2:aaaa::1")) !== clientIp(req("2001:db8:1:3::1")), "autre /64 → autre clé");
+      ok(clientIp(req("::1")) === "0:0:0:0::/64", "::1 développé");
+      ok(clientIp(req("::ffff:10.0.0.1")) === "10.0.0.1", "IPv4 mappée → IPv4");
+    }
     ok((await fetch(base + "/server.js")).status === 404, "server.js non servi");
     { // Appli installable (PWA)
       const sw = await fetch(base + "/sw.js"); ok(sw.status === 200 && /javascript/.test(sw.headers.get("content-type")), "service worker servi");
