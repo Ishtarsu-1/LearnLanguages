@@ -49,7 +49,7 @@ server.listen(0, "127.0.0.1", async () => {
     const ctx = {
       console, setTimeout, clearTimeout, setInterval: () => 0, Date, Math, JSON, URL, Blob: function () {}, Promise,
       localStorage: { getItem: (k) => store[k] ?? null, setItem: (k, v) => (store[k] = v), removeItem: (k) => delete store[k] },
-      location: { hash: "" }, document: { getElementById: () => el(), querySelector: () => null, querySelectorAll: () => [], documentElement: { style: { setProperty() {} } }, body: { dataset: {}, classList: { toggle() {} } }, addEventListener() {}, hidden: false },
+      location: { hash: "" }, document: { getElementById: () => el(), querySelector: () => null, querySelectorAll: () => [], documentElement: { dataset: {}, style: { setProperty() {} } }, body: { dataset: {}, classList: { toggle() {} } }, addEventListener() {}, hidden: false },
       addEventListener() {}, confirm: () => true, scrollTo() {},
       fetch: async (url, opts) => {
         if (url === "/api/feedback") {

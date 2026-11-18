@@ -24,7 +24,7 @@ const langDefaults = () => ({
 });
 const defaultState = () => ({
   name: "", avatar: "🐰", goal: 10, lastLang: null,
-  settings: { retention: 0.9, newPerDay: 12, cognateWeight: 0.8, particleColors: true, speed: 1, textScale: 1, zen: false },
+  settings: { retention: 0.9, newPerDay: 12, cognateWeight: 0.8, particleColors: true, speed: 1, textScale: 1, zen: false, theme: "auto", voices: {} },
   langs: Object.fromEntries(Object.keys(LANGUAGES).map((k) => [k, langDefaults()])),
   cards: [], logs: [],
   history: {}, // { "AAAA-MM-JJ": { en: { sec, rev, prod, read } } } : suivi d'activité
@@ -325,6 +325,9 @@ function applyDisplay() {
   document.body.classList.toggle("no-pt", !state.settings.particleColors);
   document.body.classList.toggle("zen", !!state.settings.zen);
   document.documentElement.style.setProperty("--text-scale", String(state.settings.textScale || 1));
+  const th = state.settings.theme;
+  if (th === "light" || th === "dark") document.documentElement.dataset.theme = th;
+  else delete document.documentElement.dataset.theme;
 }
 const particleFn = (p) => { const f = PARTICLE_FN[p] || "other"; return [f, PARTICLE_LABEL[f]]; };
 
@@ -367,39 +370,101 @@ function toast(msg) {
   toastTimer = setTimeout(() => t.classList.remove("show"), 4000);
 }
 
-// ---------- Audio : synthèse vocale (§5) ----------
+// ---------- Audio (§5, §14) ----------
+// Deux sources, dans cet ordre :
+//  1. les vraies voix du serveur (features.tts, voir tts.js), si l'admin en a configuré ;
+//  2. la synthèse vocale du navigateur (speechSynthesis), qui dépend de l'appareil :
+//     sous Linux, Chromium n'a souvent AUCUNE voix (il faut speech-dispatcher).
+// Le profil (section Audio) montre ce qui est disponible et permet de choisir sa voix.
 let voices = [];
-function loadVoices() { if ("speechSynthesis" in window) voices = speechSynthesis.getVoices(); }
-if ("speechSynthesis" in window) { loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
-function pickVoice(code) {
-  const mine = voices.filter((v) => v.lang.replace("_", "-").toLowerCase().startsWith(code.slice(0, 2)));
-  return mine.find((v) => /natural|neural|online|premium|enhanced|google/i.test(v.name)) || mine.find((v) => v.lang === code) || mine[0];
+const hasSynth = () => "speechSynthesis" in window;
+function loadVoices() {
+  if (!hasSynth()) return;
+  const before = voices.length;
+  voices = speechSynthesis.getVoices();
+  if (voices.length !== before && location.hash.startsWith("#/profil")) route();
 }
-// Toutes les voix d'une langue (pour l'écoute multi-voix, §14)
-const voicesFor = (lang) => voices.filter((v) => v.lang.replace("_", "-").toLowerCase().startsWith(lang));
-// Au moins 4 « locuteurs » par langue : les vraies voix disponibles, complétées par
-// des variations de hauteur et de débit si l'appareil en a moins de 4.
+if (hasSynth()) { loadVoices(); speechSynthesis.onvoiceschanged = loadVoices; }
+const langOf = (v) => v.lang.replace("_", "-").toLowerCase();
+// Toutes les voix du navigateur pour une langue (en, ko)
+const voicesFor = (lang) => voices.filter((v) => langOf(v).startsWith(lang));
+const serverVoices = (lang) => features.tts?.[lang] || [];
+function pickVoice(code) {
+  const lang = code.slice(0, 2), mine = voicesFor(lang), pref = String(state.settings.voices?.[lang] || "");
+  return mine.find((v) => `browser:${v.name}` === pref) || mine.find((v) => /natural|neural|online|premium|enhanced|google/i.test(v.name)) || mine.find((v) => v.lang === code) || mine[0];
+}
+// Quelle source sera utilisée pour cette langue : "server", "browser" ou null (muet)
+function audioSource(lang) {
+  // Une voix du navigateur choisie explicitement l'emporte, si elle existe sur CET appareil
+  // (le réglage est synchronisé : il peut venir d'un autre appareil).
+  const pref = String(state.settings.voices?.[lang] || "");
+  if (pref.startsWith("browser:") && voicesFor(lang).some((v) => `browser:${v.name}` === pref)) return "browser";
+  if (serverVoices(lang).length) return "server";
+  return voicesFor(lang).length ? "browser" : null;
+}
+// Au moins 4 « locuteurs » par langue (§14) : les vraies voix disponibles, complétées
+// par des variations de hauteur et de débit si l'appareil ou le serveur en a moins de 4.
+const TWEAKS = [[1, 1], [0.8, 0.95], [1.25, 1.05], [0.9, 0.9], [1.15, 1]];
 function speakers(lang) {
-  const vs = voicesFor(lang), out = [];
-  const tweaks = [[1, 1], [0.8, 0.95], [1.25, 1.05], [0.9, 0.9], [1.15, 1]];
-  for (let i = 0; out.length < Math.max(4, vs.length); i++) out.push({ voice: vs[i % (vs.length || 1)] || null, pitch: vs.length > i ? 1 : tweaks[i % tweaks.length][0], rate: vs.length > i ? 1 : tweaks[i % tweaks.length][1] });
+  const sv = audioSource(lang) === "server" ? serverVoices(lang) : [];
+  const vs = sv.length ? sv : voicesFor(lang), out = [];
+  for (let i = 0; out.length < Math.max(4, vs.length); i++) {
+    const real = vs.length > i, [pitch, rate] = real ? [1, 1] : TWEAKS[i % TWEAKS.length];
+    out.push(sv.length ? { server: sv[i % sv.length], pitch, rate } : { voice: vs[i % (vs.length || 1)] || null, pitch, rate });
+  }
   return out;
 }
+let current = null; // lecture en cours (élément Audio ou null)
+const warnedMute = {};
 function speak(text, lang, speed = state.settings.speed, who = null) {
+  stopSound();
+  const sv = serverVoices(lang);
+  if (audioSource(lang) === "server") {
+    const pref = state.settings.voices?.[lang];
+    const voice = who?.server || (sv.includes(pref) ? pref : sv[0]);
+    return serverSpeak(text, lang, voice, speed * (who?.rate || 1), who && who.pitch !== 1).catch(() => browserSpeak(text, lang, speed, null));
+  }
+  return browserSpeak(text, lang, speed, who);
+}
+const ttsUrl = (text, lang, voice) => `/api/tts?lang=${lang}&voice=${encodeURIComponent(voice)}&text=${encodeURIComponent(text.slice(0, 300))}`;
+function serverSpeak(text, lang, voice, rate, shiftPitch) {
+  return new Promise((resolve, reject) => {
+    const a = new Audio(ttsUrl(text, lang, voice));
+    a.playbackRate = rate;
+    if (shiftPitch) a.preservesPitch = false; // variation de « locuteur » pour §14
+    current = a;
+    a.onended = () => { if (current === a) current = null; resolve(); };
+    a.onerror = () => { if (current === a) current = null; reject(new Error("tts")); };
+    a.play().catch(reject);
+  });
+}
+function browserSpeak(text, lang, speed, who) {
   return new Promise((resolve) => {
-    if (!("speechSynthesis" in window)) { toast("L'audio n'est pas disponible sur ce navigateur"); return resolve(); }
+    if (!hasSynth()) { toast("L'audio n'est pas disponible sur ce navigateur"); return resolve(); }
     const u = new SpeechSynthesisUtterance(text);
     u.lang = LANGUAGES[lang].speechLang;
     const v = who ? who.voice : pickVoice(u.lang);
     if (v) u.voice = v;
+    else if (!warnedMute[lang]) {
+      warnedMute[lang] = true;
+      toast(`Aucune voix ${lang === "ko" ? "coréenne" : "anglaise"} sur cet appareil : voir Profil › Audio`);
+    }
     if (who) u.pitch = who.pitch;
     u.rate = 0.9 * speed * (who ? who.rate : 1);
-    u.onend = u.onerror = () => resolve();
+    // Filet de sécurité : certains navigateurs (Chromium sans voix) ne déclenchent jamais onend
+    let done = false;
+    const finish = () => { if (!done) { done = true; clearTimeout(guard); resolve(); } };
+    const guard = setTimeout(finish, 2500 + (text.length * 180) / (u.rate || 1));
+    u.onend = u.onerror = finish;
     speechSynthesis.cancel();
     speechSynthesis.speak(u);
   });
 }
-function stopAudio() { if ("speechSynthesis" in window) speechSynthesis.cancel(); if (ui.reader) ui.reader.playing = false; }
+function stopSound() {
+  if (current) { current.pause(); current = null; }
+  if (hasSynth()) speechSynthesis.cancel();
+}
+function stopAudio() { stopSound(); if (ui.reader) ui.reader.playing = false; }
 
 // ---------- Phrases annotées (voir content.js) ----------
 const PUNCT_RE = /^([«"“(¿¡]*)(.*?)([.,!?…:;»"”)]*)$/;
@@ -1595,7 +1660,12 @@ function viewProfile() {
       <label>Taille du texte : <b>${pct(S.textScale)} %</b>
         <input type="range" min="0.9" max="1.5" step="0.05" value="${S.textScale}" data-set="textScale" /></label>
       <label class="row"><input type="checkbox" ${S.zen ? "checked" : ""} data-set="zen" /> Mode lecture zen (aucun surlignage des mots dans le lecteur)</label>
+      <div><span>Thème</span>
+        <div class="choice-row" role="radiogroup" aria-label="Thème" style="margin-top:6px">${[["auto", "🖥️ Comme l'appareil"], ["light", "☀️ Clair"], ["dark", "🌙 Sombre"]].map(([v, l]) => `<button class="choice ${(S.theme || "auto") === v ? "active" : ""}" role="radio" aria-checked="${(S.theme || "auto") === v}" data-act="theme" data-v="${v}">${l}</button>`).join("")}</div></div>
     </div>
+
+    <h2 class="section-title">Audio</h2>
+    ${audioCard()}
 
     ${account ? `
     <h2 class="section-title">Sécurité du compte</h2>
@@ -1631,6 +1701,46 @@ function viewProfile() {
       </form>
     </details>` : ""}
   </section>`;
+}
+
+// Profil › Audio : quelles voix sont disponibles, laquelle utiliser, et quoi faire s'il n'y en a pas
+function audioCard() {
+  const S = state.settings;
+  const rows = Object.entries(LANGUAGES).map(([id, l]) => {
+    const sv = serverVoices(id), bv = voicesFor(id), src = audioSource(id), pref = S.voices?.[id] || "";
+    const status = src === "server" ? `<span class="badge ok">🎙️ Voix neuronales du serveur (${sv.length})</span>`
+      : src === "browser" ? `<span class="badge">🔈 Voix du navigateur (${bv.length})</span>`
+      : `<span class="badge warn">🔇 Aucune voix ${id === "ko" ? "coréenne" : "anglaise"}</span>`;
+    const opts = [
+      ...sv.map((v) => [v, `🎙️ ${v} (serveur)`]),
+      ...bv.map((v) => [`browser:${v.name}`, `🔈 ${v.name}${/natural|neural|online|premium|enhanced/i.test(v.name) ? " ✨" : ""}`]),
+    ];
+    return `<div class="voice-row">
+      <div class="audio-head"><b>${l.flag} ${l.name}</b> ${status}</div>
+      ${opts.length ? `<div class="audio-ctl">
+        <select class="input" data-voice="${id}" aria-label="Voix ${l.name}"><option value="">Automatique (la meilleure trouvée)</option>${opts.map(([v, t]) => `<option value="${esc(v)}" ${v === pref ? "selected" : ""}>${esc(t)}</option>`).join("")}</select>
+        <button class="btn ghost small" data-act="say" data-lang="${id}" data-text="${esc(id === "ko" ? "안녕하세요! 저는 모찌예요." : "Hi! I'm Mochi. Nice to meet you.")}">▶ Tester</button>
+      </div>` : ""}
+    </div>`;
+  }).join("");
+  const anyMute = Object.keys(LANGUAGES).some((id) => !audioSource(id));
+  return `<div class="card settings">
+    ${rows}
+    <label>Vitesse de lecture : <b>${pct(S.speed)} %</b>
+      <input type="range" min="0.6" max="1.2" step="0.05" value="${S.speed}" data-set="speed" /></label>
+    <details class="audio-help" ${anyMute ? "open" : ""}>
+      <summary><b>Pas de son, ou une voix robotique ?</b></summary>
+      <p class="muted">Sans voix serveur, Mochi utilise les voix installées sur ton appareil. Pour en ajouter :</p>
+      <ul class="muted">
+        <li><b>Le plus simple</b> : ouvre Mochi dans <b>Microsoft Edge</b> (voix « Natural » coréennes et anglaises, gratuites, même sous Linux) ou <b>Google Chrome</b> (voix « Google »).</li>
+        <li><b>Windows</b> : Paramètres › Heure et langue › Voix › Ajouter des voix › coréen.</li>
+        <li><b>macOS / iPhone</b> : Réglages › Accessibilité › Contenu énoncé › Voix › coréen (Yuna) et anglais.</li>
+        <li><b>Android</b> : Paramètres › Synthèse vocale › Moteur Google › installer les données coréennes.</li>
+        <li><b>Linux (Chromium, Firefox)</b> : installe <code>speech-dispatcher</code> et <code>espeak-ng</code>, puis redémarre le navigateur. Ça marche, mais la voix est très robotique.</li>
+      </ul>
+      <p class="muted"><small>Les meilleures voix sont celles du serveur (Kokoro, MeloTTS…) : voir SETUP.md, section « Vraies voix ».</small></p>
+    </details>
+  </div>`;
 }
 
 // Suivi d'activité : calendrier des 17 dernières semaines + totaux
@@ -2030,6 +2140,7 @@ const actions = {
   "logout-others": async () => {
     try { await api("POST", "/api/logout-others"); toast("Autres appareils déconnectés ✓"); loadSessions(); } catch (e) { toast(e.message); }
   },
+  theme: (el) => { state.settings.theme = el.dataset.v; save(); render(); },
   goal: (el) => { state.goal = +el.dataset.v; save(); render(); toast("Objectif mis à jour 🎯"); },
   export: () => {
     const a = document.createElement("a");
@@ -2065,6 +2176,12 @@ $app.addEventListener("input", (e) => {
     if (k === "textScale" || k === "zen" || k === "particleColors") applyDisplay();
     const b = e.target.closest("label")?.querySelector("b");
     if (b) b.textContent = k === "newPerDay" ? v : `${pct(v)} %`;
+  }
+  if (e.target.dataset.voice) {
+    const lang = e.target.dataset.voice;
+    state.settings.voices = { ...state.settings.voices, [lang]: e.target.value || undefined };
+    save();
+    render();
   }
 });
 // Photo de profil : recadrée en carré 256 px dans le navigateur avant l'envoi

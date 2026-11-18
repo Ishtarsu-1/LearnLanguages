@@ -16,6 +16,7 @@
 | Correcteur IA | Claude (API) ou Ollama (local et gratuit), avec garde-fous et repli hors ligne |
 | Comptes | Inscription, photo de profil, suivi d'activité, sécurité, synchronisation multi-appareils |
 | Site | Responsive mobile et desktop, thème clair et sombre, page « Pourquoi ça marche » |
+| Audio | Voix du navigateur ou vraies voix du serveur (Kokoro, MeloTTS, cache disque), Profil › Audio : état, choix et test des voix, aide si aucune voix |
 
 ---
 
@@ -164,7 +165,7 @@ Phrases tirées des textes où tu connais déjà la plupart des mots, toujours a
 ## 🌐 12. Le site
 
 - **Responsive** : téléphone (barre de navigation en bas, onglets qui défilent) et ordinateur.
-- **Charte graphique** (`CHARTE-GRAPHIQUE.md`) appliquée : jetons CSS (`tokens.css`), thème clair et sombre « nuit de Séoul » automatique, Sakura pour l'action principale, une couleur par langue (myrtille pour l'anglais, kaki pour le coréen), polices Pretendard et Jua auto-hébergées, logotype « mochi », mouvements « squish » et respect de `prefers-reduced-motion`.
+- **Charte graphique** (`CHARTE-GRAPHIQUE.md`) appliquée : jetons CSS (`tokens.css`), thème clair et sombre « nuit de Séoul » (automatique, ou forcé dans Profil › Affichage), Sakura pour l'action principale, une couleur par langue (myrtille pour l'anglais, kaki pour le coréen), polices Pretendard et Jua auto-hébergées, logotype « mochi », mouvements « squish » et respect de `prefers-reduced-motion`.
 - **Mascotte Mochi** : galet crème, 7 humeurs (contente, concentrée, fière, curieuse, pensive, endormie, surprise), jamais triste ni en colère.
 - **Lecteur** : particules coréennes colorées **par fonction** (thème, sujet, objet, lieu) avec un style de soulignement différent pour chacune, mots activables au clavier, `lang` posé sur tout texte étranger.
 - **Affichage** : taille du texte réglable (90 à 150 %), mode lecture zen sans surlignage.

@@ -9,6 +9,7 @@ const path = require("node:path");
 const crypto = require("node:crypto");
 const { DatabaseSync } = require("node:sqlite");
 const llm = require("./llm.js");
+const ttsMod = require("./tts.js");
 
 const PORT = Number(process.env.PORT) || 8000;
 const ROOT = __dirname;
@@ -104,6 +105,10 @@ db.prepare("DELETE FROM sessions WHERE expires_at < ?").run(new Date().toISOStri
 const now = () => new Date().toISOString();
 const sha256 = (s) => crypto.createHash("sha256").update(s).digest("hex");
 
+// Vraies voix (facultatif, voir tts.js) et fonctionnalités annoncées au client
+const tts = ttsMod.create({ dir: path.join(DATA, "tts") });
+const featuresJson = (loggedIn = true) => JSON.stringify({ llm: loggedIn && LLM_ON, engine: llm.ENGINE, tts: tts.info() });
+
 function hashPassword(pw) {
   const salt = crypto.randomBytes(16);
   return new Promise((ok, ko) => crypto.scrypt(pw, salt, 64, (e, key) => (e ? ko(e) : ok(`scrypt$${salt.toString("hex")}$${key.toString("hex")}`))));
@@ -187,6 +192,7 @@ const RATE_LIMITS = {
   "login-email": { free: 5, max: 60e3, window: 3600e3 },
   signup: { free: 10, max: 15 * 60e3, window: 3600e3 },
   feedback: { free: 10, max: 60e3, window: 60e3, flat: true }, // 10 corrections par minute, pas de rafales
+  tts: { free: 40, max: 60e3, window: 60e3, flat: true },      // 40 phrases générées par minute (le cache, lui, est libre)
 };
 db.prepare("DELETE FROM login_attempts WHERE window_start < ?").run(Date.now() - 86400e3);
 const attemptGet = db.prepare("SELECT * FROM login_attempts WHERE key = ?");
@@ -326,7 +332,7 @@ async function api(req, res, url) {
     if (db.prepare("SELECT 1 FROM users WHERE email = ?").get(email.trim())) return fail(res, 409, "Un compte existe déjà avec cette adresse.");
     const info = db.prepare("INSERT INTO users (email, pass, name, created_at) VALUES (?, ?, ?, ?)").run(email.trim(), await hashPassword(password), cleanName(name), now());
     createSession(res, Number(info.lastInsertRowid), req);
-    return send(res, 201, { user: publicUser(db.prepare("SELECT * FROM users WHERE id = ?").get(info.lastInsertRowid)), legacy_state: null, features: { llm: LLM_ON, engine: llm.ENGINE } });
+    return send(res, 201, { user: publicUser(db.prepare("SELECT * FROM users WHERE id = ?").get(info.lastInsertRowid)), legacy_state: null, features: JSON.parse(featuresJson()) });
   }
 
   if (route === "POST /api/login") {
@@ -340,14 +346,31 @@ async function api(req, res, url) {
     if (!user || !good) { keys.forEach((k) => recordAttempt(k)); return fail(res, 401, "E-mail ou mot de passe incorrect."); }
     clearAttempts(keys[1]); // l'IP garde son compteur : un attaquant ne le remet pas à zéro avec son propre compte
     createSession(res, user.id, req);
-    return send(res, 200, `{"user":${JSON.stringify(publicUser({ ...user, last_login_at: now() }))},"legacy_state":${legacyState(user)},"features":{"llm":${LLM_ON},"engine":${JSON.stringify(llm.ENGINE)}}}`);
+    return send(res, 200, `{"user":${JSON.stringify(publicUser({ ...user, last_login_at: now() }))},"legacy_state":${legacyState(user)},"features":${featuresJson()}}`);
+  }
+
+  // Voix serveur : ouvertes aux invités aussi. Le cache est servi librement,
+  // seule la génération (qui coûte du calcul) est limitée par IP.
+  if (route === "GET /api/tts") {
+    const lang = url.searchParams.get("lang"), voice = url.searchParams.get("voice"), text = url.searchParams.get("text");
+    const bad = tts.check(lang, voice, text);
+    if (bad) return fail(res, 400, bad);
+    let file = tts.cached(lang, voice, text);
+    if (!file) {
+      const wait = waitFor(`tts:${ip}`);
+      if (wait) return tooMany(res, wait);
+      recordAttempt(`tts:${ip}`);
+      try { file = await tts.generate(lang, voice, text); }
+      catch (e) { console.error("TTS :", e.message); return fail(res, 502, "Le moteur de voix ne répond pas."); }
+    }
+    return serveFile(res, file, ttsMod.typeOf(file), "private, max-age=31536000, immutable");
   }
 
   // --- Routes authentifiées ---
   const auth = currentSession(req);
   if (route === "GET /api/me") {
-    if (!auth) return send(res, 200, { user: null, features: { llm: false } });
-    return send(res, 200, `{"user":${JSON.stringify(publicUser(auth.user))},"legacy_state":${legacyState(auth.user)},"features":{"llm":${LLM_ON},"engine":${JSON.stringify(llm.ENGINE)}}}`);
+    if (!auth) return send(res, 200, `{"user":null,"features":${featuresJson(false)}}`);
+    return send(res, 200, `{"user":${JSON.stringify(publicUser(auth.user))},"legacy_state":${legacyState(auth.user)},"features":${featuresJson()}}`);
   }
   if (!auth) return fail(res, 401, "Connecte-toi d'abord.");
   const uid = auth.user.id;
@@ -488,5 +511,5 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-if (require.main === module) server.listen(PORT, () => console.log(`Mochi → http://localhost:${PORT} · correcteur : ${LLM_ON ? llm.ENGINE : "désactivé"}`));
+if (require.main === module) server.listen(PORT, () => console.log(`Mochi → http://localhost:${PORT} · correcteur : ${LLM_ON ? llm.ENGINE : "désactivé"} · voix : ${tts.enabled ? Object.entries(tts.info()).map(([l, v]) => `${l} ×${v.length}`).join(", ") : "navigateur"}`));
 module.exports = { server, db, limiter: { waitFor, recordAttempt, clearAttempts } };

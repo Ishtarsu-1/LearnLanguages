@@ -237,3 +237,18 @@ ok(tabExercises("ko").includes("Choisis la bonne forme"), "rendu grammaire méla
 actions["ex-pick"]({ dataset: { o: gq.options.find((o) => o !== gq.answer) } });
 ok(state.langs.ko.grammarMiss[gq.g.id] === 1, "raté compté");
 console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
+{ // Audio : voix serveur prioritaires, choix dans le profil, repli navigateur ; thème
+  const saved = features;
+  ok(audioSource("ko") === null && viewProfile().includes("Aucune voix coréenne") && viewProfile().includes("speech-dispatcher"), "aucune voix → aide affichée");
+  features = { ...saved, tts: { ko: ["ko_a", "ko_b"] } };
+  ok(audioSource("ko") === "server" && audioSource("en") === null, "voix serveur coréennes");
+  const sp = speakers("ko");
+  ok(sp.length === 4 && sp[0].server === "ko_a" && sp[1].server === "ko_b" && sp[2].pitch !== 1, "4 locuteurs dont 2 vrais + variations");
+  ok(viewProfile().includes("Voix neuronales du serveur (2)") && viewProfile().includes('value="ko_b"'), "profil : voix serveur listées");
+  state.settings.voices = { ko: "browser:Yuna" };
+  ok(audioSource("ko") === "server", "voix navigateur d'un autre appareil absente → voix serveur");
+  state.settings.voices = {};
+  features = saved;
+  actions.theme({ dataset: { v: "dark" } }); ok(document.documentElement.dataset.theme === "dark", "thème sombre forcé");
+  actions.theme({ dataset: { v: "auto" } }); ok(document.documentElement.dataset.theme === undefined, "thème auto");
+}

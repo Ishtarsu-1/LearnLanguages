@@ -29,7 +29,7 @@
 | ~~**P0**~~ | ~~Synchro sans perte entre appareils~~ ✅ fait | 🟡 | — | — |
 | ~~**P1**~~ | ~~Feedback de production par LLM~~ ✅ fait (reste : cache) | 🔴 | — | backend |
 | ~~**P1**~~ | ~~Test de niveau à l'inscription~~ ✅ fait | 🟡 | 🆓 | — |
-| **P1** | Vraies voix (TTS neuronal, plusieurs voix) | 🟡 | 🆓 | backend |
+| **P1** | Vraies voix (TTS neuronal, plusieurs voix) (🟢 relais serveur + cache + Profil › Audio faits ; reste : déployer Kokoro / MeloTTS) | 🟡 | 🆓 | backend |
 | **P1** | Analyseur morphologique coréen côté serveur | 🟡 | 🆓 | backend |
 | **P1** | Beaucoup plus de contenu + thèmes et situations | 🔴 | 🆓 | analyseur |
 | ~~**P1**~~ | ~~Ordre d'introduction des nouveaux mots (anti-interférence)~~ ✅ fait | 🟢 | 🆓 | thèmes |
@@ -323,5 +323,5 @@ Tout ce qu'il faut pour faire tourner Mochi sans payer, avec les limites à conn
 - `app.js` dépasse 1 400 lignes : le découper en modules (`fsrs`, `reader`, `review`, `account`, `exercises`, `mochi`…) quand on ajoutera un bundler ou des modules ES. À faire **avant** la refonte graphique, sinon appliquer la charte va être pénible.
 - Les tests (`node tests/run.js`) simulent le navigateur et FSRS : il manque des tests dans un vrai navigateur (Playwright).
 - ~~La limitation des tentatives de connexion est gardée en mémoire~~ → remontée en P0.
-- ~~Les couleurs et tailles sont codées en dur~~ ✅ `tokens.css` + `styles.css` migré (plus aucune couleur en dur). Restent hors charte : la navigation (charte §7 : Aujourd'hui / Lire / Réviser / Profil en bas sur mobile, latérale sur ordinateur), les icônes Lucide à la place des émojis, le sélecteur clair / sombre explicite (`data-theme` est prêt), les modales avec piège du focus.
+- ~~Les couleurs et tailles sont codées en dur~~ ✅ `tokens.css` + `styles.css` migré (plus aucune couleur en dur). Restent hors charte : la navigation (charte §7 : Aujourd'hui / Lire / Réviser / Profil en bas sur mobile, latérale sur ordinateur), les icônes Lucide à la place des émojis, ~~le sélecteur clair / sombre explicite~~ ✅ (Profil › Affichage), les modales avec piège du focus.
 - Attribution des contenus : dès qu'on importe des phrases Tatoeba ou des définitions du 한국어기초사전, stocker la source et la licence **par phrase** (`source`, `license`, `author`), pas seulement globalement.

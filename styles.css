@@ -402,6 +402,16 @@ del { color: var(--error); text-decoration-thickness: 2px; }
 .settings label { display: flex; flex-direction: column; gap: 6px; font-weight: 700; }
 .settings label.row { flex-direction: row; align-items: center; gap: 10px; }
 .settings input[type=range] { width: 100%; max-width: 420px; accent-color: var(--primary); }
+/* Profil › Audio */
+.voice-row { display: flex; flex-direction: column; gap: 8px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
+.audio-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.audio-ctl { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.audio-ctl select { flex: 1; min-width: 0; max-width: 420px; }
+.badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: var(--radius-full); font-size: var(--text-sm); font-weight: 700; background: var(--surface-2); color: var(--ink-muted); }
+.badge.ok { background: var(--matcha-50); color: var(--success); }
+.badge.warn { background: var(--honey-50); color: var(--warning); }
+.audio-help ul { padding-left: 20px; margin: 6px 0; display: flex; flex-direction: column; gap: 4px; }
+.audio-help summary { cursor: pointer; }
 .lvl { display: grid; grid-template-columns: 70px 1fr; gap: 4px 10px; align-items: center; margin-top: 8px; font-weight: 800; }
 .lvl small { grid-column: 2; }
 

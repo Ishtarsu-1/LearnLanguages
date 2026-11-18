@@ -134,6 +134,54 @@ Bon à savoir :
 - Si une correction dépasse 3 minutes, elle est abandonnée et le correcteur hors ligne prend le relais (`OLLAMA_TIMEOUT_MS` pour changer ce délai).
 - Le quota de corrections par jour s'applique aussi (protège ton processeur).
 
+## 6 ter. Vraies voix (facultatif, gratuit)
+
+**Sans rien configurer**, Mochi lit les textes avec les voix **installées sur l'appareil** (synthèse du navigateur). La qualité dépend beaucoup du navigateur :
+
+| Navigateur | Voix anglaises | Voix coréennes |
+|---|---|---|
+| **Microsoft Edge** (même sous Linux) | ✅ « Natural », très bonnes | ✅ SunHi, InJoon (Natural) |
+| **Google Chrome** | ✅ « Google » | ✅ « Google 한국의 » |
+| Safari (macOS, iPhone) | ✅ | ✅ Yuna (à télécharger dans les réglages d'accessibilité) |
+| **Chromium / Firefox sous Linux** | ❌ aucune par défaut | ❌ aucune par défaut |
+
+Sous Linux, Chromium et Firefox passent par `speech-dispatcher`. Sans lui, **aucun son**. Avec `sudo pacman -S speech-dispatcher espeak-ng` (ou `apt install speech-dispatcher espeak-ng`), puis un redémarrage du navigateur, le son marche, mais la voix est très robotique. Le **Profil › Audio** de Mochi indique quelles voix il trouve et permet d'en choisir une et de la tester.
+
+**Voix du serveur (recommandé pour le site public).** Le serveur peut générer l'audio avec des moteurs neuronaux libres, puis garder chaque phrase en cache dans `data/tts/` (une phrase n'est générée qu'une seule fois). Tous les utilisateurs ont alors les mêmes bonnes voix, sur tous les appareils, et l'écoute multi-voix (§14) utilise de vrais locuteurs différents. N'importe quel moteur compatible « OpenAI audio/speech » convient.
+
+**Anglais : Kokoro** (licence Apache 2.0, plusieurs voix américaines et britanniques, tourne sur CPU) :
+
+```bash
+docker run -d -p 8880:8880 --name kokoro ghcr.io/remsky/kokoro-fastapi-cpu:latest
+curl http://localhost:8880/health   # attendre qu'il réponde
+```
+
+**Coréen : MeloTTS** (licence MIT, CPU). Kokoro ne parle pas coréen. `tools/melotts_server.py` expose MeloTTS avec le même protocole :
+
+```bash
+python -m venv ~/melotts && source ~/melotts/bin/activate
+pip install git+https://github.com/myshell-ai/MeloTTS.git
+python -m unidic download
+python tools/melotts_server.py      # → http://127.0.0.1:8881/v1
+```
+
+Puis dans `.env` :
+
+```
+TTS_URL_EN=http://localhost:8880/v1
+TTS_VOICES_EN=af_heart,am_michael,bf_emma,bm_george
+TTS_URL_KO=http://127.0.0.1:8881/v1
+TTS_VOICES_KO=KR
+TTS_MODEL_KO=melotts
+```
+
+Relance `npm start`. La ligne de démarrage affiche `voix : en ×4, ko ×1`, et le Profil › Audio indique « 🎙️ Voix neuronales du serveur ». Si le moteur ne répond pas, Mochi repasse automatiquement sur la voix du navigateur.
+
+- La liste exacte des voix Kokoro est disponible sur `http://localhost:8880/v1/audio/voices`. Mets-en 2 à 6, variées (homme, femme, accents), pour l'écoute multi-voix.
+- MeloTTS n'a qu'une voix coréenne : Mochi en fait 4 « locuteurs » en variant la hauteur et le débit.
+- La génération est limitée à 40 phrases par minute et par adresse IP. Les phrases déjà en cache sont servies sans limite.
+- Le cache se vide en supprimant `data/tts/`. Il est régénéré à la demande.
+
 ## 7. Toutes les variables d'environnement
 
 | Variable | Par défaut | Rôle |
@@ -145,13 +193,16 @@ Bon à savoir :
 | `OLLAMA_TIMEOUT_MS` | `180000` | Délai maximum d'une correction locale |
 | `MOCHI_LLM_DAILY` | `60` | Corrections max par compte et par jour |
 | `MOCHI_LLM` | activé | Mettre `off` pour couper le correcteur IA |
+| `TTS_URL`, `TTS_URL_EN`, `TTS_URL_KO` | — | Moteur de voix (section 6 ter) ; sans valeur, voix du navigateur |
+| `TTS_VOICES_EN`, `TTS_VOICES_KO` | — | Voix proposées, séparées par des virgules |
+| `TTS_MODEL`, `TTS_MODEL_EN`, `TTS_MODEL_KO` | `kokoro` | Champ `model` envoyé au moteur |
 | `PORT` | `8000` | Port du serveur |
 | `DATA_DIR` | `./data` | Base de données et photos de profil |
 | `COOKIE_SECURE` | — | Mettre `1` quand le site est servi en HTTPS |
 
 ## 8. Données et sauvegarde
 
-Tout est dans **`data/`** : `mochi.db` (comptes, progression, révisions) et `avatars/` (photos de profil). Pour sauvegarder, arrête le serveur et copie le dossier `data/`. Ne commite jamais ce dossier (il est dans le `.gitignore`).
+Tout est dans **`data/`** : `mochi.db` (comptes, progression, révisions), `avatars/` (photos de profil) et `tts/` (cache audio, peut être supprimé). Pour sauvegarder, arrête le serveur et copie le dossier `data/`. Ne commite jamais ce dossier (il est dans le `.gitignore`).
 
 ## 9. Tests
 
