@@ -1,6 +1,6 @@
 # FEATURES.md : ce que Mochi sait faire aujourd'hui
 
-> État du site au 17 novembre 2026. Pour la suite : `ROADMAP.md`. Pour l'installation : `SETUP.md`. Pour les principes pédagogiques : `PEDAGOGIE.md`.
+> État du site au 18 novembre 2026. Pour la suite : `ROADMAP.md`. Pour l'installation : `SETUP.md`. Pour les principes pédagogiques : `PEDAGOGIE.md`.
 
 **Mochi** est un site d'apprentissage de l'**anglais** et du **coréen** pour les francophones. Il repose sur une boucle quotidienne fondée sur la recherche : **lire et écouter → capturer les mots → réviser au bon moment → produire des phrases corrigées**.
 
@@ -27,7 +27,10 @@ Les 4 étapes de la boucle, avec leur état :
 3. **🧠 Réviser** : cartes à revoir et nouvelles cartes.
 4. **💬 Produire** : la phrase à écrire du jour.
 
-La série 🔥 n'avance **que si la session est complète** : un texte lu, aucune révision due en attente et une phrase produite. Sauter ses révisions ne rapporte rien.
+**Série hebdomadaire 📅** (§16) : l'objectif est 5 séances complètes sur 7 jours, 2 jours de repos inclus. Rater un jour ne casse rien ; seule une semaine sous l'objectif remet la série à zéro. Une séance compte si elle contient les révisions dues (ou au moins 10) **et** une lecture ou une production : ouvrir l'appli ne suffit pas.
+- Carte « Ma semaine » : 7 pastilles, message bienveillant, Mochi fait la sieste quand l'objectif est atteint.
+- **Reprise en douceur** : après 4 jours d'absence ou plus, 20 révisions le premier jour, puis 40 par jour jusqu'à résorber le retard, sans nouvelles cartes en attendant.
+- **Test de niveau 🧭** (facultatif, 5 min) proposé tant qu'aucune carte n'existe : en anglais, estimation de la taille du vocabulaire par tranches de fréquence avec des faux mots ; en coréen, lecture du Hangul par des mots d'emprunt puis quelques points de grammaire. Les mots et points connus sont validés d'office.
 
 ## 📖 2. Lire & écouter (onglet « Lire »)
 
@@ -62,6 +65,8 @@ La série 🔥 n'avance **que si la session est complète** : un texte lu, aucun
   - 🎯 **Point faible** : une particule souvent ratée, à compléter.
 - Les cartes de production et d'écoute **se débloquent** après 2 réussites en reconnaissance sur des révisions réellement espacées.
 - Nombre de nouvelles cartes par jour plafonné (12 par défaut), rétention visée réglable (80 à 95 %).
+- **Anti-interférence** (§12) : jamais deux nouveaux mots de la même catégorie (boissons, nombres, famille…) ni deux contraires (early/late, 아버지/어머니) le même jour. Les autres attendent le lendemain.
+- Boutons colorés avec icône (↺ 〰 ✓ ⚡) et raccourcis 1 à 4 ; `R` pour réécouter la phrase.
 - **Historique complet** de chaque révision, exportable en JSON.
 
 ## 💬 4. Production (onglet « Produire »)
@@ -88,6 +93,7 @@ Garde-fous communs : verdict cohérent avec les erreurs, registre coréen vérif
 ## 🎯 5. Exercices (onglet « Exercices »)
 
 Phrases tirées des textes où tu connais déjà la plupart des mots, toujours avec audio :
+- 🔀 **Mélange** (par défaut, §13) : alterne les types d'exercices et, en coréen, les points de grammaire déjà vus, avec plus de poids pour les points récents et souvent ratés.
 - ✍️ **Dictée** : écouter, écrire, voir les différences (bouton 🐢 lent).
 - 🧩 **Remettre les mots dans l'ordre**.
 - 🎧 **Compréhension orale** : audio seul, choisir la bonne traduction.
@@ -96,9 +102,9 @@ Phrases tirées des textes où tu connais déjà la plupart des mots, toujours a
 
 ## 🎧 6. Oreille & prononciation (onglet « Oreille »)
 
-- **Paires minimales** : on entend un mot, tu choisis lequel, avec un score.
-  - 🇬🇧 ship/sheep, live/leave, full/fool, think/sink, three/tree, eat/heat ;
-  - 🇰🇷 ㅓ/ㅗ (거기/고기, 섬/솜), ㅡ/ㅜ (글/굴), consonnes simples, aspirées et tendues (달/탈/딸, 불/풀/뿔, 기/키/끼).
+- **Paires minimales multi-voix** (§14) : on entend un mot, prononcé à chaque fois par l'une d'au moins 4 voix, tu choisis lequel. Réécoute des options, **score par contraste**, et les sons faibles reviennent plus souvent.
+  - 🇬🇧 voyelles courtes / longues, th / s / f / z, h aspiré, w / v (16 paires) ;
+  - 🇰🇷 ㅓ/ㅗ, ㅡ/ㅜ, ㅅ/ㅆ, consonnes simples, aspirées et tendues (달/탈/딸, 자다/차다/짜다, 방/빵…) (12 paires).
 - **Notes avec audio** :
   - 🇬🇧 formes faibles (gonna, wanna…), accent tonique (PHOtograph, phoTOgraphy…) ;
   - 🇰🇷 enchaînement des consonnes (한국어 → [한구거]), prononciation du ㄹ.
@@ -158,9 +164,11 @@ Phrases tirées des textes où tu connais déjà la plupart des mots, toujours a
 ## 🌐 12. Le site
 
 - **Responsive** : téléphone (barre de navigation en bas, onglets qui défilent) et ordinateur.
-- **Thème clair et sombre** automatique, et une couleur par langue (bleu pour l'anglais, rose pour le coréen).
-- **Mascotte Mochi** 🍡.
-- **Page « Pourquoi ça marche »** (`#/pourquoi`) : les 6 principes de la méthode, avec 16 sources scientifiques.
+- **Charte graphique** (`CHARTE-GRAPHIQUE.md`) appliquée : jetons CSS (`tokens.css`), thème clair et sombre « nuit de Séoul » automatique, Sakura pour l'action principale, une couleur par langue (myrtille pour l'anglais, kaki pour le coréen), polices Pretendard et Jua auto-hébergées, logotype « mochi », mouvements « squish » et respect de `prefers-reduced-motion`.
+- **Mascotte Mochi** : galet crème, 7 humeurs (contente, concentrée, fière, curieuse, pensive, endormie, surprise), jamais triste ni en colère.
+- **Lecteur** : particules coréennes colorées **par fonction** (thème, sujet, objet, lieu) avec un style de soulignement différent pour chacune, mots activables au clavier, `lang` posé sur tout texte étranger.
+- **Affichage** : taille du texte réglable (90 à 150 %), mode lecture zen sans surlignage.
+- **Page « Pourquoi ça marche »** (`#/pourquoi`) : 9 principes de la méthode, avec 29 sources scientifiques.
 - **Heures d'apprentissage** comptées automatiquement (temps actif uniquement).
 
 ---
@@ -169,11 +177,11 @@ Phrases tirées des textes où tu connais déjà la plupart des mots, toujours a
 
 | | |
 |---|---|
-| Interface | HTML, CSS et JavaScript, sans framework ni étape de compilation (`index.html`, `app.js`, `exercises.js`, `content.js`, `styles.css`) |
+| Interface | HTML, CSS et JavaScript, sans framework ni étape de compilation (`index.html`, `app.js`, `exercises.js`, `placement.js`, `content.js`, `tokens.css`, `styles.css`). Polices dans `fonts/`, ts-fsrs dans `vendor/` : aucun appel à un CDN |
 | Serveur | Node.js ≥ 22.5, SQLite intégré (`server.js`) |
 | Correcteur | `llm.js` : SDK Claude + zod, ou Ollama |
-| Révisions | ts-fsrs 5.2.3 |
-| Sécurité | Mots de passe hachés, cookie de session protégé, protection contre les requêtes venues d'autres sites, tentatives de connexion limitées, images vérifiées, seuls les fichiers du site sont servis |
+| Révisions | ts-fsrs 5.2.3 (embarqué) |
+| Sécurité | Mots de passe hachés, cookie de session protégé, protection contre les requêtes venues d'autres sites, tentatives de connexion limitées (freinage progressif stocké en base, qui survit aux redémarrages), images vérifiées, seuls les fichiers du site sont servis |
 | Tests | `npm test` : 5 suites (application, API, synchronisation, correcteur, Ollama), sans appel payant. Plus `tests/eval-llm.js` pour évaluer un vrai modèle |
 
 ## ⚠️ Limites actuelles

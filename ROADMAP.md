@@ -24,21 +24,21 @@
 | Priorité | Feature | Effort | Coût | Dépend de |
 |---|---|---|---|---|
 | **P0** | Mise en ligne sécurisée (HTTPS, sauvegardes continues) | 🟡 | 🆓 | — |
-| **P0** | Limitation des tentatives de connexion persistante | 🟢 | 🆓 | — |
+| ~~**P0**~~ | ~~Limitation des tentatives de connexion persistante~~ ✅ fait | 🟢 | 🆓 | — |
 | **P0** | Mot de passe oublié + vérification de l'e-mail | 🟡 | 🆓 | service d'e-mail |
 | ~~**P0**~~ | ~~Synchro sans perte entre appareils~~ ✅ fait | 🟡 | — | — |
 | ~~**P1**~~ | ~~Feedback de production par LLM~~ ✅ fait (reste : cache) | 🔴 | — | backend |
-| **P1** | Test de niveau à l'inscription | 🟡 | 🆓 | — |
+| ~~**P1**~~ | ~~Test de niveau à l'inscription~~ ✅ fait | 🟡 | 🆓 | — |
 | **P1** | Vraies voix (TTS neuronal, plusieurs voix) | 🟡 | 🆓 | backend |
 | **P1** | Analyseur morphologique coréen côté serveur | 🟡 | 🆓 | backend |
 | **P1** | Beaucoup plus de contenu + thèmes et situations | 🔴 | 🆓 | analyseur |
-| **P1** | Ordre d'introduction des nouveaux mots (anti-interférence) | 🟢 | 🆓 | thèmes |
-| **P1** | Nouveaux types d'exercices + alternance | 🟡 | 🆓 | — |
-| **P1** | Paires minimales multi-voix | 🟡 | 🆓 | vraies voix |
+| ~~**P1**~~ | ~~Ordre d'introduction des nouveaux mots (anti-interférence)~~ ✅ fait | 🟢 | 🆓 | thèmes |
+| **P1** | Nouveaux types d'exercices + alternance (alternance ✅) | 🟡 | 🆓 | — |
+| **P1** | Paires minimales multi-voix (✅ avec les voix du navigateur ; reste : vraies voix) | 🟡 | 🆓 | vraies voix |
 | **P1** | Bibliothèque de lectures graduées (lecture + écoute) | 🔴 | 🆓 | contenu, voix |
 | **P1** | Génération de textes calibrés par LLM | 🔴 | 🆓/💶 | LLM + analyseur |
 | **P2** | Mochi, la mascotte, et la collection de Mochis | 🟡 | 🆓 | charte graphique |
-| **P2** | Série flexible + quêtes hebdomadaires | 🟡 | 🆓 | — |
+| **P2** | Série flexible (✅) + quêtes hebdomadaires | 🟡 | 🆓 | — |
 | **P2** | Mode histoire | 🔴 | 🆓 | bibliothèque |
 | **P2** | Application installable (PWA) + hors ligne | 🟡 | 🆓 | — |
 | **P2** | Rappels et notifications | 🟡 | 🆓 | PWA |
@@ -66,7 +66,10 @@
 - Logs d'erreurs et page de statut (Uptime Kuma, auto-hébergé et gratuit).
 - Pages légales : mentions légales et politique de confidentialité. Le RGPD (export et suppression) est déjà en place. **Lister chaque sous-traitant** qui reçoit des données (fournisseur de LLM, service d'e-mail, hébergeur). Les phrases écrites par les utilisateurs partent vers le LLM, et ça doit figurer dans la politique de confidentialité.
 
-### Limitation des tentatives de connexion persistante 🟢 🆓
+### ✅ Limitation des tentatives de connexion persistante (fait)
+Fait : table `login_attempts` dans SQLite, une clé par IP et une par compte, freinage progressif (1 s, 2 s, 4 s…, plafonné à 60 s par compte et 15 min par IP), en-tête `Retry-After`, limite de 10 corrections par minute sur `POST /api/feedback`. Reste : l'appliquer à « mot de passe oublié » quand la route existera.
+
+Spécification d'origine :
 *(Ancienne dette technique, remontée en P0 : aujourd'hui, un simple redémarrage du serveur remet les compteurs à zéro.)*
 - Stocker les compteurs dans SQLite (table `login_attempts (key, count, window_start)`), avec une clé par IP **et** par compte.
 - Freinage progressif (attente croissante) plutôt que blocage sec, pour ne pas permettre de verrouiller le compte de quelqu'un d'autre.
@@ -104,7 +107,10 @@ Reste à faire :
 - **Choisir le modèle selon le coût** : pour corriger une phrase courte, un modèle plus léger suffit souvent. Garder le plus gros modèle pour le mode « Phrase libre » ou les cas où le petit modèle a un doute. À mesurer avec le jeu d'évaluation avant de trancher.
 - **Feedback en attente** : avec Ollama, afficher tout de suite le résultat du correcteur hors ligne, puis le remplacer par la correction du LLM quand elle arrive. L'utilisateur n'attend jamais 22 s devant un écran vide.
 
-### Test de niveau à l'inscription 🟡 🆓 *(nouveau)*
+### ✅ Test de niveau à l'inscription (fait)
+Fait : `placement.js`, onglet « 🧭 Niveau » et proposition sur l'écran du jour. Le résultat final affiche « ~X % des mots de nos textes » plutôt qu'un pourcentage d'épisode de sitcom, qu'on ne sait pas mesurer honnêtement. Les tranches de fréquence anglaises sont une sélection approximative (6 mots par tranche) : à remplacer par wordfreq quand la liste de fréquence sera en place.
+
+Spécification d'origine :
 Le calcul de couverture du §3 ne veut rien dire si le site croit qu'un francophone ne connaît aucun mot d'anglais.
 - **Anglais** : test adaptatif de taille de vocabulaire. On montre des mots par tranches de fréquence (1 000 premiers, 2 000…), l'utilisateur dit s'il les connaît. On mélange quelques **faux mots** pour détecter ceux qui cochent tout. On en déduit une estimation (« ~3 500 mots ») et on marque les tranches correspondantes comme connues.
 - **Coréen** : trois questions suffisent (« Tu sais lire le Hangul ? », « Tu connais le 해요체 ? », « Tu as déjà étudié ? »), puis un mini-test de 2 minutes si nécessaire. La plupart des débutants commencent au module Hangul.
@@ -144,7 +150,10 @@ Obligatoire selon le §3 pour tout contenu qui n'est pas annoté à la main.
 
 **Outil interne d'annotation** : coller un texte, obtenir les lemmes et particules (analyseur), les thèmes suggérés, corriger à la main.
 
-### Ordre d'introduction des nouveaux mots (anti-interférence) 🟢 🆓 *(nouveau)*
+### ✅ Ordre d'introduction des nouveaux mots (fait)
+Fait : `SEMANTIC_GROUPS` et `CONFUSABLE` dans `content.js` (en attendant `semantic_group` / `confusable_with` par lexème), filtre dans `newCards()`. Reste : l'exercice de discrimination une fois les deux mots solides.
+
+Spécification d'origine :
 Application directe du §12.
 - Règle du planificateur de nouvelles cartes : **au maximum 1 nouveau mot par `semantic_group` et par jour**. Un deuxième fruit attendra demain, même s'il est dans le même texte (il reste cliquable et traduisible dans le lecteur).
 - Les paires d'opposés et les quasi-synonymes (gauche/droite, 오른쪽/왼쪽, 가르치다/배우다, *borrow/lend*) sont marqués `confusable_with` et jamais introduits le même jour.
@@ -164,9 +173,11 @@ Tous en **rappel actif** (§1), avec une phrase de contexte et de l'audio (§2) 
 - **Paires minimales multi-voix** : voir la feature dédiée.
 - **Mini-conversations** guidées (avec le LLM) : un scénario lié à un thème (commander au café, se présenter) et un objectif (« obtiens un café glacé à emporter »).
 
-**Alternance (§13)** : un point de grammaire nouveau est d'abord travaillé seul (quelques items), puis les séances suivantes **mélangent** les points déjà vus (ex. -았/었어요 + -(으)ㄹ 거예요 + 은/는 vs 이/가 dans la même série). Implémentation : `exercises.js` tire les items au hasard parmi les points de grammaire débloqués, avec un poids plus fort pour les points récents ou souvent ratés.
+**Alternance (§13)** ✅ fait : mode « 🔀 Mélange » (par défaut) dans `exercises.js`, poids plus fort aux points récents et ratés (`grammarMiss`). Spécification : un point de grammaire nouveau est d'abord travaillé seul (quelques items), puis les séances suivantes **mélangent** les points déjà vus (ex. -았/었어요 + -(으)ㄹ 거예요 + 은/는 vs 이/가 dans la même série). Implémentation : `exercises.js` tire les items au hasard parmi les points de grammaire débloqués, avec un poids plus fort pour les points récents ou souvent ratés.
 
-### Paires minimales multi-voix 🟡 🆓 *(nouveau, remplace les « paires minimales étendues »)*
+### Paires minimales multi-voix 🟡 🆓 *(✅ première version)*
+Fait : au moins 4 « locuteurs » par langue (voix réelles de l'appareil, complétées par des variations de hauteur et de débit), réécoute des options, score par contraste (`earStats`) affiché dans l'onglet Oreille, tirage favorisant les contrastes faibles, nouvelles paires. Reste : de vraies voix TTS neuronales et natives (feature « Vraies voix »), et l'affichage des scores dans le profil.
+
 Application du §14.
 - L'utilisateur entend un mot et choisit entre deux options (ex. 달 / 딸 / 탈, 어 / 오, *ship / sheep*, *think / sink*).
 - **Chaque mot est prononcé par plusieurs voix** (au moins 4 par langue grâce au TTS, puis des voix natives) et dans plusieurs mots différents, pas toujours le même enregistrement.
@@ -201,7 +212,9 @@ Application du §15.
 - **Mochidex** : une page avec toutes les saveurs (débloquées ou en silhouette) et la progression de chaque thème. C'est une façon visuelle et collectionnable de montrer la progression réelle.
 - Accessoires cosmétiques pour Mochi (bonnet, écharpe, hanbok, casquette) gagnés avec les quêtes. **Purement cosmétiques**, jamais achetables.
 
-### Série flexible + quêtes hebdomadaires 🟡 🆓 *(nouveau)*
+### Série flexible + quêtes hebdomadaires 🟡 🆓 *(série ✅)*
+Fait : série hebdomadaire 5/7 (`fullDays`, migrée depuis l'ancienne série), carte « Ma semaine », Mochi endormie les jours de repos, nouvelle définition d'une séance complète, reprise en douceur après une absence (20 révisions puis 40/jour, sans nouvelles cartes). Reste : les quêtes hebdomadaires.
+
 - **Série hebdomadaire plutôt que quotidienne** : l'objectif est « 5 jours sur 7 », comme le défi « Semaine régulière ». Une semaine réussie ajoute +1 à la série. Rater un jour ne casse rien : manquer une occasion n'empêche pas une habitude de se former (§16).
 - **Jours de repos** : 2 par semaine, inclus d'office, présentés positivement (Mochi fait la sieste).
 - **Une séance compte** si elle contient les révisions dues (ou au moins 10) **et** un input ou une production. Ouvrir l'app ne suffit pas.
@@ -218,7 +231,7 @@ Application du §15.
 - PWA : manifeste, icône (Mochi), service worker.
 - Mode hors ligne : réviser dans le métro, synchroniser au retour du réseau (s'appuie sur la synchro du P0).
 - Pré-télécharger l'audio des cartes dues dans les 2 prochains jours.
-- Embarquer ts-fsrs localement au lieu du CDN.
+- ~~Embarquer ts-fsrs localement au lieu du CDN.~~ ✅ (`vendor/ts-fsrs-5.2.3.umd.js`)
 
 ### Rappels et notifications 🟡 🆓
 - Notification « Tes révisions t'attendent » à l'heure choisie (Web Push, gratuit avec des clés VAPID).
@@ -310,5 +323,5 @@ Tout ce qu'il faut pour faire tourner Mochi sans payer, avec les limites à conn
 - `app.js` dépasse 1 400 lignes : le découper en modules (`fsrs`, `reader`, `review`, `account`, `exercises`, `mochi`…) quand on ajoutera un bundler ou des modules ES. À faire **avant** la refonte graphique, sinon appliquer la charte va être pénible.
 - Les tests (`node tests/run.js`) simulent le navigateur et FSRS : il manque des tests dans un vrai navigateur (Playwright).
 - ~~La limitation des tentatives de connexion est gardée en mémoire~~ → remontée en P0.
-- Les couleurs et tailles sont probablement codées en dur un peu partout : migrer vers les **variables CSS de la charte** (`CHARTE-GRAPHIQUE.md` §11) au fur et à mesure.
+- ~~Les couleurs et tailles sont codées en dur~~ ✅ `tokens.css` + `styles.css` migré (plus aucune couleur en dur). Restent hors charte : la navigation (charte §7 : Aujourd'hui / Lire / Réviser / Profil en bas sur mobile, latérale sur ordinateur), les icônes Lucide à la place des émojis, le sélecteur clair / sombre explicite (`data-theme` est prêt), les modales avec piège du focus.
 - Attribution des contenus : dès qu'on importe des phrases Tatoeba ou des définitions du 한국어기초사전, stocker la source et la licence **par phrase** (`source`, `license`, `author`), pas seulement globalement.
