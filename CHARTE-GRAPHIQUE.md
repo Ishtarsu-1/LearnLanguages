@@ -167,17 +167,20 @@ Dans les textes débutants (désactivable, §6 de `PEDAGOGIE.md`), chaque partic
 | Usage | Police | Licence | Pourquoi |
 |---|---|---|---|
 | Texte, interface, lecteur | **Pretendard** (variable, 100-900) | SIL OFL 1.1 | Conçue pour le coréen **et** le latin dans la même police (dérivée d'Inter et de Source Han Sans) : le français, l'anglais et le Hangul ont le même rythme visuel. |
-| Titres, logo, chiffres de célébration | **Jua** (400) | SIL OFL 1.1 | Arrondie et joueuse, avec le latin et le Hangul. Exactement l'esprit « Mochi ». |
+| Titres (latin), chiffres de célébration | **Fredoka** (variable, 300-700, titres en 600) | SIL OFL 1.1 | Arrondie et joueuse comme Jua, **avec les accents français** (Jua n'a que le latin de base : « é », « è », « à », « ç » tombaient dans une autre police). |
+| Titres (Hangul), logo | **Jua** (400) | SIL OFL 1.1 | Arrondie et joueuse. Prend le relais automatiquement pour le Hangul dans les titres. Exactement l'esprit « Mochi ». |
 | API, transcriptions phonétiques | Pretendard (ou Noto Sans en secours pour les symboles API manquants) | SIL OFL 1.1 | — |
 
 ```css
 --font-sans: "Pretendard Variable", Pretendard, -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif;
---font-display: "Jua", "Pretendard Variable", Pretendard, sans-serif;
+--font-display: "Fredoka Variable", "Jua", "Pretendard Variable", Pretendard, sans-serif;
+--font-logo: "Jua", "Fredoka Variable", sans-serif;
 ```
 
 - **[OBLIGATOIRE]** Auto-héberger les polices (paquets Fontsource ou fichiers dans `/fonts`) : pas d'appel à un CDN tiers (vie privée, et ça marche hors ligne pour la PWA).
 - Pretendard : utiliser la version à **sous-ensembles dynamiques** (*dynamic subset*). Une police coréenne complète pèse plusieurs Mo, les sous-ensembles ne chargent que les caractères affichés.
 - `font-display: swap` partout.
+- Fredoka et Jua : **jamais en texte courant**. Jua n'a qu'une graisse : `font-synthesis: none` sur les titres pour éviter un faux gras sur le Hangul.
 - Jua n'a qu'une graisse : **jamais en texte courant**, seulement les titres de 24 px et plus, le logo et les gros chiffres.
 
 ### Échelle (base 16 px)

@@ -60,7 +60,9 @@
 
   /* Typographie */
   --font-sans: "Pretendard Variable", Pretendard, -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif;
-  --font-display: "Jua", "Pretendard Variable", Pretendard, sans-serif;
+  /* Titres : Fredoka pour le latin (accents compris), Jua prend le relais pour le Hangul */
+  --font-display: "Fredoka Variable", "Jua", "Pretendard Variable", Pretendard, sans-serif;
+  --font-logo: "Jua", "Fredoka Variable", sans-serif;
   --text-scale: 1;
   --text-xs: calc(0.75rem * var(--text-scale));
   --text-sm: calc(0.875rem * var(--text-scale));

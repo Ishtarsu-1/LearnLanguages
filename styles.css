@@ -39,7 +39,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
   border-bottom: 1px solid var(--border);
 }
 /* Logotype (§2) : « mochi » en Jua, le premier « o » est le visage de Mochi */
-.brand { display: flex; align-items: center; font-family: var(--font-display); font-size: var(--text-3xl); line-height: 1; color: var(--ink); min-height: 44px; }
+.brand { display: flex; align-items: center; font-family: var(--font-logo); font-size: var(--text-3xl); line-height: 1; color: var(--ink); min-height: 44px; }
 .logo-o { display: inline-block; width: .62em; height: .55em; margin: 0 .03em; vertical-align: -.02em; }
 .logo-o svg { width: 100%; height: 100%; display: block; overflow: visible; }
 .topbar-stats { display: flex; gap: 10px; margin-left: auto; }
@@ -62,7 +62,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 h1, h2, h3 { margin: 0; font-weight: 700; letter-spacing: -.01em; }
 /* Jua (§6) : titres de 24 px et plus uniquement, jamais en texte courant */
-h1, .section-title, .empty h2, .lang-card h2, .display { font-family: var(--font-display); font-weight: 400; letter-spacing: 0; }
+h1, .section-title, .empty h2, .lang-card h2, .display { font-family: var(--font-display); font-weight: 600; letter-spacing: 0; font-synthesis: none; } /* pas de faux gras sur Jua (une seule graisse) */
 h1 { font-size: var(--text-3xl); }
 .empty h2, .section-title { font-size: var(--text-2xl); }
 .muted { color: var(--ink-muted); }
