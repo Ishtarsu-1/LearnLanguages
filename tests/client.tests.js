@@ -119,6 +119,8 @@ render1("#/profil");
   const mig = normalizeState({ langs: { en: { streak: 3, lastStreakDay: today() } } });
   ok(Object.keys(mig.langs.en.fullDays).length === 3 && mig.langs.en.fullDays[yesterday()], "migration série quotidienne");
 }
+// Page « Pourquoi » : chaque renvoi pointe vers une source existante
+ok(SOURCES.length === 29 && WHY.every(([, , , refs]) => refs.every((n) => n >= 1 && n <= SOURCES.length)), "sources du « Pourquoi »");
 // Anti-interférence (§12)
 {
   const saved = JSON.stringify(state);

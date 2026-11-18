@@ -24,7 +24,7 @@ const langDefaults = () => ({
 });
 const defaultState = () => ({
   name: "", avatar: "🐰", goal: 10, lastLang: null,
-  settings: { retention: 0.9, newPerDay: 12, cognateWeight: 0.8, particleColors: true, speed: 1 },
+  settings: { retention: 0.9, newPerDay: 12, cognateWeight: 0.8, particleColors: true, speed: 1, textScale: 1, zen: false },
   langs: Object.fromEntries(Object.keys(LANGUAGES).map((k) => [k, langDefaults()])),
   cards: [], logs: [],
   history: {}, // { "AAAA-MM-JJ": { en: { sec, rev, prod, read } } } : suivi d'activité
@@ -320,6 +320,12 @@ const koCls = (lang) => (isKo(lang) ? "ko" : "en");
 // Fonction d'une particule coréenne, pour la couleur et le soulignement (charte §5)
 const PARTICLE_FN = { 은: "topic", 는: "topic", 이: "subject", 가: "subject", 을: "object", 를: "object", 에: "place", 에서: "place", 에게: "place", 한테: "place", 께: "place" };
 const PARTICLE_LABEL = { topic: "particule de thème", subject: "particule de sujet", object: "particule d'objet", place: "particule de lieu, de temps ou de destinataire", other: "particule" };
+// Réglages d'affichage (charte §6, §14) : taille du texte et lecture zen
+function applyDisplay() {
+  document.body.classList.toggle("no-pt", !state.settings.particleColors);
+  document.body.classList.toggle("zen", !!state.settings.zen);
+  document.documentElement.style.setProperty("--text-scale", String(state.settings.textScale || 1));
+}
 const particleFn = (p) => { const f = PARTICLE_FN[p] || "other"; return [f, PARTICLE_LABEL[f]]; };
 
 // Mochi, la mascotte (charte §8) : un galet rond un peu plus large que haut, visage
@@ -1583,6 +1589,13 @@ function viewProfile() {
       <label class="row"><input type="checkbox" ${S.particleColors ? "checked" : ""} data-set="particleColors" /> Particules coréennes en couleur</label>
     </div>
 
+    <h2 class="section-title">Affichage</h2>
+    <div class="card settings">
+      <label>Taille du texte : <b>${pct(S.textScale)} %</b>
+        <input type="range" min="0.9" max="1.5" step="0.05" value="${S.textScale}" data-set="textScale" /></label>
+      <label class="row"><input type="checkbox" ${S.zen ? "checked" : ""} data-set="zen" /> Mode lecture zen (aucun surlignage des mots dans le lecteur)</label>
+    </div>
+
     ${account ? `
     <h2 class="section-title">Sécurité du compte</h2>
     <div class="acct-grid">
@@ -1703,6 +1716,19 @@ const SOURCES = [
   ["Le « mur après le Hangul »", "https://www.hellotalk.com/en/blog/after-hangul-gap-in-korean-resources"],
   ["Niveaux de langue et honorifiques en coréen : Korea Herald", "https://www.koreaherald.com/article/3211101"],
   ["Revue critique des études internes de Duolingo", "https://callej.org/index.php/journal/article/download/419/347/1013"],
+  ["Tinkham, T. (1997). The effects of semantic and thematic clustering on the learning of second language vocabulary. Second Language Research, 13(2), 138–163", "https://synapsesocial.com/papers/W2038339147"],
+  ["Tinkham, T. (1994). Thèse sur le regroupement sémantique et thématique", "https://ideals.illinois.edu/items/19069"],
+  ["Nakata, T. & Suzuki, Y. (2019). Effects of massing and spacing on the learning of semantically related and unrelated words. Studies in Second Language Acquisition", "https://resolve.cambridge.org/core/services/aop-cambridge-core/content/view/F58BA8D70385603B9C42E408BFCB8A10/S0272263118000219a.pdf/effects-of-massing-and-spacing-on-the-learning-of-semantically-related-and-unrelated-words.pdf"],
+  ["Pan, S. C. et al. (2019). The synergistic benefits of systematic and random interleaving for second language grammar learning. JARMAC", "https://sc-pan.github.io/pdf/PLPR_2019.pdf"],
+  ["Pan, S. C. et al. (2024). Interleaved practice enhances grammar skill learning for similar and dissimilar tenses in Romance languages", "https://sc-pan.github.io/pdf/PRKL_2024.pdf"],
+  ["Uchihara, T., Karas, M. & Thomson, R. I. High variability phonetic training (HVPT): A meta-analysis of L2 perceptual training studies. Studies in Second Language Acquisition", "https://resolve.cambridge.org/core/journals/studies-in-second-language-acquisition/article/high-variability-phonetic-training-hvpt-a-metaanalysis-of-l2-perceptual-training-studies/6ABB8C1F32D88D53EA8D05A4565E76F6/core-reader", [["perception → production (2024)", "https://www.cambridge.org/core/product/E38D8F5CE65DC708137B0E95F97C6BC7"]]],
+  ["Liu, J. & Zhang, J. (2018). The Effects of Extensive Reading on English Vocabulary Learning: A Meta-analysis. English Language Teaching, 11(6)", "https://econpapers.repec.org/RePEc:ibn:eltjnl:v:11:y:2018:i:6:p:1"],
+  ["Jeon, E.-Y. & Day, R. R. (2016). The effectiveness of ER on reading proficiency: A meta-analysis. Reading in a Foreign Language", "https://scholarspace.manoa.hawaii.edu/server/api/core/bitstreams/eebea128-afb4-47cd-8a16-453a7eff6ca1/content"],
+  ["Étude sur l'apprentissage du vocabulaire en lisant et écoutant 10 lectures graduées", "https://core.ac.uk/download/215386265.pdf"],
+  ["Lee, J.-Y. & Baek, M. (2023). Effects of Gamification on Students' English Language Proficiency: A Meta-Analysis on Research in South Korea. Sustainability, 15(14)", "https://mdpi.com/2071-1050/15/14/11325"],
+  ["Étude sur les effets de la gamification de Duolingo sous l'angle de l'autodétermination (2026)", "https://jst-ud.vn/jst-ud/article/download/10685/6973/33542"],
+  ["Duolingo, tests A/B sur les séries", "https://making.duolingo.com/how-streaks-keep-duolingo-learners-committed-to-their-language-goals", [["analyse critique", "https://uxmag.com/?p=20707"]]],
+  ["Lally, P. et al. (2009/2010), formation des habitudes (UCL)", "https://www.ucl.ac.uk/news/2009/aug/how-long-does-it-take-form-habit", [["résumé (jours manqués)", "https://jamesclear.com/new-habit"]]],
 ];
 const WHY = [
   ["🧠", "On révise au bon moment, pas en boucle.", "Revoir une notion à intervalles espacés, en essayant de s'en souvenir avant de voir la réponse, est bien plus efficace que de la répéter d'affilée. Une méta-analyse de 29 études trouve un effet fort en faveur de cette méthode. On utilise FSRS, un algorithme open source qui apprend ton rythme d'oubli et planifie tes révisions juste avant que tu oublies.", [1, 2, 3]],
@@ -1710,6 +1736,9 @@ const WHY = [
   ["💬", "Tu pratiques, et on te corrige intelligemment.", "Comprendre ne suffit pas : produire des phrases et recevoir un retour fait progresser. Les études montrent que reformuler correctement ta phrase est particulièrement efficace sur la durée. C'est ce que fait le site après chaque exercice d'écriture.", [7, 8]],
   ["🎧", "On travaille vraiment l'oreille.", "Les applis de langues aident bien pour le vocabulaire et la grammaire, mais moins pour l'écoute. C'est pour ça que tout le contenu a de l'audio, et qu'on propose le shadowing (répéter en même temps que le locuteur), qui améliore le rythme et l'intonation.", [9, 10]],
   ["🇰🇷", "Le coréen, dans le bon ordre.", "Le coréen demande du temps (environ 2 200 heures de cours selon l'institut de formation des diplomates américains pour un niveau professionnel). Mais son alphabet est l'un des plus simples au monde : la plupart des gens le lisent en une semaine environ. On commence donc par là, sans romanisation, puis on enchaîne avec le registre poli le plus utile au quotidien, et on t'accompagne dans la phase la plus difficile : particules, terminaisons et niveaux de politesse.", [11, 12, 13, 14]],
+  ["🧩", "Les mots qui se ressemblent, étalés dans le temps.", "Apprendre d'un coup des mots très proches (tous les fruits, gauche et droite) crée de la confusion. Regrouper des mots qui vont ensemble dans une même scène (au café : commander, chaud, à emporter) aide au contraire. Mochi n'introduit donc jamais le même jour deux mots de la même catégorie, ni deux contraires.", [17, 18, 19]],
+  ["🔀", "On mélange les exercices, et on écoute plusieurs voix.", "Alterner plusieurs points de grammaire dans une même séance aide à apprendre à choisir la bonne forme. Et entendre un même son prononcé par plusieurs voix entraîne efficacement l'oreille : c'est aujourd'hui considéré comme la méthode d'entraînement de la perception la mieux étayée par la recherche.", [20, 21, 22]],
+  ["🍡", "Une motivation honnête.", "Les éléments de jeu aident à apprendre, à condition de récompenser les vrais progrès. Et rater un jour n'empêche pas une habitude de se former : chez Mochi, ta série est hebdomadaire, avec des jours de repos, et la mascotte n'est jamais triste à cause de toi.", [26, 27, 28, 29]],
   ["🎯", "Des objectifs honnêtes.", "On te montre tes heures d'apprentissage et le nombre de mots que tu connais, pas seulement une série de jours. Tu sais où tu en es, et ce qu'il reste.", [5, 12]],
 ];
 function viewWhy() {
@@ -1760,7 +1789,7 @@ function route() {
   } else html = viewNotFound();
 
   document.body.dataset.lang = lang || state.lastLang || "ko";
-  document.body.classList.toggle("no-pt", !state.settings.particleColors);
+  applyDisplay();
   $app.innerHTML = html;
   const logo = document.getElementById("logo-o"); if (logo && !logo.innerHTML) logo.innerHTML = LOGO_FACE;
   $app.querySelectorAll(".ko, .en").forEach((e) => { if (!e.classList.contains("lang-card")) e.lang = e.classList.contains("ko") ? "ko" : "en"; });
@@ -2032,6 +2061,7 @@ $app.addEventListener("input", (e) => {
   if (k) {
     const v = e.target.type === "checkbox" ? e.target.checked : Number(e.target.value);
     state.settings[k] = v; save();
+    if (k === "textScale" || k === "zen" || k === "particleColors") applyDisplay();
     const b = e.target.closest("label")?.querySelector("b");
     if (b) b.textContent = k === "newPerDay" ? v : `${pct(v)} %`;
   }

@@ -12,7 +12,7 @@ function device(base, name) {
     console, setTimeout, clearTimeout, setInterval: () => 0, Date, Math, JSON, URL, Blob: function () {}, Promise,
     localStorage: { getItem: (k) => store[k] ?? null, setItem: (k, v) => (store[k] = String(v)), removeItem: (k) => delete store[k] },
     location: { hash: "" },
-    document: { getElementById: () => el(), querySelector: () => null, querySelectorAll: () => [], body: { dataset: {}, classList: { toggle() {} } }, addEventListener() {}, hidden: false },
+    document: { getElementById: () => el(), querySelector: () => null, querySelectorAll: () => [], documentElement: { style: { setProperty() {} } }, body: { dataset: {}, classList: { toggle() {} } }, addEventListener() {}, hidden: false },
     addEventListener() {}, confirm: () => true, scrollTo() {},
     fetch: async (url, opts = {}) => {
       const headers = { ...(opts.headers || {}) }; if (cookie) headers.Cookie = cookie;

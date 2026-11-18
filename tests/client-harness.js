@@ -6,7 +6,7 @@ const store = {};
 const ctx = {
   console, setTimeout, clearTimeout, setInterval: () => 0, Date, Math, JSON, URL, Blob: function () {},
   localStorage: { getItem: (k) => store[k] ?? null, setItem: (k, v) => (store[k] = v) },
-  location: { hash: "" }, document: { getElementById: () => el(), querySelectorAll: () => [], body: { dataset: {}, classList: { toggle() {} } }, addEventListener() {}, hidden: false },
+  location: { hash: "" }, document: { getElementById: () => el(), querySelectorAll: () => [], documentElement: { style: { setProperty() {} } }, body: { dataset: {}, classList: { toggle() {} } }, addEventListener() {}, hidden: false },
   addEventListener() {}, confirm: () => true, window: null, scrollTo() {},
 };
 // Bouchon FSRS minimal (même API que ts-fsrs pour ce qu'on utilise)
