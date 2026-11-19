@@ -73,7 +73,7 @@ Les 4 étapes de la boucle, avec leur état :
   - code couleur : mot nouveau (pointillé), en révision (surligné), transparent, particule coréenne (violet, désactivable) ;
   - **questions de compréhension** après « J'ai fini » (2 ou 3, en français, erreurs reposées), puis la suite de la séance ; score « compris x/y » dans la liste des textes. Champ `questions` des textes (la bonne réponse en premier).
 - **Audio** (voix du serveur si configurées, sinon synthèse vocale du navigateur) :
-  - écouter tout le texte, avec la phrase en cours surlignée ;
+  - écouter tout le texte, avec la phrase en cours surlignée et **le mot en cours en Yuzu** (voix du navigateur : position exacte ; vraies voix : estimation par syllabes ou par lettres, pauses à la ponctuation) ;
   - écouter une seule phrase, à la vitesse 0,75×, 1× ou 1,25× ;
   - masquer le texte pour une écoute pure ;
   - traduction de chaque phrase sur demande (🇫🇷).

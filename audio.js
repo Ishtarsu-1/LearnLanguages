@@ -166,6 +166,7 @@ async function serverSpeak(text, lang, voice, rate, shiftPitch, token = playToke
     a.onended = () => done();
     a.onpause = () => { if (a.currentTime < a.duration) done(); }; // arrêtée par stopSound : la promesse se termine
     a.onerror = () => done(Object.assign(new Error(a.error?.message || ""), { mediaCode: a.error?.code }));
+    a.onplaying = () => followAudio(a, token);
     a.play().catch(done);
   });
 }
@@ -186,13 +187,15 @@ function browserSpeak(text, lang, speed, who) {
     let done = false;
     const finish = () => { if (!done) { done = true; clearTimeout(guard); resolve(); } };
     const guard = setTimeout(finish, 2500 + (text.length * 180) / (u.rate || 1));
-    u.onend = u.onerror = finish;
+    u.onend = u.onerror = () => { markWord(-1); finish(); };
+    if (wordTrack) u.onboundary = (e) => { if (e.name === "word" || e.name === undefined) markWord(wordFromChar(e.charIndex)); };
     speechSynthesis.cancel();
     speechSynthesis.speak(u);
   });
 }
 function stopSound() {
   playToken++;
+  markWord(-1);
   if (current) { const a = current; current = null; a.pause(); }
   if (hasSynth()) speechSynthesis.cancel();
 }
@@ -239,3 +242,37 @@ function speechResult(s, said) {
   return `<div class="said"><p class="m-0">${said.words.map((w, i) => `<span class="${said.hits[i] ? "said-ok" : "said-miss"}">${esc(w)}</span>`).join(" ")}</p>
     <p class="muted m-0"><small>Entendu : « ${esc(said.heard || "…")} » · ${msg}</small></p></div>`;
 }
+
+// ---------- Surlignage mot à mot pendant la lecture (v0.6, lot 3) ----------
+// Sans horodatage du moteur : estimation proportionnelle (syllabes en coréen et en chinois, lettres
+// sinon, petite pause après la ponctuation). Voix du navigateur : événements « boundary » (exacts).
+let wordTrack = null;
+function trackWords(si, s, lang) {
+  const weight = (w) => {
+    const txt = w.segs.map((g) => g.surface).join("");
+    const n = lang === "ko" ? (txt.match(/[\uac00-\ud7af]/g) || []).length : lang === "zh" ? [...txt].length : (txt.match(/\p{L}/gu) || []).length;
+    return Math.max(1, n) + (/[,;:]/.test(w.post) ? 2 : /[.!?…]/.test(w.post) ? 3 : 0);
+  };
+  const ws = s.words.map(weight), total = ws.reduce((a, b) => a + b, 0) || 1;
+  let acc = 0, pos = 0;
+  const ends = ws.map((w) => (acc += w) / total);
+  const starts = s.words.map((w) => { const surf = w.segs.map((g) => g.surface).join(""); const i = s.text.indexOf(surf, pos); if (i >= 0) pos = i + surf.length; return i < 0 ? pos : i; });
+  return { si, ends, starts };
+}
+function markWord(wi) {
+  if (typeof document === "undefined") return;
+  document.querySelectorAll(".w.speaking").forEach((e) => e.classList.remove("speaking"));
+  if (wordTrack && wi >= 0) document.querySelectorAll(`.w[data-s="${wordTrack.si}"][data-w="${wi}"]`).forEach((e) => e.classList.add("speaking"));
+}
+// Fraction écoulée de l'audio → mot (un peu de silence au début et à la fin des fichiers de voix)
+const wordAt = (f) => { const i = wordTrack.ends.findIndex((e) => e > f); return i < 0 ? wordTrack.ends.length - 1 : i; };
+function followAudio(a, token) {
+  if (!wordTrack) return;
+  const tick = () => {
+    if (token !== playToken || a.paused || a.ended || !wordTrack) return markWord(-1);
+    if (a.duration) markWord(wordAt(Math.max(0, (a.currentTime - 0.12) / Math.max(0.1, a.duration - 0.25))));
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+const wordFromChar = (c) => { let i = 0; while (i + 1 < wordTrack.starts.length && wordTrack.starts[i + 1] <= c) i++; return i; };

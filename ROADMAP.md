@@ -42,8 +42,8 @@ Fait (`AMELIORATIONS-v0.5.md`) : recentrage sur l'anglais et le coréen (chinois
 | **P1** | Beaucoup plus de contenu + thèmes et situations (🟢 thèmes faits, 🟢 chaîne de production prête ; reste : produire et relire le volume) | 🔴 | 🆓 | analyseur |
 | ~~**P1**~~ | ~~Ordre d'introduction des nouveaux mots (anti-interférence)~~ ✅ fait | 🟢 | 🆓 | thèmes |
 | ~~**P1**~~ | ~~Nouveaux types d'exercices + alternance~~ ✅ (12 types ; ✅ questions de compréhension après chaque texte ; reste : dialogue entier en écoute seule + questions) | 🟡 | 🆓 | — |
-| **P1** | Paires minimales multi-voix (✅ avec les voix du navigateur ; reste : vraies voix) | 🟡 | 🆓 | vraies voix |
-| **P1** | Bibliothèque de lectures graduées (lecture + écoute) (🟢 moteur + 2 livres ; reste : volume, surlignage mot à mot) | 🔴 | 🆓 | contenu, voix |
+| ~~**P1**~~ | ~~Paires minimales multi-voix~~ ✅ (vraies voix du serveur quand elles existent, mots des paires pré-générés : 30/30 en anglais, 28/28 en coréen ; voix du navigateur sinon) | 🟡 | 🆓 | vraies voix |
+| **P1** | Bibliothèque de lectures graduées (lecture + écoute) (🟢 moteur + 2 livres, ✅ surlignage mot à mot ; reste : volume) | 🔴 | 🆓 | contenu, voix |
 | **P1** | Génération de textes calibrés par LLM (🟢 chaîne `content:gen` + vérification + relecture faite ; reste : textes à la demande par utilisateur) | 🔴 | 🆓/💶 | LLM + analyseur |
 | ~~**P2**~~ | ~~Mochi, la mascotte, et la collection de Mochis~~ ✅ (saveurs par thème + accessoires) | 🟡 | 🆓 | charte graphique |
 | ~~**P2**~~ | ~~Série flexible + quêtes hebdomadaires~~ ✅ fait (reste : récompenses cosmétiques) | 🟡 | 🆓 | — |

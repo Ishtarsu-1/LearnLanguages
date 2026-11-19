@@ -408,6 +408,19 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
   ok(state.cards.length > before, "mots inconnus du chapitre en cartes");
   account = { id: 1, is_admin: true }; ok(chapterOpen("en", b, 2), "admin : tout ouvert"); account = acc;
   location.hash = ""; ui.quiz = null;
+  // Surlignage mot à mot : estimation proportionnelle, et position des mots pour les voix du navigateur
+  {
+    const s0 = TEXTS.en.find((t) => t.id === "en-cafe").parsed[0]; // « Hi! Can I have a coffee, please? »
+    wordTrack = trackWords(0, s0, "en");
+    const n = s0.words.length;
+    ok(wordAt(0) === 0 && wordAt(0.999) === n - 1, "surlignage : premier mot au début, dernier à la fin");
+    const order = [0.05, 0.3, 0.6, 0.9].map(wordAt);
+    ok(order.every((x, i) => !i || x >= order[i - 1]), "surlignage : les mots avancent avec l'audio");
+    ok(wordFromChar(s0.text.indexOf("coffee")) === s0.words.findIndex((w) => w.segs.some((g) => g.surface === "coffee")), "surlignage (voix du navigateur) : position du caractère → mot");
+    const ko = TEXTS.ko[0].parsed[0]; wordTrack = trackWords(0, ko, "ko");
+    ok(wordTrack.ends.length === ko.words.length && Math.abs(wordTrack.ends.at(-1) - 1) < 1e-9, "surlignage (coréen) : par syllabes");
+    wordTrack = null;
+  }
   // Lire à voix haute : comparaison tolérante de la transcription
   {
     const m = speechMatch("Hi! Is this the menu?", ["hi is this the menu"], "en");

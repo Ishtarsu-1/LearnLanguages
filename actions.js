@@ -12,7 +12,9 @@ async function playAll(lang) {
   for (let i = 0; i < t.parsed.length && R.playing; i++) {
     R.cur = i; render();
     document.getElementById(`s-${i}`)?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    wordTrack = trackWords(i, t.parsed[i], lang);
     await speak(t.parsed[i].text, lang);
+    wordTrack = null;
     await new Promise((r) => setTimeout(r, 350));
   }
   R.playing = false; R.cur = -1; render();
@@ -71,7 +73,11 @@ const actions = {
   },
   "play-all": () => playAll(currentLang()),
   stop: () => { stopAudio(); render(); },
-  "play-s": (el) => { const lang = currentLang(); speak(textById(lang, ui.reader.id).parsed[+el.dataset.s].text, lang); },
+  "play-s": async (el) => {
+    const lang = currentLang(), si = +el.dataset.s, s = textById(lang, ui.reader.id).parsed[si];
+    const track = trackWords(si, s, lang);
+    wordTrack = track; await speak(s.text, lang); if (wordTrack === track) wordTrack = null;
+  },
   fr: (el) => { const i = +el.dataset.s; ui.reader.fr[i] = !ui.reader.fr[i]; render(); },
   speed: (el) => { state.settings.speed = +el.dataset.v; save(); render(); },
   "toggle-hide": () => { ui.reader.hide = !ui.reader.hide; render(); },
