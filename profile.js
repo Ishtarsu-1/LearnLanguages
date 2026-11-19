@@ -109,7 +109,6 @@ function viewProfile() {
       <a class="btn ghost small" href="#/pourquoi">🔬 Pourquoi ça marche ?</a>
       <button class="btn ghost small" data-tour="open">🧭 Revoir la visite guidée</button>
       <a class="btn ghost small" href="#/legal/confidentialite">🔒 Mes données et confidentialité</a>
-      ${account ? `<a class="btn small" href="#/amis">👥 Amis et défis${account.social_pending ? ` <span class="count-badge">${account.social_pending}</span>` : ""}</a>` : ""}
       <a class="btn ghost small" href="#/avis">💬 Donner mon avis</a>
       ${isAdmin() ? `<a class="btn small" href="#/admin">🛠️ Tableau de bord admin</a>` : ""}
     </div>

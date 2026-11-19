@@ -21,7 +21,7 @@ server.listen(0, "127.0.0.1", async () => {
       ok(r.headers.get("permissions-policy")?.includes("camera=()") && r.headers.get("cross-origin-opener-policy") === "same-origin", "Permissions-Policy + COOP");
       ok(r.headers.get("strict-transport-security") === null, "pas de HSTS sans COOKIE_SECURE");
       const html = await r.text();
-      ok((html.match(/data-nav="(aujourdhui|lire|reviser)"/g) || []).length === 6, "une navigation en haut (ordinateur) et une en bas (mobile), mêmes entrées");
+      ok((html.match(/data-nav="(aujourdhui|lire|reviser|amis)"/g) || []).length === 8, "une navigation en haut (ordinateur) et une en bas (mobile), mêmes entrées");
     }
     { // Adresse IP du client derrière un proxy (TRUST_PROXY)
       const { clientIp } = require(path.join((process.argv[2] || path.join(__dirname, "..")), "server.js"));

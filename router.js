@@ -26,8 +26,8 @@ function route() {
   else if (parts[0] === "connexion" || parts[0] === "inscription") { html = viewAuth(parts[0]); nav = "profil"; }
   else if (parts[0] === "pourquoi") { html = viewWhy(); nav = "pourquoi"; }
   else if (parts[0] === "avis") { html = viewFeedback(); nav = ""; }
-  else if (parts[0] === "amis") { html = viewFriends(parts[1], parts[2]); nav = "profil"; }
-  else if (parts[0] === "ami" && parts[1]) { html = viewInviteLink(decodeURIComponent(parts[1])); nav = "profil"; }
+  else if (parts[0] === "amis") { html = viewFriends(parts[1], parts[2]); nav = "amis"; }
+  else if (parts[0] === "ami" && parts[1]) { html = viewInviteLink(decodeURIComponent(parts[1])); nav = "amis"; }
   else if (parts[0] === "admin" && parts[1] === "contenu") { html = viewAdminContent(parts[2] && decodeURIComponent(parts[2])); nav = "profil"; }
   else if (parts[0] === "admin") { html = viewAdmin(); nav = "profil"; }
   else if (parts[0] === "legal") { html = viewLegal(parts[1]); nav = ""; }
@@ -62,10 +62,12 @@ function route() {
     const on = a.dataset.nav === nav;
     a.classList.toggle("active", on);
     if (on) a.setAttribute?.("aria-current", "page"); else a.removeAttribute?.("aria-current");
-    if (a.dataset.nav !== "reviser" || !a.querySelector) return;
+    if (!a.querySelector || !["reviser", "amis"].includes(a.dataset.nav)) return;
+    // Pastilles : cartes à revoir (S'entraîner), demandes d'ami et invitations à un défi (Amis)
+    const n = a.dataset.nav === "reviser" ? due : account?.social_pending || 0;
     let b = a.querySelector(".nav-badge");
-    if (due && !b) { b = document.createElement("span"); b.className = "nav-badge"; a.append(b); }
-    if (b) { if (due) { b.textContent = due; b.title = "Cartes à revoir"; } else b.remove(); }
+    if (n && !b) { b = document.createElement("span"); b.className = "nav-badge"; a.append(b); }
+    if (b) { if (n) { b.textContent = n; b.title = a.dataset.nav === "reviser" ? "Cartes à revoir" : "Demandes et invitations en attente"; } else b.remove(); }
   });
   renderTopStats(lang);
   renderTopUser();
