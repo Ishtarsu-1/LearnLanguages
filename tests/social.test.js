@@ -3,7 +3,7 @@
 const fs = require("fs"), path = require("path"), os = require("os");
 process.env.DATA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), "mochi-social-"));
 process.env.MAIL_QUIET = "1";
-const { server, db, social } = require(path.join(__dirname, "..", "server.js"));
+const { server, db, social, betaMetrics } = require(path.join(__dirname, "..", "server.js"));
 let fails = 0; const ok = (c, m) => { if (!c) { fails++; console.log("FAIL", m); } else console.log("  ok", m); };
 
 server.listen(0, "127.0.0.1", async () => {
@@ -106,6 +106,22 @@ server.listen(0, "127.0.0.1", async () => {
     ok((await call("a", "POST", "/api/friends/request", { username: "minji" })).data.sent && !(await call("c", "GET", "/api/friends")).data.incoming.length, "demande d'un compte bloqué : ignorée en silence");
     await call("c", "POST", "/api/friends/unblock", { id: ids.a });
     ok(!(await call("c", "GET", "/api/friends")).data.blocked.length, "débloquer");
+
+    // v0.5 lot 4.5 : entonnoir, rétention, abandons (agrégés)
+    {
+      const D = (n) => social.addDays(today, n);
+      ctr(ids.c, `h.${D(1)}.ko.sec`, 300); ctr(ids.c, `h.${D(1)}.ko.read`, 1); ctr(ids.c, `h.${D(1)}.ko.rev`, 4); // revenue le lendemain, arrêtée après les révisions
+      ctr(ids.c, `h.${D(8)}.ko.sec`, 200); ctr(ids.c, `h.${D(8)}.ko.read`, 1); ctr(ids.c, `h.${D(8)}.ko.rev`, 2); ctr(ids.c, `h.${D(8)}.ko.prod`, 1);
+      kv(ids.c, "lastLang", "ko"); kv(ids.c, "langs.ko.readTexts.ko-cafe", true);
+      db.prepare("INSERT INTO review_logs (user_id, id, card_id, data, rev) VALUES (?, 'l1', 'c4', '{}', 1)").run(ids.c);
+      const m = betaMetrics(D(10));
+      ok(m.steps.signup === 3 && m.steps.lang >= 1 && m.steps.read === 1 && m.steps.review === 1, "entonnoir : inscription → langue → texte lu → révision " + JSON.stringify(m.steps));
+      ok(m.steps.d1 === 1 && m.elig.d1 === 3 && m.steps.d7 === 1 && m.elig.d7 === 3, "retour à J1 et à J7");
+      ok(m.retention.ko.d1[1] === 2 && m.retention.ko.d7[0] === 1, "rétention par langue (depuis le 1er jour dans la langue) " + JSON.stringify(m.retention));
+      ok(m.drop.after_review >= 1 && m.drop.complete >= 1 && m.drop.before_read >= 1, "où s'arrêtent les séances " + JSON.stringify(m.drop));
+      ok(!JSON.stringify(m).includes("@") && !JSON.stringify(m).includes("Minji"), "aucune donnée nominative");
+      ok(betaMetrics(D(0)).elig.d1 === 0, "J1 pas encore mesurable le jour de l'inscription");
+    }
 
     // Quitter un défi ; le dernier qui part le supprime
     await call("a", "POST", `/api/challenges/${s.id}/leave`); await call("c", "POST", `/api/challenges/${s.id}/leave`);

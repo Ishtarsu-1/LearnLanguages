@@ -38,6 +38,13 @@ server.listen(0, "127.0.0.1", async () => {
       ok(clientIp(req("2001:db8:1:2:aaaa::1")) !== clientIp(req("2001:db8:1:3::1")), "autre /64 → autre clé");
       ok(clientIp(req("::1")) === "0:0:0:0::/64", "::1 développé");
       ok(clientIp(req("::ffff:10.0.0.1")) === "10.0.0.1", "IPv4 mappée → IPv4");
+      // Bêta derrière cloudflared (TRUST_CF=1) : CF-Connecting-IP, seulement depuis un proxy de confiance
+      const cfReq = (peer, cf, xff) => ({ socket: { remoteAddress: peer }, headers: { "cf-connecting-ip": cf, ...(xff ? { "x-forwarded-for": xff } : {}) } });
+      ok(clientIp(cfReq("127.0.0.1", "203.0.113.7", "9.9.9.9"), trusted, true) === "203.0.113.7", "TRUST_CF : CF-Connecting-IP en priorité");
+      ok(clientIp(cfReq("127.0.0.1", "203.0.113.7"), trusted, true) !== clientIp(cfReq("127.0.0.1", "198.51.100.4"), trusted, true), "TRUST_CF : deux appareils = deux IP (pas tous derrière 127.0.0.1)");
+      ok(clientIp(cfReq("10.0.0.9", "203.0.113.7"), trusted, true) === "10.0.0.9", "TRUST_CF : pair non fiable → en-tête ignoré");
+      ok(clientIp(cfReq("127.0.0.1", "203.0.113.7"), trusted, false) === "127.0.0.1", "sans TRUST_CF : CF-Connecting-IP ignoré");
+      ok(clientIp(cfReq("127.0.0.1", "pas-une-ip", "5.6.7.8"), trusted, true) === "5.6.7.8", "TRUST_CF : valeur invalide → X-Forwarded-For");
     }
     ok((await fetch(base + "/server.js")).status === 404, "server.js non servi");
     { // Appli installable (PWA)
@@ -91,6 +98,14 @@ server.listen(0, "127.0.0.1", async () => {
       ok(db.prepare("SELECT count(*) n FROM site_feedback").get().n === 1 && db.prepare("SELECT mailed_at FROM site_feedback").get().mailed_at, "avis : enregistré en base, envoi noté");
       for (let i = 0; i < 3; i++) await call("POST", "/api/feedback-site", { kind: "avis", message: "encore un" }, { ck: "" });
       ok((await call("POST", "/api/feedback-site", { kind: "avis", message: "de trop" }, { ck: "" })).status === 429, "avis : 5 par heure et par IP");
+      // Récapitulatif quotidien : un seul e-mail pour les avis pas encore envoyés, une fois par jour
+      const { feedbackDigest } = require(path.join((process.argv[2] || path.join(__dirname, "..")), "server.js"));
+      db.prepare("UPDATE site_feedback SET mailed_at = NULL").run();
+      const before = mail.outbox.length, evening = new Date("2026-11-20T19:30:00+01:00");
+      ok((await feedbackDigest({ at: new Date("2026-11-20T10:00:00+01:00") })).sent === 0, "récapitulatif : pas avant 19 h");
+      const dg = await feedbackDigest({ at: evening });
+      ok(dg.sent >= 3 && mail.outbox.length === before + 1 && /retours sur Mochi/.test(mail.outbox.at(-1).subject) && mail.outbox.at(-1).html.includes("Le son coupe") === false, "récapitulatif : un seul e-mail pour tous les avis en attente");
+      ok((await feedbackDigest({ at: evening })).sent === 0, "récapitulatif : une fois par jour, rien de déjà envoyé");
       delete process.env.FEEDBACK_TO;
     }
     { // Relecture du contenu (CONTENU-PIPELINE, lot C6) : admins uniquement, identifiants stricts

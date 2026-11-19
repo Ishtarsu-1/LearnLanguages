@@ -273,6 +273,21 @@ function machineCard(m) {
     ${m.warnings.length ? `<ul class="mt-12">${m.warnings.map((w) => `<li>${esc(w)}</li>`).join("")}</ul>` : ""}
     <p class="mt-12"><button class="btn ghost small" data-act="admin-doctor">🩺 Relancer le diagnostic</button>${m.at ? ` <small class="muted">dernier : ${new Date(m.at).toLocaleString("fr-FR")}</small>` : ""}</p></div>`;
 }
+// Bêta : entonnoir, rétention, abandons (agrégés, anonymes ; admins exclus)
+function betaCard(b) {
+  const S = b.steps, base = Math.max(S.signup, 1);
+  const rows = [["Inscription", S.signup, S.signup], ["Langue choisie", S.lang, S.signup], ["Premier texte lu", S.read, S.signup], ["Première révision", S.review, S.signup],
+    ["Revenu le lendemain", S.d1, b.elig.d1], ["Revenu à J+7 ou plus", S.d7, b.elig.d7]];
+  const pctOf = (a, n) => (n ? Math.round((a / n) * 100) : 0);
+  const D = b.drop, dTot = D.before_read + D.after_read + D.after_review + D.complete;
+  return `<h2 class="section-title">Bêta : entonnoir et rétention</h2>
+    <div class="card"><table class="admin-table"><tbody>${rows.map(([n, v, of]) => `<tr><th scope="row">${n}</th><td><div class="cov"><div class="bar"><span data-bar-w="${pctOf(v, base)}"></span></div><b>${v}</b></div></td><td class="muted">${of ? `${pctOf(v, of)} %${of !== S.signup ? ` des ${of} inscrits depuis assez longtemps` : ""}` : "—"}</td></tr>`).join("")}</tbody></table>
+      ${Object.keys(b.retention).length ? `<h3 class="mt-16">Rétention par langue</h3><table class="admin-table"><tbody>${Object.entries(b.retention).map(([l, r]) => `<tr><th scope="row">${LANGUAGES[l]?.flag || ""} ${LANGUAGES[l]?.name || l}</th><td>J1 : ${r.d1[1] ? `${pctOf(...r.d1)} % (${r.d1[0]}/${r.d1[1]})` : "—"}</td><td>J7 : ${r.d7[1] ? `${pctOf(...r.d7)} % (${r.d7[0]}/${r.d7[1]})` : "—"}</td></tr>`).join("")}</tbody></table>` : ""}
+      ${dTot ? `<h3 class="mt-16">Où s'arrêtent les séances (${plural(dTot, "jour actif", "jours actifs")})</h3><table class="admin-table"><tbody>
+        <tr><th scope="row">Avant de lire</th><td>${pctOf(D.before_read, dTot)} %</td></tr><tr><th scope="row">Après la lecture</th><td>${pctOf(D.after_read, dTot)} %</td></tr>
+        <tr><th scope="row">Après les révisions</th><td>${pctOf(D.after_review, dTot)} %</td></tr><tr><th scope="row">Jusqu'à la production</th><td>${pctOf(D.complete, dTot)} %</td></tr></tbody></table>` : ""}
+      <p class="muted m-0"><small>Chiffres agrégés, sans nom. Les comptes admin ne sont pas comptés.</small></p></div>`;
+}
 function viewAdmin() {
   if (!isAdmin()) return viewNotFound();
   const A = ui.admin;
@@ -305,6 +320,7 @@ function viewAdmin() {
     <h2 class="section-title">Fonctionnalités</h2>
     <div class="card"><table class="admin-table"><tbody>${features.map(([n, st, info]) => `<tr><th scope="row">${n}</th><td>${st}</td><td class="muted">${info}</td></tr>`).join("")}</tbody></table></div>
     ${machineCard(d.machine)}
+    ${d.beta ? betaCard(d.beta) : ""}
     ${d.feedback ? `<h2 class="section-title">Retours des testeurs (${d.feedback.total})</h2>
     <div class="card">${d.feedback.to ? "" : `<p class="muted"><small>FEEDBACK_TO absent de .env : les retours sont seulement enregistrés, pas envoyés par e-mail.</small></p>`}
       ${d.feedback.last.length ? `<table class="admin-table"><tbody>${d.feedback.last.map((f) => `<tr><th scope="row">${String(f.kind).split(",").map((k) => ({ avis: "💬", bug: "🐞", idee: "💡", contenu: "📖" })[k] || "💬").join("")} ${fmtDate(f.created_at)}${f.rating ? ` · ${"★".repeat(f.rating)}` : ""}</th>

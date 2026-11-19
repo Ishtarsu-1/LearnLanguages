@@ -23,12 +23,35 @@ cloudflared tunnel --url http://localhost:8000
 #    PUBLIC_URL=https://….trycloudflare.com
 #    COOKIE_SECURE=1
 #    TRUST_PROXY=127.0.0.1,::1
+#    TRUST_CF=1          (voir « Vraie adresse IP » ci-dessous)
+#    HOST=127.0.0.1
 npm start
 ```
 
 Vérifie depuis ton téléphone (en 4G, pas en Wi-Fi) que l'adresse s'ouvre, crée ton compte, choisis ton pseudo (onglet **Amis**), copie ton **lien d'invitation**.
 
-> L'adresse `trycloudflare.com` change à chaque lancement du tunnel : renvoie-la si tu relances. Ton PC doit rester allumé pendant le test.
+### ⚠️ L'adresse change à chaque lancement
+
+Un tunnel rapide (`trycloudflare.com`) donne une **nouvelle adresse à chaque lancement** de `cloudflared` : l'ancienne cesse de marcher, et avec elle **les liens d'invitation d'ami** déjà envoyés (`…/#/ami/…`). Si tu dois relancer :
+1. mets la nouvelle adresse dans `PUBLIC_URL` et relance `npm start` ;
+2. renvoie l'adresse **et** ton lien d'invitation aux testeurs (les comptes, eux, ne bougent pas : chacun se reconnecte normalement).
+
+**Adresse fixe** : un *tunnel nommé* avec un compte Cloudflare gratuit et un nom de domaine à toi (une dizaine d'euros par an) : `cloudflared tunnel login`, `cloudflared tunnel create mochi`, `cloudflared tunnel route dns mochi mochi.ton-domaine.fr`, puis `cloudflared tunnel run --url http://localhost:8000 mochi`. L'adresse ne change plus et les liens restent valables.
+
+### 🖥️ Le PC doit rester allumé
+
+Le site tourne sur ton ordinateur : s'il s'éteint ou se met en veille, **le site est hors ligne** pour tout le monde. Pendant la bêta :
+- désactive la mise en veille automatique ;
+- vérifie de temps en temps la santé du site : `https://….trycloudflare.com/api/health` doit répondre `{"ok":true,…}` (ou branche UptimeRobot, gratuit, sur cette adresse : il t'envoie un e-mail si le site tombe) ;
+- si tu dois couper, préviens les testeurs (« Mochi est en pause jusqu'à demain 18 h ») : l'appli installée garde les révisions hors ligne et synchronise au retour.
+
+### 🌐 Vraie adresse IP des testeurs
+
+Derrière le tunnel, toutes les requêtes arrivent de `cloudflared` (sur ta machine). Avec `TRUST_PROXY=127.0.0.1,::1`, Mochi lit l'adresse du visiteur dans `X-Forwarded-For`. Pour plus de sûreté, ajoute `TRUST_CF=1` : Mochi lit alors `CF-Connecting-IP`, posé par Cloudflare. **Seulement** avec `HOST=127.0.0.1` (le site n'est joignable que par le tunnel ; sinon quelqu'un pourrait inventer cet en-tête). Vérification : connecte-toi depuis ton téléphone en 4G **et** depuis ton PC, puis rate 3 mots de passe sur le téléphone : le PC ne doit pas être freiné.
+
+### ✉️ Quota d'e-mails
+
+Resend gratuit : 100 e-mails par jour, partagés entre les retours et les mots de passe. Tous les retours sont **enregistrés en base** et visibles dans l'admin ; l'e-mail n'est qu'une notification. Avec beaucoup de testeurs, mets `FEEDBACK_MAIL=daily` : un seul récapitulatif par jour (à partir de 19 h), au lieu d'un e-mail par avis (`off` : aucun e-mail).
 
 ## 3. Le message à envoyer
 
@@ -61,6 +84,6 @@ Vérifie depuis ton téléphone (en 4G, pas en Wi-Fi) que l'adresse s'ouvre, cr�
 ## 5. Pendant et après
 
 - Les retours arrivent par e-mail et dans **Profil › Tableau de bord admin › Retours des testeurs**.
-- Le même tableau de bord montre les comptes, l'activité sur 7 jours, l'usage de l'IA et son coût.
+- Le même tableau de bord montre l'**entonnoir** (inscription → langue → premier texte → première révision → retour le lendemain → retour à J+7), la **rétention J1 / J7 par langue** et **où s'arrêtent les séances** (avant de lire, après la lecture, après les révisions), tout agrégé et sans nom ; ainsi que les comptes, l'usage de l'IA et son coût.
 - `journalctl` n'existe pas en local : regarde le terminal de `npm start` (les erreurs y sont datées).
 - Après la semaine : `npm run backup`, puis trier les retours (bugs → à corriger d'abord ; idées → ROADMAP).

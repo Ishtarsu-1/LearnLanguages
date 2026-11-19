@@ -594,6 +594,10 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
   ok(viewHangul(1).includes("Comment lire les repères"), "explication des repères");
   state.langs.ko.hangulDone = hd; account = acc;
 }
+{ // v0.5 lot 4.5 : bloc « Bêta » de l'admin
+  const h = betaCard({ steps: { signup: 4, lang: 3, read: 2, review: 2, d1: 1, d7: 0 }, elig: { d1: 2, d7: 0 }, retention: { ko: { d1: [1, 2], d7: [0, 0] } }, drop: { before_read: 1, after_read: 2, after_review: 1, complete: 4 } });
+  ok(h.includes("Revenu le lendemain") && h.includes("50 % des 2 inscrits") && h.includes("J1 : 50 % (1/2)") && h.includes("Après la lecture") && h.includes("sans nom"), "admin : entonnoir, rétention J1/J7, abandons");
+}
 { // v0.5 lot 3 : pluriels, une action principale, bibliothèque d'un débutant, « Réviser » neutre
   ok(plural(0, "semaine") === "0 semaine" && plural(1, "semaine") === "1 semaine" && plural(3, "semaine régulière", "semaines régulières") === "3 semaines régulières" && plural(1200, "mot") === `${(1200).toLocaleString("fr-FR")} mots`, "pluriels");
   const cards0 = state.cards, zh0 = state.langs.zh.pinyinDays; state.cards = []; state.langs.zh.pinyinDays = {};

@@ -117,4 +117,25 @@ function feedbackMail(f) {
   return { subject, text, html };
 }
 
-module.exports = { create, mails, feedbackMail, FEEDBACK_KINDS: Object.keys(KINDS) };
+// Récapitulatif quotidien : tous les avis du jour dans un seul e-mail
+function feedbackDigest(rows) {
+  const font = "'Fredoka','Pretendard',system-ui,-apple-system,'Segoe UI',sans-serif";
+  const item = (f) => {
+    const parts = (f.parts || []).map((p) => ({ ...p, k: KINDS[p.kind] || KINDS.avis }));
+    const who = f.name || f.email || f.contact || "Anonyme";
+    return `<div style="border-top:1px solid ${C.border};padding:16px 0">
+      <div style="font-weight:800">${escHtml(who)} <span style="color:${C.muted};font-weight:400;font-size:13px">· ${escHtml(f.date || "")}${f.page ? ` · ${escHtml(f.page)}` : ""}${f.rating ? ` · ${"★".repeat(f.rating)}` : ""}</span></div>
+      ${parts.map((p) => `<div style="margin-top:8px;background:${p.k.bg};border-left:4px solid ${p.k.fg};border-radius:10px;padding:10px 14px;white-space:pre-wrap"><b style="color:${p.k.fg}">${p.k.icon} ${escHtml(p.k.label)}</b><br/>${escHtml(p.message)}</div>`).join("")}
+      ${f.contact ? `<div style="margin-top:6px;font-size:13px"><a href="mailto:${escHtml(f.contact)}" style="color:${C.sakura}">Répondre à ${escHtml(f.contact)}</a></div>` : ""}</div>`;
+  };
+  const subject = `💬 ${rows.length} retour${rows.length > 1 ? "s" : ""} sur Mochi`;
+  const text = rows.map((f) => `— ${f.name || f.email || f.contact || "Anonyme"} (${f.date || ""})\n${(f.parts || []).map((p) => `[${(KINDS[p.kind] || KINDS.avis).label}] ${p.message}`).join("\n")}`).join("\n\n") + "\n\n— Mochi 🍡";
+  const html = `<!doctype html><html lang="fr"><body style="margin:0;background:${C.bg}"><div style="background:${C.bg};padding:32px 12px;font-family:'Pretendard',system-ui,sans-serif;color:${C.ink};line-height:1.6">
+    <div style="max-width:560px;margin:0 auto"><div style="text-align:center;margin-bottom:16px">${MOCHI_SVG}<div style="font-family:${font};font-size:26px;font-weight:700;color:${C.sakura}">Mochi</div>
+    <div style="font-size:13px;color:${C.muted}">${escHtml(subject.slice(3))} depuis le dernier récapitulatif</div></div>
+    <div style="background:${C.surface};border:1px solid ${C.border};border-radius:20px;padding:8px 24px">${rows.map(item).join("")}</div>
+    <p style="text-align:center;font-size:13px;color:${C.muted};margin-top:18px">Tous les retours sont aussi dans le tableau de bord admin.<br/>— Mochi 🍡</p></div></div></body></html>`;
+  return { subject, text, html };
+}
+
+module.exports = { create, mails, feedbackMail, feedbackDigest, FEEDBACK_KINDS: Object.keys(KINDS) };

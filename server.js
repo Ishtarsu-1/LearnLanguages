@@ -171,8 +171,14 @@ function ipKey(a) {
   return groups.slice(0, 4).map((g) => g.replace(/^0+(?=.)/, "")).join(":") + "::/64";
 }
 let warnedXff = false;
-function clientIp(req, trusted = TRUST_PROXY) {
+// TRUST_CF=1 (bêta derrière cloudflared) : l'IP du visiteur est lue dans CF-Connecting-IP, posé par
+// Cloudflare. À n'activer QUE si le site n'est joignable que par le tunnel (HOST=127.0.0.1) : sinon
+// n'importe qui pourrait inventer cet en-tête. Toujours exigé : la requête vient d'un proxy de confiance.
+const TRUST_CF = process.env.TRUST_CF === "1";
+function clientIp(req, trusted = TRUST_PROXY, trustCf = TRUST_CF) {
   const peer = normIp(req.socket?.remoteAddress) || "?";
+  const cf = trustCf && trusted.has(peer) ? normIp(String(req.headers["cf-connecting-ip"] || "")) : "";
+  if (cf && net.isIP(cf)) return ipKey(cf);
   const xff = req.headers["x-forwarded-for"];
   if (xff && trusted.has(peer)) {
     const last = normIp(String(xff).split(",").pop());
@@ -463,6 +469,68 @@ function syncUser(uid, b) {
 // Après une publication : content.data.js est reconstruit (le site le prend au prochain chargement),
 // et l'audio des nouvelles phrases est pré-généré en arrière-plan si des voix serveur sont configurées.
 const STARTED_AT = new Date().toISOString();
+// ---------- Mesurer la bêta (v0.5, lot 4.5) : entonnoir, rétention, abandons ----------
+// Calculé à partir des données déjà synchronisées, sans outil externe. Affiché AGRÉGÉ et anonyme :
+// des comptes et des pourcentages, jamais de liste nominative d'activité. Les admins sont exclus.
+const parisDay = (iso) => new Date(iso).toLocaleDateString("en-CA", { timeZone: "Europe/Paris" });
+const plusDays = (day, n) => { const d = new Date(`${day}T12:00:00Z`); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); };
+function betaMetrics(today = parisDay(new Date().toISOString())) {
+  const users = db.prepare("SELECT id, created_at FROM users WHERE is_admin = 0").all();
+  const steps = { signup: 0, lang: 0, read: 0, review: 0, d1: 0, d7: 0 }, elig = { d1: 0, d7: 0 };
+  const ret = {}; // langue → { d1: [n, sur], d7: [n, sur] }
+  const drop = { before_read: 0, after_read: 0, after_review: 0, complete: 0 };
+  for (const u of users) {
+    steps.signup++;
+    const kv = db.prepare("SELECT key, value FROM sync_kv WHERE user_id = ? AND (key = 'lastLang' OR key LIKE 'langs.%.started' OR key LIKE 'langs.%.readTexts.%')").all(u.id);
+    if (kv.some((r) => (r.key === "lastLang" && JSON.parse(r.value)) || (r.key.endsWith(".started") && JSON.parse(r.value) === true))) steps.lang++;
+    if (kv.some((r) => r.key.includes(".readTexts."))) steps.read++;
+    if (db.prepare("SELECT 1 FROM review_logs WHERE user_id = ? LIMIT 1").get(u.id)) steps.review++;
+    // Activité par jour et par langue : compteurs h.<jour>.<langue>.<champ>
+    const days = new Set(), byLang = {}, perDay = {};
+    for (const r of db.prepare("SELECT key, value FROM sync_counters WHERE user_id = ? AND key LIKE 'h.%' AND value > 0").all(u.id)) {
+      const [, day, lang, f] = r.key.split(".");
+      days.add(day); (byLang[lang] ||= new Set()).add(day);
+      ((perDay[`${day}.${lang}`] ||= {})[f] = r.value);
+    }
+    const d0 = parisDay(u.created_at);
+    if (plusDays(d0, 1) <= today) { elig.d1++; if (days.has(plusDays(d0, 1))) steps.d1++; }
+    if (plusDays(d0, 7) <= today) { elig.d7++; if ([...days].some((d) => d >= plusDays(d0, 7))) steps.d7++; }
+    for (const [lang, set] of Object.entries(byLang)) {
+      const first = [...set].sort()[0], R = (ret[lang] ||= { d1: [0, 0], d7: [0, 0] });
+      if (plusDays(first, 1) <= today) { R.d1[1]++; if (set.has(plusDays(first, 1))) R.d1[0]++; }
+      if (plusDays(first, 7) <= today) { R.d7[1]++; if ([...set].some((d) => d >= plusDays(first, 7))) R.d7[0]++; }
+    }
+    // Où s'arrête une séance : lecture → révisions → production
+    for (const x of Object.values(perDay)) {
+      if (!(x.sec > 0)) continue;
+      drop[!x.read ? "before_read" : !x.rev ? "after_read" : !x.prod ? "after_review" : "complete"]++;
+    }
+  }
+  return { steps, elig, retention: ret, drop };
+}
+
+// ---------- Retours des testeurs : récapitulatif quotidien (FEEDBACK_MAIL=daily) ----------
+// Économise le quota d'e-mails (Resend gratuit : 100 par jour, partagé avec les mots de passe).
+// Envoyé une fois par jour, à partir de 19 h (heure de Paris), s'il y a des avis non envoyés.
+const FEEDBACK_MAIL = ["each", "daily", "off"].includes(process.env.FEEDBACK_MAIL) ? process.env.FEEDBACK_MAIL : "each";
+db.exec("CREATE TABLE IF NOT EXISTS app_meta (key TEXT PRIMARY KEY, value TEXT NOT NULL)");
+async function feedbackDigest({ force = false, at = new Date() } = {}) {
+  const to = process.env.FEEDBACK_TO;
+  if (!to) return { sent: 0 };
+  const parisDay = at.toLocaleDateString("en-CA", { timeZone: "Europe/Paris" }), hour = Number(at.toLocaleString("en-GB", { hour: "2-digit", hour12: false, timeZone: "Europe/Paris" }));
+  const last = db.prepare("SELECT value FROM app_meta WHERE key = 'feedback_digest'").get()?.value;
+  if (!force && (last === parisDay || hour < 19)) return { sent: 0 };
+  const rows = db.prepare("SELECT f.*, u.name, u.email FROM site_feedback f LEFT JOIN users u ON u.id = f.user_id WHERE f.mailed_at IS NULL ORDER BY f.id").all();
+  if (!rows.length) return { sent: 0 };
+  const m = mailer.feedbackDigest(rows.map((r) => ({ ...r, parts: r.parts ? JSON.parse(r.parts) : [{ kind: r.kind, message: r.message }], date: new Date(r.created_at).toLocaleString("fr-FR", { dateStyle: "medium", timeStyle: "short", timeZone: "Europe/Paris" }) })));
+  try {
+    await mail.send({ to, ...m });
+    const t = now();
+    for (const r of rows) db.prepare("UPDATE site_feedback SET mailed_at = ?, mail_error = NULL WHERE id = ?").run(t, r.id);
+    db.prepare("INSERT INTO app_meta (key, value) VALUES ('feedback_digest', ?) ON CONFLICT (key) DO UPDATE SET value = excluded.value").run(parisDay);
+    return { sent: rows.length };
+  } catch (e) { console.error("Récapitulatif des retours :", e.message); return { sent: 0, error: e.message }; }
+}
 const contentAdmin = contentAdminMod.create({
   onPublished: (lang) => {
     spokenCache = null;
@@ -578,7 +646,8 @@ async function api(req, res, url) {
     return send(res, 200, { ok: true });
   }
 
-  // Retour d'un testeur (« Donner mon avis ») : ouvert aux invités, enregistré, puis envoyé par e-mail
+  // Retour d'un testeur (« Donner mon avis »)
+  // Envoi : FEEDBACK_MAIL=each (un e-mail par avis), daily (récapitulatif, voir feedbackDigest), off. : ouvert aux invités, enregistré, puis envoyé par e-mail
   // à FEEDBACK_TO. Limité par IP. L'adresse de destination ne vient jamais de la requête.
   if (route === "POST /api/feedback-site") {
     const b = await readJson(req, 32 * 1024);
@@ -606,7 +675,7 @@ async function api(req, res, url) {
     const id = Number(db.prepare("INSERT INTO site_feedback (created_at, user_id, kind, rating, message, page, lang, contact, user_agent, parts) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
       .run(at, who?.id ?? null, kind, rating, message, page, lang, contact, ua, JSON.stringify(parts)).lastInsertRowid);
     const to = process.env.FEEDBACK_TO;
-    if (to) {
+    if (to && FEEDBACK_MAIL === "each") {
       const m = mailer.feedbackMail({ id, parts, rating, page, lang: lang && { en: "anglais", ko: "coréen", zh: "chinois", ru: "russe" }[lang], contact, userAgent: ua, name: who?.name, email: who?.email,
         date: new Date(at).toLocaleString("fr-FR", { dateStyle: "full", timeStyle: "short", timeZone: "Europe/Paris" }) });
       mail.send({ to, ...m, replyTo: contact || who?.email || undefined })
@@ -825,6 +894,7 @@ async function api(req, res, url) {
       tts: { voices: tts.info(), files: ttsFiles, bytes: ttsBytes },
       machine: machineInfo(),
       mail: mail.mode,
+      beta: betaMetrics(),
       feedback: { total: one("SELECT count(*) n FROM site_feedback").n, to: !!process.env.FEEDBACK_TO,
         last: db.prepare("SELECT id, created_at, kind, rating, message, page, mailed_at IS NOT NULL mailed, mail_error FROM site_feedback ORDER BY id DESC LIMIT 20").all() },
       list: db.prepare(`SELECT u.id, u.email, u.name, u.created_at, u.last_login_at, u.email_verified_at IS NOT NULL verified, u.is_admin admin,
@@ -986,8 +1056,9 @@ if (require.main === module) {
   process.on("unhandledRejection", (e) => console.error(`[${new Date().toISOString()}] Promesse rejetée non gérée :`, e));
   process.on("uncaughtException", (e) => { console.error(`[${new Date().toISOString()}] Erreur fatale :`, e); process.exit(1); });
 }
+if (require.main === module && FEEDBACK_MAIL === "daily") setInterval(() => feedbackDigest().catch(() => {}), 30 * 60e3).unref();
 if (require.main === module) {
   warmEngines().catch((e) => console.error("Préchauffage :", e.message));
   hw.detectBasic().then((b) => { machine.basic = b; }).catch(() => {}); // léger : système, mémoire, nvidia-smi
 }
-module.exports = { server, contentAdmin, social, live, db, mail, clientIp, warmEngines, engines, tts, limiter: { waitFor, recordAttempt, clearAttempts } };
+module.exports = { server, contentAdmin, social, live, db, mail, feedbackDigest, betaMetrics, clientIp, warmEngines, engines, tts, limiter: { waitFor, recordAttempt, clearAttempts } };

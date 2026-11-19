@@ -529,6 +529,8 @@ Le chemin côté serveur est `DATA_DIR/tts` (`./data/tts` par défaut). Ensuite,
 | `TRUST_PROXY` | — | Adresses des proxys de confiance, ex. `127.0.0.1,::1` (section 6 septies) |
 | `HOST` | toutes les interfaces ; `127.0.0.1` si `NODE_ENV=production` | Adresse d'écoute du serveur |
 | `MOCHI_LANGS_STABLE` | `en,ko` | Langues « stables » (en haut de l'accueil) ; les autres sont affichées à part, « 🧪 En test » |
+| `TRUST_CF` | — | `1` : lire l'IP du visiteur dans `CF-Connecting-IP` (bêta derrière cloudflared). Seulement avec `HOST=127.0.0.1` et `TRUST_PROXY=127.0.0.1,::1` (docs/beta.md) |
+| `FEEDBACK_MAIL` | `each` | Retours des testeurs : `each` (un e-mail par avis), `daily` (un récapitulatif par jour), `off` (seulement dans l'admin) |
 | `KIWI_URL` | `http://127.0.0.1:8882` | Analyseur coréen pour la production de contenu (section 6 octies) |
 
 ## 8. Données et sauvegarde
