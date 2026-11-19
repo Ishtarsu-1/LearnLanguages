@@ -360,6 +360,111 @@ PUBLIC_URL=https://mochi.example.fr
 
 Si le serveur reçoit un `X-Forwarded-For` alors que `TRUST_PROXY` est vide, il l'ignore et l'écrit une fois dans la console : c'est le signe qu'il manque la variable.
 
+## 6 octies. Produire du contenu (textes calibrés, relecture, publication)
+
+Le contenu ne s'écrit plus dans le code : il vit dans **`content/`** (un fichier JSON par texte, livre, histoire ; le lexique ; le plan ; les listes de fréquence). Le site lit un seul fichier généré et commité, **`content.data.js`**. Détails de la démarche : `CONTENU-PIPELINE.md`.
+
+```
+plan (content/plan)  →  npm run content:gen  →  annotation + vérification automatiques
+  →  relecture critique par l'IA  →  relecture humaine (#/admin/contenu)  →  Publier  →  npm run content:release
+```
+
+### Une fois : les outils Python (Kiwi, listes de fréquence)
+
+L'analyseur coréen **Kiwi** est nécessaire pour annoter les textes coréens (l'anglais est annoté en JavaScript, rien à installer). On l'installe dans son propre environnement, `~/mochi-nlp` :
+
+```bash
+# Linux / macOS
+uv venv --python 3.12 ~/mochi-nlp && source ~/mochi-nlp/bin/activate
+uv pip install kiwipiepy wordfreq simplemma xlrd
+python tools/kiwi_server.py               # → http://127.0.0.1:8882 (laisse ce terminal ouvert)
+```
+
+```powershell
+# Windows (PowerShell)
+uv venv --python 3.12 $HOME\mochi-nlp
+& $HOME\mochi-nlp\Scripts\Activate.ps1
+uv pip install kiwipiepy wordfreq simplemma xlrd
+python tools\kiwi_server.py
+```
+
+`npm run doctor` indique si Kiwi répond. Il n'écoute que sur `127.0.0.1` (variable `KIWI_URL` si tu changes le port).
+
+Les listes de fréquence (`content/freq/en.tsv`, `ko.tsv`) sont déjà commitées. Pour les refaire : `python tools/freq_export.py`. Le coréen suit l'ordre de fréquence de la liste du 국립국어원 ; ses niveaux A/B/C sont **estimés** par le rang. Pour les niveaux officiels, télécharge « 한국어 학습용 어휘 목록 » (fichier .xls) sur korean.go.kr, puis : `python tools/freq_export.py --lang ko --nikl chemin/vers/liste.xls`.
+
+### Le plan : quoi écrire, dans quel ordre
+
+`content/plan/en.json` et `ko.json` listent des **unités** (mots nouveaux, mots à réviser, point de grammaire, thème, nombre de textes). L'unité « socle » regroupe les textes écrits avant le plan. Pour proposer la suite :
+
+```bash
+npm run plan:suggest -- --lang ko                    # aperçu de 5 unités
+npm run plan:suggest -- --lang ko --next 10 --write  # les ajoute au plan
+```
+
+Il prend les mots les plus fréquents pas encore couverts, jamais deux mots du même groupe ni deux contraires dans la même unité (§12), et le prochain point de grammaire vu dans moins de 3 textes (coréen : ordre du §6).
+
+### Générer des brouillons
+
+```bash
+npm run content:gen -- --unit ko-A1-03                     # les textes d'une unité
+npm run content:gen -- --next 5 --lang en                  # les 5 prochaines unités à écrire
+npm run content:gen -- --next 5 --lang ko --engine anthropic   # meilleure qualité (clé ANTHROPIC_API_KEY)
+npm run content:gen -- --unit ko-A1-03 --dry-run           # affiche seulement le prompt
+```
+
+Moteur par défaut : celui du correcteur (`MOCHI_LLM_PROVIDER`). **Ollama suffit pour des brouillons** sur le PC (≈ 3 min par texte avec qwen2.5:7b sur processeur, bien moins avec une carte graphique), mais un modèle 7B se trompe souvent en coréen : la vérification le montre en rouge. `--engine anthropic` (Claude Opus 5.5, ~quelques centimes par texte) donne des textes nettement plus justes.
+
+Pour chaque texte : 2 variantes, annotation (Kiwi / lemmatiseur), vérification, un tour de réparation si la meilleure est encore rouge, puis un **deuxième appel** de relecteur natif qui signale les phrases peu naturelles (sans réécrire) et des traductions proposées pour les mots absents du lexique. Résultat : `content/drafts/<id>.json`.
+
+### Vérifier
+
+```bash
+npm run content:check                        # tous les textes publiés + les brouillons
+npm run content:check -- drafts/ko-a1-03-1.json --write   # un brouillon, rapport enregistré dedans
+```
+
+Rouge = bloquant (couverture < 90 %, mots hors programme, registre, romanisation, interférence, format) ; orange = avertissement (couverture hors 92-98 %, répétition, lexique, grammaire ciblée, longueur). Sur les textes publiés, toute erreur bloquante fait échouer la commande (et `npm test`).
+
+### Relire et publier : `#/admin/contenu`
+
+Connecté avec un compte admin (section 6 quinquies), **Profil › Tableau de bord › Relire et publier le contenu** :
+- la **file** des brouillons, par unité du plan, avec leur pastille 🟢 🟠 🔴 ;
+- un brouillon : chaque phrase (mots nouveaux surlignés, particules colorées), 🔊 pour l'écouter, ✏️ pour corriger (le texte est ré-annoté et re-vérifié aussitôt ; Kiwi doit tourner pour le coréen), les remarques du relecteur IA à **Accepter** ou **Ignorer**, le lexique à valider ;
+- **Publier** (seulement sans bloquant et avec le lexique validé) : le texte passe dans `content/texts/…`, le lexique est complété, `content.data.js` est reconstruit (le site le prend au prochain chargement) et l'audio des nouvelles phrases est pré-généré en arrière-plan si des voix serveur sont configurées ;
+- **Régénérer** (en arrière-plan, quelques minutes) ou **Rejeter** avec une raison (gardée dans `content/drafts/rejected.jsonl` pour améliorer le prompt).
+
+L'onglet **Couverture** montre les textes par niveau et par thème, les mots fréquents couverts, la grammaire vue, les trous et l'avancement vers les objectifs.
+
+Pense à **commiter** `content/` et `content.data.js` après une séance de relecture.
+
+### Sortir une version : `npm run content:release`
+
+```bash
+npm run content:release              # vérifie → construit → pré-génère l'audio → rapport
+npm run content:release -- --no-audio
+```
+
+### Envoyer l'audio sur le serveur de production
+
+Le serveur en ligne n'a en général pas de carte graphique : on génère l'audio sur le PC (`content:release`) puis on **copie `data/tts/`** (fichiers immuables : on peut renvoyer sans risque, seuls les nouveaux partent).
+
+```bash
+# Linux / macOS : rsync (n'envoie que les nouveaux fichiers)
+rsync -av --ignore-existing data/tts/ utilisateur@serveur:/srv/mochi/data/tts/
+```
+
+```powershell
+# Windows : scp (OpenSSH, inclus dans Windows 10/11) ; ou WinSCP en glisser-déposer
+scp -r data\tts\* utilisateur@serveur:/srv/mochi/data/tts/
+```
+
+```bash
+# Vers Cloudflare R2 (ou tout stockage S3) avec rclone, après « rclone config » (type s3, fournisseur Cloudflare)
+rclone copy data/tts r2:mochi-audio/tts --ignore-existing --progress
+```
+
+Le chemin côté serveur est `DATA_DIR/tts` (`./data/tts` par défaut). Ensuite, dans l'admin du serveur, le bloc « Machine » doit indiquer « Audio pré-généré : complet ✓ ».
+
 ## 7. Toutes les variables d'environnement
 
 | Variable | Par défaut | Rôle |
@@ -384,6 +489,7 @@ Si le serveur reçoit un `X-Forwarded-For` alors que `TRUST_PROXY` est vide, il 
 | `COOKIE_SECURE` | — | Mettre `1` quand le site est servi en HTTPS (active aussi HSTS) |
 | `TRUST_PROXY` | — | Adresses des proxys de confiance, ex. `127.0.0.1,::1` (section 6 septies) |
 | `HOST` | toutes les interfaces ; `127.0.0.1` si `NODE_ENV=production` | Adresse d'écoute du serveur |
+| `KIWI_URL` | `http://127.0.0.1:8882` | Analyseur coréen pour la production de contenu (section 6 octies) |
 
 ## 8. Données et sauvegarde
 
@@ -395,7 +501,7 @@ Tout est dans **`data/`** : `mochi.db` (comptes, progression, révisions), `avat
 npm test
 ```
 
-Ils couvrent l'application, l'API des comptes, la synchronisation entre plusieurs appareils et le correcteur. Claude y est simulé : **les tests ne consomment aucun crédit**.
+Ils couvrent l'application, l'API des comptes, la synchronisation entre plusieurs appareils, le correcteur et la chaîne de contenu (migration sans perte, annotation ≥ 95 % des lemmes, textes piégés bloqués, publication). Claude y est simulé : **les tests ne consomment aucun crédit**.
 
 ---
 

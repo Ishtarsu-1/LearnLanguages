@@ -31,13 +31,13 @@
 | ~~**P1**~~ | ~~Test de niveau à l'inscription~~ ✅ fait | 🟡 | 🆓 | — |
 | ~~**P1**~~ | ~~Vraies voix (TTS neuronal, plusieurs voix)~~ ✅ fait : relais serveur, cache, pré-génération, préchauffage, file prioritaire, repli rapide (reste : installer les moteurs sur la machine de production, surlignage mot à mot) | 🟡 | 🆓 | backend |
 | ~~**P1**~~ | ~~Le serveur détecte le matériel et s'adapte~~ ✅ fait (`npm run doctor`, profils, `--write`, adaptation au démarrage, bloc Machine ; CORRECTIFS v0.4 lot 8) | 🟡 | 🆓 | vraies voix |
-| **P1** | Analyseur morphologique coréen côté serveur | 🟡 | 🆓 | backend |
-| **P1** | Beaucoup plus de contenu + thèmes et situations (🟢 thèmes faits, 10 textes par langue ; reste : volume) | 🔴 | 🆓 | analyseur |
+| ~~**P1**~~ | ~~Analyseur morphologique coréen côté serveur~~ ✅ fait (Kiwi + lemmatiseur anglais, `tools/annotate.js`) | 🟡 | 🆓 | backend |
+| **P1** | Beaucoup plus de contenu + thèmes et situations (🟢 thèmes faits, 🟢 chaîne de production prête ; reste : produire et relire le volume) | 🔴 | 🆓 | analyseur |
 | ~~**P1**~~ | ~~Ordre d'introduction des nouveaux mots (anti-interférence)~~ ✅ fait | 🟢 | 🆓 | thèmes |
 | ~~**P1**~~ | ~~Nouveaux types d'exercices + alternance~~ ✅ (12 types ; reste : dialogue entier + questions) | 🟡 | 🆓 | — |
 | **P1** | Paires minimales multi-voix (✅ avec les voix du navigateur ; reste : vraies voix) | 🟡 | 🆓 | vraies voix |
 | **P1** | Bibliothèque de lectures graduées (lecture + écoute) (🟢 moteur + 2 livres ; reste : volume, surlignage mot à mot) | 🔴 | 🆓 | contenu, voix |
-| **P1** | Génération de textes calibrés par LLM | 🔴 | 🆓/💶 | LLM + analyseur |
+| **P1** | Génération de textes calibrés par LLM (🟢 chaîne `content:gen` + vérification + relecture faite ; reste : textes à la demande par utilisateur) | 🔴 | 🆓/💶 | LLM + analyseur |
 | ~~**P2**~~ | ~~Mochi, la mascotte, et la collection de Mochis~~ ✅ (saveurs par thème + accessoires) | 🟡 | 🆓 | charte graphique |
 | ~~**P2**~~ | ~~Série flexible + quêtes hebdomadaires~~ ✅ fait (reste : récompenses cosmétiques) | 🟡 | 🆓 | — |
 | **P2** | Mode histoire (🟢 moteur + 5 chapitres par langue ; reste : la suite de l'histoire) | 🔴 | 🆓 | bibliothèque |
@@ -134,6 +134,7 @@ La synthèse vocale du navigateur varie énormément d'un appareil à l'autre (�
 - À terme : enregistrements de locuteurs natifs pour les contenus principaux. Les phrases Tatoeba avec audio sous licence libre peuvent compléter, **en vérifiant la licence de chaque enregistrement**.
 
 ### Analyseur morphologique coréen 🟡 🆓
+✅ Fait (CONTENU-PIPELINE, lot C2) : `tools/kiwi_server.py` (Kiwi, 127.0.0.1) et `tools/annotate.js` (coréen via Kiwi, anglais par un lemmatiseur JS) produisent le format annoté ; 100 % des lemmes et des particules retrouvés sur les textes annotés à la main ; `npm run doctor` le signale.
 Obligatoire selon le §3 pour tout contenu qui n'est pas annoté à la main.
 - **Kiwi** (`kiwipiepy`), exposé par une petite route serveur, éventuellement en microservice Python. Plus simple à installer que Mecab-ko.
 - Anglais : lemmatisation (spaCy, wink-nlp).
@@ -141,6 +142,7 @@ Obligatoire selon le §3 pour tout contenu qui n'est pas annoté à la main.
 - Bonus : l'analyseur alimente le surlignage des particules par fonction (voir `CHARTE-GRAPHIQUE.md` §5).
 
 ### Beaucoup plus de contenu + thèmes et situations 🔴 🆓 *(enrichi)*
+🟡 En cours : la chaîne de production est en place (`content/`, plan, listes de fréquence, génération, vérification, relecture dans l'admin, `content:release` ; voir `CONTENU-PIPELINE.md` et SETUP.md 6 octies). Reste à produire et relire les textes (objectifs : 30 puis 50 par langue).
 4 textes par langue, c'est trop peu pour que le calcul de couverture (§3) ait du sens.
 
 **Volume**
@@ -206,6 +208,7 @@ Application du §15.
 - Contenu : écrit à la main, généré par LLM puis relu (feature suivante), ou adapté de textes du domaine public.
 
 ### Génération de textes calibrés par LLM 🔴 🆓/💶
+🟡 En cours : génération calibrée côté production (`npm run content:gen`, couverture vérifiée, 2 variantes + réparation, relecture critique, publication après relecture humaine). Reste : les textes à la demande pour chaque utilisateur.
 §3 : un texte sur mesure pour chaque utilisateur.
 - Contraindre le LLM au vocabulaire connu, plus 3 à 8 mots nouveaux ciblés (les prochains mots fréquents **du thème choisi**, en respectant la règle anti-interférence).
 - **Vérifier** la couverture réelle après génération avec l'analyseur, et régénérer si on sort de la fourchette 92-98 %.

@@ -193,6 +193,11 @@ const c6 = (async () => {
   ok(s1 === "Let's=let+us go! I don't=do+not know, it's=it+be @Tom's cat.", "contractions et possessif : " + s1);
   ok((await A.annotate(["Where's Pepper?"], "en", ctx))[0] === "Where's=where+be @Pepper?", "nom propre listé (contenu existant)");
   ok(await A.kiwiAnalyze("x", { url: "http://127.0.0.1:9" }).then(() => false, (e) => e.code === "KIWI_DOWN"), "Kiwi injoignable : erreur claire");
+  // C7 : content:release (sans audio réel) — vérifie, construit, rapporte
+  const { release } = require("../tools/content-release.js");
+  const logs = [];
+  const rel = await release({ log: (l) => logs.push(l), pregenImpl: async () => ({ generated: 3, cached: 10, failed: 0 }) });
+  ok(rel.ok && rel.report.some((l) => /^ {3}ko : \d+ textes/.test(l)) && rel.report.some((l) => /3 phrase\(s\) générée/.test(l)), "content:release : vérification, build, audio, rapport");
 })().then(() => c6).then(() => {
   if (fails) { console.log(`✗ ${fails} échec(s)`); process.exitCode = 1; } else console.log("✓ contenu");
 });

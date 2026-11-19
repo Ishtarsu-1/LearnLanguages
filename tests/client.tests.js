@@ -598,7 +598,8 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
   state.cards = cards0; location.hash = "";
 }
 { // Textes légaux, consentement, cookies
-  for (const p of ["mentions", "cgu", "confidentialite", "cookies"]) { location.hash = `#/legal/${p}`; ok(viewLegal(p).includes(LEGAL_PAGES[p]) && viewLegal(p).includes("Dernière mise à jour"), `page ${p}`); }
+  for (const p of ["mentions", "cgu", "confidentialite", "cookies", "credits"]) { location.hash = `#/legal/${p}`; ok(viewLegal(p).includes(LEGAL_PAGES[p]) && viewLegal(p).includes("Dernière mise à jour"), `page ${p}`); }
+  ok(legalCredits().includes("국립국어원") && legalCredits().includes("wordfreq") && legalCredits().includes("Kiwi"), "crédits : sources des listes et de l'analyseur");
   ok(viewLegal("confidentialite").includes("mark class=\"todo\"") && viewLegal("mentions").includes("à compléter"), "champs à compléter signalés");
   const f0 = features;
   features = { llm: true, engine: "Claude", tts: {}, mail: "console" };

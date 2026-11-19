@@ -1,6 +1,6 @@
 # FEATURES.md : ce que Mochi sait faire aujourd'hui
 
-> État du site au 18 novembre 2026. Pour la suite : `ROADMAP.md`. Pour l'installation : `SETUP.md`. Pour les principes pédagogiques : `PEDAGOGIE.md`.
+> État du site au 19 novembre 2026. Pour la suite : `ROADMAP.md`. Pour l'installation : `SETUP.md`. Pour les principes pédagogiques : `PEDAGOGIE.md`.
 
 **Mochi** est un site d'apprentissage de l'**anglais** et du **coréen** pour les francophones. Il repose sur une boucle quotidienne fondée sur la recherche : **lire et écouter → capturer les mots → réviser au bon moment → produire des phrases corrigées**.
 
@@ -32,6 +32,7 @@
 | Accueil | Visite guidée **interactive** à la première visite : un projecteur éclaire le vrai élément et l'utilisateur fait lui-même (choisir sa langue, ouvrir un texte, toucher un mot, l'ajouter aux révisions, aller dans S'entraîner) ; en coréen sans Hangul, elle montre l'alphabet. Passable, à revoir depuis l'accueil ou le profil |
 | Mes mots | Dans Réviser : la liste de ses mots capturés, par langue, avec phrase d'origine (audio), traduction, statut (nouveau, à revoir aujourd'hui, prochaine révision, solide, en pause), recherche, tri, et « Retirer des révisions » (pause réversible, synchronisée) |
 | Légal | Mentions légales, conditions d'utilisation (charte de bonne conduite), confidentialité RGPD (adaptée aux services actifs), cookies ; case obligatoire à l'inscription (version et date enregistrées) ; données temporaires purgées toutes les heures |
+| Contenu | Chaîne de production (`CONTENU-PIPELINE.md`) : contenu dans `content/` (un fichier par texte, lexique, plan, listes de fréquence 국립국어원 / wordfreq), `content.data.js` généré ; plan par langue et `plan:suggest` (fréquence, anti-interférence, grammaire ≥ 3 textes) ; génération par LLM (`content:gen`, Ollama ou Anthropic, 2 variantes, réparation, relecture critique) ; annotation automatique (Kiwi pour le coréen, lemmatiseur pour l'anglais) ; vérification (`content:check`) ; relecture et publication dans `#/admin/contenu`, tableau de bord de couverture ; `content:release` (vérifier, construire, pré-générer l'audio) ; page « Crédits » |
 | Audio | Voix du navigateur ou vraies voix du serveur (Kokoro, MeloTTS, cache disque), Profil › Audio : état, choix et test des voix, aide si aucune voix. **Sans attente** : tout l'audio pré-généré (`npm run tts:pregen`), moteurs préchauffés au démarrage, file par moteur où les clics passent avant le préchargement, 🔊 qui pulse pendant le chargement, voix de l'appareil après 5 s si le serveur tarde (la génération continue côté serveur) |
 
 ---

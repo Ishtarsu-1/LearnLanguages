@@ -82,7 +82,7 @@ function genPrompt(lang, unit, kind, { known, lengths }) {
       ``,
       `Return: title_fr (short French title), icon (one emoji), sentences (speaker: a first name for dialogues, "" otherwise; text; fr).`,
       ``,
-      `Reminders: each of these words twice: ${unit.new_words.join(", ")}. No word outside the allowed list. ${lang === "ko" ? "Every sentence ends in the same register. " : ""}"fr" is in French only (no Chinese, no Korean).`,
+      `Reminders: each of these words twice: ${unit.new_words.join(", ")}. No word outside the allowed list. ONE short sentence per item (never several sentences in one item). ${lang === "ko" ? "Every sentence ends in the same register. " : ""}"fr" is in French only (no Chinese, no Korean).`,
     ].filter((l) => l !== null).join("\n"),
   };
 }

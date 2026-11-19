@@ -21,7 +21,7 @@ const LEGAL_INFO = {
   version: "2026-11-18",
   updated: "18 novembre 2026",
 };
-const LEGAL_PAGES = { mentions: "Mentions légales", cgu: "Conditions d'utilisation", confidentialite: "Confidentialité", cookies: "Cookies" };
+const LEGAL_PAGES = { mentions: "Mentions légales", cgu: "Conditions d'utilisation", confidentialite: "Confidentialité", cookies: "Cookies", credits: "Crédits" };
 const legalField = (v) => (/^\[À COMPLÉTER/.test(v) ? `<mark class="todo">${esc(v)}</mark>` : esc(v));
 const L_ = new Proxy({}, { get: (_, k) => legalField(LEGAL_INFO[k]) });
 
@@ -164,8 +164,30 @@ function legalCookies() {
   <p>Tu peux tout effacer depuis les réglages de ton navigateur (« Effacer les données de navigation » ou « Données des sites » pour ce site). Attention : en mode invité, ta progression est effacée avec. Avec un compte, elle reste sur le serveur et revient à la prochaine connexion.</p>`;
 }
 
+// Crédits : sources et licences des données, polices et bibliothèques (CONTENU-PIPELINE)
+function legalCredits() {
+  const li = (what, src, lic) => `<li><b>${what}</b> : ${src} — <i>${lic}</i></li>`;
+  return `
+  <p>Les textes, livres et histoires de Mochi sont écrits pour Mochi (une partie avec l'aide d'une IA, puis relue par un humain) et publiés sous licence CC BY 4.0. Mochi s'appuie aussi sur ces ressources :</p>
+  <h2>Listes de vocabulaire</h2>
+  <ul>
+    ${li("Coréen : « 한국어 학습용 어휘 목록 » (vocabulaire d'apprentissage du coréen, 2003)", "국립국어원 (Institut national de la langue coréenne), ordre de fréquence repris du Wiktionnaire coréen", "공공누리 type 1 (KOGL, mention de la source) ; Wiktionnaire : CC BY-SA")}
+    ${li("Anglais : fréquences des mots", "wordfreq (Robyn Speer et collaborateurs)", "données CC BY-SA 4.0")}
+    ${li("Anglais : formes de base des mots", "simplemma (Adrien Barbaresi)", "MIT")}
+  </ul>
+  <h2>Analyse de la langue</h2>
+  <ul>${li("Analyse morphologique du coréen", "Kiwi / kiwipiepy (bab2min)", "LGPL-3.0")}</ul>
+  <h2>Voix</h2>
+  <ul>${li("Voix anglaises", "Kokoro (hexgrad)", "Apache 2.0")}${li("Voix coréenne", "MeloTTS (MyShell.ai)", "MIT")}</ul>
+  <h2>Polices et bibliothèques</h2>
+  <ul>
+    ${li("Pretendard", "Kil Hyung-jin", "SIL Open Font License 1.1")}${li("Jua", "Woowahan Brothers", "SIL Open Font License 1.1")}${li("Fredoka", "Milena Brandão", "SIL Open Font License 1.1")}
+    ${li("Répétition espacée", "ts-fsrs (open-spaced-repetition)", "MIT")}
+  </ul>`;
+}
+
 function viewLegal(page) {
-  const views = { mentions: legalMentions, cgu: legalCgu, confidentialite: legalPrivacy, cookies: legalCookies };
+  const views = { mentions: legalMentions, cgu: legalCgu, confidentialite: legalPrivacy, cookies: legalCookies, credits: legalCredits };
   if (!views[page]) return viewNotFound();
   const todo = Object.values(LEGAL_INFO).some((v) => /^\[À COMPLÉTER/.test(v));
   return `<section class="view legal">

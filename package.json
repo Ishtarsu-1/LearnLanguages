@@ -13,7 +13,8 @@
     "content:annotate": "node --env-file-if-exists=.env tools/annotate.js",
     "plan:suggest": "node tools/plan-suggest.js",
     "content:gen": "node --env-file-if-exists=.env tools/content-gen.js",
-    "content:check": "node --env-file-if-exists=.env tools/content-check.js"
+    "content:check": "node --env-file-if-exists=.env tools/content-check.js",
+    "content:release": "node --env-file-if-exists=.env tools/content-release.js"
   },
   "engines": {
     "node": ">=22.5"
