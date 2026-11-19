@@ -68,6 +68,8 @@ function speak(text, lang, speed = state.settings.speed, who = null) {
         if (!slowToastShown) { slowToastShown = true; toast("La belle voix arrive, on utilise la voix de ton appareil en attendant."); }
         return browserSpeak(text, lang, speed, null);
       }
+      // Version portable : la phrase n'a pas été pré-générée → voix de l'appareil, sans bruit
+      if (/Pas d'audio/.test(e?.message || "") && voicesFor(lang).length) return browserSpeak(text, lang, speed, null);
       const why = audioError(e);
       console.warn("Voix du serveur illisible :", why, e);
       // Repli sur les voix du navigateur s'il y en a ; sinon on dit la vraie raison

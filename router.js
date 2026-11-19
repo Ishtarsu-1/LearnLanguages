@@ -62,6 +62,7 @@ function route() {
   // Navigation principale : état actif (aria-current) et pastille des cartes à revoir
   const due = lang ? reviewCount(lang) : 0;
   document.querySelectorAll("[data-nav]").forEach((a) => {
+    if (a.dataset.nav === "amis") a.hidden = !!features.portable; // version portable : pas d'amis
     const on = a.dataset.nav === nav;
     a.classList.toggle("active", on);
     if (on) a.setAttribute?.("aria-current", "page"); else a.removeAttribute?.("aria-current");
@@ -91,6 +92,7 @@ function renderTopUser() {
   // Barre du bas : l'avatar (Mochi par défaut) à la place de l'icône du profil
   const ico = document.querySelector?.('.bottomnav [data-nav="profil"] > span');
   if (ico) ico.innerHTML = displayAvatar("nav-avatar");
+  if (features.portable && !account) { el.hidden = true; return; } // version portable : pas de comptes
   if (account) { el.hidden = false; el.href = "#/profil"; el.innerHTML = `${displayAvatar("mini-avatar")}<span>${esc(account.name || "Profil")}</span>`; }
   else if (serverOn) { el.hidden = false; el.href = "#/connexion"; el.innerHTML = "<span>Se connecter</span>"; }
   else el.hidden = true;

@@ -34,7 +34,10 @@ function config(env = process.env) {
     const U = lang.toUpperCase();
     const base = (env[`TTS_URL_${U}`] || env.TTS_URL || "").replace(/\/+$/, "");
     const voices = String(env[`TTS_VOICES_${U}`] || "").split(",").map((v) => v.trim()).filter((v) => VOICE_RE.test(v));
-    if (base && voices.length) out[lang] = { base, voices, model: env[`TTS_MODEL_${U}`] || env.TTS_MODEL || "kokoro" };
+    const model = env[`TTS_MODEL_${U}`] || env.TTS_MODEL || "kokoro";
+    if (base && voices.length) out[lang] = { base, voices, model };
+    // Version portable : pas de moteur, seulement l'audio pré-généré embarqué (TTS_CACHE_ONLY=1)
+    else if (env.TTS_CACHE_ONLY === "1" && voices.length) out[lang] = { base: "", voices, model, cacheOnly: true };
   }
   return out;
 }
@@ -103,6 +106,7 @@ function create({ dir, env = process.env, fetchImpl = fetch, timeoutMs = Number(
   async function generate(lang, voice, text, prio = "high") {
     const hit = cached(lang, voice, text);
     if (hit) return hit;
+    if (conf[lang].cacheOnly) throw Object.assign(new Error("audio non pré-généré"), { cacheMiss: true });
     const file = stem(lang, voice, text);
     const same = pending.get(file);
     if (same) { if (prio === "high") same.prio = "high"; return same.promise; } // remonte une demande « low » en attente
@@ -129,7 +133,7 @@ function create({ dir, env = process.env, fetchImpl = fetch, timeoutMs = Number(
   // Nombre de demandes en attente (pas encore lancées) pour le moteur d'une langue
   const waiting = (lang, prio) => (conf[lang] ? queueOf(lang).items.filter((t) => !prio || t.prio === prio).length : 0);
 
-  return { info, check, cached, generate, waiting, warm, conf, enabled: Object.keys(conf).length > 0 };
+  return { info, check, cached, generate, waiting, warm, conf, enabled: Object.keys(conf).length > 0, cacheOnly: Object.values(conf).some((c) => c.cacheOnly) };
 }
 
 module.exports = { create, config, typeOf, MAX_CHARS };

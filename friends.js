@@ -69,6 +69,9 @@ function challengeGo(c) {
 
 // ---------- Page « Amis et défis » ----------
 function viewFriends(sub, arg) {
+  if (features.portable) return `<section class="view"><div class="card empty">${mochi("small", "curious")}<h2>Amis et défis</h2>
+    <p class="muted">Cette version portable de Mochi tourne seule sur ton ordinateur : les amis, les défis et les duels ont besoin de la version en ligne. Tout le reste marche ici !</p>
+    <a class="btn" href="#/">Retour à l'accueil</a></div></section>`;
   if (!account) return `<section class="view"><div class="card empty">${mochi("small", "curious")}<h2>Amis et défis</h2>
     <p class="muted">Crée un compte (gratuit) pour ajouter des amis et vous lancer des défis : semaine régulière, temps ensemble, mots solides…</p>
     <a class="btn" href="#/inscription">Créer mon compte</a> <a class="btn ghost" href="#/connexion">J'ai déjà un compte</a></div></section>`;
@@ -194,7 +197,7 @@ applyAuth = async (...args) => {
 
 // ---------- Carte « Défis » dans Aujourd'hui ----------
 function socialCard() {
-  if (!account) return "";
+  if (!account || features.portable) return "";
   const S = socialData();
   const d = S?.d;
   if (!d) return "";

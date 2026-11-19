@@ -53,6 +53,25 @@ Derrière le tunnel, toutes les requêtes arrivent de `cloudflared` (sur ta mach
 
 Resend gratuit : 100 e-mails par jour, partagés entre les retours et les mots de passe. Tous les retours sont **enregistrés en base** et visibles dans l'admin ; l'e-mail n'est qu'une notification. Avec beaucoup de testeurs, mets `FEEDBACK_MAIL=daily` : un seul récapitulatif par jour (à partir de 19 h), au lieu d'un e-mail par avis (`off` : aucun e-mail).
 
+## 2 bis. Ou bien : la version portable (sans tunnel, sans PC allumé)
+
+Un dossier à envoyer, qui tourne **sur l'ordinateur de ton ami** : il double-clique sur « Lancer Mochi », le site s'ouvre dans son navigateur. Rien à installer.
+
+```bash
+npm run tts:pregen                        # d'abord : l'audio de toutes les phrases (il part dans le paquet)
+npm run portable                          # Windows → dist/Mochi-portable-win.zip
+npm run portable -- --os mac              # macOS (Apple Silicon)
+npm run portable -- --os linux            # Linux
+npm run portable -- --with-feedback       # les avis t'arrivent par e-mail (sinon ils restent sur son PC)
+```
+
+- **Dedans** : Node.js, le site, l'**audio pré-généré** des voix configurées (licence libre, au moins la moitié des phrases faites ; sinon voix de l'ordinateur), un lanceur et une notice (`LISEZMOI.txt`). Environ 90 Mo zippé avec l'audio chinois et russe, davantage avec l'anglais et le coréen.
+- **Ce qui marche** : tout le parcours (lire, réviser, exercices, écrire avec le correcteur hors ligne, Hangul, pinyin, alphabet cyrillique, thèmes, livres, histoire). La progression est dans le dossier `donnees`.
+- **Ce qui ne marche pas** : comptes, amis, défis, duels, correcteur IA ; et **tu ne vois pas leurs chiffres** dans ton admin (entonnoir, rétention). Pour ces retours-là, le tunnel reste mieux.
+- **`--with-feedback`** met ta clé Resend dans le paquet. Avec l'expéditeur de test (`onboarding@resend.dev`), elle ne peut écrire **qu'à ton adresse** : au pire, quelqu'un t'enverrait des e-mails. Crée quand même une clé dédiée (« Sending access ») et supprime-la après la bêta.
+- **Windows** affiche « Windows a protégé votre ordinateur » (lanceur non signé) : « Informations complémentaires » › « Exécuter quand même ». **macOS** : clic droit › Ouvrir la première fois.
+- **Nouvelle version** : renvoie le zip ; ton ami recopie son dossier `donnees` dans le nouveau.
+
 ## 3. Le message à envoyer
 
 > Salut ! Je développe **Mochi**, un site pour apprendre l'anglais, le coréen ou le chinois (fait pour les francophones). Tu veux bien le tester une semaine ? 🍡

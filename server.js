@@ -251,7 +251,9 @@ const cacheKey = (b) => sha256(JSON.stringify([normText(b.text), normText(b.prom
 // ttsSlow / llmSlow : mesurés au préchauffage (lot 8.4). Rien d'autre sur la machine n'est exposé ici.
 // Langues stables (accueil : en haut) ; les autres sont « Expérimentales » (section « En test »)
 const STABLE_LANGS = String(process.env.MOCHI_LANGS_STABLE || "en,ko").split(",").map((l) => l.trim()).filter(Boolean);
-const featuresJson = (loggedIn = true) => JSON.stringify({ stable: STABLE_LANGS, llm: loggedIn && LLM_ON, engine: llm.ENGINE, tts: tts.info(), mail: mail.mode, ttsSlow: !!engines.ttsSlow, llmSlow: !!engines.llmSlow });
+// Version portable (tools/portable.js) : un seul utilisateur sur sa machine, pas d'amis ni de comptes
+const PORTABLE = process.env.MOCHI_PORTABLE === "1";
+const featuresJson = (loggedIn = true) => JSON.stringify({ portable: PORTABLE, stable: STABLE_LANGS, llm: loggedIn && LLM_ON, engine: llm.ENGINE, tts: tts.info(), mail: mail.mode, ttsSlow: !!engines.ttsSlow, llmSlow: !!engines.llmSlow });
 
 function hashPassword(pw) {
   const salt = crypto.randomBytes(16);
@@ -703,7 +705,10 @@ async function api(req, res, url) {
       // La génération n'est pas liée à la requête : si le client abandonne (repli sur la voix
       // de l'appareil après quelques secondes), le fichier arrive quand même dans le cache.
       try { file = await tts.generate(lang, voice, text, low ? "low" : "high"); }
-      catch (e) { console.error("TTS :", e.message); return fail(res, 502, "Le moteur de voix ne répond pas."); }
+      catch (e) {
+        if (e.cacheMiss) return fail(res, 404, "Pas d'audio pour cette phrase."); // version portable : voix du navigateur
+        console.error("TTS :", e.message); return fail(res, 502, "Le moteur de voix ne répond pas.");
+      }
       if (res.destroyed) return;
     }
     return serveFile(res, file, ttsMod.typeOf(file), "private, max-age=31536000, immutable");
@@ -1028,7 +1033,7 @@ const server = http.createServer(async (req, res) => {
 // Un premier appel charge le modèle, un second mesure la vitesse réelle d'une phrase courte.
 const secs = (ms) => `${(ms / 1000).toLocaleString("fr-FR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} s`;
 async function warmEngines(log = console.log) {
-  const jobs = Object.keys(tts.info()).map(async (lang) => {
+  const jobs = Object.keys(tts.info()).filter((l) => !tts.conf[l].cacheOnly).map(async (lang) => {
     try { await tts.warm(lang, 0); engines.tts[lang] = { ok: true, ms: await tts.warm(lang, 1) }; }
     catch (e) { engines.tts[lang] = { ok: false, error: e.cause?.code || e.message }; }
   });
@@ -1049,7 +1054,23 @@ async function warmEngines(log = console.log) {
   return engines;
 }
 
-if (require.main === module) server.listen(PORT, HOST, () => console.log(`Mochi → http://${HOST && HOST !== "0.0.0.0" && HOST !== "::" ? HOST : "localhost"}:${PORT} · correcteur : ${LLM_ON ? llm.ENGINE : "désactivé"} · e-mails : ${mail.mode} · voix : ${tts.enabled ? Object.entries(tts.info()).map(([l, v]) => `${l} ×${v.length}`).join(", ") : "navigateur"}`));
+// Version portable : le serveur ouvre le navigateur (commandes fixes, jamais de shell) ; un second
+// double-clic alors que Mochi tourne déjà ouvre simplement le site au lieu d'échouer.
+function openBrowser(url) {
+  const [cmd, args] = process.platform === "win32" ? ["explorer.exe", [url]] : process.platform === "darwin" ? ["open", [url]] : ["xdg-open", [url]];
+  require("node:child_process").execFile(cmd, args, () => {});
+}
+if (require.main === module) {
+  const local = `http://${HOST && HOST !== "0.0.0.0" && HOST !== "::" ? HOST : "localhost"}:${PORT}`;
+  server.on("error", (e) => {
+    if (e.code === "EADDRINUSE" && PORTABLE) { console.log(`Mochi tourne déjà : ouverture de ${local}`); openBrowser(local); setTimeout(() => process.exit(0), 500); return; }
+    throw e;
+  });
+  server.listen(PORT, HOST, () => {
+    console.log(`Mochi → ${local} · correcteur : ${LLM_ON ? llm.ENGINE : "désactivé"} · e-mails : ${mail.mode} · voix : ${tts.enabled ? Object.entries(tts.info()).map(([l, v]) => `${l} ×${v.length}`).join(", ") : "navigateur"}`);
+    if (PORTABLE) { console.log("\n🍡 Mochi est ouvert dans ton navigateur. Laisse cette fenêtre ouverte pendant que tu l'utilises ; ferme-la pour arrêter Mochi.\n"); if (process.env.MOCHI_OPEN_BROWSER !== "0") openBrowser(local); }
+  });
+}
 // Erreurs inattendues : écrites avec la date (journal de systemd : journalctl -u mochi).
 // Une exception non rattrapée laisse le processus dans un état incertain : on sort, systemd relance.
 if (require.main === module) {

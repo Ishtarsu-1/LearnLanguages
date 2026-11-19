@@ -18,7 +18,8 @@
     "backup": "node --env-file-if-exists=.env tools/backup.js",
     "restore": "node --env-file-if-exists=.env tools/backup.js restore",
     "content:lexicon": "node --env-file-if-exists=.env tools/content-lexicon.js",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "portable": "node --env-file-if-exists=.env tools/portable.js"
   },
   "engines": {
     "node": ">=22.5"

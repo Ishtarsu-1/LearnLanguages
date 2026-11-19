@@ -23,6 +23,9 @@ function viewProfile() {
           <div class="wp-actions mt-8">${syncBadge()}
             ${account.avatar_url ? `<button class="mini" data-act="remove-photo">Retirer la photo</button>` : ""}
             <button class="mini" data-act="logout">Se déconnecter</button></div>`
+        : features.portable ? `
+          <div class="guest-cta"><p><b>💼 Version portable de Mochi.</b> Ta progression est enregistrée sur cet ordinateur (dossier « donnees » à côté du lanceur) : garde ce dossier pour la retrouver. Pas de compte ni d'amis dans cette version.</p>
+            <a class="btn small" href="#/avis">💬 Donner mon avis</a></div>`
         : serverOn ? `
           <div class="guest-cta">
             <p><b>Tu es en mode invité.</b> Ta progression n'existe que dans ce navigateur. Crée un compte pour la sauvegarder, la retrouver sur tous tes appareils et ajouter une photo.</p>

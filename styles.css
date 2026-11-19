@@ -1019,3 +1019,5 @@ img.friend-av { object-fit: cover; }
 .ca-lex-acts { white-space: nowrap; display: flex; gap: 6px; }
 
 .text-item.later { opacity: .8; }
+
+[data-nav][hidden] { display: none !important; }
