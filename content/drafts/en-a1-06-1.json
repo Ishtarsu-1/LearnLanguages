@@ -9,7 +9,7 @@
   "icon": "🎮",
   "kind": "Dialogue",
   "status": "draft",
-  "source": { "type": "original", "author": "Mochi", "license": "CC BY-NC 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
   "sentences": [
     ["Is=be there a new game online?", "Il y a un nouveau jeu en ligne ?"],
     ["Yes, there is=be a new game. It is=be out today!", "Oui, il y a un nouveau jeu. Il est sorti aujourd'hui !"],
@@ -28,9 +28,16 @@
     { "q": "Combien d'équipes y a-t-il dans le jeu ?", "options": ["Quatre", "Deux", "Dix"] },
     { "q": "Quel est le problème à la fin ?", "options": ["La connexion est lente", "Le jeu est trop cher", "Sam ne peut pas jouer"] }
   ],
+  "gen": {
+    "engine": "Claude (écrit à la main en session)",
+    "model": "claude-opus-5-5",
+    "prompt_version": "manuel",
+    "at": "2026-11-19T21:18:23.506Z"
+  },
+  "ai_review": { "engine": null, "model": null, "ran": false, "error": "pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin" },
   "checks": {
     "blocking": [],
-    "warnings": [],
+    "warnings": ["Relecture critique : non faite (pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin)"],
     "stats": {
       "sentences": 10,
       "wordsPerSentence": 7.9,
@@ -39,9 +46,10 @@
       "tokens": 77,
       "newWords": ["out", "when", "also", "they", "get"],
       "outside": [],
-      "grammar:there-is": 3
+      "grammar:there-is": 3,
+      "cognateShare": 9
     },
-    "status": "green",
-    "at": "2026-11-19T19:55:25.456Z"
+    "status": "orange",
+    "at": "2026-11-19T21:18:23.516Z"
   }
 }

@@ -356,7 +356,15 @@ const CONTENT = {
       "difficult": { "fr": "difficile", "cog": true },
       "chair": { "fr": "chaise", "cog": true },
       "professor": { "fr": "professeur", "cog": true },
-      "art": { "fr": "art", "cog": true }
+      "art": { "fr": "art", "cog": true },
+      "modern": { "fr": "moderne", "cog": true },
+      "adventure": { "fr": "aventure", "cog": true },
+      "international": { "fr": "international", "cog": true },
+      "fantastic": { "fr": "fantastique, génial", "cog": true },
+      "italian": { "fr": "italien", "cog": true },
+      "french": { "fr": "français" },
+      "excellent": { "fr": "excellent", "cog": true },
+      "place": { "fr": "endroit, lieu" }
     },
     "ko": {
       "이다": { "fr": "être (copule : c'est…)" },

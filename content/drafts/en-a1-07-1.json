@@ -9,39 +9,47 @@
   "icon": "☕",
   "kind": "Dialogue",
   "status": "draft",
-  "source": { "type": "original", "author": "Mochi", "license": "CC BY-NC 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
   "sentences": [
     ["Who is=be the new barista?", "C'est qui, la nouvelle barista ?"],
     ["That is=be @Léa. She is=be a student, and she works=work here now.", "C'est Léa. Elle est étudiante, et elle travaille ici maintenant."],
-    ["Is=be there a cappuccino on the menu now?", "Il y a un cappuccino à la carte, maintenant ?"],
-    ["Yes, and there are=be other coffees=coffee too.", "Oui, et il y a d'autres cafés aussi."],
-    ["This cafe is=be nicer=nice than the other cafe.", "Ce café est plus sympa que l'autre café."],
-    ["Their coffee is=be more delicious than the coffee at home.", "Leur café est plus délicieux que le café à la maison."],
-    ["There are=be cookies=cookie, and their cookies=cookie are=be amazing!", "Il y a des cookies, et leurs cookies sont incroyables !"],
+    ["There is=be a new menu now. Is=be it good?", "Il y a une nouvelle carte maintenant. Elle est bien ?"],
+    ["Yes, there are=be cookies=cookie, and there is=be good bread too.", "Oui, il y a des cookies, et il y a aussi du bon pain."],
+    ["This place is=be nicer=nice than the other cafe.", "Cet endroit est plus sympa que l'autre café."],
+    ["Their coffee is=be better=good than my coffee at home.", "Leur café est meilleur que mon café à la maison."],
     ["Who are=be the people at the other table?", "Qui sont les gens à l'autre table ?"],
-    ["They are=be students=student. Their university is=be near here.", "Ce sont des étudiants. Leur université est près d'ici."],
-    ["Now it is=be my favorite cafe!", "Maintenant, c'est mon café préféré !"]
+    ["They are=be students=student. Their school is=be near here.", "Ce sont des étudiants. Leur école est près d'ici."],
+    ["There is=be a lot of fun here, and the people are=be nice.", "On s'amuse bien ici, et les gens sont sympas."],
+    ["Now it is=be my cafe!", "Maintenant, c'est mon café !"]
   ],
   "speakers": null,
   "questions": [
     { "q": "Qui est la nouvelle barista ?", "options": ["Léa", "Sam", "Une inconnue"] },
-    { "q": "Pourquoi préfèrent-ils ce café ?", "options": ["Leur café est meilleur", "Il est moins cher", "Il est plus près"] },
-    { "q": "Qui sont les gens à la table ?", "options": ["Des étudiants", "Des collègues", "La famille de Léa"] }
+    { "q": "Comment est leur café ?", "options": ["Meilleur que celui de la maison", "Moins bon", "Trop cher"] },
+    { "q": "Qui sont les gens à l'autre table ?", "options": ["Des étudiants", "Des collègues", "La famille de Léa"] }
   ],
+  "gen": {
+    "engine": "Claude (écrit à la main en session)",
+    "model": "claude-opus-5-5",
+    "prompt_version": "manuel",
+    "at": "2026-11-19T21:18:23.561Z"
+  },
+  "ai_review": { "engine": null, "model": null, "ran": false, "error": "pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin" },
   "checks": {
     "blocking": [],
-    "warnings": [],
+    "warnings": ["Relecture critique : non faite (pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin)"],
     "stats": {
       "sentences": 10,
-      "wordsPerSentence": 8,
+      "wordsPerSentence": 8.6,
       "lexiconMissing": [],
-      "coverage": 93.7,
-      "tokens": 79,
-      "newWords": ["who", "now", "other", "than", "their"],
+      "coverage": 94.1,
+      "tokens": 85,
+      "newWords": ["who", "now", "than", "other", "their"],
       "outside": [],
-      "grammar:there-is": 2
+      "grammar:there-is": 3,
+      "cognateShare": 33
     },
-    "status": "green",
-    "at": "2026-11-19T19:55:48.705Z"
+    "status": "orange",
+    "at": "2026-11-19T21:18:23.583Z"
   }
 }

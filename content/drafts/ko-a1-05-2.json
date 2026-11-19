@@ -9,7 +9,7 @@
   "icon": "🍲",
   "kind": "Dialogue",
   "status": "draft",
-  "source": { "type": "original", "author": "Mochi", "license": "CC BY-NC 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
   "sentences": [
     ["오늘 점심|에 팀|이랑 같이 먹어요=먹다?", "Tu manges avec l'équipe ce midi ?"],
     ["네, 좋아요=좋다. 몇 명 와요=오다?", "Oui, avec plaisir. Vous serez combien ?"],
@@ -28,9 +28,16 @@
     { "q": "Pourquoi doit-elle partir tôt ?", "options": ["Elle a encore une réunion", "Elle est malade", "Elle va au sport"] },
     { "q": "Où se retrouvent-ils ?", "options": ["Dans l'entreprise, à une heure", "Au restaurant, à midi", "Au parc"] }
   ],
+  "gen": {
+    "engine": "Claude (écrit à la main en session)",
+    "model": "claude-opus-5-5",
+    "prompt_version": "manuel",
+    "at": "2026-11-19T21:18:24.633Z"
+  },
+  "ai_review": { "engine": null, "model": null, "ran": false, "error": "pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin" },
   "checks": {
     "blocking": [],
-    "warnings": ["Répétition : vu une seule fois (크다) — chaque mot nouveau au moins 2 fois"],
+    "warnings": ["Répétition : vu une seule fois (크다) — chaque mot nouveau au moins 2 fois", "Relecture critique : non faite (pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin)"],
     "stats": {
       "sentences": 10,
       "wordsPerSentence": 5.8,
@@ -42,6 +49,6 @@
       "grammar:natifs": 4
     },
     "status": "orange",
-    "at": "2026-11-19T19:59:11.410Z"
+    "at": "2026-11-19T21:18:24.647Z"
   }
 }

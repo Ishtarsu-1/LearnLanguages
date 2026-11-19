@@ -9,13 +9,13 @@
   "icon": "🎮",
   "kind": "Dialogue",
   "status": "draft",
-  "source": { "type": "original", "author": "Mochi", "license": "CC BY-NC 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
   "sentences": [
     ["오늘 같이 게임해요=게임하다? 몇 시|에 와요=오다?", "On joue ensemble aujourd'hui ? Tu viens à quelle heure ?"],
     ["아홉 시|에 와요=오다. 늦지=늦다 않아요=않다!", "Je viens à neuf heures. Je ne serai pas en retard !"],
     ["우리 팀|에 @민지|도 와요=오다?", "Minji vient aussi dans notre équipe ?"],
     ["네, @민지|도 와요=오다. @민지|는 이 게임|을 많이 알아요=알다.", "Oui, Minji vient aussi. Elle connaît très bien ce jeu."],
-    ["그래요=그렇다? 저|는 이 게임|을 조금 알아요=알다.", "Ah bon ? Moi, je connais un peu ce jeu."],
+    ["그래요=그렇다? 저|도 이 게임|을 조금 알아요=알다.", "Ah bon ? Moi aussi, je connais un peu ce jeu."],
     ["괜찮아요=괜찮다. 우리 팀|은 정말 좋아요=좋다.", "Pas grave. Notre équipe est vraiment bien."],
     ["하지만 @민지|는 매일 늦어요=늦다.", "Mais Minji est en retard tous les jours."],
     ["그래요=그렇다? 오늘|은 늦지=늦다 않아요=않다?", "Ah bon ? Et aujourd'hui, elle ne sera pas en retard ?"],
@@ -30,9 +30,16 @@
       "options": ["Elle connaît bien le jeu, mais elle est souvent en retard", "Elle ne joue jamais", "Elle est toujours en avance"]
     }
   ],
+  "gen": {
+    "engine": "Claude (écrit à la main en session)",
+    "model": "claude-opus-5-5",
+    "prompt_version": "manuel",
+    "at": "2026-11-19T21:18:24.383Z"
+  },
+  "ai_review": { "engine": null, "model": null, "ran": false, "error": "pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin" },
   "checks": {
     "blocking": [],
-    "warnings": ["Couverture : 90.8 % (idéal 92-98 %)"],
+    "warnings": ["Couverture : 90.8 % (idéal 92-98 %)", "Relecture critique : non faite (pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin)"],
     "stats": {
       "sentences": 10,
       "wordsPerSentence": 5.4,
@@ -41,9 +48,9 @@
       "tokens": 65,
       "newWords": ["오다", "늦다", "팀", "게임", "알다", "그렇다"],
       "outside": [],
-      "grammar:do": 2
+      "grammar:do": 3
     },
     "status": "orange",
-    "at": "2026-11-19T19:58:48.416Z"
+    "at": "2026-11-19T21:18:24.397Z"
   }
 }

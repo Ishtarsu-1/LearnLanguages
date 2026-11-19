@@ -9,39 +9,46 @@
   "icon": "☕",
   "kind": "Dialogue",
   "status": "draft",
-  "source": { "type": "original", "author": "Mochi", "license": "CC BY-NC 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
   "sentences": [
     ["A question, please: is=be this the menu?", "Une question, s'il vous plaît : c'est la carte ?"],
-    ["Yes, this is=be the menu.", "Oui, c'est la carte."],
-    ["I like this cappuccino. Is=be this with cream?", "J'aime ce cappuccino. C'est avec de la crème ?"],
-    ["This cappuccino is=be not with cream. This cappuccino is=be with chocolate.", "Ce cappuccino n'est pas à la crème. Ce cappuccino est au chocolat."],
+    ["Yes, this is=be the menu. And this is=be the dessert menu.", "Oui, c'est la carte. Et voici la carte des desserts."],
+    ["I like this cappuccino. Is=be this cappuccino with cream?", "J'aime ce cappuccino. Il est avec de la crème ?"],
+    ["This cappuccino is=be not with cream, but with chocolate.", "Ce cappuccino n'est pas à la crème, mais au chocolat."],
     ["Perfect! A cappuccino with chocolate, please.", "Parfait ! Un cappuccino au chocolat, s'il vous plaît."],
-    ["And you have a croissant? I like the croissant with coffee.", "Et vous avez un croissant ? J'aime le croissant avec le café."],
-    ["Yes, I have a croissant. This croissant is=be not with sugar.", "Oui, j'ai un croissant. Ce croissant n'est pas au sucre."],
+    ["And you have croissants=croissant? I like croissants=croissant with coffee.", "Et vous avez des croissants ? J'aime les croissants avec le café."],
+    ["Yes, I have a croissant, but not with sugar.", "Oui, j'ai un croissant, mais il n'est pas sucré."],
     ["OK, a croissant, please. And the total?", "D'accord, un croissant, s'il vous plaît. Et le total ?"],
     ["The total is=be 5 euros=euro. You have a card?", "Le total, c'est 5 euros. Vous avez une carte ?"],
-    ["Yes, I have a card. This cafe is=be perfect and the croissant is=be delicious!", "Oui, j'ai une carte. Ce café est parfait et le croissant est délicieux !"]
+    ["Yes, I have a card. This cafe is=be perfect, and the croissant is=be delicious!", "Oui, j'ai une carte. Ce café est parfait, et le croissant est délicieux !"]
   ],
   "speakers": null,
-  "checks": {
-    "blocking": [],
-    "warnings": ["Couverture : 91 % (idéal 92-98 %)"],
-    "stats": {
-      "sentences": 10,
-      "wordsPerSentence": 8.9,
-      "lexiconMissing": [],
-      "coverage": 91,
-      "tokens": 89,
-      "newWords": ["please", "this", "yes", "with", "not", "you", "have"],
-      "outside": [],
-      "grammar:be-present": 7
-    },
-    "status": "orange",
-    "at": "2026-11-19T19:17:46.701Z"
-  },
   "questions": [
     { "q": "Comment est le cappuccino ?", "options": ["Au chocolat, sans crème", "À la crème", "Au sucre"] },
     { "q": "Combien coûte la commande ?", "options": ["5 euros", "3 euros", "10 euros"] },
     { "q": "Comment paie la cliente ?", "options": ["Par carte", "En espèces", "Elle ne paie pas"] }
-  ]
+  ],
+  "gen": {
+    "engine": "Claude (écrit à la main en session)",
+    "model": "claude-opus-5-5",
+    "prompt_version": "manuel",
+    "at": "2026-11-19T21:18:23.393Z"
+  },
+  "ai_review": { "engine": null, "model": null, "ran": false, "error": "pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin" },
+  "checks": {
+    "blocking": [],
+    "warnings": ["Couverture : 90 % (idéal 92-98 %)", "Relecture critique : non faite (pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin)"],
+    "stats": {
+      "sentences": 10,
+      "wordsPerSentence": 9,
+      "lexiconMissing": [],
+      "coverage": 90,
+      "tokens": 90,
+      "newWords": ["please", "this", "yes", "with", "not", "but", "you", "have"],
+      "outside": [],
+      "grammar:be-present": 6
+    },
+    "status": "orange",
+    "at": "2026-11-19T21:18:23.401Z"
+  }
 }

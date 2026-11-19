@@ -9,12 +9,12 @@
   "icon": "⚽",
   "kind": "Monologue",
   "status": "draft",
-  "source": { "type": "original", "author": "Mochi", "license": "CC BY-NC 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
   "sentences": [
     ["On Saturday, I am=be up early.", "Le samedi, je suis debout tôt."],
     ["I play football in the park.", "Je joue au foot au parc."],
     ["@Sam is=be up early too. His team is=be my team!", "Sam est debout tôt aussi. Son équipe, c'est mon équipe !"],
-    ["If it is=be nice, we start at ten.", "S'il fait beau, on commence à dix heures."],
+    ["If it is=be nice, we can start at ten.", "S'il fait beau, on peut commencer à dix heures."],
     ["If it is=be not nice, we can play at the school.", "S'il ne fait pas beau, on peut jouer à l'école."],
     ["@Sam is=be very good, so his team wins=win a lot.", "Sam est très bon, alors son équipe gagne souvent."],
     ["I am=be not very good, so I play for fun.", "Moi, je ne suis pas très bon, alors je joue pour le plaisir."],
@@ -31,20 +31,28 @@
     { "q": "Où jouent-ils s'il ne fait pas beau ?", "options": ["À l'école", "Au parc", "Ils ne jouent pas"] },
     { "q": "Combien de matchs ont-ils le week-end ?", "options": ["Deux : un samedi, un dimanche", "Un seul", "Aucun"] }
   ],
+  "gen": {
+    "engine": "Claude (écrit à la main en session)",
+    "model": "claude-opus-5-5",
+    "prompt_version": "manuel",
+    "at": "2026-11-19T21:18:23.471Z"
+  },
+  "ai_review": { "engine": null, "model": null, "ran": false, "error": "pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin" },
   "checks": {
     "blocking": [],
-    "warnings": [],
+    "warnings": ["Relecture critique : non faite (pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin)"],
     "stats": {
       "sentences": 10,
-      "wordsPerSentence": 8.9,
+      "wordsPerSentence": 9,
       "lexiconMissing": [],
       "coverage": 94.3,
-      "tokens": 87,
+      "tokens": 88,
       "newWords": ["up", "his", "if", "so", "one"],
       "outside": [],
-      "grammar:can": 2
+      "grammar:can": 3,
+      "cognateShare": 6
     },
-    "status": "green",
-    "at": "2026-11-19T19:55:25.436Z"
+    "status": "orange",
+    "at": "2026-11-19T21:18:23.479Z"
   }
 }

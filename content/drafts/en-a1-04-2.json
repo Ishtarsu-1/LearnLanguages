@@ -9,39 +9,47 @@
   "icon": "📱",
   "kind": "Message",
   "status": "draft",
-  "source": { "type": "original", "author": "Mochi", "license": "CC BY-NC 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
   "sentences": [
-    ["Hi! This is=be the secret of my tomato sauce, as promised=promise.", "Salut ! Voici le secret de ma sauce tomate, comme promis."],
+    ["Hi! This is=be how I make my tomato sauce, as promised=promise.", "Salut ! Voici comment je fais ma sauce tomate, comme promis."],
     ["Buy four tomatoes=tomato from the market.", "Achète quatre tomates au marché."],
-    ["Cut the tomatoes=tomato and the onion.", "Coupe les tomates et l'oignon."],
-    ["Cook the onion for five or ten minutes=minute.", "Fais cuire l'oignon cinq ou dix minutes."],
-    ["Cook the tomatoes=tomato with a lot of garlic.", "Fais cuire les tomates avec beaucoup d'ail."],
-    ["Cook the sauce for ten minutes=minute, or twelve.", "Fais cuire la sauce dix minutes, ou douze."],
+    ["Cut the tomatoes=tomato and a lot of garlic.", "Coupe les tomates et beaucoup d'ail."],
+    ["Cook the garlic for a bit with the tomatoes=tomato.", "Fais cuire l'ail un peu avec les tomates."],
+    ["Cook it for ten minutes=minute, or twelve.", "Fais cuire dix minutes, ou douze."],
     ["My cousin @Marco is=be from Italy. He makes=make this sauce on Sunday.", "Mon cousin Marco vient d'Italie. Il fait cette sauce le dimanche."],
-    ["He eats=eat the pasta with bread, as in Italy.", "Il mange les pâtes avec du pain, comme en Italie."],
-    ["The secret of @Marco: he cooks=cook with love!", "Le secret de Marco : il cuisine avec amour !"],
+    ["He eats=eat the pasta with bread, as people do in Italy.", "Il mange les pâtes avec du pain, comme on fait en Italie."],
+    ["The secret of @Marco: he cooks=cook slow, and he cooks=cook with love!", "Le secret de Marco : il cuisine lentement, et avec amour !"],
+    ["I make it on Saturday. Do you want to make it tonight?", "Moi, je la fais le samedi. Tu veux la faire ce soir ?"],
     ["I want a photo of your pasta!", "Je veux une photo de tes pâtes !"]
   ],
   "speakers": null,
-  "checks": {
-    "blocking": [],
-    "warnings": [],
-    "stats": {
-      "sentences": 10,
-      "wordsPerSentence": 8.3,
-      "lexiconMissing": [],
-      "coverage": 93.8,
-      "tokens": 81,
-      "newWords": ["of", "as", "from", "or", "he"],
-      "outside": [],
-      "grammar:present-simple": 3
-    },
-    "status": "green",
-    "at": "2026-11-19T19:20:26.751Z"
-  },
   "questions": [
     { "q": "Où acheter les tomates ?", "options": ["Au marché", "Au supermarché", "Chez Marco"] },
     { "q": "Combien de temps cuit la sauce ?", "options": ["Dix ou douze minutes", "Cinq minutes", "Une heure"] },
-    { "q": "Quel est le secret de Marco ?", "options": ["Il cuisine avec amour", "Beaucoup de sucre", "Une sauce achetée"] }
-  ]
+    { "q": "Quel est le secret de Marco ?", "options": ["Il cuisine lentement, avec amour", "Beaucoup de sucre", "Une sauce achetée"] }
+  ],
+  "gen": {
+    "engine": "Claude (écrit à la main en session)",
+    "model": "claude-opus-5-5",
+    "prompt_version": "manuel",
+    "at": "2026-11-19T21:18:23.455Z"
+  },
+  "ai_review": { "engine": null, "model": null, "ran": false, "error": "pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin" },
+  "checks": {
+    "blocking": [],
+    "warnings": ["Longueur : 9.5 mots par phrase en moyenne (niveau A1 : 9 au plus)", "Répétition : vu une seule fois (or) — chaque mot nouveau au moins 2 fois", "Relecture critique : non faite (pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin)"],
+    "stats": {
+      "sentences": 10,
+      "wordsPerSentence": 9.5,
+      "lexiconMissing": [],
+      "coverage": 94.6,
+      "tokens": 93,
+      "newWords": ["as", "from", "of", "or", "he"],
+      "outside": [],
+      "grammar:present-simple": 4,
+      "cognateShare": 32
+    },
+    "status": "orange",
+    "at": "2026-11-19T21:18:23.465Z"
+  }
 }

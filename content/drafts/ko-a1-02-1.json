@@ -9,7 +9,7 @@
   "icon": "🚇",
   "kind": "Monologue",
   "status": "draft",
-  "source": { "type": "original", "author": "Mochi", "license": "CC BY-NC 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
   "sentences": [
     ["저|는 회사원|이에요=이다. 학생|이 아니에요=아니다.", "Je suis employée de bureau. Je ne suis pas étudiante."],
     ["매일 아침 지하철|로 출근해요=출근하다.", "Tous les matins, je vais au travail en métro."],
@@ -17,31 +17,38 @@
     ["출근할=출근하다 때 지하철|에 사람|이 정말 많아요=많다.", "Quand je vais au travail, il y a vraiment beaucoup de monde dans le métro."],
     ["그래서 지하철|에서 조금 힘들어요=힘들다.", "Alors dans le métro, c'est un peu dur."],
     ["하지만 지하철|은 느리지=느리다 않아요=않다.", "Mais le métro n'est pas lent."],
-    ["퇴근할=퇴근하다 때|는 친구|랑 같이 타요=타다.", "Quand je rentre du travail, je le prends avec une amie."],
+    ["퇴근할=퇴근하다 때|는 회사|에서 친구|를 만나요=만나다. 그리고 같이 타요=타다.", "Quand je rentre du travail, je retrouve une amie à l'entreprise. Et on le prend ensemble."],
     ["친구|도 학생|이 아니에요=아니다. 우리|는 회사|가 같아요=같다.", "Mon amie n'est pas étudiante non plus. Nous travaillons dans la même entreprise."],
     ["지하철|에서 같이 드라마|를 봐요=보다.", "Dans le métro, on regarde des dramas ensemble."],
-    ["우리|는 좋아하는=좋아하다 드라마|도 같아요=같다. 지하철|은 힘들지=힘들다 않아요=않다!", "On aime les mêmes dramas. Le métro, ce n'est pas pénible !"]
+    ["우리|는 좋아하는=좋아하다 드라마|도 같아요=같다. 그래서 지하철|이 재미있어요=재미있다!", "On aime les mêmes dramas. Alors le métro, c'est sympa !"]
   ],
   "speakers": null,
-  "checks": {
-    "blocking": [],
-    "warnings": [],
-    "stats": {
-      "sentences": 10,
-      "wordsPerSentence": 4.9,
-      "lexiconMissing": [],
-      "coverage": 92.8,
-      "tokens": 69,
-      "newWords": ["아니다", "지하철", "때", "않다", "같다"],
-      "outside": [],
-      "grammar:eseo": 2
-    },
-    "status": "green",
-    "at": "2026-11-19T19:20:00.294Z"
-  },
   "questions": [
     { "q": "Comment va-t-elle au travail ?", "options": ["En métro", "En bus", "À pied"] },
     { "q": "Combien de temps dure le trajet ?", "options": ["Vingt minutes", "Dix minutes", "Une heure"] },
     { "q": "Que font-elles dans le métro le soir ?", "options": ["Elles regardent des dramas", "Elles dorment", "Elles travaillent"] }
-  ]
+  ],
+  "gen": {
+    "engine": "Claude (écrit à la main en session)",
+    "model": "claude-opus-5-5",
+    "prompt_version": "manuel",
+    "at": "2026-11-19T21:18:24.017Z"
+  },
+  "ai_review": { "engine": null, "model": null, "ran": false, "error": "pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin" },
+  "checks": {
+    "blocking": [],
+    "warnings": ["Répétition : vu une seule fois (않다) — chaque mot nouveau au moins 2 fois", "Relecture critique : non faite (pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin)"],
+    "stats": {
+      "sentences": 10,
+      "wordsPerSentence": 5.2,
+      "lexiconMissing": [],
+      "coverage": 93.2,
+      "tokens": 73,
+      "newWords": ["아니다", "지하철", "때", "않다", "같다"],
+      "outside": [],
+      "grammar:eseo": 3
+    },
+    "status": "orange",
+    "at": "2026-11-19T21:18:24.032Z"
+  }
 }

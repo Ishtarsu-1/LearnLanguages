@@ -9,10 +9,10 @@
   "icon": "🏠",
   "kind": "Dialogue",
   "status": "draft",
-  "source": { "type": "original", "author": "Mochi", "license": "CC BY-NC 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
   "sentences": [
     ["안녕하세요! 이름|이 어떻게 돼요=되다?", "Bonjour ! Comment vous appelez-vous ?"],
-    ["제=저|제=의 이름|은 @민지|예요=이다. 저|는 삼 층|에 살아요=살다.", "Je m'appelle Minji. J'habite au troisième étage."],
+    ["제=저+의 이름|은 @민지|예요=이다. 저|는 삼 층|에 살아요=살다.", "Je m'appelle Minji. J'habite au troisième étage."],
     ["반가워요=반갑다! 저|는 오 층|에 살아요=살다.", "Enchantée ! Moi, j'habite au cinquième."],
     ["그것|은 김치|예요=이다?", "C'est du kimchi, ça ?"],
     ["네, 그것|은 우리 어머니 김치|예요=이다. 이 김치 받아요=받다!", "Oui, c'est le kimchi de ma mère. Prenez-en un peu !"],
@@ -28,9 +28,16 @@
     { "q": "Que lui offre la voisine ?", "options": ["Du kimchi", "Un café", "Des fleurs"] },
     { "q": "Où se retrouvent-elles le matin ?", "options": ["Au rez-de-chaussée, à neuf heures", "À la station de métro", "Au café"] }
   ],
+  "gen": {
+    "engine": "Claude (écrit à la main en session)",
+    "model": "claude-opus-5-5",
+    "prompt_version": "manuel",
+    "at": "2026-11-19T21:18:24.723Z"
+  },
+  "ai_review": { "engine": null, "model": null, "ran": false, "error": "pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin" },
   "checks": {
     "blocking": [],
-    "warnings": ["Couverture : 90 % (idéal 92-98 %)", "Répétition : vu une seule fois (삼, 오) — chaque mot nouveau au moins 2 fois"],
+    "warnings": ["Couverture : 90 % (idéal 92-98 %)", "Répétition : vu une seule fois (삼, 오) — chaque mot nouveau au moins 2 fois", "Relecture critique : non faite (pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin)"],
     "stats": {
       "sentences": 10,
       "wordsPerSentence": 5.7,
@@ -42,6 +49,6 @@
       "grammar:sino": 3
     },
     "status": "orange",
-    "at": "2026-11-19T19:59:11.435Z"
+    "at": "2026-11-19T21:18:24.744Z"
   }
 }

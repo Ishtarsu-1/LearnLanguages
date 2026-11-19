@@ -9,7 +9,7 @@
   "icon": "🏫",
   "kind": "Dialogue",
   "status": "draft",
-  "source": { "type": "original", "author": "Mochi", "license": "CC BY-NC 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
   "sentences": [
     ["Hi! Is=be this your first day here?", "Salut ! C'est ton premier jour ici ?"],
     ["Yes, it is=be my first day. Which class is=be this?", "Oui, c'est mon premier jour. C'est quelle classe ?"],
@@ -20,7 +20,7 @@
     ["The professor is=be @Sam. The class is=be great: its professor is=be very nice.", "Le professeur, c'est Sam. Le cours est super : son professeur est très sympa."],
     ["Is=be it only art in this class?", "Dans ce cours, on fait seulement de l'art ?"],
     ["Yes, only art. First day, so don't=do+not worry!", "Oui, seulement de l'art. C'est le premier jour, alors ne t'inquiète pas !"],
-    ["Now go into the class and have fun!", "Maintenant, entre dans la classe et amuse-toi bien !"]
+    ["Go into the class now, and have fun!", "Entre dans la classe maintenant, et amuse-toi bien !"]
   ],
   "speakers": null,
   "questions": [
@@ -28,9 +28,16 @@
     { "q": "Quel bureau lui propose-t-on ?", "options": ["Celui près de la fenêtre", "Celui près de la porte", "Celui de Sam"] },
     { "q": "Qui est le professeur ?", "options": ["Sam", "Léa", "On ne sait pas"] }
   ],
+  "gen": {
+    "engine": "Claude (écrit à la main en session)",
+    "model": "claude-opus-5-5",
+    "prompt_version": "manuel",
+    "at": "2026-11-19T21:18:23.649Z"
+  },
+  "ai_review": { "engine": null, "model": null, "ran": false, "error": "pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin" },
   "checks": {
     "blocking": [],
-    "warnings": [],
+    "warnings": ["Relecture critique : non faite (pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin)"],
     "stats": {
       "sentences": 10,
       "wordsPerSentence": 8.5,
@@ -39,9 +46,10 @@
       "tokens": 85,
       "newWords": ["first", "which", "into", "its", "only"],
       "outside": [],
-      "grammar:imperative": 2
+      "grammar:imperative": 3,
+      "cognateShare": 34
     },
-    "status": "green",
-    "at": "2026-11-19T19:55:48.734Z"
+    "status": "orange",
+    "at": "2026-11-19T21:18:23.669Z"
   }
 }

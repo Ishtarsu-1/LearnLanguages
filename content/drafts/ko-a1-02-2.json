@@ -9,37 +9,44 @@
   "icon": "🚉",
   "kind": "Dialogue",
   "status": "draft",
-  "source": { "type": "original", "author": "Mochi", "license": "CC BY-NC 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
   "sentences": [
     ["실례합니다=실례하다. 이 지하철 이호선|이에요=이다?", "Excusez-moi. Ce métro, c'est la ligne 2 ?"],
     ["네, 이호선|이에요=이다. @강남역|에 가요=가다?", "Oui, c'est la ligne 2. Vous allez à Gangnam ?"],
     ["네, @강남역|에 가요=가다. @강남역|에 갈=가다 때 몇 정거장|이에요=이다?", "Oui, je vais à Gangnam. C'est combien d'arrêts pour Gangnam ?"],
     ["다섯 정거장|이에요=이다. 저|도 @강남역|에 가요=가다!", "Cinq arrêts. Moi aussi, je vais à Gangnam !"],
     ["정말요=정말? 우리 정거장|이 같아요=같다!", "C'est vrai ? On a le même arrêt !"],
-    ["@강남역|은 많이 걸리지=걸리다 않아요=않다. 십 분 걸려요=걸리다.", "Gangnam, ce n'est pas long. Ça prend dix minutes."],
+    ["@강남역|은 여기|에서 많이 걸리지=걸리다 않아요=않다. 십 분 걸려요=걸리다.", "Gangnam, ce n'est pas loin d'ici. Ça prend dix minutes."],
     ["저|는 한국 사람|이 아니에요=아니다. 그래서 지하철|을 탈=타다 때 조금 힘들어요=힘들다.", "Je ne suis pas coréenne. Alors quand je prends le métro, c'est un peu difficile."],
-    ["괜찮아요=괜찮다. 우리 정거장|이 같아요=같다. 지하철|에서 같이 가요=가다!", "Pas de souci. On a le même arrêt. On y va ensemble en métro !"],
-    ["감사합니다=감사하다! 오늘 지하철|은 힘들지=힘들다 않아요=않다!", "Merci ! Aujourd'hui, le métro n'est pas pénible !"]
+    ["괜찮아요=괜찮다. 지하철|에서 같이 가요=가다! 저|는 @강남역|에서 친구|를 만나요=만나다.", "Pas de souci. On y va ensemble en métro ! Moi, je retrouve une amie à Gangnam."],
+    ["감사합니다=감사하다! 오늘|은 지하철|에서 같이 가요=가다. 그래서 힘들지=힘들다 않아요=않다!", "Merci ! Aujourd'hui, on fait le trajet ensemble en métro. Alors ce n'est pas difficile !"]
   ],
   "speakers": null,
-  "checks": {
-    "blocking": [],
-    "warnings": ["Répétition : vu une seule fois (아니다) — chaque mot nouveau au moins 2 fois", "Grammaire : « 에서 : lieu d'une action » dans 1 phrase(s) (au moins 2)"],
-    "stats": {
-      "sentences": 9,
-      "wordsPerSentence": 6,
-      "lexiconMissing": [],
-      "coverage": 92.4,
-      "tokens": 66,
-      "newWords": ["지하철", "때", "같다", "않다", "아니다"],
-      "outside": [],
-      "grammar:eseo": 1
-    },
-    "status": "orange",
-    "at": "2026-11-19T19:20:00.320Z"
-  },
   "questions": [
     { "q": "Où vont les deux personnes ?", "options": ["À la station Gangnam", "À la station Séoul", "À l'aéroport"] },
     { "q": "Combien d'arrêts y a-t-il ?", "options": ["Cinq", "Dix", "Deux"] }
-  ]
+  ],
+  "gen": {
+    "engine": "Claude (écrit à la main en session)",
+    "model": "claude-opus-5-5",
+    "prompt_version": "manuel",
+    "at": "2026-11-19T21:18:24.116Z"
+  },
+  "ai_review": { "engine": null, "model": null, "ran": false, "error": "pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin" },
+  "checks": {
+    "blocking": [],
+    "warnings": ["Répétition : vu une seule fois (같다, 아니다) — chaque mot nouveau au moins 2 fois", "Relecture critique : non faite (pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin)"],
+    "stats": {
+      "sentences": 9,
+      "wordsPerSentence": 6.6,
+      "lexiconMissing": [],
+      "coverage": 93.2,
+      "tokens": 74,
+      "newWords": ["지하철", "때", "같다", "않다", "아니다"],
+      "outside": [],
+      "grammar:eseo": 3
+    },
+    "status": "orange",
+    "at": "2026-11-19T21:18:24.132Z"
+  }
 }

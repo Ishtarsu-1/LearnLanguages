@@ -9,14 +9,14 @@
   "icon": "🎲",
   "kind": "Récit",
   "status": "draft",
-  "source": { "type": "original", "author": "Mochi", "license": "CC BY-NC 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
   "sentences": [
     ["On Saturday night, there is=be a game night at the library.", "Samedi soir, il y a une soirée jeux à la bibliothèque."],
     ["When I get there, there are=be a lot of people.", "Quand j'arrive, il y a beaucoup de monde."],
     ["They play cards=card and video games=game.", "Ils jouent aux cartes et aux jeux vidéo."],
     ["@Sam and @Léa are=be also there.", "Sam et Léa sont là aussi."],
     ["They have a new game. It is=be out today.", "Ils ont un nouveau jeu. Il est sorti aujourd'hui."],
-    ["We make a team of four.", "On fait une équipe de quatre."],
+    ["There are=be four of us in the team.", "On est quatre dans l'équipe."],
     ["When we win, @Léa dances=dance!", "Quand on gagne, Léa danse !"],
     ["At eleven, we get out of the library.", "À onze heures, on sort de la bibliothèque."],
     ["They also want to play next Saturday.", "Ils veulent aussi jouer samedi prochain."],
@@ -28,20 +28,28 @@
     { "q": "Que fait Léa quand ils gagnent ?", "options": ["Elle danse", "Elle part", "Elle pleure"] },
     { "q": "Que veut faire le narrateur ?", "options": ["Revenir à la prochaine soirée", "Acheter le jeu", "Rester à la maison"] }
   ],
+  "gen": {
+    "engine": "Claude (écrit à la main en session)",
+    "model": "claude-opus-5-5",
+    "prompt_version": "manuel",
+    "at": "2026-11-19T21:18:23.528Z"
+  },
+  "ai_review": { "engine": null, "model": null, "ran": false, "error": "pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin" },
   "checks": {
     "blocking": [],
-    "warnings": [],
+    "warnings": ["Relecture critique : non faite (pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin)"],
     "stats": {
       "sentences": 10,
-      "wordsPerSentence": 7.8,
+      "wordsPerSentence": 8,
       "lexiconMissing": [],
-      "coverage": 93.3,
-      "tokens": 75,
+      "coverage": 93.5,
+      "tokens": 77,
       "newWords": ["when", "get", "they", "also", "out"],
       "outside": [],
-      "grammar:there-is": 2
+      "grammar:there-is": 3,
+      "cognateShare": 9
     },
-    "status": "green",
-    "at": "2026-11-19T19:55:25.465Z"
+    "status": "orange",
+    "at": "2026-11-19T21:18:23.546Z"
   }
 }

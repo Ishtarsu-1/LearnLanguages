@@ -9,17 +9,17 @@
   "icon": "🎾",
   "kind": "Dialogue",
   "status": "draft",
-  "source": { "type": "original", "author": "Mochi", "license": "CC BY-NC 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
   "sentences": [
     ["Can you play tennis?", "Tu sais jouer au tennis ?"],
     ["Yes, I can, but I am=be not very good.", "Oui, mais je ne suis pas très bonne."],
-    ["No problem. Can you play on Sunday?", "Pas de souci. Tu peux jouer dimanche ?"],
+    ["No worries=worry. Can you play on Sunday?", "Ne t'inquiète pas. Tu peux jouer dimanche ?"],
     ["I can play if it is=be not too early.", "Je peux jouer, si ce n'est pas trop tôt."],
     ["OK, at eleven. Do you have a racket?", "D'accord, à onze heures. Tu as une raquette ?"],
     ["No, I have shoes=shoe, but not a racket.", "Non, j'ai des chaussures, mais pas de raquette."],
-    ["So take this racket. I have one more.", "Alors prends cette raquette. J'en ai une autre."],
+    ["So take this one. I have one more at home.", "Alors prends celle-ci. J'en ai une autre à la maison."],
     ["Thanks! Is=be it your racket?", "Merci ! C'est ta raquette ?"],
-    ["No, it is=be @Sam's racket. His racket is=be great.", "Non, c'est la raquette de Sam. Sa raquette est super."],
+    ["No, it is=be @Sam's. His racket is=be great. He is=be up early on Sunday too.", "Non, c'est celle de Sam. Sa raquette est super. Lui aussi est debout tôt le dimanche."],
     ["If I win, I buy the coffee! So be up early!", "Si je gagne, je paie le café ! Alors sois debout tôt !"]
   ],
   "speakers": null,
@@ -28,20 +28,28 @@
     { "q": "À qui est la raquette ?", "options": ["À Sam", "Au narrateur", "Au club"] },
     { "q": "Que se passe-t-il si elle gagne ?", "options": ["Elle paie le café", "Elle garde la raquette", "Ils rejouent"] }
   ],
+  "gen": {
+    "engine": "Claude (écrit à la main en session)",
+    "model": "claude-opus-5-5",
+    "prompt_version": "manuel",
+    "at": "2026-11-19T21:18:23.487Z"
+  },
+  "ai_review": { "engine": null, "model": null, "ran": false, "error": "pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin" },
   "checks": {
     "blocking": [],
-    "warnings": ["Répétition : vu une seule fois (one, his, up) — chaque mot nouveau au moins 2 fois"],
+    "warnings": ["Répétition : vu une seule fois (his) — chaque mot nouveau au moins 2 fois", "Relecture critique : non faite (pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin)"],
     "stats": {
       "sentences": 10,
-      "wordsPerSentence": 7.8,
+      "wordsPerSentence": 8.6,
       "lexiconMissing": [],
-      "coverage": 93.5,
-      "tokens": 77,
+      "coverage": 94.1,
+      "tokens": 85,
       "newWords": ["if", "so", "one", "his", "up"],
       "outside": [],
-      "grammar:can": 4
+      "grammar:can": 4,
+      "cognateShare": 23
     },
     "status": "orange",
-    "at": "2026-11-19T19:55:25.447Z"
+    "at": "2026-11-19T21:18:23.498Z"
   }
 }

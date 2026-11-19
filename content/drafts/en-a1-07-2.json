@@ -9,15 +9,15 @@
   "icon": "💬",
   "kind": "Message",
   "status": "draft",
-  "source": { "type": "original", "author": "Mochi", "license": "CC BY-NC 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
   "sentences": [
     ["Hi! I am=be at the new cafe now.", "Salut ! Je suis au nouveau café, là."],
     ["The other cafe is=be closed=close today.", "L'autre café est fermé aujourd'hui."],
     ["@Sam and @Léa are=be here now. Their table is=be near the window.", "Sam et Léa sont là. Leur table est près de la fenêtre."],
     ["There is=be a table for you with their table.", "Il y a une table pour toi avec la leur."],
-    ["This cafe is=be nicer=nice than the other cafe.", "Ce café est plus sympa que l'autre."],
+    ["There is=be good music here, and it is=be nicer=nice than the other place.", "Il y a de la bonne musique ici, et c'est plus sympa que l'autre endroit."],
     ["There are=be cookies=cookie now, and other desserts=dessert.", "Il y a des cookies maintenant, et d'autres desserts."],
-    ["Their cookies=cookie are=be more delicious than the other cookies=cookie.", "Leurs cookies sont plus délicieux que les autres cookies."],
+    ["Their bread is=be better=good than the bread at home.", "Leur pain est meilleur que le pain de la maison."],
     ["Who wants=want a coffee? I can buy one!", "Qui veut un café ? Je peux en payer un !"],
     ["Who is=be with us now? @Sam, @Léa and me!", "Qui est avec nous maintenant ? Sam, Léa et moi !"],
     ["Please be here at four!", "Sois là à quatre heures, s'il te plaît !"]
@@ -28,20 +28,28 @@
     { "q": "Qui est déjà au café ?", "options": ["Sam et Léa", "Personne", "Le frère du narrateur"] },
     { "q": "Que propose le narrateur ?", "options": ["De payer un café", "De partir plus tôt", "D'aller au parc"] }
   ],
+  "gen": {
+    "engine": "Claude (écrit à la main en session)",
+    "model": "claude-opus-5-5",
+    "prompt_version": "manuel",
+    "at": "2026-11-19T21:18:23.593Z"
+  },
+  "ai_review": { "engine": null, "model": null, "ran": false, "error": "pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin" },
   "checks": {
     "blocking": [],
-    "warnings": [],
+    "warnings": ["Relecture critique : non faite (pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin)"],
     "stats": {
       "sentences": 10,
-      "wordsPerSentence": 8.1,
+      "wordsPerSentence": 8.6,
       "lexiconMissing": [],
-      "coverage": 93.5,
-      "tokens": 77,
+      "coverage": 93.9,
+      "tokens": 82,
       "newWords": ["now", "other", "their", "than", "who"],
       "outside": [],
-      "grammar:there-is": 2
+      "grammar:there-is": 3,
+      "cognateShare": 29
     },
-    "status": "green",
-    "at": "2026-11-19T19:55:48.714Z"
+    "status": "orange",
+    "at": "2026-11-19T21:18:23.605Z"
   }
 }

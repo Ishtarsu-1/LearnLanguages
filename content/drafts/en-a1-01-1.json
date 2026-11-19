@@ -5,43 +5,49 @@
   "unit": "en-A1-01",
   "themes": ["rencontre"],
   "grammar": ["be-present"],
-  "title": "Moi, en quelques mots",
+  "title": "Premier jour à Paris",
   "icon": "😊",
   "kind": "Monologue",
   "status": "draft",
-  "source": { "type": "original", "author": "Mochi", "license": "CC BY-NC 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
   "sentences": [
-    ["I am=be @Léa.", "Je suis Léa."],
-    ["I am=be a student and I am=be curious.", "Je suis étudiante et je suis curieuse."],
-    ["The university is=be a calm campus.", "L'université est un campus calme."],
-    ["I like the campus and I like the cafe.", "J'aime le campus et j'aime le café."],
-    ["The cafe is=be perfect and the coffee is=be delicious.", "Le café est parfait et le café (la boisson) est délicieux."],
-    ["I like music: jazz, rock and classical music.", "J'aime la musique : le jazz, le rock et la musique classique."],
-    ["The music is=be important and the cinema is=be a passion.", "La musique est importante et le cinéma est une passion."],
-    ["I like the cinema and I like chocolate.", "J'aime le cinéma et j'aime le chocolat."],
-    ["I am=be nervous, and the university is=be interesting!", "Je suis nerveuse, et l'université est intéressante !"],
-    ["The coffee is=be a ritual and the ritual is=be perfect!", "Le café est un rituel, et le rituel est parfait !"]
+    ["I am=be @Léa. I am=be 20, and I am=be a student.", "Je m'appelle Léa. J'ai 20 ans, et je suis étudiante."],
+    ["The university is=be modern, and the campus is=be calm.", "L'université est moderne, et le campus est calme."],
+    ["The professor is=be Italian, and the class is=be interesting.", "Le professeur est italien, et le cours est intéressant."],
+    ["The students=student are=be international and fantastic!", "Les étudiants sont internationaux et géniaux !"],
+    ["I like music and cinema.", "J'aime la musique et le cinéma."],
+    ["I like coffee and chocolate, and the cafe is=be perfect.", "J'aime le café et le chocolat, et la cafétéria est parfaite."],
+    ["The coffee is=be delicious, and the chocolate is=be excellent.", "Le café est délicieux, et le chocolat est excellent."],
+    ["I am=be nervous, and I am=be curious.", "Je suis nerveuse, et je suis curieuse."],
+    ["And @Paris is=be a fantastic adventure!", "Et Paris, c'est une aventure géniale !"]
   ],
   "speakers": null,
+  "questions": [
+    { "q": "Que fait Léa ?", "options": ["Elle est étudiante", "Elle est professeure", "Elle travaille dans un café"] },
+    { "q": "D'où vient le professeur ?", "options": ["D'Italie", "De France", "D'Espagne"] },
+    { "q": "Comment se sent Léa ?", "options": ["Nerveuse et curieuse", "Triste", "Fatiguée"] }
+  ],
+  "gen": {
+    "engine": "Claude (écrit à la main en session)",
+    "model": "claude-opus-5-5",
+    "prompt_version": "manuel",
+    "at": "2026-11-19T21:18:23.366Z"
+  },
+  "ai_review": { "engine": null, "model": null, "ran": false, "error": "pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin" },
   "checks": {
     "blocking": [],
-    "warnings": [],
+    "warnings": ["Couverture : 90 % (idéal 92-98 %)", "Relecture critique : non faite (pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin)"],
     "stats": {
-      "sentences": 10,
-      "wordsPerSentence": 7.9,
+      "sentences": 9,
+      "wordsPerSentence": 8,
       "lexiconMissing": [],
-      "coverage": 92.3,
-      "tokens": 78,
-      "newWords": ["i", "be", "a", "and", "the", "like"],
+      "coverage": 90,
+      "tokens": 70,
+      "newWords": ["i", "be", "and", "a", "the", "like"],
       "outside": [],
-      "grammar:be-present": 7
+      "grammar:be-present": 8
     },
-    "status": "green",
-    "at": "2026-11-19T19:17:46.680Z"
-  },
-  "questions": [
-    { "q": "Que fait Léa ?", "options": ["Elle est étudiante", "Elle est cheffe", "Elle travaille dans un café"] },
-    { "q": "Comment est le campus ?", "options": ["Calme", "Bruyant", "Fermé"] },
-    { "q": "Qu'est-ce que Léa n'a pas dit aimer ?", "options": ["Le sport", "Le cinéma", "Le chocolat"] }
-  ]
+    "status": "orange",
+    "at": "2026-11-19T21:18:23.384Z"
+  }
 }
