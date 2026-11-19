@@ -1,0 +1,259 @@
+{
+  "lang": "ko",
+  "note": "Programme du coréen (CONTENU-PIPELINE, lot C3). Ordre de la grammaire : PEDAGOGIE §6 (phase 2 puis phase 3). Chaque point doit apparaître dans au moins 3 textes. Unités suivantes : npm run plan:suggest -- --lang ko.",
+  "grammar_order": [
+    {
+      "id": "haeyo",
+      "label": "Registre poli -아요/-어요 (해요체)",
+      "phase": 2,
+      "detect": { "regex": "요[.!?…\"」]*$" }
+    },
+    {
+      "id": "eun-neun",
+      "label": "은/는 : le thème",
+      "phase": 2,
+      "detect": { "particles": ["은", "는"] }
+    },
+    {
+      "id": "i-ga",
+      "label": "이/가 : le sujet",
+      "phase": 2,
+      "detect": { "particles": ["이", "가"] }
+    },
+    {
+      "id": "eul-reul",
+      "label": "을/를 : l'objet",
+      "phase": 2,
+      "detect": { "particles": ["을", "를"] }
+    },
+    {
+      "id": "e",
+      "label": "에 : lieu, destination, moment",
+      "phase": 2,
+      "detect": { "particles": ["에"] }
+    },
+    {
+      "id": "eseo",
+      "label": "에서 : lieu d'une action",
+      "phase": 2,
+      "detect": { "particles": ["에서"] }
+    },
+    {
+      "id": "do",
+      "label": "도 : aussi",
+      "phase": 2,
+      "detect": { "particles": ["도"] }
+    },
+    {
+      "id": "natifs",
+      "label": "Nombres natifs (하나, 둘…)",
+      "phase": 2,
+      "detect": { "lemmas": ["하나", "둘", "셋", "넷", "다섯", "여섯", "일곱", "여덟", "아홉", "열", "스물", "서른"] }
+    },
+    {
+      "id": "sino",
+      "label": "Nombres sino-coréens (일, 이…)",
+      "phase": 2,
+      "detect": { "regex": "(^|\\s)(일|이|삼|사|오|육|칠|팔|구)?(십|백|천|만)?(일|이|삼|사|오|육|칠|팔|구|십|백|천|만) ?(원|분|월|일|층|번|년)" }
+    },
+    {
+      "id": "past",
+      "label": "Passé -았/었어요",
+      "phase": 2,
+      "detect": { "regex": "(았|었|였|했|웠|왔|봤|갔|셨)어요" }
+    },
+    {
+      "id": "future",
+      "label": "Futur -(으)ㄹ 거예요",
+      "phase": 2,
+      "detect": { "regex": "거예요|거야|겁니다" }
+    },
+    {
+      "id": "neg",
+      "label": "Négation 안 / -지 않아요",
+      "phase": 2,
+      "detect": { "regex": "(^|\\s)안 |지 않" }
+    },
+    {
+      "id": "go-sipda",
+      "label": "Envie : -고 싶어요",
+      "phase": 2,
+      "detect": { "lemmas": ["싶다"] }
+    },
+    {
+      "id": "go",
+      "label": "Enchaîner : -고",
+      "phase": 2,
+      "detect": { "regex": "[가-힣]고 (?!싶|있)" }
+    },
+    {
+      "id": "seyo",
+      "label": "Demande polie -(으)세요",
+      "phase": 2,
+      "detect": { "regex": "세요" }
+    },
+    {
+      "id": "mot",
+      "label": "Impossibilité : 못",
+      "phase": 2,
+      "detect": { "regex": "(^|\\s)못 |지 못" }
+    },
+    {
+      "id": "aseo",
+      "label": "Cause / suite : -아서/어서",
+      "phase": 2,
+      "detect": { "regex": "(아서|어서|해서|여서|워서)" }
+    },
+    {
+      "id": "jiman",
+      "label": "Opposition : -지만",
+      "phase": 2,
+      "detect": { "regex": "지만" }
+    },
+    {
+      "id": "reo",
+      "label": "But : -(으)러 가다",
+      "phase": 2,
+      "detect": { "regex": "러 (가|와|오|갔|왔)" }
+    },
+    {
+      "id": "myeon",
+      "label": "Condition : -(으)면",
+      "phase": 2,
+      "detect": { "regex": "[가-힣]면[\\s,]" }
+    },
+    {
+      "id": "banmal",
+      "label": "반말 : parler à un ami proche",
+      "phase": 3,
+      "detect": { "regex": "(어|아|야|지|자|해|래|게)[?!.…]*$" }
+    },
+    {
+      "id": "hamnida",
+      "label": "합니다체 : le registre formel",
+      "phase": 3,
+      "detect": { "regex": "니다|니까" }
+    },
+    {
+      "id": "honorific",
+      "label": "Honorifiques (-시-, 드시다…)",
+      "phase": 3,
+      "detect": { "regex": "(으시|셨|드시|드세|께서|주무)" }
+    }
+  ],
+  "units": [
+    {
+      "unit": "ko-A1-socle",
+      "level": "A1",
+      "legacy": true,
+      "note": "Textes écrits avant le plan : leur vocabulaire compte comme acquis pour la suite.",
+      "texts_published": ["ko-cafe", "ko-intro", "ko-family", "ko-weekend", "ko-subway", "ko-jjigae", "ko-sport", "ko-game", "ko-work", "ko-drama"],
+      "grammar": ["haeyo", "eun-neun", "i-ga", "eul-reul", "e"],
+      "themes": [],
+      "new_words": [],
+      "review_words": [],
+      "texts": 0,
+      "kinds": []
+    },
+    {
+      "unit": "ko-A1-01",
+      "level": "A1",
+      "grammar": ["eseo"],
+      "themes": ["cafe"],
+      "new_words": ["것", "되다", "수", "나", "없다"],
+      "review_words": [],
+      "texts": 2,
+      "kinds": ["Dialogue", "Message"]
+    },
+    {
+      "unit": "ko-A1-02",
+      "level": "A1",
+      "grammar": ["eseo"],
+      "themes": ["transports"],
+      "new_words": ["않다", "아니다", "등", "때", "같다"],
+      "review_words": ["것", "되다"],
+      "texts": 2,
+      "kinds": ["Monologue", "Dialogue"]
+    },
+    {
+      "unit": "ko-A1-03",
+      "level": "A1",
+      "grammar": ["do"],
+      "themes": ["sport"],
+      "new_words": ["대하다", "년", "말", "때문", "말하다"],
+      "review_words": ["않다", "아니다"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Récit"]
+    },
+    {
+      "unit": "ko-A1-04",
+      "level": "A1",
+      "grammar": ["do"],
+      "themes": ["gaming"],
+      "new_words": ["위하다", "그러나", "오다", "알다", "그렇다"],
+      "review_words": ["대하다", "년", "것", "되다"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Message"]
+    },
+    {
+      "unit": "ko-A1-05",
+      "level": "A1",
+      "grammar": ["natifs"],
+      "themes": ["travail"],
+      "new_words": ["크다", "또", "사회", "안", "더"],
+      "review_words": ["위하다", "그러나", "않다", "아니다"],
+      "texts": 2,
+      "kinds": ["Monologue", "Dialogue"]
+    },
+    {
+      "unit": "ko-A1-06",
+      "level": "A1",
+      "grammar": ["sino"],
+      "themes": ["rencontre"],
+      "new_words": ["받다", "그것", "집", "나오다", "따르다"],
+      "review_words": ["크다", "또", "대하다", "년"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Récit"]
+    },
+    {
+      "unit": "ko-A1-07",
+      "level": "A1",
+      "grammar": ["sino"],
+      "themes": ["cuisine"],
+      "new_words": ["문제", "그런", "못하다", "생각하다", "모르다"],
+      "review_words": ["받다", "그것", "위하다", "그러나", "것"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Message"]
+    },
+    {
+      "unit": "ko-A1-08",
+      "level": "A1",
+      "grammar": ["past"],
+      "themes": ["series"],
+      "new_words": ["속", "데", "앞", "경우", "중"],
+      "review_words": ["문제", "그런", "크다", "또", "않다"],
+      "texts": 2,
+      "kinds": ["Monologue", "Dialogue"]
+    },
+    {
+      "unit": "ko-A1-09",
+      "level": "A1",
+      "grammar": ["future"],
+      "themes": ["cafe"],
+      "new_words": ["어떤", "잘", "그녀", "자신", "문화"],
+      "review_words": ["속", "데", "받다", "그것", "대하다"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Récit"]
+    },
+    {
+      "unit": "ko-A1-10",
+      "level": "A1",
+      "grammar": ["future"],
+      "themes": ["transports"],
+      "new_words": ["생각", "어떻다", "통하다", "그러다", "소리"],
+      "review_words": ["어떤", "잘", "문제", "그런", "위하다"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Message"]
+    }
+  ]
+}

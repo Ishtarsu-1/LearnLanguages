@@ -10,7 +10,8 @@
     "doctor": "node --env-file-if-exists=.env tools/doctor.js",
     "tts:pregen": "node --env-file-if-exists=.env tools/pregen-tts.js",
     "content:build": "node tools/content-build.js",
-    "content:annotate": "node --env-file-if-exists=.env tools/annotate.js"
+    "content:annotate": "node --env-file-if-exists=.env tools/annotate.js",
+    "plan:suggest": "node tools/plan-suggest.js"
   },
   "engines": {
     "node": ">=22.5"

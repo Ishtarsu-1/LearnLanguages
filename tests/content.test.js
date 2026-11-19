@@ -65,6 +65,32 @@ const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
   fs.rmSync(tmp, { recursive: true });
 }
 
+// ---------- C3 : plan, fréquences, anti-interférence ----------
+{
+  const P = require("../tools/plan-lib.js"), { suggest, groupOf } = require("../tools/plan-suggest.js");
+  for (const lang of L.LANGS) {
+    const freq = L.loadFreq(lang), plan = L.loadPlan(lang);
+    ok(freq.length > 3000 && freq.every((f, i) => f.rank === i + 1), `${lang} : liste de fréquence chargée et ordonnée (${freq.length})`);
+    ok(plan.units.length >= 10 && plan.units.some((u) => u.legacy), `${lang} : plan avec socle et unités`);
+    const groups = (u) => u.new_words.map((w) => groupOf(lang, L.loadLexicon()[lang], w)).filter(Boolean);
+    ok(plan.units.every((u) => new Set(groups(u)).size === groups(u).length), `${lang} : aucune unité n'a deux mots nouveaux du même groupe`);
+  }
+  ok(L.loadPlan("en").units.slice(0, 3).every((u) => u.first_steps), "anglais : 3 unités « tout premiers pas » en tête");
+  // Anti-interférence : red/blue (couleurs) et early/late (confusables) jamais dans la même unité
+  const lexicon = { early: { fr: "tôt", confusable_with: ["late"] }, late: { fr: "tard", confusable_with: ["early"] }, cat: { fr: "chat", semantic_group: "animal" }, dog: { fr: "chien", semantic_group: "animal" } };
+  const freq = ["red", "blue", "early", "late", "cat", "dog", "bread", "walk", "happy", "green"].map((lemma, i) => ({ lemma, rank: i + 1, level: "A1", pos: "", cog: false }));
+  const plan = { grammar_order: [{ id: "g1", phase: 1, detect: { regex: "x" } }], units: [] };
+  const r = suggest("en", { next: 3, perUnit: 4, plan, lexicon, freq, texts: [] });
+  const together = (a, b) => r.units.some((u) => u.new_words.includes(a) && u.new_words.includes(b));
+  ok(!together("red", "blue") && !together("red", "green") && !together("early", "late") && !together("cat", "dog"), "plan-suggest : jamais deux mots du même groupe ni deux confusables : " + r.units.map((u) => u.new_words.join("/")).join(" · "));
+  ok(r.units.flatMap((u) => u.new_words).length === 10 && r.units[0].new_words[0] === "red", "plan-suggest : tous les mots placés, les plus fréquents d'abord");
+  ok(r.units[1].review_words.includes("red"), "plan-suggest : mots de l'unité précédente en révision");
+  // Couverture d'unité : 1re occurrence d'un mot nouveau = inconnue, mot hors programme = toujours inconnu
+  const cov = P.unitCoverage("en", [["The cat is=be here. The cat is=be happy. Zebra!", "x"]], new Set(["the", "be", "here", "happy"]), new Set(["cat"]));
+  ok(cov.tokens === 9 && cov.unknown === 2 && cov.newCounts.cat === 2 && cov.outside.zebra === 1, `couverture d'unité : ${JSON.stringify(cov)}`);
+  ok(P.grammarHits("ko", { detect: { particles: ["은", "는"] } }, [["저|는 학생|이에요=이다.", ""], ["커피|가 좋아요=좋다.", ""]]) === 1, "détection d'un point de grammaire (particules)");
+}
+
 // ---------- C2 : annotation automatique ≥ 95 % des lemmes, 100 % des particules ----------
 (async () => {
   const A = require("../tools/annotate.js");

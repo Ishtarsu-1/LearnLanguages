@@ -1,0 +1,229 @@
+{
+  "lang": "en",
+  "note": "Programme de l'anglais (CONTENU-PIPELINE, lot C3). D'abord 3 textes « tout premiers pas » (mots transparents + ~50 mots les plus fréquents, v0.3 lot 3.1), puis le socle existant, puis les unités proposées par npm run plan:suggest -- --lang en.",
+  "grammar_order": [
+    {
+      "id": "be-present",
+      "label": "Être au présent (am, is, are)",
+      "phase": 1,
+      "detect": { "regex": "\\b(am|is|are|i'm|you're|it's|he's|she's|we're|they're|that's|isn't|aren't)\\b" }
+    },
+    {
+      "id": "present-simple",
+      "label": "Présent simple (I work, she works)",
+      "phase": 1,
+      "detect": { "regex": "\\b(do|does|don't|doesn't)\\b|\\b(he|she|it) [a-z]+s\\b" }
+    },
+    {
+      "id": "can",
+      "label": "Can / can't",
+      "phase": 1,
+      "detect": { "regex": "\\b(can|can't|cannot)\\b" }
+    },
+    {
+      "id": "there-is",
+      "label": "There is / there are",
+      "phase": 1,
+      "detect": { "regex": "\\bthere (is|are)\\b|\\bthere's\\b" }
+    },
+    {
+      "id": "imperative",
+      "label": "Impératif (Go, Don't…)",
+      "phase": 1,
+      "detect": { "regex": "(^|[.!?] )(let's|don't|please|go|come|take|look|wait|turn)\\b" }
+    },
+    {
+      "id": "present-continuous",
+      "label": "Présent continu (I'm eating)",
+      "phase": 1,
+      "detect": { "regex": "\\b(am|is|are|'m|'re|'s) [a-z]+ing\\b|(i'm|you're|we're|they're|he's|she's|it's) [a-z]+ing\\b" }
+    },
+    {
+      "id": "past-simple",
+      "label": "Prétérit (I went, I watched)",
+      "phase": 1,
+      "detect": { "regex": "\\b[a-z]+ed\\b|\\b(went|had|did|was|were|saw|came|got|made|took|said|ate|bought|met|told|thought)\\b" }
+    },
+    {
+      "id": "going-to",
+      "label": "Futur proche (going to)",
+      "phase": 1,
+      "detect": { "regex": "going to" }
+    },
+    {
+      "id": "will",
+      "label": "Futur avec will",
+      "phase": 1,
+      "detect": { "regex": "\\bwill\\b|'ll\\b|\\bwon't\\b" }
+    },
+    {
+      "id": "would-like",
+      "label": "Politesse : would like / I'd love",
+      "phase": 1,
+      "detect": { "regex": "would like|'d like|'d love|would you" }
+    },
+    {
+      "id": "comparative",
+      "label": "Comparatif (bigger than, more … than)",
+      "phase": 2,
+      "detect": { "regex": "\\b[a-z]+er than\\b|\\bmore [a-z]+ than\\b" }
+    },
+    {
+      "id": "present-perfect",
+      "label": "Present perfect (I have seen)",
+      "phase": 2,
+      "detect": { "regex": "\\b(have|has|'ve|haven't|hasn't) (been|seen|done|gone|had|eaten|[a-z]+ed)\\b" }
+    }
+  ],
+  "units": [
+    {
+      "unit": "en-A1-01",
+      "level": "A1",
+      "first_steps": true,
+      "grammar": ["be-present"],
+      "themes": ["rencontre"],
+      "new_words": ["i", "be", "the", "a", "and", "like"],
+      "review_words": [],
+      "texts": 1,
+      "kinds": ["Monologue"],
+      "note": "Tout premiers pas : surtout des mots transparents (student, music, important…)."
+    },
+    {
+      "unit": "en-A1-02",
+      "level": "A1",
+      "first_steps": true,
+      "grammar": ["be-present"],
+      "themes": ["cafe"],
+      "new_words": ["you", "have", "this", "not", "with", "but"],
+      "review_words": ["i", "be", "the", "a"],
+      "texts": 1,
+      "kinds": ["Dialogue"],
+      "note": "Tout premiers pas."
+    },
+    {
+      "unit": "en-A1-03",
+      "level": "A1",
+      "first_steps": true,
+      "grammar": ["can"],
+      "themes": ["transports"],
+      "new_words": ["we", "can", "go", "what", "to", "in"],
+      "review_words": ["you", "have", "this", "not", "like"],
+      "texts": 1,
+      "kinds": ["Dialogue"],
+      "note": "Tout premiers pas."
+    },
+    {
+      "unit": "en-A1-socle",
+      "level": "A1",
+      "legacy": true,
+      "note": "Textes écrits avant le plan : leur vocabulaire compte comme acquis pour la suite.",
+      "texts_published": ["en-cafe", "en-neighbor", "en-weekend", "en-library", "en-bus", "en-dinner", "en-football", "en-online", "en-office", "en-series"],
+      "grammar": ["be-present", "present-simple", "can", "past-simple"],
+      "themes": [],
+      "new_words": [],
+      "review_words": [],
+      "texts": 0,
+      "kinds": []
+    },
+    {
+      "unit": "en-A1-04",
+      "level": "A1",
+      "grammar": ["present-simple"],
+      "themes": ["cuisine"],
+      "new_words": ["of", "as", "he", "from", "or"],
+      "review_words": ["we", "can", "i", "be"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Message"]
+    },
+    {
+      "unit": "en-A1-05",
+      "level": "A1",
+      "grammar": ["can"],
+      "themes": ["sport"],
+      "new_words": ["so", "his", "if", "one", "up"],
+      "review_words": ["of", "as", "you", "have"],
+      "texts": 2,
+      "kinds": ["Monologue", "Dialogue"]
+    },
+    {
+      "unit": "en-A1-06",
+      "level": "A1",
+      "grammar": ["there-is"],
+      "themes": ["gaming"],
+      "new_words": ["they", "out", "when", "get", "also"],
+      "review_words": ["so", "his", "we", "can"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Récit"]
+    },
+    {
+      "unit": "en-A1-07",
+      "level": "A1",
+      "grammar": ["there-is"],
+      "themes": ["cafe"],
+      "new_words": ["who", "their", "now", "other", "than"],
+      "review_words": ["they", "out", "of", "as", "i"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Message"]
+    },
+    {
+      "unit": "en-A1-08",
+      "level": "A1",
+      "grammar": ["imperative"],
+      "themes": ["rencontre"],
+      "new_words": ["which", "its", "only", "first", "into"],
+      "review_words": ["who", "their", "so", "his", "you"],
+      "texts": 2,
+      "kinds": ["Monologue", "Dialogue"]
+    },
+    {
+      "unit": "en-A1-09",
+      "level": "A1",
+      "grammar": ["present-continuous"],
+      "themes": ["transports"],
+      "new_words": ["our", "know", "two", "over", "think"],
+      "review_words": ["which", "its", "they", "out", "we"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Récit"]
+    },
+    {
+      "unit": "en-A1-10",
+      "level": "A1",
+      "grammar": ["present-continuous"],
+      "themes": ["series"],
+      "new_words": ["then", "could", "back", "because", "well"],
+      "review_words": ["our", "know", "who", "their", "of"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Message"]
+    },
+    {
+      "unit": "en-A1-11",
+      "level": "A1",
+      "grammar": ["past-simple"],
+      "themes": ["travail"],
+      "new_words": ["say", "way", "most", "even", "should"],
+      "review_words": ["then", "could", "which", "its", "so"],
+      "texts": 2,
+      "kinds": ["Monologue", "Dialogue"]
+    },
+    {
+      "unit": "en-A1-12",
+      "level": "A1",
+      "grammar": ["going-to"],
+      "themes": ["cuisine"],
+      "new_words": ["may", "right", "year", "before", "off"],
+      "review_words": ["say", "way", "our", "know", "they"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Récit"]
+    },
+    {
+      "unit": "en-A1-13",
+      "level": "A1",
+      "grammar": ["going-to"],
+      "themes": ["sport"],
+      "new_words": ["why", "still", "never", "life", "world"],
+      "review_words": ["may", "right", "then", "could", "who"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Message"]
+    }
+  ]
+}

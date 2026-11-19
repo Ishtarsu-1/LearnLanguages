@@ -1,0 +1,6004 @@
+# Fréquences anglaises pour Mochi (CONTENU-PIPELINE, lot C3), générées par tools/freq_export.py
+# Source : wordfreq (Robyn Speer et al.), données CC BY-SA 4.0 — https://github.com/rspeer/wordfreq
+# Lemmes : simplemma (MIT). Niveau estimé par le rang. cog = mot transparent pour un francophone (heuristique).
+lemme	rang	niveau	pos	cog
+the	1	A1		
+to	2	A1		
+and	3	A1		
+of	4	A1		
+a	5	A1		
+in	6	A1		
+i	7	A1		
+be	8	A1		
+for	9	A1		
+that	10	A1		
+you	11	A1		
+it	12	A1		
+on	13	A1		
+with	14	A1		
+this	15	A1		
+as	16	A1		
+have	17	A1		
+at	18	A1		
+he	19	A1		
+not	20	A1		
+by	21	A1		
+but	22	A1		
+from	23	A1		
+my	24	A1		
+or	25	A1		
+we	26	A1		
+your	27	A1		
+all	28	A1		
+so	29	A1		
+his	30	A1		
+they	31	A1		
+if	32	A1		
+one	33	A1		
+can	34	A1		
+will	35	A1		
+just	36	A1		
+like	37	A1		
+about	38	A1		
+up	39	A1		
+out	40	A1		
+what	41	A1		
+when	42	A1		
+more	43	A1		
+do	44	A1		
+no	45	A1		
+who	46	A1		
+their	47	A1		
+there	48	A1		
+which	49	A1		
+time	50	A1		
+get	51	A1		
+would	52	A1		
+she	53	A1		
+new	54	A1		
+people	55	A1		
+how	56	A1		
+some	57	A1		
+also	58	A1		
+now	59	A1		
+other	60	A1		
+its	61	A1		
+our	62	A1		
+than	63	A1		
+good	64	A1		
+only	65	A1		
+after	66	A1		
+first	67	A1		
+into	68	A1		
+know	69	A1		
+see	70	A1		
+two	71	A1		
+make	72	A1		
+over	73	A1		
+think	74	A1		
+any	75	A1		
+then	76	A1		
+could	77	A1		
+back	78	A1		
+want	79	A1		
+because	80	A1		
+go	81	A1		
+well	82	A1		
+say	83	A1		
+way	84	A1		
+most	85	A1		
+much	86	A1		
+very	87	A1		
+where	88	A1		
+even	89	A1		
+should	90	A1		
+may	91	A1		
+here	92	A1		
+need	93	A1		
+really	94	A1		
+right	95	A1		
+work	96	A1		
+year	97	A1		
+day	98	A1		
+too	99	A1		
+before	100	A1		
+off	101	A1		
+why	102	A1		
+still	103	A1		
+take	104	A1		
+many	105	A1		
+never	106	A1		
+life	107	A1		
+world	108	A1		
+down	109	A1		
+great	110	A1		
+through	111	A1		
+last	112	A1		
+s	113	A1		
+while	114	A1		
+such	115	A1		
+love	116	A1		
+man	117	A1		
+home	118	A1		
+long	119	A1		1
+look	120	A1		
+something	121	A1		
+use	122	A1		
+same	123	A1		
+both	124	A1		
+every	125	A1		
+come	126	A1		
+part	127	A1		1
+state	128	A1		
+three	129	A1		
+around	130	A1		
+between	131	A1		
+always	132	A1		
+find	133	A1		
+help	134	A1		
+high	135	A1		
+little	136	A1		
+old	137	A1		
+since	138	A1		
+another	139	A1		
+own	140	A1		
+thing	141	A1		
+under	142	A1		
+during	143	A1		
+game	144	A1		
+give	145	A1		
+house	146	A1		
+place	147	A1		1
+school	148	A1		
+again	149	A1		
+next	150	A1		
+each	151	A1		
+mr	152	A1		
+without	153	A1		
+against	154	A1		
+end	155	A1		
+must	156	A1		
+show	157	A1		
+big	158	A1		
+feel	159	A1		
+sure	160	A1		
+team	161	A1		
+ever	162	A1		
+family	163	A1		
+keep	164	A1		
+might	165	A1		
+please	166	A1		
+put	167	A1		
+money	168	A1		
+free	169	A1		
+second	170	A1		1
+someone	171	A1		
+away	172	A1		
+left	173	A1		
+number	174	A1		1
+city	175	A1		1
+lot	176	A1		
+name	177	A1		
+night	178	A1		
+play	179	A1		
+until	180	A1		
+company	181	A1		
+few	182	A1		
+let	183	A1		
+real	184	A1		
+call	185	A1		
+different	186	A1		
+set	187	A1		
+thought	188	A1		
+however	189	A1		
+government	190	A1		
+group	191	A1		
+public	192	A1		1
+top	193	A1		
+woman	194	A1		
+business	195	A1		
+care	196	A1		
+start	197	A1		
+system	198	A1		
+week	199	A1		
+already	200	A1		
+anything	201	A1		
+case	202	A1		
+nothing	203	A1		
+person	204	A1		
+today	205	A1		
+change	206	A1		1
+enough	207	A1		
+everything	208	A1		
+full	209	A1		
+live	210	A1		
+point	211	A1		1
+read	212	A1		
+tell	213	A1		
+yet	214	A1		
+bad	215	A1		
+four	216	A1		
+hard	217	A1		
+mean	218	A1		
+once	219	A1		
+support	220	A1		
+include	221	A1		
+music	222	A1		1
+power	223	A1		
+stop	224	A1		
+water	225	A1		
+base	226	A1		1
+believe	227	A1		
+head	228	A1		
+national	229	A1		1
+small	230	A1		
+white	231	A1		
+far	232	A1		
+job	233	A1		
+side	234	A1		
+though	235	A1		
+try	236	A1		
+yes	237	A1		
+actually	238	A1		
+american	239	A1		
+late	240	A1		
+less	241	A1		
+line	242	A1		
+order	243	A1		1
+party	244	A1		1
+run	245	A1		
+service	246	A1		1
+country	247	A1		
+open	248	A1		1
+season	249	A1		
+thank	250	A1		
+child	251	A1		
+everyone	252	A1		
+general	253	A1		
+unite	254	A1		
+area	255	A1		
+black	256	A1		
+d	257	A1		
+following	258	A1		
+law	259	A1		
+together	260	A1		
+war	261	A1		
+whole	262	A1		
+car	263	A1		
+face	264	A1		1
+five	265	A1		
+kind	266	A1		
+maybe	267	A1		
+per	268	A1		
+president	269	A1		
+story	270	A1		
+course	271	A1		1
+health	272	A1		
+hope	273	A1		
+important	274	A1		1
+means	275	A1		
+news	276	A1		
+within	277	A1		
+able	278	A1		
+book	279	A1		
+early	280	A1		
+friend	281	A1		
+information	282	A1		1
+local	283	A1		
+oh	284	A1		
+post	285	A1		
+t	286	A1		
+thanks	287	A1		
+video	288	A1		
+young	289	A1		
+ago	290	A1		
+social	291	A1		1
+talk	292	A1		
+court	293	A1		1
+fact	294	A1		
+guy	295	A1		
+half	296	A1		
+hand	297	A1		
+level	298	A1		
+mind	299	A1		
+often	300	A1		
+single	301	A1		
+become	302	A1		
+body	303	A1		
+control	304	A1		
+death	305	A1		
+food	306	A1		
+hour	307	A1		
+office	308	A1		
+pay	309	A1		
+problem	310	A1		1
+south	311	A1		
+true	312	A1		
+almost	313	A1		
+history	314	A1		1
+large	315	A1		1
+lose	316	A1		
+research	317	A1		
+room	318	A1		
+several	319	A1		
+university	320	A1		1
+win	321	A1		
+wrong	322	A1		
+along	323	A1		
+anyone	324	A1		
+else	325	A1		
+girl	326	A1		
+matter	327	A1		
+pretty	328	A1		
+remember	329	A1		
+air	330	A1		
+bit	331	A1		
+hit	332	A1		
+nice	333	A1		
+playe	334	A1		
+probably	335	A1		
+understand	336	A1		
+yeah	337	A1		
+class	338	A1		1
+close	339	A1		
+idea	340	A1		1
+international	341	A1		1
+past	342	A1		
+possible	343	A1		1
+b	344	A1		
+cause	345	A1		1
+due	346	A1		
+happy	347	A1		
+human	348	A1		
+member	349	A1		1
+month	350	A1		
+move	351	A1		
+question	352	A1		1
+r	353	A1		
+series	354	A1		1
+wait	355	A1		
+ask	356	A1		
+community	357	A1		
+data	358	A1		
+leave	359	A1		
+north	360	A1		
+special	361	A1		
+watch	362	A1		
+c	363	A1		
+either	364	A1		
+future	365	A1		
+light	366	A1		
+low	367	A1		
+million	368	A1		
+morning	369	A1		
+police	370	A1		1
+short	371	A1		
+stay	372	A1		
+age	373	A1		
+buy	374	A1		
+deal	375	A1		
+rather	376	A1		
+reason	377	A1		
+red	378	A1		
+report	379	A1		
+soon	380	A1		
+third	381	A1		
+turn	382	A1		
+whether	383	A1		
+among	384	A1		
+check	385	A1		
+development	386	A1		
+form	387	A1		
+further	388	A1		
+heart	389	A1		
+minute	390	A1		1
+myself	391	A1		
+yourself	392	A1		
+act	393	A1		
+although	394	A1		
+fire	395	A1		
+fun	396	A1		
+living	397	A1		
+major	398	A1		1
+medium	399	A1		
+phone	400	A1		1
+player	401	A1		
+art	402	A1		
+behind	403	A1		
+building	404	A1		
+easy	405	A1		
+market	406	A1		
+near	407	A1		
+non	408	A1		
+plan	409	A1		1
+political	410	A1		1
+quite	411	A1		
+six	412	A1		
+west	413	A1		
+accord	414	A1		1
+available	415	A1		
+e	416	A1		
+education	417	A1		
+final	418	A1		1
+former	419	A1		
+front	420	A1		1
+kid	421	A1		
+list	422	A1		1
+ready	423	A1		
+sometimes	424	A1		
+son	425	A1		
+street	426	A1		
+bring	427	A1		
+college	428	A1		
+current	429	A1		
+example	430	A1		
+experience	431	A1		
+hear	432	A1		
+meet	433	A1		
+program	434	A1		
+type	435	A1		1
+baby	436	A1		
+chance	437	A1		1
+father	438	A1		
+march	439	A1		
+process	440	A1		
+song	441	A1		
+study	442	A1		
+word	443	A1		
+across	444	A1		
+action	445	A1		1
+clear	446	A1		
+himself	447	A1		
+outside	448	A1		
+self	449	A1		
+student	450	A1		1
+board	451	A1		
+cost	452	A1		
+cut	453	A1		
+dr	454	A1		
+field	455	A1		
+hold	456	A1		
+instead	457	A1		
+main	458	A1		1
+moment	459	A1		1
+mother	460	A1		
+road	461	A1		
+seem	462	A1		
+thinke	463	A1		
+town	464	A1		
+de	465	A1		
+department	466	A1		
+energy	467	A1		
+fight	468	A1		
+fine	469	A1		
+force	470	A1		1
+issue	471	A1		1
+price	472	A1		
+re	473	A1		
+rest	474	A1		
+result	475	A1		
+space	476	A1		
+summer	477	A1		
+term	478	A1		
+wife	479	A1		
+beautiful	480	A1		
+date	481	A1		1
+kill	482	A1		
+land	483	A1		
+miss	484	A1		
+project	485	A1		
+sex	486	A1		
+shot	487	A1		
+site	488	A1		1
+strong	489	A1		
+account	490	A1		
+co	491	A1		
+especially	492	A1		
+eye	493	A1		
+june	494	A1		
+parent	495	A1		1
+period	496	A1		
+position	497	A1		1
+record	498	A1		1
+similar	499	A1		
+total	500	A1		1
+w	501	A2		
+above	502	A2		
+club	503	A2		1
+common	504	A2		
+die	505	A2		
+film	506	A2		1
+happen	507	A2		
+lead	508	A2		
+likely	509	A2		
+military	510	A2		1
+perfect	511	A2		
+personal	512	A2		
+security	513	A2		
+share	514	A2		
+st	515	A2		
+tv	516	A2		
+won	517	A2		
+x	518	A2		
+april	519	A2		
+center	520	A2		1
+county	521	A2		
+couple	522	A2		1
+dead	523	A2		
+english	524	A2		
+industry	525	A2		1
+inside	526	A2		
+online	527	A2		
+private	528	A2		1
+return	529	A2		
+sense	530	A2		
+star	531	A2		1
+test	532	A2		1
+view	533	A2		
+break	534	A2		
+british	535	A2		
+event	536	A2		
+l	537	A2		
+middle	538	A2		
+present	539	A2		1
+sorry	540	A2		
+train	541	A2		1
+wish	542	A2		
+answer	543	A2		
+boy	544	A2		
+design	545	A2		
+finally	546	A2		
+gold	547	A2		
+gan	548	A2		
+guess	549	A2		
+interest	550	A2		
+july	551	A2		
+king	552	A2		
+learn	553	A2		
+policy	554	A2		
+society	555	A2		
+add	556	A2		
+al	557	A2		
+alone	558	A2		
+average	559	A2		
+bank	560	A2		
+certain	561	A2		1
+church	562	A2		
+east	563	A2		
+hot	564	A2		
+medical	565	A2		
+movie	566	A2		
+original	567	A2		1
+park	568	A2		1
+performance	569	A2		1
+press	570	A2		
+receive	571	A2		
+role	572	A2		
+send	573	A2		
+themselves	574	A2		
+worth	575	A2		
+bill	576	A2		
+cool	577	A2		
+director	578	A2		1
+exactly	579	A2		
+ground	580	A2		
+n	581	A2		
+provide	582	A2		
+relationship	583	A2		
+september	584	A2		1
+sound	585	A2		
+source	586	A2		1
+usually	587	A2		
+value	588	A2		
+evidence	589	A2		
+follow	590	A2		
+official	591	A2		1
+ok	592	A2		1
+production	593	A2		1
+rate	594	A2		1
+round	595	A2		
+save	596	A2		
+stand	597	A2		
+stuff	598	A2		
+tax	599	A2		
+whatever	600	A2		
+amount	601	A2		
+blue	602	A2		
+drive	603	A2		
+eat	604	A2		
+fall	605	A2		
+fast	606	A2		
+federal	607	A2		
+feeling	608	A2		
+felt	609	A2		
+green	610	A2		
+league	611	A2		
+management	612	A2		
+match	613	A2		1
+model	614	A2		
+p	615	A2		
+picture	616	A2		
+size	617	A2		
+step	618	A2		
+trust	619	A2		
+central	620	A2		1
+england	621	A2		
+forward	622	A2		
+hey	623	A2		
+key	624	A2		
+mom	625	A2		
+o	626	A2		
+page	627	A2		1
+range	628	A2		
+review	629	A2		
+science	630	A2		1
+trade	631	A2		
+upon	632	A2		
+various	633	A2		
+attention	634	A2		1
+brother	635	A2		
+cannot	636	A2		
+character	637	A2		
+chief	638	A2		
+cup	639	A2		
+football	640	A2		1
+hate	641	A2		
+natural	642	A2		1
+october	643	A2		1
+property	644	A2		
+quality	645	A2		
+style	646	A2		1
+u	647	A2		
+vote	648	A2		1
+amazing	649	A2		
+august	650	A2		
+blood	651	A2		
+china	652	A2		
+complete	653	A2		
+dog	654	A2		
+economic	655	A2		
+hell	656	A2		
+involve	657	A2		
+itself	658	A2		
+language	659	A2		
+lord	660	A2		
+november	661	A2		1
+oil	662	A2		
+relate	663	A2		1
+serious	664	A2		
+stage	665	A2		1
+title	666	A2		
+article	667	A2		1
+attack	668	A2		
+born	669	A2		
+decide	670	A2		
+decision	671	A2		1
+enjoy	672	A2		
+entire	673	A2		
+french	674	A2		
+january	675	A2		
+perhaps	676	A2		
+poor	677	A2		
+release	678	A2		
+situation	679	A2		1
+technology	680	A2		1
+website	681	A2		
+write	682	A2		
+choice	683	A2		
+code	684	A2		1
+consider	685	A2		
+continue	686	A2		1
+council	687	A2		
+cover	688	A2		
+currently	689	A2		
+door	690	A2		
+election	691	A2		
+european	692	A2		
+f	693	A2		
+financial	694	A2		
+foreign	695	A2		
+hair	696	A2		
+increase	697	A2		
+legal	698	A2		
+pick	699	A2		
+race	700	A2		1
+seven	701	A2		
+sign	702	A2		
+simple	703	A2		1
+simply	704	A2		
+staff	705	A2		
+super	706	A2		1
+union	707	A2		1
+walk	708	A2		
+washington	709	A2		
+bed	710	A2		
+begin	711	A2		
+build	712	A2		
+career	713	A2		
+crazy	714	A2		
+daily	715	A2		
+daughter	716	A2		
+december	717	A2		1
+difficult	718	A2		
+figure	719	A2		1
+hospital	720	A2		1
+loss	721	A2		
+modern	722	A2		
+paper	723	A2		
+popular	724	A2		
+publish	725	A2		
+safe	726	A2		
+version	727	A2		1
+voice	728	A2		
+whose	729	A2		
+writing	730	A2		
+army	731	A2		
+australia	732	A2		
+earth	733	A2		
+forget	734	A2		
+goal	735	A2		
+h	736	A2		
+huge	737	A2		
+internet	738	A2		
+listen	739	A2		
+okay	740	A2		
+practice	741	A2		
+rule	742	A2		
+sea	743	A2		
+sir	744	A2		
+success	745	A2		
+towards	746	A2		
+v	747	A2		
+access	748	A2		
+below	749	A2		
+create	750	A2		1
+deep	751	A2		
+la	752	A2		
+lol	753	A2		
+mark	754	A2		
+offer	755	A2		1
+pass	756	A2		
+professional	757	A2		
+risk	758	A2		
+sleep	759	A2		
+table	760	A2		1
+ten	761	A2		
+truth	762	A2		
+ball	763	A2		
+box	764	A2		
+card	765	A2		
+dark	766	A2		
+district	767	A2		
+europe	768	A2		
+india	769	A2		
+mine	770	A2		1
+minister	771	A2		1
+note	772	A2		1
+percent	773	A2		
+piece	774	A2		
+product	775	A2		
+recent	776	A2		
+straight	777	A2		
+visit	778	A2		
+wall	779	A2		
+wanna	780	A2		
+allow	781	A2		
+culture	782	A2		1
+etc.	783	A2		
+fan	784	A2		
+february	785	A2		
+growth	786	A2		
+marry	787	A2		
+officer	788	A2		
+pain	789	A2		1
+respect	790	A2		1
+response	791	A2		
+river	792	A2		
+rock	793	A2		1
+shall	794	A2		
+speak	795	A2		
+specific	796	A2		
+standard	797	A2		1
+tonight	798	A2		
+y	799	A2		
+album	800	A2		1
+century	801	A2		
+charge	802	A2		1
+cold	803	A2		
+effect	804	A2		
+eight	805	A2		
+except	806	A2		
+funny	807	A2		
+limit	808	A2		
+network	809	A2		
+peace	810	A2		
+recently	811	A2		
+require	812	A2		
+sales	813	A2		
+spend	814	A2		
+store	815	A2		
+tomorrow	816	A2		
+track	817	A2		
+via	818	A2		
+weight	819	A2		
+addition	820	A2		
+ahead	821	A2		
+anti	822	A2		
+association	823	A2		1
+beat	824	A2		
+brown	825	A2		
+capital	826	A2		1
+chinese	827	A2		
+committee	828	A2		
+conference	829	A2		
+difference	830	A2		
+double	831	A2		1
+expect	832	A2		
+gas	833	A2		
+island	834	A2		
+normal	835	A2		1
+population	836	A2		1
+potential	837	A2		1
+pressure	838	A2		
+radio	839	A2		1
+russian	840	A2		
+station	841	A2		1
+text	842	A2		
+treatment	843	A2		
+western	844	A2		
+ass	845	A2		
+beginning	846	A2		
+california	847	A2		
+campaign	848	A2		
+certainly	849	A2		
+completely	850	A2		
+content	851	A2		1
+credit	852	A2		
+cross	853	A2		
+describe	854	A2		
+despite	855	A2		
+female	856	A2		
+focus	857	A2		
+g	858	A2		
+hi	859	A2		
+husband	860	A2		
+ice	861	A2		
+individual	862	A2		1
+j	863	A2		
+join	864	A2		
+message	865	A2		1
+mile	866	A2		
+nearly	867	A2		
+particular	868	A2		
+previous	869	A2		
+quickly	870	A2		
+region	871	A2		
+section	872	A2		1
+sort	873	A2		1
+speed	874	A2		
+travel	875	A2		
+contact	876	A2		1
+drop	877	A2		
+fair	878	A2		
+foot	879	A2		1
+link	880	A2		
+positive	881	A2		1
+sale	882	A2		1
+throughout	883	A2		
+tour	884	A2		1
+welcome	885	A2		
+absolutely	886	A2		
+additional	887	A2		
+beyond	888	A2		
+condition	889	A2		1
+extra	890	A2		
+immediately	891	A2		
+nature	892	A2		1
+quick	893	A2		
+sell	894	A2		
+significant	895	A2		
+unless	896	A2		
+agree	897	A2		
+canada	898	A2		
+clean	899	A2		
+computer	900	A2		
+construction	901	A2		1
+episode	902	A2		1
+favorite	903	A2		
+income	904	A2		
+justice	905	A2		1
+manager	906	A2		
+movement	907	A2		
+photo	908	A2		1
+safety	909	A2		
+san	910	A2		
+scene	911	A2		
+statement	912	A2		
+sun	913	A2		
+ability	914	A2		
+announce	915	A2		
+coach	916	A2		1
+collection	917	A2		1
+definitely	918	A2		
+friday	919	A2		
+gun	920	A2		
+heavy	921	A2		
+knowledge	922	A2		
+particularly	923	A2		
+search	924	A2		
+subject	925	A2		
+wide	926	A2		
+wow	927	A2		
+author	928	A2		
+centre	929	A2		1
+claim	930	A2		
+dad	931	A2		
+develope	932	A2		
+fear	933	A2		
+fit	934	A2		
+generally	935	A2		
+german	936	A2		
+global	937	A2		1
+gotta	938	A2		
+hotel	939	A2		1
+judge	940	A2		
+lady	941	A2		
+leader	942	A2		1
+letter	943	A2		1
+material	944	A2		
+nobody	945	A2		
+opportunity	946	A2		
+plus	947	A2		1
+pre	948	A2		
+regular	949	A2		
+secretary	950	A2		
+sister	951	A2		
+unit	952	A2		
+worker	953	A2		
+annual	954	A2		1
+anymore	955	A2		
+bar	956	A2		1
+battle	957	A2		
+brain	958	A2		
+contract	959	A2		
+degree	960	A2		
+feature	961	A2		
+finish	962	A2		
+floor	963	A2		
+france	964	A2		
+growe	965	A2		
+hurt	966	A2		
+image	967	A2		1
+insurance	968	A2		
+majority	969	A2		
+opinion	970	A2		1
+physical	971	A2		1
+pro	972	A2		
+reach	973	A2		
+seriously	974	A2		
+sport	975	A2		1
+stupid	976	A2		
+successful	977	A2		
+active	978	A2		1
+administration	979	A2		1
+approach	980	A2		
+australian	981	A2		
+cancer	982	A2		1
+civil	983	A2		1
+dance	984	A2		1
+defense	985	A2		1
+direction	986	A2		1
+independent	987	A2		
+master	988	A2		1
+none	989	A2		
+russia	990	A2		
+ship	991	A2		
+stock	992	A2		
+weekend	993	A2		1
+wonder	994	A2		
+africa	995	A2		
+awesome	996	A2		
+band	997	A2		
+beach	998	A2		
+cash	999	A2		
+clearly	1000	A2		
+commercial	1001	A2		1
+compare	1002	A2		1
+effort	1003	A2		1
+imagine	1004	A2		1
+impact	1005	A2		1
+lack	1006	A2		
+multiple	1007	A2		
+operation	1008	A2		
+organization	1009	A2		
+protect	1010	A2		
+secret	1011	A2		1
+senior	1012	A2		
+spring	1013	A2		
+sunday	1014	A2		
+wear	1015	A2		
+activity	1016	A2		
+address	1017	A2		
+analysis	1018	A2		
+anyway	1019	A2		
+choose	1020	A2		
+color	1021	A2		
+commission	1022	A2		1
+competition	1023	A2		
+detail	1024	A2		
+direct	1025	A2		1
+dream	1026	A2		
+easily	1027	A2		
+grand	1028	A2		1
+indian	1029	A2		1
+k	1030	A2		
+literally	1031	A2		
+luck	1032	A2		
+marriage	1033	A2		
+necessary	1034	A2		
+patient	1035	A2		1
+resource	1036	A2		
+rich	1037	A2		
+skin	1038	A2		
+suppose	1039	A2		1
+sweet	1040	A2		
+thus	1041	A2		
+touch	1042	A2		
+yesterday	1043	A2		
+catch	1044	A2		
+congress	1045	A2		
+damage	1046	A2		
+directly	1047	A2		
+disease	1048	A2		
+doctor	1049	A2		1
+doubt	1050	A2		
+drink	1051	A2		
+establish	1052	A2		
+fish	1053	A2		
+gay	1054	A2		
+germany	1055	A2		
+glad	1056	A2		
+grow	1057	A2		
+machine	1058	A2		1
+notice	1059	A2		
+overall	1060	A2		
+professor	1061	A2		1
+sit	1062	A2		
+trip	1063	A2		
+associate	1064	A2		1
+basic	1065	A2		1
+captain	1066	A2		
+carry	1067	A2		
+crime	1068	A2		1
+effective	1069	A2		1
+explain	1070	A2		
+fully	1071	A2		
+highly	1072	A2		
+japan	1073	A2		
+male	1074	A2		
+mrs	1075	A2		
+plant	1076	A2		
+reality	1077	A2		
+smith	1078	A2		
+spot	1079	A2		
+texas	1080	A2		
+winter	1081	A2		
+advice	1082	A2		
+agreement	1083	A2		
+award	1084	A2		
+block	1085	A2		
+challenge	1086	A2		
+christian	1087	A2		
+comment	1088	A2		
+equipment	1089	A2		
+eventually	1090	A2		
+holy	1091	A2		
+nation	1092	A2		1
+otherwise	1093	A2		
+primary	1094	A2		1
+purpose	1095	A2		
+responsible	1096	A2		
+shop	1097	A2		
+sick	1098	A2		
+teacher	1099	A2		
+theory	1100	A2		
+agency	1101	A2		
+avoid	1102	A2		
+camera	1103	A2		1
+cell	1104	A2		
+coast	1105	A2		
+drug	1106	A2		
+economy	1107	A2		
+environment	1108	A2		
+executive	1109	A2		
+hall	1110	A2		1
+mass	1111	A2		
+mission	1112	A2		1
+nine	1113	A2		
+politics	1114	A2		
+pop	1115	A2		
+produce	1116	A2		
+saturday	1117	A2		
+status	1118	A2		
+therefore	1119	A2		
+trial	1120	A2		
+truly	1121	A2		
+weather	1122	A2		
+app	1123	A2		
+application	1124	A2		1
+coffee	1125	A2		1
+complex	1126	A2		
+division	1127	A2		1
+evening	1128	A2		
+flight	1129	A2		
+freedom	1130	A2		
+heat	1131	A2		
+interview	1132	A2		1
+library	1133	A2		
+locate	1134	A2		
+location	1135	A2		1
+murder	1136	A2		
+queen	1137	A2		
+sitting	1138	A2		
+accept	1139	A2		
+actual	1140	A2		1
+appear	1141	A2		
+attempt	1142	A2		
+broke	1143	A2		
+channel	1144	A2		
+distance	1145	A2		1
+exchange	1146	A2		
+fat	1147	A2		
+finding	1148	A2		
+glass	1149	A2		
+mobile	1150	A2		1
+northern	1151	A2		
+powerful	1152	A2		
+prior	1153	A2		1
+protection	1154	A2		1
+religious	1155	A2		1
+ride	1156	A2		
+royal	1157	A2		1
+screen	1158	A2		
+serve	1159	A2		
+slow	1160	A2		
+species	1161	A2		
+speech	1162	A2		
+traffic	1163	A2		
+tree	1164	A2		
+versus	1165	A2		
+whom	1166	A2		
+wonderful	1167	A2		
+airport	1168	A2		
+animal	1169	A2		1
+benefit	1170	A2		
+bottom	1171	A2		
+demand	1172	A2		
+engine	1173	A2		
+everybody	1174	A2		
+famous	1175	A2		1
+investment	1176	A2		
+lie	1177	A2		
+partner	1178	A2		
+raise	1179	A2		
+sad	1180	A2		
+solution	1181	A2		1
+southern	1182	A2		
+square	1183	A2		
+structure	1184	A2		1
+traditional	1185	A2		
+twice	1186	A2		
+wind	1187	A2		
+worry	1188	A2		
+americans	1189	A2		
+brand	1190	A2		
+bus	1191	A2		1
+cent	1192	A2		1
+chicago	1193	A2		
+count	1194	A2		
+critical	1195	A2		1
+digital	1196	A2		
+fourth	1197	A2		
+fresh	1198	A2		
+lake	1199	A2		
+mental	1200	A2		
+mention	1201	A2		1
+mostly	1202	A2		
+mouth	1203	A2		
+owner	1204	A2		
+previously	1205	A2		
+realize	1206	A2		
+remain	1207	A2		
+scale	1208	A2		
+score	1209	A2		1
+separate	1210	A2		
+smart	1211	A2		
+surface	1212	A2		1
+throw	1213	A2		
+totally	1214	A2		
+wedding	1215	A2		
+acting	1216	A2		
+african	1217	A2		
+arm	1218	A2		
+budget	1219	A2		1
+click	1220	A2		
+estate	1221	A2		
+fail	1222	A2		
+faith	1223	A2		
+fashion	1224	A2		
+fund	1225	A2		
+generation	1226	A2		
+hearing	1227	A2		
+hill	1228	A2		
+louis	1229	A2		
+metal	1230	A2		
+mid	1231	A2		
+paris	1232	A2		1
+profile	1233	A2		
+pull	1234	A2		
+push	1235	A2		
+rose	1236	A2		1
+seat	1237	A2		
+sexual	1238	A2		1
+target	1239	A2		
+village	1240	A2		1
+agent	1241	A2		1
+apply	1242	A2		
+authority	1243	A2		
+basis	1244	A2		
+draw	1245	A2		
+dude	1246	A2		
+employee	1247	A2		
+enter	1248	A2		1
+ex	1249	A2		
+foundation	1250	A2		
+gain	1251	A2		1
+http	1252	A2		
+japanese	1253	A2		
+memory	1254	A2		
+prime	1255	A2		1
+ring	1256	A2		
+rise	1257	A2		
+silver	1258	A2		
+soul	1259	A2		
+spread	1260	A2		
+supply	1261	A2		1
+waste	1262	A2		
+weird	1263	A2		
+adult	1264	A2		
+apparently	1265	A2		
+artist	1266	A2		1
+chairman	1267	A2		
+edition	1268	A2		
+engineering	1269	A2		
+grade	1270	A2		
+healthy	1271	A2		
+institute	1272	A2		
+method	1273	A2		
+mike	1274	A2		
+monday	1275	A2		
+obviously	1276	A2		
+option	1277	A2		1
+prison	1278	A2		1
+remains	1279	A2		
+senate	1280	A2		
+somebody	1281	A2		
+stone	1282	A2		
+strength	1283	A2		
+user	1284	A2		
+wild	1285	A2		
+window	1286	A2		
+winner	1287	A2		
+arrive	1288	A2		1
+bag	1289	A2		
+bet	1290	A2		
+camp	1291	A2		1
+cast	1292	A2		
+christ	1293	A2		1
+correct	1294	A2		1
+dangerous	1295	A2		1
+ed	1296	A2		
+extremely	1297	A2		
+firm	1298	A2		
+handle	1299	A2		
+improve	1300	A2		
+indeed	1301	A2		
+negative	1302	A2		
+prevent	1303	A2		
+remove	1304	A2		
+spirit	1305	A2		
+television	1306	A2		
+till	1307	A2		
+trouble	1308	A2		1
+advantage	1309	A2		
+apart	1310	A2		
+aware	1311	A2		
+cat	1312	A2		
+customer	1313	A2		
+dinner	1314	A2		1
+dollar	1315	A2		1
+eastern	1316	A2		
+fifth	1317	A2		
+function	1318	A2		
+gift	1319	A2		
+herself	1320	A2		
+impossible	1321	A2		1
+influence	1322	A2		1
+item	1323	A2		
+joe	1324	A2		
+los	1325	A2		
+marketing	1326	A2		1
+nor	1327	A2		
+progress	1328	A2		
+proud	1329	A2		
+shoot	1330	A2		
+shut	1331	A2		
+van	1332	A2		
+wood	1333	A2		
+background	1334	A2		
+birth	1335	A2		
+bridge	1336	A2		
+concept	1337	A2		1
+copy	1338	A2		
+dear	1339	A2		
+garden	1340	A2		
+host	1341	A2		
+housing	1342	A2		
+incorporated	1343	A2		
+israel	1344	A2		
+journal	1345	A2		1
+labor	1346	A2		1
+leadership	1347	A2		
+length	1348	A2		
+lucky	1349	A2		
+neither	1350	A2		
+onto	1351	A2		
+possibly	1352	A2		
+prove	1353	A2		
+rare	1354	A2		1
+setting	1355	A2		
+skill	1356	A2		
+software	1357	A2		
+thousand	1358	A2		
+tough	1359	A2		
+ad	1360	A2		
+alive	1361	A2		
+apple	1362	A2		
+balance	1363	A2		1
+birthday	1364	A2		
+bitch	1365	A2		
+boss	1366	A2		
+connection	1367	A2		1
+dress	1368	A2		
+fellow	1369	A2		
+florida	1370	A2		
+horse	1371	A2		
+magic	1372	A2		1
+manage	1373	A2		
+map	1374	A2		
+net	1375	A2		
+request	1376	A2		
+stick	1377	A2		
+vehicle	1378	A2		
+volume	1379	A2		1
+wake	1380	A2		
+aid	1381	A2		
+beauty	1382	A2		
+billion	1383	A2		
+busy	1384	A2		
+buying	1385	A2		
+concern	1386	A2		
+conversation	1387	A2		1
+corner	1388	A2		
+criminal	1389	A2		1
+cultural	1390	A2		1
+develop	1391	A2		
+driver	1392	A2		
+exist	1393	A2		1
+farm	1394	A2		
+file	1395	A2		1
+fix	1396	A2		
+fly	1397	A2		
+frank	1398	A2		
+guide	1399	A2		1
+investigation	1400	A2		
+mexico	1401	A2		
+operate	1402	A2		
+responsibility	1403	A2		
+roll	1404	A2		
+slightly	1405	A2		
+suggest	1406	A2		
+surprise	1407	A2		1
+technical	1408	A2		1
+treat	1409	A2		
+unique	1410	A2		1
+variety	1411	A2		
+violence	1412	A2		1
+weapon	1413	A2		
+yours	1414	A2		
+youth	1415	A2		
+appreciate	1416	A2		
+bigger	1417	A2		
+discover	1418	A2		
+dry	1419	A2		
+edge	1420	A2		
+evil	1421	A2		
+excite	1422	A2		1
+forever	1423	A2		
+henry	1424	A2		
+injury	1425	A2		
+iron	1426	A2		
+lovely	1427	A2		
+mad	1428	A2		
+magazine	1429	A2		1
+martin	1430	A2		1
+parliament	1431	A2		
+prepare	1432	A2		
+reference	1433	A2		
+religion	1434	A2		1
+somewhere	1435	A2		
+strategy	1436	A2		
+web	1437	A2		
+wine	1438	A2		
+angeles	1439	A2		
+audience	1440	A2		1
+bay	1441	A2		
+blog	1442	A2		
+closer	1443	A2		
+core	1444	A2		
+democratic	1445	A2		
+description	1446	A2		1
+excellent	1447	A2		1
+guard	1448	A2		
+honest	1449	A2		
+jones	1450	A2		
+lee	1451	A2		
+medicine	1452	A2		
+mountain	1453	A2		
+nuclear	1454	A2		
+port	1455	A2		1
+presence	1456	A2		1
+reaction	1457	A2		
+reduce	1458	A2		
+solid	1459	A2		
+spanish	1460	A2		
+stress	1461	A2		
+taste	1462	A2		
+tea	1463	A2		
+victory	1464	A2		1
+afternoon	1465	A2		
+assistant	1466	A2		1
+britain	1467	A2		
+citizen	1468	A2		
+classic	1469	A2		1
+clothes	1470	A2		
+electric	1471	A2		
+emergency	1472	A2		
+entirely	1473	A2		
+failure	1474	A2		
+festival	1475	A2		1
+flat	1476	A2		
+fuel	1477	A2		
+harry	1478	A2		
+hello	1479	A2		
+ill	1480	A2		
+initial	1481	A2		1
+introduce	1482	A2		
+johnson	1483	A2		
+kick	1484	A2		
+mail	1485	A2		1
+massive	1486	A2		1
+pair	1487	A2		
+plane	1488	A2		
+plenty	1489	A2		
+prince	1490	A2		1
+proper	1491	A2		1
+quarter	1492	A2		
+regional	1493	A2		
+scott	1494	A2		
+session	1495	A2		1
+shape	1496	A2		
+sky	1497	A2		
+teach	1498	A2		
+toward	1499	A2		
+transfer	1500	A2		
+upper	1501	B1		
+useful	1502	B1		
+valley	1503	B1		
+willing	1504	B1		
+zone	1505	B1		1
+accident	1506	B1		1
+advance	1507	B1		
+alternative	1508	B1		1
+anywhere	1509	B1		
+bear	1510	B1		
+boat	1511	B1		
+capacity	1512	B1		
+cheap	1513	B1		
+climate	1514	B1		
+discussion	1515	B1		1
+duty	1516	B1		
+fantastic	1517	B1		1
+governor	1518	B1		
+hundred	1519	B1		
+industrial	1520	B1		1
+joint	1521	B1		1
+mix	1522	B1		
+museum	1523	B1		1
+path	1524	B1		
+promise	1525	B1		
+propose	1526	B1		1
+purchase	1527	B1		
+rain	1528	B1		
+steel	1529	B1		
+terrible	1530	B1		1
+tire	1531	B1		1
+vice	1532	B1		1
+warm	1533	B1		
+afraid	1534	B1		
+beer	1535	B1		
+border	1536	B1		
+canadian	1537	B1		
+command	1538	B1		
+crew	1539	B1		
+crowd	1540	B1		
+dick	1541	B1		
+element	1542	B1		
+enemy	1543	B1		
+ensure	1544	B1		
+environmental	1545	B1		
+fill	1546	B1		
+fixe	1547	B1		1
+forest	1548	B1		
+intelligence	1549	B1		1
+intend	1550	B1		
+labour	1551	B1		
+moon	1552	B1		
+ocean	1553	B1		
+profit	1554	B1		1
+proof	1555	B1		
+republican	1556	B1		
+soldier	1557	B1		
+suit	1558	B1		1
+appearance	1559	B1		
+asian	1560	B1		
+attorney	1561	B1		
+behavior	1562	B1		
+ben	1563	B1		
+chair	1564	B1		1
+debt	1565	B1		
+domestic	1566	B1		1
+expensive	1567	B1		
+historical	1568	B1		1
+honestly	1569	B1		
+honor	1570	B1		
+jump	1571	B1		
+launch	1572	B1		
+minimum	1573	B1		1
+native	1574	B1		1
+originally	1575	B1		
+ray	1576	B1		
+suddenly	1577	B1		
+supreme	1578	B1		
+survey	1579	B1		
+tech	1580	B1		
+update	1581	B1		
+writer	1582	B1		
+yellow	1583	B1		
+ancient	1584	B1		
+combine	1585	B1		1
+communication	1586	B1		1
+connect	1587	B1		
+contain	1588	B1		
+download	1589	B1		
+email	1590	B1		
+ending	1591	B1		
+exercise	1592	B1		
+express	1593	B1		1
+flow	1594	B1		
+girlfriend	1595	B1		
+hero	1596	B1		
+illegal	1597	B1		
+joke	1598	B1		
+loan	1599	B1		
+perform	1600	B1		
+planet	1601	B1		
+restaurant	1602	B1		1
+scotland	1603	B1		
+select	1604	B1		
+soft	1605	B1		
+sugar	1606	B1		
+transport	1607	B1		1
+affair	1608	B1		
+appeal	1609	B1		
+appropriate	1610	B1		1
+boston	1611	B1		1
+confirm	1612	B1		
+device	1613	B1		
+drama	1614	B1		
+entry	1615	B1		
+era	1616	B1		
+factor	1617	B1		1
+feed	1618	B1		
+golden	1619	B1		
+grant	1620	B1		
+lawyer	1621	B1		
+leg	1622	B1		
+measure	1623	B1		
+mistake	1624	B1		
+ms	1625	B1		
+muslim	1626	B1		
+platform	1627	B1		
+pool	1628	B1		
+regard	1629	B1		1
+relation	1630	B1		1
+route	1631	B1		1
+schedule	1632	B1		
+scientific	1633	B1		1
+shoe	1634	B1		
+smoke	1635	B1		
+squad	1636	B1		
+williams	1637	B1		
+abuse	1638	B1		1
+angry	1639	B1		
+candidate	1640	B1		
+comfortable	1641	B1		
+discuss	1642	B1		
+emotional	1643	B1		
+et	1644	B1		
+everywhere	1645	B1		
+facility	1646	B1		1
+fox	1647	B1		
+hole	1648	B1		
+holiday	1649	B1		
+internal	1650	B1		
+ireland	1651	B1		
+italian	1652	B1		
+italy	1653	B1		
+jersey	1654	B1		
+laugh	1655	B1		
+liberal	1656	B1		
+lunch	1657	B1		
+max	1658	B1		
+milk	1659	B1		
+pack	1660	B1		1
+payment	1661	B1		
+relatively	1662	B1		
+sector	1663	B1		1
+snow	1664	B1		
+storm	1665	B1		
+strike	1666	B1		
+studio	1667	B1		1
+sub	1668	B1		
+weak	1669	B1		
+actor	1670	B1		1
+apartment	1671	B1		
+asia	1672	B1		
+chain	1673	B1		
+chapter	1674	B1		
+commit	1675	B1		
+confidence	1676	B1		
+cook	1677	B1		
+cute	1678	B1		
+equal	1679	B1		
+fake	1680	B1		
+finance	1681	B1		1
+identity	1682	B1		
+journey	1683	B1		
+kitchen	1684	B1		
+korea	1685	B1		
+maintain	1686	B1		
+mm	1687	B1		
+numerous	1688	B1		
+quiet	1689	B1		
+reveal	1690	B1		
+specifically	1691	B1		
+split	1692	B1		
+task	1693	B1		
+taylor	1694	B1		
+twenty	1695	B1		
+urban	1696	B1		
+affect	1697	B1		
+aircraft	1698	B1		
+approve	1699	B1		
+approximately	1700	B1		
+argument	1701	B1		1
+arrest	1702	B1		
+conflict	1703	B1		
+corporate	1704	B1		
+debate	1705	B1		
+determine	1706	B1		
+distribution	1707	B1		1
+document	1708	B1		1
+escape	1709	B1		
+extend	1710	B1		
+fault	1711	B1		
+flower	1712	B1		
+friendly	1713	B1		
+mixe	1714	B1		1
+phase	1715	B1		1
+properly	1716	B1		
+pure	1717	B1		1
+requirement	1718	B1		
+resident	1719	B1		
+revenue	1720	B1		
+sam	1721	B1		
+secure	1722	B1		
+smile	1723	B1		
+strange	1724	B1		
+talent	1725	B1		1
+temperature	1726	B1		
+tony	1727	B1		
+troop	1728	B1		
+truck	1729	B1		
+ah	1730	B1		
+basically	1731	B1		
+besides	1732	B1		
+bird	1733	B1		
+blame	1734	B1		
+bob	1735	B1		
+bowl	1736	B1		
+chicken	1737	B1		
+collect	1738	B1		
+context	1739	B1		
+coverage	1740	B1		
+display	1741	B1		
+elect	1742	B1		
+false	1743	B1		
+funding	1744	B1		
+identify	1745	B1		1
+incredible	1746	B1		
+inspire	1747	B1		1
+ma	1748	B1		
+meat	1749	B1		
+ministry	1750	B1		
+mode	1751	B1		1
+neck	1752	B1		
+novel	1753	B1		
+obvious	1754	B1		
+shirt	1755	B1		
+slowly	1756	B1		
+stadium	1757	B1		
+surgery	1758	B1		
+trading	1759	B1		
+tuesday	1760	B1		
+vision	1761	B1		1
+whenever	1762	B1		
+zero	1763	B1		
+alex	1764	B1		
+champion	1765	B1		1
+cream	1766	B1		
+crisis	1767	B1		
+daniel	1768	B1		1
+deliver	1769	B1		
+editor	1770	B1		
+estimate	1771	B1		1
+giant	1772	B1		
+iran	1773	B1		
+jail	1774	B1		
+jim	1775	B1		
+kingdom	1776	B1		
+literature	1777	B1		
+mayor	1778	B1		
+minor	1779	B1		1
+opposite	1780	B1		
+orange	1781	B1		1
+ourselves	1782	B1		
+selection	1783	B1		
+serving	1784	B1		
+signal	1785	B1		1
+stream	1786	B1		
+struggle	1787	B1		
+suicide	1788	B1		1
+theme	1789	B1		
+thursday	1790	B1		
+tiny	1791	B1		
+typically	1792	B1		
+unfortunately	1793	B1		
+usual	1794	B1		1
+virginia	1795	B1		
+wave	1796	B1		
+alcohol	1797	B1		
+assembly	1798	B1		
+breakfast	1799	B1		
+bright	1800	B1		
+capable	1801	B1		1
+combination	1802	B1		
+conservative	1803	B1		
+cutting	1804	B1		
+desire	1805	B1		
+destroy	1806	B1		
+draft	1807	B1		
+drunk	1808	B1		
+essential	1809	B1		1
+familiar	1810	B1		
+guilty	1811	B1		
+id	1812	B1		
+jewish	1813	B1		
+largely	1814	B1		
+ohio	1815	B1		
+perfectly	1816	B1		
+recommend	1817	B1		
+refer	1818	B1		
+relevant	1819	B1		
+seek	1820	B1		
+solo	1821	B1		1
+ticket	1822	B1		1
+unable	1823	B1		
+upset	1824	B1		
+wing	1825	B1		
+bomb	1826	B1		
+creative	1827	B1		
+cycle	1828	B1		1
+educational	1829	B1		
+entertainment	1830	B1		
+extreme	1831	B1		
+hang	1832	B1		
+info	1833	B1		1
+mainly	1834	B1		
+maximum	1835	B1		1
+newspaper	1836	B1		
+paint	1837	B1		
+republic	1838	B1		
+reserve	1839	B1		
+row	1840	B1		
+salt	1841	B1		
+scare	1842	B1		
+scottish	1843	B1		
+statistic	1844	B1		1
+switch	1845	B1		
+territory	1846	B1		1
+threat	1847	B1		
+wale	1848	B1		
+appoint	1849	B1		1
+aside	1850	B1		
+assistance	1851	B1		1
+bell	1852	B1		
+blow	1853	B1		
+bond	1854	B1		1
+boyfriend	1855	B1		
+careful	1856	B1		
+circumstance	1857	B1		
+corporation	1858	B1		
+cry	1859	B1		
+danger	1860	B1		1
+delivery	1861	B1		
+deserve	1862	B1		
+empty	1863	B1		
+folk	1864	B1		1
+gender	1865	B1		1
+instance	1866	B1		1
+kim	1867	B1		
+kinda	1868	B1		
+motion	1869	B1		1
+nick	1870	B1		
+pacific	1871	B1		1
+prize	1872	B1		
+reasonable	1873	B1		
+register	1874	B1		1
+resolution	1875	B1		
+rural	1876	B1		1
+ryan	1877	B1		
+singe	1878	B1		1
+spain	1879	B1		
+tool	1880	B1		
+typical	1881	B1		1
+universe	1882	B1		
+warning	1883	B1		
+wednesday	1884	B1		
+admit	1885	B1		
+attitude	1886	B1		1
+branch	1887	B1		
+brazil	1888	B1		
+conduct	1889	B1		
+decade	1890	B1		
+dedicate	1891	B1		
+definition	1892	B1		
+drawing	1893	B1		
+favor	1894	B1		1
+flag	1895	B1		
+frame	1896	B1		
+guest	1897	B1		
+ha	1898	B1		
+heaven	1899	B1		
+independence	1900	B1		
+institution	1901	B1		1
+jackson	1902	B1		
+kiss	1903	B1		
+load	1904	B1		
+plot	1905	B1		
+possibility	1906	B1		
+random	1907	B1		
+recovery	1908	B1		
+rent	1909	B1		
+replace	1910	B1		
+represent	1911	B1		
+senator	1912	B1		
+sentence	1913	B1		
+tooth	1914	B1		
+tip	1915	B1		
+academic	1916	B1		
+academy	1917	B1		
+accurate	1918	B1		
+achieve	1919	B1		
+adam	1920	B1		
+afford	1921	B1		
+andrew	1922	B1		
+assume	1923	B1		1
+bottle	1924	B1		
+bunch	1925	B1		
+category	1926	B1		
+chat	1927	B1		1
+cheese	1928	B1		
+chemical	1929	B1		
+clinton	1930	B1		
+competitive	1931	B1		
+diet	1932	B1		
+favourite	1933	B1		
+fruit	1934	B1		1
+index	1935	B1		
+lane	1936	B1		
+mess	1937	B1		
+navy	1938	B1		
+normally	1939	B1		
+occur	1940	B1		
+opposition	1941	B1		1
+permanent	1942	B1		1
+personally	1943	B1		
+pleasure	1944	B1		
+prefer	1945	B1		
+programme	1946	B1		1
+representative	1947	B1		
+scheme	1948	B1		
+shift	1949	B1		
+storage	1950	B1		
+tank	1951	B1		
+tend	1952	B1		1
+tight	1953	B1		
+transportation	1954	B1		
+ultimately	1955	B1		
+unlike	1956	B1		
+weekly	1957	B1		
+yard	1958	B1		
+anybody	1959	B1		
+asset	1960	B1		
+basketball	1961	B1		
+button	1962	B1		
+combat	1963	B1		1
+constitution	1964	B1		1
+consumer	1965	B1		
+counter	1966	B1		
+creation	1967	B1		
+crown	1968	B1		
+dc	1969	B1		
+define	1970	B1		
+depend	1971	B1		
+depression	1972	B1		
+el	1973	B1		
+employment	1974	B1		
+exclusive	1975	B1		1
+excuse	1976	B1		1
+expert	1977	B1		1
+frequently	1978	B1		
+golf	1979	B1		1
+grace	1980	B1		
+hopefully	1981	B1		
+importance	1982	B1		1
+kevin	1983	B1		
+lay	1984	B1		
+latter	1985	B1		
+manufacturing	1986	B1		
+mining	1987	B1		
+object	1988	B1		
+pattern	1989	B1		
+personnel	1990	B1		1
+perspective	1991	B1		1
+pregnant	1992	B1		
+premier	1993	B1		1
+promote	1994	B1		
+q	1995	B1		
+revolution	1996	B1		
+severe	1997	B1		
+tournament	1998	B1		
+turkey	1999	B1		
+victim	2000	B1		
+amazon	2001	B1		
+attend	2002	B1		1
+ban	2003	B1		
+brilliant	2004	B1		
+carbon	2005	B1		
+catholic	2006	B1		1
+circle	2007	B1		
+concert	2008	B1		1
+crash	2009	B1		1
+declare	2010	B1		
+depth	2011	B1		
+deputy	2012	B1		
+dirty	2013	B1		
+earn	2014	B1		
+electronic	2015	B1		
+error	2016	B1		1
+existence	2017	B1		1
+expression	2018	B1		1
+factory	2019	B1		
+interior	2020	B1		
+joy	2021	B1		
+junior	2022	B1		1
+legislation	2023	B1		
+maintenance	2024	B1		1
+manner	2025	B1		
+mate	2026	B1		1
+matt	2027	B1		
+nearby	2028	B1		
+noise	2029	B1		
+origin	2030	B1		
+pakistan	2031	B1		
+panel	2032	B1		
+personality	2033	B1		
+plate	2034	B1		1
+relief	2035	B1		1
+resistance	2036	B1		
+retail	2037	B1		
+rice	2038	B1		
+roof	2039	B1		
+shame	2040	B1		
+somewhat	2041	B1		
+surely	2042	B1		
+absolute	2043	B1		
+advertising	2044	B1		
+baseball	2045	B1		1
+bathroom	2046	B1		
+bible	2047	B1		1
+cable	2048	B1		
+calm	2049	B1		
+championship	2050	B1		
+client	2051	B1		1
+constant	2052	B1		1
+da	2053	B1		
+democrat	2054	B1		
+dumb	2055	B1		
+empire	2056	B1		1
+exciting	2057	B1		
+expansion	2058	B1		1
+heavily	2059	B1		
+hide	2060	B1		
+incident	2061	B1		1
+irish	2062	B1		
+michigan	2063	B1		
+multi	2064	B1		
+politician	2065	B1		
+print	2066	B1		
+quit	2067	B1		
+refuse	2068	B1		1
+sight	2069	B1		
+significantly	2070	B1		
+sing	2071	B1		
+soviet	2072	B1		
+wet	2073	B1		
+widely	2074	B1		
+worldwide	2075	B1		
+anniversary	2076	B1		1
+attractive	2077	B1		1
+bike	2078	B1		
+broad	2079	B1		
+burn	2080	B1		
+cake	2081	B1		
+closely	2082	B1		
+constantly	2083	B1		
+contest	2084	B1		
+fee	2085	B1		
+francisco	2086	B1		
+haha	2087	B1		
+hardly	2088	B1		
+hat	2089	B1		
+height	2090	B1		
+hong	2091	B1		
+invite	2092	B1		1
+loud	2093	B1		
+manchester	2094	B1		
+marine	2095	B1		1
+motor	2096	B1		1
+officially	2097	B1		
+peak	2098	B1		
+portion	2099	B1		1
+pound	2100	B1		
+princess	2101	B1		
+protein	2102	B1		
+raw	2103	B1		
+reform	2104	B1		
+respond	2105	B1		
+retirement	2106	B1		
+sample	2107	B1		
+secondary	2108	B1		1
+solar	2109	B1		
+somehow	2110	B1		
+suffer	2111	B1		
+sydney	2112	B1		
+ultimate	2113	B1		
+unknown	2114	B1		
+wilson	2115	B1		
+attach	2116	B1		
+automatically	2117	B1		
+battery	2118	B1		1
+blind	2119	B1		
+breath	2120	B1		
+brief	2121	B1		
+carolina	2122	B1		
+chest	2123	B1		
+debut	2124	B1		
+edward	2125	B1		
+engage	2126	B1		1
+external	2127	B1		
+fantasy	2128	B1		
+ft	2129	B1		
+grab	2130	B1		
+hollywood	2131	B1		
+immediate	2132	B1		
+introduction	2133	B1		1
+joseph	2134	B1		
+license	2135	B1		
+pilot	2136	B1		
+pink	2137	B1		
+presidential	2138	B1		
+principal	2139	B1		1
+recognize	2140	B1		
+regularly	2141	B1		
+singer	2142	B1		
+smoking	2143	B1		
+steam	2144	B1		
+survive	2145	B1		
+tall	2146	B1		
+theatre	2147	B1		
+therapy	2148	B1		
+witness	2149	B1		
+adopt	2150	B1		
+aim	2151	B1		
+campus	2152	B1		
+cap	2153	B1		
+childhood	2154	B1		
+clinical	2155	B1		1
+comedy	2156	B1		
+commander	2157	B1		1
+comparison	2158	B1		
+dan	2159	B1		
+defeat	2160	B1		
+democracy	2161	B1		
+detailed	2162	B1		
+entitle	2163	B1		
+exact	2164	B1		1
+expose	2165	B1		1
+injure	2166	B1		1
+jan	2167	B1		
+jordan	2168	B1		
+lock	2169	B1		
+musical	2170	B1		1
+nose	2171	B1		
+oppose	2172	B1		1
+organize	2173	B1		1
+plastic	2174	B1		1
+quote	2175	B1		
+semi	2176	B1		
+suspect	2177	B1		1
+swear	2178	B1		
+technique	2179	B1		1
+tie	2180	B1		
+tim	2181	B1		
+trend	2182	B1		
+valuable	2183	B1		
+wealth	2184	B1		
+wise	2185	B1		
+approval	2186	B1		
+aspect	2187	B1		1
+bread	2188	B1		
+burning	2189	B1		
+convention	2190	B1		1
+egg	2191	B1		
+engineer	2192	B1		
+equivalent	2193	B1		
+fairly	2194	B1		
+finger	2195	B1		
+ford	2196	B1		
+found	2197	B1		
+gang	2198	B1		1
+graduate	2199	B1		
+greek	2200	B1		
+hanging	2201	B1		
+inner	2202	B1		
+lift	2203	B1		
+miller	2204	B1		
+monthly	2205	B1		
+neighbourhood	2206	B1		
+outstanding	2207	B1		
+permission	2208	B1		1
+porn	2209	B1		
+regulation	2210	B1		
+reply	2211	B1		
+rid	2212	B1		
+roman	2213	B1		1
+scientist	2214	B1		
+shoulder	2215	B1		
+shower	2216	B1		
+stephen	2217	B1		
+tower	2218	B1		
+tradition	2219	B1		1
+visual	2220	B1		1
+wheel	2221	B1		
+zealand	2222	B1		
+appointment	2223	B1		
+barely	2224	B1		
+bush	2225	B1		
+cabinet	2226	B1		1
+celebrate	2227	B1		
+chocolate	2228	B1		
+coal	2229	B1		
+colour	2230	B1		
+contemporary	2231	B1		
+criticism	2232	B1		
+davis	2233	B1		
+effectively	2234	B1		
+eric	2235	B1		1
+extensive	2236	B1		
+formation	2237	B1		1
+gallery	2238	B1		
+highway	2239	B1		
+historic	2240	B1		1
+hunt	2241	B1		
+improvement	2242	B1		
+inch	2243	B1		
+initially	2244	B1		
+jury	2245	B1		1
+kong	2246	B1		
+korean	2247	B1		
+monster	2248	B1		1
+obtain	2249	B1		
+olympic	2250	B1		1
+philosophy	2251	B1		1
+pride	2252	B1		
+repeat	2253	B1		
+rough	2254	B1		
+santa	2255	B1		
+settlement	2256	B1		
+smell	2257	B1		
+speaker	2258	B1		
+surround	2259	B1		
+tone	2260	B1		
+topic	2261	B1		
+toronto	2262	B1		
+universal	2263	B1		1
+vast	2264	B1		
+visitor	2265	B1		1
+auto	2266	B1		1
+consistent	2267	B1		
+grey	2268	B1		
+guitar	2269	B1		
+heading	2270	B1		
+howard	2271	B1		
+ignore	2272	B1		1
+latin	2273	B1		1
+lewis	2274	B1		
+meal	2275	B1		
+meanwhile	2276	B1		
+meeting	2277	B1		
+naturally	2278	B1		
+necessarily	2279	B1		
+pants	2280	B1		
+partnership	2281	B1		
+percentage	2282	B1		
+pocket	2283	B1		
+practical	2284	B1		
+primarily	2285	B1		
+rape	2286	B1		
+regardless	2287	B1		
+relative	2288	B1		1
+rescue	2289	B1		
+rush	2290	B1		
+sarah	2291	B1		
+sharp	2292	B1		
+simon	2293	B1		
+soccer	2294	B1		
+stable	2295	B1		1
+symptom	2296	B1		
+temporary	2297	B1		1
+trick	2298	B1		
+audio	2299	B1		1
+bone	2300	B1		
+brian	2301	B1		
+bullshit	2302	B1		
+chamber	2303	B1		1
+chart	2304	B1		
+circuit	2305	B1		1
+clothing	2306	B1		
+complicate	2307	B1		
+confuse	2308	B1		1
+consequence	2309	B1		1
+defend	2310	B1		
+divide	2311	B1		
+elizabeth	2312	B1		
+everyday	2313	B1		
+extent	2314	B1		
+fishing	2315	B1		
+format	2316	B1		1
+gap	2317	B1		
+gate	2318	B1		
+harm	2319	B1		
+healthcare	2320	B1		
+household	2321	B1		
+immigration	2322	B1		1
+impressive	2323	B1		
+jew	2324	B1		
+killer	2325	B1		
+lesson	2326	B1		
+limited	2327	B1		
+membership	2328	B1		
+miami	2329	B1		
+mirror	2330	B1		
+mount	2331	B1		
+proposal	2332	B1		
+province	2333	B1		1
+recognition	2334	B1		
+reputation	2335	B1		
+shortly	2336	B1		
+strongly	2337	B1		
+tear	2338	B1		
+thin	2339	B1		
+z	2340	B1		
+accuse	2341	B1		1
+adventure	2342	B1		
+argue	2343	B1		
+assessment	2344	B1		
+atmosphere	2345	B1		
+awful	2346	B1		
+bedroom	2347	B1		
+belief	2348	B1		
+bound	2349	B1		
+carefully	2350	B1		
+closing	2351	B1		
+cloud	2352	B1		
+colorado	2353	B1		
+contrast	2354	B1		
+donald	2355	B1		
+elsewhere	2356	B1		
+extension	2357	B1		1
+founder	2358	B1		
+gear	2359	B1		
+georgia	2360	B1		
+hip	2361	B1		
+infrastructure	2362	B1		1
+jason	2363	B1		
+loose	2364	B1		
+moral	2365	B1		1
+offensive	2366	B1		1
+pa	2367	B1		
+package	2368	B1		
+poverty	2369	B1		
+qualify	2370	B1		1
+railway	2371	B1		
+ridiculous	2372	B1		
+sensitive	2373	B1		
+server	2374	B1		
+shock	2375	B1		
+silence	2376	B1		1
+superior	2377	B1		
+supporter	2378	B1		1
+thick	2379	B1		
+ton	2380	B1		
+transition	2381	B1		1
+violent	2382	B1		1
+voter	2383	B1		1
+wash	2384	B1		
+acid	2385	B1		
+actress	2386	B1		
+administrative	2387	B1		1
+alan	2388	B1		
+alongside	2389	B1		
+angel	2390	B1		
+anxiety	2391	B1		
+bonus	2392	B1		
+castle	2393	B1		
+charity	2394	B1		
+curious	2395	B1		1
+discovery	2396	B1		
+duke	2397	B1		
+egypt	2398	B1		
+encourage	2399	B1		1
+enforcement	2400	B1		
+flash	2401	B1		1
+formal	2402	B1		1
+formula	2403	B1		
+fort	2404	B1		1
+gray	2405	B1		
+gross	2406	B1		
+hungry	2407	B1		
+inform	2408	B1		
+innocent	2409	B1		1
+jeff	2410	B1		
+luke	2411	B1		
+mac	2412	B1		
+math	2413	B1		
+mystery	2414	B1		
+olympics	2415	B1		
+palace	2416	B1		
+penalty	2417	B1		1
+pet	2418	B1		
+photography	2419	B1		1
+protest	2420	B1		
+publication	2421	B1		1
+rating	2422	B1		
+respectively	2423	B1		
+rome	2424	B1		
+silent	2425	B1		
+successfully	2426	B1		
+temple	2427	B1		1
+trail	2428	B1		
+uncle	2429	B1		
+unusual	2430	B1		
+yo	2431	B1		
+arrival	2432	B1		
+assault	2433	B1		
+awareness	2434	B1		
+badly	2435	B1		
+bath	2436	B1		
+capture	2437	B1		1
+chase	2438	B1		
+component	2439	B1		
+concrete	2440	B1		
+dave	2441	B1		
+deeply	2442	B1		
+expectation	2443	B1		
+explanation	2444	B1		
+exposure	2445	B1		
+fiction	2446	B1		1
+guarantee	2447	B1		
+happiness	2448	B1		
+harris	2449	B1		
+horrible	2450	B1		1
+ideal	2451	B1		
+illinois	2452	B1		
+islamic	2453	B1		1
+jimmy	2454	B1		
+kelly	2455	B1		
+legend	2456	B1		
+lieutenant	2457	B1		1
+mini	2458	B1		1
+mood	2459	B1		
+muscle	2460	B1		1
+passion	2461	B1		1
+procedure	2462	B1		
+producer	2463	B1		
+rank	2464	B1		
+replacement	2465	B1		
+retire	2466	B1		1
+sand	2467	B1		
+savings	2468	B1		
+settle	2469	B1		
+shadow	2470	B1		
+tag	2471	B1		
+tape	2472	B1		1
+thread	2473	B1		
+victoria	2474	B1		1
+wage	2475	B1		
+andy	2476	B1		
+avenue	2477	B1		1
+beating	2478	B1		
+boring	2479	B1		
+charlie	2480	B1		
+clock	2481	B1		
+commissioner	2482	B1		
+commitment	2483	B1		
+confident	2484	B1		
+custom	2485	B1		
+deny	2486	B1		
+desk	2487	B1		
+ear	2488	B1		
+electricity	2489	B1		
+farmer	2490	B1		
+gym	2491	B1		
+helpful	2492	B1		
+horror	2493	B1		1
+iraq	2494	B1		
+label	2495	B1		1
+liverpool	2496	B1		
+naked	2497	B1		
+output	2498	B1		
+pitch	2499	B1		
+pizza	2500	B1		1
+plain	2501	B1		
+rear	2502	B1		
+romantic	2503	B1		1
+strategic	2504	B1		
+swim	2505	B1		
+welfare	2506	B1		
+wire	2507	B1		
+afterwards	2508	B1		
+alright	2509	B1		
+android	2510	B1		
+anger	2511	B1		
+architecture	2512	B1		1
+assist	2513	B1		1
+behalf	2514	B1		
+belt	2515	B1		
+ceremony	2516	B1		
+comic	2517	B1		1
+cop	2518	B1		
+dallas	2519	B1		
+designer	2520	B1		1
+diamond	2521	B1		
+disappoint	2522	B1		
+economics	2523	B1		
+efficient	2524	B1		
+electrical	2525	B1		
+employ	2526	B1		1
+essentially	2527	B1		
+establishment	2528	B1		
+ghost	2529	B1		
+hockey	2530	B1		1
+houston	2531	B1		
+hunting	2532	B1		
+islam	2533	B1		1
+jane	2534	B1		
+kit	2535	B1		
+lab	2536	B1		
+min	2537	B1		
+morgan	2538	B1		
+moscow	2539	B1		
+nervous	2540	B1		1
+newly	2541	B1		
+odd	2542	B1		
+op	2543	B1		
+ordinary	2544	B1		1
+participate	2545	B1		1
+philadelphia	2546	B1		
+prayer	2547	B1		
+principle	2548	B1		
+racist	2549	B1		1
+rarely	2550	B1		
+sexy	2551	B1		
+soil	2552	B1		
+solve	2553	B1		
+stomach	2554	B1		
+suck	2555	B1		
+trash	2556	B1		
+ugly	2557	B1		
+vegas	2558	B1		
+virus	2559	B1		
+walker	2560	B1		
+whoever	2561	B1		
+anthony	2562	B1		
+arthur	2563	B1		
+boost	2564	B1		
+bureau	2565	B1		1
+colonel	2566	B1		1
+comfort	2567	B1		
+cousin	2568	B1		1
+crack	2569	B1		
+deck	2570	B1		
+dragon	2571	B1		1
+dramatic	2572	B1		1
+dust	2573	B1		
+dutch	2574	B1		
+evolution	2575	B1		
+hire	2576	B1		
+illness	2577	B1		
+inspiration	2578	B1		1
+knife	2579	B1		
+lately	2580	B1		
+memorial	2581	B1		
+mexican	2582	B1		
+minority	2583	B1		
+mum	2584	B1		
+priority	2585	B1		
+promotion	2586	B1		1
+rail	2587	B1		1
+reader	2588	B1		
+remote	2589	B1		
+repair	2590	B1		
+root	2591	B1		
+saint	2592	B1		1
+steal	2593	B1		
+telephone	2594	B1		
+tho	2595	B1		
+trans	2596	B1		
+vol	2597	B1		
+whereas	2598	B1		
+abandon	2599	B1		1
+acquire	2600	B1		
+alexander	2601	B1		
+alliance	2602	B1		1
+annoy	2603	B1		
+ap	2604	B1		
+bid	2605	B1		
+bro	2606	B1		
+buddy	2607	B1		
+bury	2608	B1		
+butter	2609	B1		
+columbia	2610	B1		
+conclusion	2611	B1		1
+congratulation	2612	B1		
+convince	2613	B1		
+crap	2614	B1		
+crystal	2615	B1		
+dean	2616	B1		
+decent	2617	B1		
+decline	2618	B1		
+delay	2619	B1		
+desert	2620	B1		
+downtown	2621	B1		
+elite	2622	B1		
+forth	2623	B1		
+hop	2624	B1		
+insane	2625	B1		
+install	2626	B1		
+israeli	2627	B1		
+layer	2628	B1		
+nowhere	2629	B1		
+nurse	2630	B1		
+organic	2631	B1		1
+ownership	2632	B1		
+participant	2633	B1		1
+pennsylvania	2634	B1		
+poetry	2635	B1		
+pot	2636	B1		
+pray	2637	B1		
+recall	2638	B1		
+rugby	2639	B1		1
+sake	2640	B1		
+sheet	2641	B1		
+smooth	2642	B1		
+spiritual	2643	B1		1
+string	2644	B1		
+sudden	2645	B1		
+sweden	2646	B1		
+syria	2647	B1		
+vacation	2648	B1		
+abroad	2649	B1		
+arab	2650	B1		
+assign	2651	B1		
+atlantic	2652	B1		1
+bench	2653	B1		
+bother	2654	B1		
+broadcast	2655	B1		
+bye	2656	B1		
+cambridge	2657	B1		
+compete	2658	B1		
+consist	2659	B1		1
+contribute	2660	B1		
+cricket	2661	B1		
+critic	2662	B1		1
+disaster	2663	B1		
+disney	2664	B1		
+entrance	2665	B1		
+equally	2666	B1		
+fitness	2667	B1		
+francis	2668	B1		
+friendship	2669	B1		
+gary	2670	B1		
+handling	2671	B1		
+idiot	2672	B1		1
+intense	2673	B1		1
+lifetime	2674	B1		
+liquid	2675	B1		
+makeup	2676	B1		
+medal	2677	B1		
+mortgage	2678	B1		
+narrative	2679	B1		1
+narrow	2680	B1		
+observe	2681	B1		1
+occasionally	2682	B1		
+pan	2683	B1		
+physics	2684	B1		
+potentially	2685	B1		
+reduction	2686	B1		
+reflect	2687	B1		
+researcher	2688	B1		
+roger	2689	B1		
+ross	2690	B1		
+seattle	2691	B1		
+shell	2692	B1		
+silly	2693	B1		
+subsequent	2694	B1		
+translation	2695	B1		
+visible	2696	B1		1
+yep	2697	B1		
+allen	2698	B1		
+amendment	2699	B1		
+angle	2700	B1		1
+arizona	2701	B1		
+belong	2702	B1		
+berlin	2703	B1		
+bishop	2704	B1		
+clark	2705	B1		
+commonly	2706	B1		
+defensive	2707	B1		
+efficiency	2708	B1		
+enterprise	2709	B1		
+experiment	2710	B1		
+forum	2711	B1		1
+grass	2712	B1		
+hence	2713	B1		
+increasingly	2714	B1		
+incredibly	2715	B1		
+iv	2716	B1		
+jay	2717	B1		
+journalist	2718	B1		1
+mill	2719	B1		
+mo	2720	B1		
+occasion	2721	B1		1
+oxford	2722	B1		1
+pace	2723	B1		
+passenger	2724	B1		
+pen	2725	B1		
+pope	2726	B1		
+possession	2727	B1		1
+pp	2728	B1		
+rapid	2729	B1		
+sixth	2730	B1		
+spin	2731	B1		
+suitable	2732	B1		
+thirty	2733	B1		
+valid	2734	B1		
+vital	2735	B1		1
+whilst	2736	B1		
+agriculture	2737	B1		1
+allege	2738	B1		
+anna	2739	B1		
+atlanta	2740	B1		
+commerce	2741	B1		1
+creek	2742	B1		
+currency	2743	B1		
+emotion	2744	B1		
+exhibition	2745	B1		
+fraud	2746	B1		
+funeral	2747	B1		
+genuine	2748	B1		
+gordon	2749	B1		
+honey	2750	B1		
+honour	2751	B1		
+hook	2752	B1		
+hunter	2753	B1		
+immigrant	2754	B1		
+instruction	2755	B1		1
+kansas	2756	B1		
+kilometer	2757	B1		
+legacy	2758	B1		
+log	2759	B1		
+matthew	2760	B1		
+merely	2761	B1		
+monitor	2762	B1		1
+patrick	2763	B1		
+phil	2764	B1		
+prisoner	2765	B1		
+programming	2766	B1		
+ratio	2767	B1		1
+regret	2768	B1		1
+reject	2769	B1		
+remind	2770	B1		
+resort	2771	B1		
+reverse	2772	B1		
+routine	2773	B1		1
+scary	2774	B1		
+seed	2775	B1		
+sin	2776	B1		
+spell	2777	B1		
+summary	2778	B1		
+survival	2779	B1		
+sword	2780	B1		
+tongue	2781	B1		
+ward	2782	B1		
+wayne	2783	B1		
+achievement	2784	B1		
+anderson	2785	B1		
+asleep	2786	B1		
+austin	2787	B1		
+automatic	2788	B1		1
+behaviour	2789	B1		
+coat	2790	B1		
+comprehensive	2791	B1		
+consent	2792	B1		
+daddy	2793	B1		
+destruction	2794	B1		1
+diego	2795	B1		
+divorce	2796	B1		1
+doc	2797	B1		
+extraordinary	2798	B1		1
+fate	2799	B1		1
+frequency	2800	B1		
+gene	2801	B1		
+glory	2802	B1		1
+headquarters	2803	B1		
+heritage	2804	B1		
+initiative	2805	B1		1
+jean	2806	B1		1
+juice	2807	B1		
+landscape	2808	B1		
+logic	2809	B1		1
+melbourne	2810	B1		
+microsoft	2811	B1		
+objective	2812	B1		1
+organisation	2813	B1		1
+privacy	2814	B1		
+residence	2815	B1		
+roughly	2816	B1		
+salary	2817	B1		1
+script	2818	B1		1
+strip	2819	B1		
+threaten	2820	B1		
+tube	2821	B1		1
+walter	2822	B1		
+wisconsin	2823	B1		
+ambassador	2824	B1		1
+ann	2825	B1		
+banking	2826	B1		
+breast	2827	B1		
+cant	2828	B1		
+carter	2829	B1		1
+chelsea	2830	B1		
+chemistry	2831	B1		
+conclude	2832	B1		
+consumption	2833	B1		
+corruption	2834	B1		1
+cotton	2835	B1		
+detroit	2836	B1		
+discount	2837	B1		
+dozen	2838	B1		
+epic	2839	B1		
+exception	2840	B1		1
+exit	2841	B1		
+expand	2842	B1		
+fancy	2843	B1		
+gorgeous	2844	B1		
+grateful	2845	B1		
+impression	2846	B1		1
+indicate	2847	B1		
+input	2848	B1		
+johnny	2849	B1		
+josh	2850	B1		
+knock	2851	B1		
+leather	2852	B1		
+lip	2853	B1		
+luxury	2854	B1		
+lyric	2855	B1		1
+manufacturer	2856	B1		
+ought	2857	B1		
+outcome	2858	B1		
+poll	2859	B1		
+preferr	2860	B1		
+removal	2861	B1		
+rep	2862	B1		
+reporter	2863	B1		1
+rob	2864	B1		
+scream	2865	B1		
+sequence	2866	B1		
+singapore	2867	B1		
+stretch	2868	B1		
+tennis	2869	B1		
+terrorist	2870	B1		1
+theater	2871	B1		
+twelve	2872	B1		
+virgin	2873	B1		
+wolf	2874	B1		
+absence	2875	B1		1
+agricultural	2876	B1		
+asshole	2877	B1		
+athlete	2878	B1		
+blues	2879	B1		
+bruce	2880	B1		
+bull	2881	B1		1
+commonwealth	2882	B1		
+contribution	2883	B1		1
+delicious	2884	B1		1
+ease	2885	B1		
+fame	2886	B1		
+flood	2887	B1		
+generate	2888	B1		
+genetic	2889	B1		
+impress	2890	B1		
+instant	2891	B1		1
+investor	2892	B1		
+kate	2893	B1		
+liberty	2894	B1		
+mare	2895	B1		1
+photograph	2896	B1		
+progressive	2897	B1		1
+punishment	2898	B1		
+rally	2899	B1		
+rapidly	2900	B1		
+representation	2901	B1		
+sum	2902	B1		
+swing	2903	B1		
+tail	2904	B1		
+twin	2905	B1		
+upcoming	2906	B1		
+veteran	2907	B1		
+alert	2908	B1		
+arena	2909	B1		
+billy	2910	B1		
+boom	2911	B1		1
+boot	2912	B1		
+brave	2913	B1		1
+column	2914	B1		
+compensation	2915	B1		1
+composition	2916	B1		1
+conservation	2917	B1		1
+constitutional	2918	B1		
+crossing	2919	B1		
+density	2920	B1		
+difficulty	2921	B1		
+elementary	2922	B1		
+ethnic	2923	B1		1
+expense	2924	B1		
+fleet	2925	B1		
+foster	2926	B1		
+fundamental	2927	B1		
+gen	2928	B1		
+genius	2929	B1		
+greatly	2930	B1		
+guidance	2931	B1		
+infection	2932	B1		1
+intention	2933	B1		1
+iowa	2934	B1		
+knee	2935	B1		
+mechanical	2936	B1		
+nigeria	2937	B1		
+participation	2938	B1		1
+precious	2939	B1		
+pregnancy	2940	B1		
+premium	2941	B1		
+pretend	2942	B1		
+priest	2943	B1		
+prominent	2944	B1		
+radical	2945	B1		1
+residential	2946	B1		
+reward	2947	B1		
+robin	2948	B1		1
+russell	2949	B1		
+satellite	2950	B1		1
+shake	2951	B1		
+shore	2952	B1		
+stat	2953	B1		
+substantial	2954	B1		1
+teen	2955	B1		
+transmission	2956	B1		1
+trap	2957	B1		
+uniform	2958	B1		
+wildlife	2959	B1		
+wooden	2960	B1		
+aggressive	2961	B1		
+anne	2962	B1		
+apparent	2963	B1		
+bang	2964	B1		1
+blast	2965	B1		
+communist	2966	B1		1
+complaint	2967	B1		
+courage	2968	B1		1
+cure	2969	B1		1
+del	2970	B1		
+desperate	2971	B1		
+diversity	2972	B1		
+eve	2973	B1		
+faculty	2974	B1		
+feedback	2975	B1		
+fighter	2976	B1		
+freeze	2977	B1		
+humanity	2978	B1		
+ian	2979	B1		
+innovation	2980	B1		1
+instrument	2981	B1		1
+invest	2982	B1		
+jacket	2983	B1		
+justin	2984	B1		
+legislative	2985	B1		
+manual	2986	B1		1
+nursing	2987	B1		
+occupy	2988	B1		
+ongoing	2989	B1		
+operator	2990	B1		
+painful	2991	B1		
+preparation	2992	B1		
+punch	2993	B1		
+purple	2994	B1		
+railroad	2995	B1		
+registration	2996	B1		
+rick	2997	B1		
+romance	2998	B1		1
+submit	2999	B1		
+sufficient	3000	B1		
+suspend	3001	B2		1
+tissue	3002	B2		
+trailer	3003	B2		
+ukraine	3004	B2		
+underground	3005	B2		
+virtual	3006	B2		1
+wound	3007	B2		
+ali	3008	B2		
+amongst	3009	B2		
+announcement	3010	B2		
+arrange	3011	B2		1
+arsenal	3012	B2		1
+attract	3013	B2		
+biological	3014	B2		1
+bite	3015	B2		1
+chip	3016	B2		
+dare	3017	B2		
+database	3018	B2		
+discrimination	3019	B2		1
+disorder	3020	B2		
+distribute	3021	B2		
+documentary	3022	B2		1
+domain	3023	B2		
+dynamic	3024	B2		1
+edit	3025	B2		
+engagement	3026	B2		1
+explore	3027	B2		1
+favour	3028	B2		
+footage	3029	B2		
+grave	3030	B2		1
+hamilton	3031	B2		
+implementation	3032	B2		
+indiana	3033	B2		
+investigate	3034	B2		
+jazz	3035	B2		
+jon	3036	B2		
+jonathan	3037	B2		
+laboratory	3038	B2		1
+lawrence	3039	B2		
+lincoln	3040	B2		
+literary	3041	B2		
+mask	3042	B2		
+massachusetts	3043	B2		
+midnight	3044	B2		
+minnesota	3045	B2		
+mouse	3046	B2		
+oscar	3047	B2		1
+piano	3048	B2		1
+praise	3049	B2		
+presentation	3050	B2		
+psychology	3051	B2		1
+restriction	3052	B2		1
+rocket	3053	B2		
+ruin	3054	B2		
+saudi	3055	B2		
+sean	3056	B2		
+sec	3057	B2		
+slave	3058	B2		
+stability	3059	B2		
+steady	3060	B2		
+symbol	3061	B2		
+terminal	3062	B2		1
+toilet	3063	B2		
+treaty	3064	B2		
+triple	3065	B2		1
+unlikely	3066	B2		
+vietnam	3067	B2		
+agenda	3068	B2		1
+bat	3069	B2		
+bow	3070	B2		
+calendar	3071	B2		
+cape	3072	B2		1
+collective	3073	B2		1
+cooperation	3074	B2		
+craft	3075	B2		
+darkness	3076	B2		
+devil	3077	B2		
+enable	3078	B2		
+equity	3079	B2		
+fortune	3080	B2		1
+goodbye	3081	B2		
+graham	3082	B2		
+hardware	3083	B2		
+intellectual	3084	B2		1
+involvement	3085	B2		
+kentucky	3086	B2		
+madrid	3087	B2		
+mi	3088	B2		
+nut	3089	B2		
+oregon	3090	B2		
+partly	3091	B2		
+petition	3092	B2		
+phrase	3093	B2		1
+physically	3094	B2		
+racial	3095	B2		
+regime	3096	B2		
+sauce	3097	B2		1
+seal	3098	B2		
+shield	3099	B2		
+similarly	3100	B2		
+slide	3101	B2		
+stem	3102	B2		
+summit	3103	B2		
+talented	3104	B2		
+throat	3105	B2		
+tiger	3106	B2		1
+toy	3107	B2		
+warrior	3108	B2		
+wisdom	3109	B2		
+accounting	3110	B2		
+alien	3111	B2		
+awkward	3112	B2		
+beast	3113	B2		
+beef	3114	B2		
+candy	3115	B2		
+carrier	3116	B2		
+celebration	3117	B2		
+celebrity	3118	B2		
+certificate	3119	B2		
+cite	3120	B2		1
+clay	3121	B2		
+colleague	3122	B2		
+construct	3123	B2		
+default	3124	B2		
+delhi	3125	B2		
+derive	3126	B2		
+dialogue	3127	B2		1
+disable	3128	B2		
+distinct	3129	B2		
+drag	3130	B2		
+educate	3131	B2		
+eligible	3132	B2		
+execution	3133	B2		
+fifty	3134	B2		
+follower	3135	B2		
+fool	3136	B2		
+framework	3137	B2		
+franchise	3138	B2		1
+furniture	3139	B2		
+integrate	3140	B2		
+intelligent	3141	B2		1
+interaction	3142	B2		1
+jet	3143	B2		
+lifestyle	3144	B2		
+lisa	3145	B2		
+loop	3146	B2		
+mall	3147	B2		
+overseas	3148	B2		
+polish	3149	B2		
+recommendation	3150	B2		
+recover	3151	B2		
+relax	3152	B2		
+reliable	3153	B2		
+rely	3154	B2		
+remarkable	3155	B2		
+ruling	3156	B2		
+sacrifice	3157	B2		1
+sole	3158	B2		
+succeed	3159	B2		
+tale	3160	B2		
+timing	3161	B2		
+volunteer	3162	B2		
+worship	3163	B2		
+worthy	3164	B2		
+alarm	3165	B2		
+bass	3166	B2		
+bloody	3167	B2		
+breathing	3168	B2		
+butt	3169	B2		
+characteristic	3170	B2		
+collaboration	3171	B2		1
+con	3172	B2		
+consideration	3173	B2		
+crucial	3174	B2		1
+dependent	3175	B2		
+dual	3176	B2		1
+edinburgh	3177	B2		
+equip	3178	B2		
+experimental	3179	B2		
+feeding	3180	B2		
+filter	3181	B2		1
+galaxy	3182	B2		1
+globe	3183	B2		1
+greece	3184	B2		
+gulf	3185	B2		
+highlight	3186	B2		
+intent	3187	B2		
+judgment	3188	B2		
+kennedy	3189	B2		
+knight	3190	B2		
+larry	3191	B2		
+lmao	3192	B2		
+logo	3193	B2		1
+malaysia	3194	B2		
+mature	3195	B2		1
+moore	3196	B2		
+nazi	3197	B2		1
+netherlands	3198	B2		
+peaceful	3199	B2		
+philip	3200	B2		
+photographer	3201	B2		
+pin	3202	B2		
+prevention	3203	B2		
+publicly	3204	B2		
+pump	3205	B2		
+revenge	3206	B2		
+satisfy	3207	B2		
+slip	3208	B2		1
+spare	3209	B2		
+specialist	3210	B2		
+tap	3211	B2		
+thompson	3212	B2		
+tourism	3213	B2		1
+turkish	3214	B2		
+acceptable	3215	B2		1
+ally	3216	B2		
+auction	3217	B2		
+chaos	3218	B2		
+cleveland	3219	B2		
+centimeter	3220	B2		
+compose	3221	B2		1
+concentration	3222	B2		1
+copper	3223	B2		
+corp	3224	B2		
+corps	3225	B2		
+dawn	3226	B2		
+dispute	3227	B2		1
+earnings	3228	B2		
+execute	3229	B2		
+frequent	3230	B2		
+gather	3231	B2		
+hilarious	3232	B2		
+huh	3233	B2		
+margin	3234	B2		
+mar	3235	B2		
+maryland	3236	B2		
+mechanism	3237	B2		
+moderate	3238	B2		
+murray	3239	B2		
+oklahoma	3240	B2		
+opus	3241	B2		
+overcome	3242	B2		
+parallel	3243	B2		
+passage	3244	B2		1
+pit	3245	B2		
+psychological	3246	B2		1
+quest	3247	B2		
+radiation	3248	B2		
+stroke	3249	B2		
+stun	3250	B2		
+tokyo	3251	B2		
+tune	3252	B2		
+utility	3253	B2		
+vessel	3254	B2		
+wee	3255	B2		
+wherever	3256	B2		
+acquisition	3257	B2		1
+alabama	3258	B2		
+alice	3259	B2		
+anime	3260	B2		1
+autumn	3261	B2		
+barry	3262	B2		
+bold	3263	B2		
+breathe	3264	B2		
+cameron	3265	B2		
+classical	3266	B2		1
+classify	3267	B2		
+clip	3268	B2		1
+coin	3269	B2		1
+conspiracy	3270	B2		
+controversy	3271	B2		
+cooper	3272	B2		
+disappear	3273	B2		
+eh	3274	B2		
+encounter	3275	B2		
+equality	3276	B2		
+exam	3277	B2		
+examination	3278	B2		
+federation	3279	B2		
+fiscal	3280	B2		1
+guardian	3281	B2		
+homeless	3282	B2		
+intervention	3283	B2		1
+jerry	3284	B2		
+lover	3285	B2		
+mainstream	3286	B2		
+menu	3287	B2		1
+missouri	3288	B2		
+mutual	3289	B2		1
+nope	3290	B2		
+offense	3291	B2		1
+oral	3292	B2		1
+panic	3293	B2		1
+pursue	3294	B2		
+realise	3295	B2		
+refugee	3296	B2		
+rip	3297	B2		
+scope	3298	B2		
+segment	3299	B2		1
+spectrum	3300	B2		
+ted	3301	B2		
+terror	3302	B2		1
+uh	3303	B2		
+va	3304	B2		
+venture	3305	B2		
+virtually	3306	B2		
+warren	3307	B2		
+yea	3308	B2		
+accompany	3309	B2		
+adams	3310	B2		
+alpha	3311	B2		1
+arrangement	3312	B2		1
+boundary	3313	B2		
+brick	3314	B2		
+brooklyn	3315	B2		
+considerable	3316	B2		
+conventional	3317	B2		
+danny	3318	B2		
+des	3319	B2		
+designate	3320	B2		1
+emperor	3321	B2		1
+employer	3322	B2		1
+enormous	3323	B2		
+forgive	3324	B2		
+garage	3325	B2		1
+gathering	3326	B2		
+guideline	3327	B2		
+indians	3328	B2		
+indonesia	3329	B2		
+inquiry	3330	B2		
+inspector	3331	B2		1
+khan	3332	B2		1
+lion	3333	B2		1
+lonely	3334	B2		
+mercy	3335	B2		
+nevertheless	3336	B2		
+outer	3337	B2		1
+oxygen	3338	B2		
+pipe	3339	B2		1
+piss	3340	B2		
+poem	3341	B2		
+powder	3342	B2		
+racism	3343	B2		1
+roy	3344	B2		
+rude	3345	B2		1
+screw	3346	B2		
+shelter	3347	B2		
+signature	3348	B2		1
+spider	3349	B2		1
+stewart	3350	B2		
+tribute	3351	B2		
+trigger	3352	B2		
+vary	3353	B2		
+venue	3354	B2		1
+ye	3355	B2		
+abortion	3356	B2		
+accuracy	3357	B2		
+albert	3358	B2		
+artificial	3359	B2		1
+beneath	3360	B2		
+bitcoin	3361	B2		
+bullet	3362	B2		
+carl	3363	B2		
+consistently	3364	B2		
+conversion	3365	B2		1
+copyright	3366	B2		
+deposit	3367	B2		
+destination	3368	B2		1
+dirt	3369	B2		
+diverse	3370	B2		
+divine	3371	B2		1
+er	3372	B2		
+exclusively	3373	B2		
+export	3374	B2		1
+formerly	3375	B2		
+functional	3376	B2		
+grandfather	3377	B2		
+habit	3378	B2		1
+harvard	3379	B2		
+isolate	3380	B2		1
+jealous	3381	B2		
+laura	3382	B2		
+lazy	3383	B2		
+mama	3384	B2		
+marshall	3385	B2		
+mitchell	3386	B2		
+modify	3387	B2		1
+municipal	3388	B2		1
+naval	3389	B2		
+neighbor	3390	B2		
+nelson	3391	B2		
+neutral	3392	B2		
+noble	3393	B2		1
+pat	3394	B2		
+poland	3395	B2		
+popularity	3396	B2		
+pussy	3397	B2		
+robot	3398	B2		1
+sacred	3399	B2		
+spy	3400	B2		
+steven	3401	B2		
+suggestion	3402	B2		1
+susan	3403	B2		
+suspension	3404	B2		1
+terrorism	3405	B2		1
+terry	3406	B2		
+toxic	3407	B2		1
+treasury	3408	B2		
+tunnel	3409	B2		1
+upgrade	3410	B2		
+warrant	3411	B2		
+aaron	3412	B2		
+actively	3413	B2		
+afghanistan	3414	B2		
+backing	3415	B2		
+baker	3416	B2		
+barcelona	3417	B2		
+bless	3418	B2		
+brazilian	3419	B2		
+brush	3420	B2		
+burden	3421	B2		
+campbell	3422	B2		
+casual	3423	B2		
+certify	3424	B2		1
+charter	3425	B2		
+chef	3426	B2		1
+civilian	3427	B2		
+coalition	3428	B2		1
+cock	3429	B2		
+complain	3430	B2		
+controversial	3431	B2		
+denver	3432	B2		
+differently	3433	B2		
+discipline	3434	B2		1
+disgust	3435	B2		
+dominant	3436	B2		1
+emma	3437	B2		
+essay	3438	B2		
+furthermore	3439	B2		
+graphic	3440	B2		1
+greg	3441	B2		
+healing	3442	B2		
+implement	3443	B2		
+instantly	3444	B2		
+invasion	3445	B2		1
+jacob	3446	B2		
+laptop	3447	B2		
+legendary	3448	B2		
+leo	3449	B2		
+maker	3450	B2		
+margaret	3451	B2		
+mario	3452	B2		
+opponent	3453	B2		
+outdoor	3454	B2		
+palm	3455	B2		
+parker	3456	B2		
+pole	3457	B2		
+pub	3458	B2		
+queensland	3459	B2		
+ranger	3460	B2		1
+reception	3461	B2		
+recipe	3462	B2		
+regulatory	3463	B2		
+rubber	3464	B2		
+serial	3465	B2		
+shed	3466	B2		
+snake	3467	B2		
+sponsor	3468	B2		1
+strict	3469	B2		1
+subsequently	3470	B2		
+substance	3471	B2		1
+switzerland	3472	B2		
+syndrome	3473	B2		1
+ultra	3474	B2		1
+unexpected	3475	B2		
+usage	3476	B2		1
+utah	3477	B2		
+accidentally	3478	B2		
+affordable	3479	B2		
+amateur	3480	B2		1
+argentina	3481	B2		
+baltimore	3482	B2		
+batman	3483	B2		
+bin	3484	B2		
+biology	3485	B2		1
+bobby	3486	B2		
+briefly	3487	B2		
+canal	3488	B2		1
+cancell	3489	B2		
+charlotte	3490	B2		1
+christopher	3491	B2		
+climb	3492	B2		
+completion	3493	B2		
+cruise	3494	B2		
+custody	3495	B2		
+delete	3496	B2		
+demonstrate	3497	B2		
+departure	3498	B2		
+developer	3499	B2		
+dig	3500	B2		
+eagle	3501	B2		
+evans	3502	B2		
+explosion	3503	B2		1
+fever	3504	B2		
+fluid	3505	B2		
+handsome	3506	B2		
+ho	3507	B2		
+imagination	3508	B2		1
+integration	3509	B2		
+integrity	3510	B2		
+interpretation	3511	B2		
+leaf	3512	B2		
+legitimate	3513	B2		
+lightning	3514	B2		
+magical	3515	B2		1
+motivation	3516	B2		1
+nasty	3517	B2		
+oliver	3518	B2		
+outfit	3519	B2		
+pension	3520	B2		1
+permit	3521	B2		1
+perry	3522	B2		
+pleasant	3523	B2		
+portrait	3524	B2		1
+productive	3525	B2		1
+ron	3526	B2		
+safely	3527	B2		
+slight	3528	B2		
+socialist	3529	B2		1
+sue	3530	B2		
+tension	3531	B2		1
+thailand	3532	B2		
+transaction	3533	B2		1
+twist	3534	B2		
+ugh	3535	B2		
+unemployment	3536	B2		
+unity	3537	B2		
+useless	3538	B2		
+viewer	3539	B2		
+wtf	3540	B2		
+advocate	3541	B2		
+arc	3542	B2		
+backup	3543	B2		
+bitter	3544	B2		
+clever	3545	B2		
+clinic	3546	B2		1
+continuous	3547	B2		
+convert	3548	B2		
+correctly	3549	B2		
+creator	3550	B2		
+creature	3551	B2		
+criterion	3552	B2		
+detective	3553	B2		
+disability	3554	B2		
+dish	3555	B2		
+douglas	3556	B2		
+du	3557	B2		
+duck	3558	B2		
+egyptian	3559	B2		
+evaluation	3560	B2		
+excess	3561	B2		
+fence	3562	B2		
+franklin	3563	B2		
+fred	3564	B2		
+gradually	3565	B2		
+gravity	3566	B2		1
+hawaii	3567	B2		
+holder	3568	B2		
+hood	3569	B2		
+identical	3570	B2		1
+imperial	3571	B2		
+jose	3572	B2		
+ken	3573	B2		
+legally	3574	B2		
+meter	3575	B2		
+nail	3576	B2		
+negotiation	3577	B2		
+nonsense	3578	B2		
+ontario	3579	B2		
+operational	3580	B2		
+orleans	3581	B2		
+phoenix	3582	B2		
+playoff	3583	B2		
+poet	3584	B2		
+repeatedly	3585	B2		
+robinson	3586	B2		1
+sink	3587	B2		
+skip	3588	B2		
+slavery	3589	B2		
+snap	3590	B2		
+swedish	3591	B2		
+swiss	3592	B2		
+tennessee	3593	B2		
+transformation	3594	B2		1
+vulnerable	3595	B2		
+wealthy	3596	B2		
+additionally	3597	B2		
+amy	3598	B2		
+barbara	3599	B2		
+beta	3600	B2		
+bore	3601	B2		
+bronze	3602	B2		1
+bug	3603	B2		
+cave	3604	B2		1
+cheat	3605	B2		
+chronic	3606	B2		1
+communicate	3607	B2		
+convict	3608	B2		
+diagnosis	3609	B2		
+dismiss	3610	B2		
+distinguish	3611	B2		
+dose	3612	B2		1
+eighth	3613	B2		
+fa	3614	B2		
+flesh	3615	B2		
+flip	3616	B2		
+forty	3617	B2		1
+generous	3618	B2		
+germans	3619	B2		
+hr	3620	B2		
+incorporate	3621	B2		1
+jerusalem	3622	B2		
+laser	3623	B2		1
+loyal	3624	B2		
+marijuana	3625	B2		
+md	3626	B2		
+mentally	3627	B2		
+occupation	3628	B2		1
+painting	3629	B2		
+patch	3630	B2		
+patience	3631	B2		1
+pic	3632	B2		
+pollution	3633	B2		1
+precisely	3634	B2		
+privilege	3635	B2		
+punk	3636	B2		1
+radar	3637	B2		1
+resist	3638	B2		
+solely	3639	B2		
+th	3640	B2		
+tourist	3641	B2		1
+transit	3642	B2		1
+villa	3643	B2		1
+wireless	3644	B2		
+wrap	3645	B2		
+wright	3646	B2		
+yoga	3647	B2		1
+airline	3648	B2		
+alaska	3649	B2		
+anytime	3650	B2		
+bacterium	3651	B2		
+being	3652	B2		
+beside	3653	B2		
+blade	3654	B2		
+buck	3655	B2		
+bulk	3656	B2		
+cargo	3657	B2		1
+census	3658	B2		
+christianity	3659	B2		
+coastal	3660	B2		
+commentary	3661	B2		1
+confusion	3662	B2		1
+congressional	3663	B2		
+corn	3664	B2		
+dealer	3665	B2		1
+deem	3666	B2		
+destiny	3667	B2		
+distant	3668	B2		
+electronics	3669	B2		
+emerge	3670	B2		
+emphasis	3671	B2		
+ethics	3672	B2		
+excitement	3673	B2		
+exploration	3674	B2		1
+filling	3675	B2		
+glasgow	3676	B2		
+helen	3677	B2		
+humor	3678	B2		1
+insight	3679	B2		
+jennifer	3680	B2		
+louisiana	3681	B2		
+marie	3682	B2		1
+mississippi	3683	B2		
+nerve	3684	B2		
+nightmare	3685	B2		
+overnight	3686	B2		
+partially	3687	B2		
+pie	3688	B2		
+poster	3689	B2		1
+practically	3690	B2		
+preserve	3691	B2		
+raid	3692	B2		1
+ram	3693	B2		
+respective	3694	B2		1
+restrict	3695	B2		
+samuel	3696	B2		
+sandy	3697	B2		
+scenario	3698	B2		
+sheep	3699	B2		
+situate	3700	B2		1
+sony	3701	B2		
+stanley	3702	B2		
+sustainable	3703	B2		
+sustain	3704	B2		
+taxi	3705	B2		1
+tobacco	3706	B2		
+trace	3707	B2		1
+turner	3708	B2		
+uncomfortable	3709	B2		
+weakness	3710	B2		
+widespread	3711	B2		
+xbox	3712	B2		
+accessible	3713	B2		1
+acknowledge	3714	B2		
+advise	3715	B2		
+advisory	3716	B2		
+animation	3717	B2		1
+assignment	3718	B2		
+basement	3719	B2		
+bias	3720	B2		
+birmingham	3721	B2		
+cancel	3722	B2		
+carpet	3723	B2		
+ceiling	3724	B2		
+cherry	3725	B2		
+chill	3726	B2		
+classification	3727	B2		1
+clue	3728	B2		
+cole	3729	B2		
+collapse	3730	B2		
+compound	3731	B2		
+conscious	3732	B2		
+consecutive	3733	B2		
+costume	3734	B2		1
+craig	3735	B2		
+devote	3736	B2		
+dominate	3737	B2		1
+earl	3738	B2		
+endless	3739	B2		
+examine	3740	B2		1
+float	3741	B2		
+garbage	3742	B2		
+gospel	3743	B2		
+grain	3744	B2		1
+grid	3745	B2		
+heating	3746	B2		
+identification	3747	B2		1
+lap	3748	B2		
+liver	3749	B2		1
+metro	3750	B2		
+metropolitan	3751	B2		
+mixture	3752	B2		
+nominate	3753	B2		
+oak	3754	B2		
+parliamentary	3755	B2		
+patent	3756	B2		
+perception	3757	B2		1
+physician	3758	B2		
+portland	3759	B2		
+proceed	3760	B2		
+proceeding	3761	B2		
+pupil	3762	B2		
+restore	3763	B2		
+rifle	3764	B2		
+rival	3765	B2		1
+runner	3766	B2		
+sadly	3767	B2		
+significance	3768	B2		
+soap	3769	B2		
+spray	3770	B2		
+structural	3771	B2		1
+suite	3772	B2		1
+tropical	3773	B2		
+ukrainian	3774	B2		
+unnecessary	3775	B2		
+verse	3776	B2		1
+victor	3777	B2		
+vintage	3778	B2		
+warn	3779	B2		
+watson	3780	B2		
+acre	3781	B2		
+adapt	3782	B2		
+adoption	3783	B2		1
+anonymous	3784	B2		
+antonio	3785	B2		
+artistic	3786	B2		1
+attendance	3787	B2		
+aviation	3788	B2		1
+barrel	3789	B2		
+beloved	3790	B2		
+chuck	3791	B2		
+cinema	3792	B2		1
+colonial	3793	B2		1
+compliance	3794	B2		
+contrary	3795	B2		1
+couch	3796	B2		
+crush	3797	B2		
+dam	3798	B2		
+decrease	3799	B2		
+diabetes	3800	B2		
+dressing	3801	B2		
+genre	3802	B2		1
+gentle	3803	B2		
+grammar	3804	B2		
+illustrate	3805	B2		1
+invent	3806	B2		
+jake	3807	B2		
+jam	3808	B2		
+jamie	3809	B2		
+jessica	3810	B2		
+keith	3811	B2		
+kent	3812	B2		
+lease	3813	B2		
+lens	3814	B2		
+loyalty	3815	B2		
+madison	3816	B2		
+magnetic	3817	B2		
+metre	3818	B2		
+mysterious	3819	B2		
+notion	3820	B2		1
+partial	3821	B2		1
+propaganda	3822	B2		
+rat	3823	B2		
+reflection	3824	B2		
+resolve	3825	B2		
+revolutionary	3826	B2		
+scandal	3827	B2		
+shine	3828	B2		
+simultaneously	3829	B2		
+substitute	3830	B2		
+surveillance	3831	B2		1
+tactic	3832	B2		1
+testimony	3833	B2		
+thai	3834	B2		
+treasure	3835	B2		
+trophy	3836	B2		
+tweet	3837	B2		
+tyler	3838	B2		
+underlie	3839	B2		
+unfair	3840	B2		
+acceptance	3841	B2		
+annually	3842	B2		
+apologize	3843	B2		
+ash	3844	B2		
+aunt	3845	B2		
+benjamin	3846	B2		1
+blake	3847	B2		
+bubble	3848	B2		
+buyer	3849	B2		
+casino	3850	B2		1
+counsel	3851	B2		
+deadly	3852	B2		
+der	3853	B2		
+determination	3854	B2		
+embrace	3855	B2		
+exhibit	3856	B2		
+gentleman	3857	B2		
+gm	3858	B2		
+halloween	3859	B2		
+hammer	3860	B2		
+hitler	3861	B2		
+icon	3862	B2		
+impose	3863	B2		1
+indigenous	3864	B2		
+infinite	3865	B2		
+installation	3866	B2		1
+inter	3867	B2		1
+iranian	3868	B2		
+legislature	3869	B2		
+liability	3870	B2		
+maine	3871	B2		
+manhattan	3872	B2		
+marathon	3873	B2		1
+marvel	3874	B2		
+michelle	3875	B2		
+moreover	3876	B2		
+neil	3877	B2		
+ours	3878	B2		
+parade	3879	B2		1
+paradise	3880	B2		
+perceive	3881	B2		
+preliminary	3882	B2		
+premiere	3883	B2		
+presidency	3884	B2		
+react	3885	B2		
+realistic	3886	B2		
+remark	3887	B2		
+retain	3888	B2		
+roberts	3889	B2		1
+rocky	3890	B2		
+russians	3891	B2		
+satisfaction	3892	B2		1
+scratch	3893	B2		
+shade	3894	B2		
+sheriff	3895	B2		
+shy	3896	B2		
+sometime	3897	B2		
+strictly	3898	B2		
+sunshine	3899	B2		
+thou	3900	B2		
+tier	3901	B2		1
+tommy	3902	B2		1
+travell	3903	B2		
+vancouver	3904	B2		
+vocal	3905	B2		1
+yield	3906	B2		
+accomplish	3907	B2		
+admission	3908	B2		1
+bacon	3909	B2		
+barrier	3910	B2		
+belgium	3911	B2		
+burst	3912	B2		
+casting	3913	B2		1
+cattle	3914	B2		
+cc	3915	B2		
+classroom	3916	B2		
+collins	3917	B2		
+compromise	3918	B2		
+convenient	3919	B2		
+costa	3920	B2		
+crop	3921	B2		
+earthquake	3922	B2		
+elderly	3923	B2		
+eliminate	3924	B2		
+embarrass	3925	B2		
+harbor	3926	B2		
+harvey	3927	B2		
+ion	3928	B2		
+jeremy	3929	B2		
+lesbian	3930	B2		
+mathematics	3931	B2		
+medication	3932	B2		
+morris	3933	B2		
+norway	3934	B2		
+par	3935	B2		
+podcast	3936	B2		
+portfolio	3937	B2		
+productivity	3938	B2		
+protocol	3939	B2		
+quietly	3940	B2		
+rachel	3941	B2		
+salad	3942	B2		
+scholarship	3943	B2		
+soup	3944	B2		
+southeast	3945	B2		
+stake	3946	B2		
+strain	3947	B2		
+swift	3948	B2		
+tackle	3949	B2		
+timeline	3950	B2		
+torture	3951	B2		1
+translate	3952	B2		
+urgent	3953	B2		1
+vegetable	3954	B2		
+vertical	3955	B2		1
+violation	3956	B2		1
+wallet	3957	B2		
+welsh	3958	B2		
+workshop	3959	B2		
+aboard	3960	B2		
+abstract	3961	B2		
+accent	3962	B2		1
+addiction	3963	B2		
+awake	3964	B2		
+beam	3965	B2		
+bean	3966	B2		
+binding	3967	B2		
+blank	3968	B2		
+buffalo	3969	B2		
+conviction	3970	B2		1
+corrupt	3971	B2		
+cow	3972	B2		
+curve	3973	B2		
+depress	3974	B2		
+dine	3975	B2		
+duration	3976	B2		
+eddie	3977	B2		
+emily	3978	B2		
+fifteen	3979	B2		
+ga	3980	B2		
+grandmother	3981	B2		
+harsh	3982	B2		
+horn	3983	B2		
+hurry	3984	B2		
+immune	3985	B2		
+inflation	3986	B2		1
+ingredient	3987	B2		
+inspection	3988	B2		1
+intensity	3989	B2		
+inventory	3990	B2		
+invitation	3991	B2		1
+judicial	3992	B2		
+justify	3993	B2		1
+kyle	3994	B2		
+lean	3995	B2		
+lecture	3996	B2		1
+logical	3997	B2		1
+mason	3998	B2		
+meaningful	3999	B2		
+migration	4000	B2		1
+missile	4001	B2		1
+motivate	4002	B2		1
+nancy	4003	B2		
+norman	4004	B2		
+northwest	4005	B2		
+organ	4006	B2		
+patrol	4007	B2		
+pearl	4008	B2		
+peer	4009	B2		1
+pepper	4010	B2		
+pig	4011	B2		
+pile	4012	B2		1
+plug	4013	B2		
+provision	4014	B2		
+revise	4015	B2		
+rod	4016	B2		
+stair	4017	B2		
+stare	4018	B2		
+statistical	4019	B2		1
+stranger	4020	B2		
+sweat	4021	B2		
+syrian	4022	B2		
+tattoo	4023	B2		
+teenage	4024	B2		
+thunder	4025	B2		
+tragedy	4026	B2		
+trauma	4027	B2		
+vincent	4028	B2		
+wrestling	4029	B2		
+zoo	4030	B2		
+accordance	4031	B2		
+activist	4032	B2		1
+alike	4033	B2		
+applicable	4034	B2		1
+arrow	4035	B2		
+availability	4036	B2		
+aw	4037	B2		
+ba	4038	B2		
+bend	4039	B2		
+breach	4040	B2		
+cabin	4041	B2		
+cage	4042	B2		1
+chancellor	4043	B2		
+cheer	4044	B2		
+closet	4045	B2		
+companion	4046	B2		
+consciousness	4047	B2		
+consultant	4048	B2		1
+controller	4049	B2		
+correspond	4050	B2		1
+courtesy	4051	B2		
+cuba	4052	B2		
+disc	4053	B2		
+embassy	4054	B2		
+fascinating	4055	B2		
+financing	4056	B2		
+flexible	4057	B2		1
+goodness	4058	B2		
+guilt	4059	B2		
+haven	4060	B2		
+helicopter	4061	B2		
+homework	4062	B2		
+hp	4063	B2		
+iconic	4064	B2		
+infect	4065	B2		
+keen	4066	B2		
+kenya	4067	B2		
+mandatory	4068	B2		
+manufacture	4069	B2		1
+mechanics	4070	B2		
+mere	4071	B2		
+miracle	4072	B2		1
+mt	4073	B2		
+mud	4074	B2		
+murphy	4075	B2		
+nathan	4076	B2		
+observation	4077	B2		1
+owe	4078	B2		
+phenomenon	4079	B2		
+pittsburgh	4080	B2		
+precise	4081	B2		
+profession	4082	B2		1
+prospect	4083	B2		
+protective	4084	B2		
+provider	4085	B2		
+publisher	4086	B2		
+reportedly	4087	B2		
+retreat	4088	B2		
+rookie	4089	B2		
+sandwich	4090	B2		1
+separation	4091	B2		
+sexually	4092	B2		
+ski	4093	B2		
+sterling	4094	B2		
+stuart	4095	B2		
+surgeon	4096	B2		
+theft	4097	B2		
+um	4098	B2		
+valve	4099	B2		1
+visa	4100	B2		1
+adjacent	4101	B2		
+appreciation	4102	B2		
+arabia	4103	B2		
+athletic	4104	B2		
+authorize	4105	B2		
+banner	4106	B2		
+beijing	4107	B2		
+brad	4108	B2		
+caribbean	4109	B2		
+charm	4110	B2		
+colony	4111	B2		1
+cookie	4112	B2		1
+cruel	4113	B2		1
+curriculum	4114	B2		
+deadline	4115	B2		
+deer	4116	B2		
+delta	4117	B2		1
+dive	4118	B2		
+easter	4119	B2		
+electoral	4120	B2		
+eleven	4121	B2		
+entity	4122	B2		
+excessive	4123	B2		1
+feminist	4124	B2		
+govern	4125	B2		
+ham	4126	B2		
+heal	4127	B2		
+interface	4128	B2		1
+jewelry	4129	B2		
+journalism	4130	B2		1
+juan	4131	B2		
+julia	4132	B2		
+jungle	4133	B2		1
+linear	4134	B2		
+mg	4135	B2		
+occasional	4136	B2		
+orient	4137	B2		1
+pete	4138	B2		
+predict	4139	B2		
+prof	4140	B2		1
+pursuit	4141	B2		
+rap	4142	B2		
+reminder	4143	B2		
+resume	4144	B2		
+rev	4145	B2		
+richmond	4146	B2		
+ridge	4147	B2		
+scholar	4148	B2		
+tribe	4149	B2		
+unfortunate	4150	B2		
+variable	4151	B2		1
+victorian	4152	B2		
+xi	4153	B2		
+ace	4154	B2		
+adjust	4155	B2		
+alternate	4156	B2		1
+artwork	4157	B2		
+ashley	4158	B2		
+attraction	4159	B2		1
+babe	4160	B2		
+bankruptcy	4161	B2		
+canon	4162	B2		1
+capability	4163	B2		
+catherine	4164	B2		
+closure	4165	B2		
+cognitive	4166	B2		1
+competitor	4167	B2		
+connecticut	4168	B2		
+defender	4169	B2		1
+dental	4170	B2		
+diplomatic	4171	B2		1
+drum	4172	B2		
+editorial	4173	B2		
+entertain	4174	B2		
+eternal	4175	B2		
+generic	4176	B2		
+grandma	4177	B2		
+grip	4178	B2		
+handful	4179	B2		
+happily	4180	B2		
+harmony	4181	B2		1
+hmm	4182	B2		
+humble	4183	B2		1
+hybrid	4184	B2		
+keyboard	4185	B2		
+locally	4186	B2		
+mild	4187	B2		
+minimal	4188	B2		1
+molecular	4189	B2		
+noon	4190	B2		
+nowadays	4191	B2		
+openly	4192	B2		
+overview	4193	B2		
+palestinian	4194	B2		
+parish	4195	B2		
+pathetic	4196	B2		
+potato	4197	B2		
+potter	4198	B2		
+preference	4199	B2		
+proportion	4200	B2		1
+rage	4201	B2		1
+restoration	4202	B2		
+selfish	4203	B2		
+sergeant	4204	B2		
+silk	4205	B2		
+stamp	4206	B2		
+throne	4207	B2		
+thy	4208	B2		
+urge	4209	B2		
+warner	4210	B2		
+witch	4211	B2		
+archive	4212	B2		1
+array	4213	B2		
+belly	4214	B2		
+booth	4215	B2		
+breakdown	4216	B2		
+brutal	4217	B2		1
+calculate	4218	B2		1
+cam	4219	B2		
+citizenship	4220	B2		
+cliff	4221	B2		
+consensus	4222	B2		
+declaration	4223	B2		
+dennis	4224	B2		
+derby	4225	B2		1
+distinction	4226	B2		1
+donation	4227	B2		1
+facial	4228	B2		
+faithful	4229	B2		
+fatal	4230	B2		1
+fig	4231	B2		
+fitting	4232	B2		
+genuinely	4233	B2		
+holland	4234	B2		
+hunger	4235	B2		
+hurricane	4236	B2		
+implication	4237	B2		1
+import	4238	B2		
+innovative	4239	B2		
+jurisdiction	4240	B2		
+laughter	4241	B2		
+lemon	4242	B2		
+les	4243	B2		
+lung	4244	B2		
+mighty	4245	B2		
+monetary	4246	B2		
+nutrition	4247	B2		1
+ore	4248	B2		
+os	4249	B2		
+pine	4250	B2		
+poorly	4251	B2		
+portugal	4252	B2		
+pose	4253	B2		1
+pour	4254	B2		1
+purely	4255	B2		
+ralph	4256	B2		
+rental	4257	B2		
+seemingly	4258	B2		
+severely	4259	B2		
+shark	4260	B2		
+southwest	4261	B2		
+survivor	4262	B2		
+technically	4263	B2		
+unlimited	4264	B2		
+anxious	4265	B2		1
+bee	4266	B2		
+bombing	4267	B2		
+cafe	4268	B2		
+carlos	4269	B2		
+cigarette	4270	B2		1
+colin	4271	B2		1
+cult	4272	B2		
+dairy	4273	B2		
+dakota	4274	B2		
+darling	4275	B2		
+delight	4276	B2		
+diary	4277	B2		
+disagree	4278	B2		
+drill	4279	B2		
+euro	4280	B2		1
+evolve	4281	B2		
+forecast	4282	B2		
+governance	4283	B2		
+hug	4284	B2		
+importantly	4285	B2		
+indoor	4286	B2		
+influential	4287	B2		
+invisible	4288	B2		1
+jeans	4289	B2		1
+julie	4290	B2		
+karen	4291	B2		
+lawsuit	4292	B2		
+leak	4293	B2		
+lucas	4294	B2		
+marcus	4295	B2		
+musician	4296	B2		
+olive	4297	B2		1
+passionate	4298	B2		
+receiver	4299	B2		
+riot	4300	B2		
+roster	4301	B2		
+servant	4302	B2		1
+setup	4303	B2		
+skull	4304	B2		
+slot	4305	B2		
+smash	4306	B2		
+statue	4307	B2		1
+surprisingly	4308	B2		
+surrender	4309	B2		
+suspicious	4310	B2		
+teenager	4311	B2		
+tender	4312	B2		1
+thoroughly	4313	B2		
+todd	4314	B2		
+vacuum	4315	B2		
+variation	4316	B2		1
+wont	4317	B2		
+allegation	4318	B2		
+anticipate	4319	B2		1
+architect	4320	B2		
+basin	4321	B2		
+beneficial	4322	B2		
+bleed	4323	B2		
+breed	4324	B2		
+breeding	4325	B2		
+bride	4326	B2		1
+broadway	4327	B2		
+bud	4328	B2		
+butler	4329	B2		
+cartoon	4330	B2		
+chick	4331	B2		
+coke	4332	B2		1
+comparable	4333	B2		1
+confirmation	4334	B2		1
+console	4335	B2		1
+contractor	4336	B2		
+diameter	4337	B2		
+dubai	4338	B2		
+dublin	4339	B2		
+dump	4340	B2		
+duo	4341	B2		
+dynamics	4342	B2		
+elephant	4343	B2		
+enhance	4344	B2		
+exhaust	4345	B2		
+fabric	4346	B2		1
+fabulous	4347	B2		1
+fairy	4348	B2		
+fold	4349	B2		
+freak	4350	B2		
+frustrate	4351	B2		
+gamble	4352	B2		
+gently	4353	B2		
+glorious	4354	B2		1
+grief	4355	B2		
+harrison	4356	B2		
+historically	4357	B2		
+hub	4358	B2		
+hughes	4359	B2		
+inevitable	4360	B2		
+kg	4361	B2		
+layout	4362	B2		
+lodge	4363	B2		
+merchant	4364	B2		
+merit	4365	B2		
+micro	4366	B2		1
+myth	4367	B2		
+nintendo	4368	B2		
+obsess	4369	B2		
+organise	4370	B2		1
+overwhelming	4371	B2		
+pale	4372	B2		1
+particle	4373	B2		
+pastor	4374	B2		1
+permanently	4375	B2		
+poison	4376	B2		1
+provincial	4377	B2		1
+rebel	4378	B2		
+rotation	4379	B2		1
+separately	4380	B2		
+shaw	4381	B2		
+subtle	4382	B2		
+toll	4383	B2		
+tragic	4384	B2		1
+trainer	4385	B2		
+transform	4386	B2		
+unbelievable	4387	B2		
+underneath	4388	B2		
+viral	4389	B2		
+warehouse	4390	B2		
+widow	4391	B2		
+wive	4392	B2		
+administrator	4393	B2		1
+altogether	4394	B2		
+animate	4395	B2		1
+assess	4396	B2		
+assumption	4397	B2		
+assure	4398	B2		1
+austria	4399	B2		
+basket	4400	B2		1
+beard	4401	B2		
+bio	4402	B2		
+blanket	4403	B2		
+bucket	4404	B2		
+burger	4405	B2		1
+computing	4406	B2		
+concentrate	4407	B2		1
+continent	4408	B2		1
+cruz	4409	B2		
+curse	4410	B2		
+drain	4411	B2		
+emission	4412	B2		
+ethical	4413	B2		
+excellence	4414	B2		1
+flame	4415	B2		
+freely	4416	B2		
+graduation	4417	B2		
+hint	4418	B2		
+horizon	4419	B2		1
+hostile	4420	B2		1
+inhabitant	4421	B2		
+ink	4422	B2		
+inn	4423	B2		
+lo	4424	B2		
+lucy	4425	B2		
+matrix	4426	B2		
+miserable	4427	B2		
+momentum	4428	B2		
+monkey	4429	B2		
+montreal	4430	B2		
+motorcycle	4431	B2		
+nationwide	4432	B2		
+nest	4433	B2		
+newcastle	4434	B2		
+nicely	4435	B2		
+ninth	4436	B2		
+nomination	4437	B2		1
+notable	4438	B2		1
+obligation	4439	B2		1
+optical	4440	B2		1
+outlook	4441	B2		
+penny	4442	B2		
+petty	4443	B2		
+quantity	4444	B2		
+quantum	4445	B2		
+rainbow	4446	B2		
+recognise	4447	B2		
+ree	4448	B2		
+reign	4449	B2		
+scan	4450	B2		
+specialize	4451	B2		
+spencer	4452	B2		1
+submission	4453	B2		
+sunny	4454	B2		
+testament	4455	B2		1
+toe	4456	B2		
+tremendous	4457	B2		
+ab	4458	B2		
+accommodation	4459	B2		
+adorable	4460	B2		1
+allegedly	4461	B2		
+ambulance	4462	B2		1
+ashamed	4463	B2		
+bailey	4464	B2		
+ballot	4465	B2		
+blessing	4466	B2		
+cemetery	4467	B2		
+chile	4468	B2		
+compact	4469	B2		1
+consult	4470	B2		
+deficit	4471	B2		
+demo	4472	B2		
+demon	4473	B2		
+demonstration	4474	B2		
+detect	4475	B2		
+detection	4476	B2		
+doll	4477	B2		
+donate	4478	B2		
+elaborate	4479	B2		
+expertise	4480	B2		1
+fiber	4481	B2		1
+fry	4482	B2		
+grocery	4483	B2		
+guinea	4484	B2		
+halfway	4485	B2		
+heel	4486	B2		
+holmes	4487	B2		
+hull	4488	B2		
+independently	4489	B2		
+indication	4490	B2		1
+insist	4491	B2		1
+intensive	4492	B2		1
+interactive	4493	B2		1
+intimate	4494	B2		
+laundry	4495	B2		
+lb	4496	B2		
+linda	4497	B2		
+martial	4498	B2		1
+nigerian	4499	B2		
+northeast	4500	B2		
+password	4501	B2		
+politically	4502	B2		
+presumably	4503	B2		
+pronounce	4504	B2		
+prosecution	4505	B2		
+pulse	4506	B2		
+rational	4507	B2		
+realm	4508	B2		
+rope	4509	B2		
+shout	4510	B2		
+sierra	4511	B2		1
+smartphone	4512	B2		
+specify	4513	B2		
+spectacular	4514	B2		
+stan	4515	B2		
+streak	4516	B2		
+subscription	4517	B2		
+technological	4518	B2		1
+temporarily	4519	B2		
+tolerance	4520	B2		
+traditionally	4521	B2		
+unhappy	4522	B2		
+adequate	4523	B2		
+alter	4524	B2		
+apology	4525	B2		1
+arkansas	4526	B2		
+attribute	4527	B2		
+beg	4528	B2		
+belonging	4529	B2		
+bout	4530	B2		1
+brass	4531	B2		
+buzz	4532	B2		
+clarke	4533	B2		
+comeback	4534	B2		
+diagnose	4535	B2		
+diesel	4536	B2		1
+dimension	4537	B2		1
+dip	4538	B2		
+disturb	4539	B2		
+dot	4540	B2		
+dylan	4541	B2		
+effectiveness	4542	B2		
+ellen	4543	B2		
+exceptional	4544	B2		
+filing	4545	B2		
+flee	4546	B2		
+foul	4547	B2		
+frankly	4548	B2		
+freezing	4549	B2		
+graph	4550	B2		
+hack	4551	B2		
+hannah	4552	B2		
+hatred	4553	B2		
+ignorant	4554	B2		1
+interact	4555	B2		
+lamp	4556	B2		
+limitation	4557	B2		1
+majesty	4558	B2		
+measurement	4559	B2		
+median	4560	B2		
+medieval	4561	B2		
+milan	4562	B2		1
+mobility	4563	B2		
+montana	4564	B2		
+ne	4565	B2		
+omg	4566	B2		
+orientation	4567	B2		1
+oven	4568	B2		
+owen	4569	B2		
+passport	4570	B2		
+penis	4571	B2		
+pill	4572	B2		
+rabbit	4573	B2		
+rhythm	4574	B2		
+ruth	4575	B2		
+savage	4576	B2		
+shook	4577	B2		
+shooter	4578	B2		
+sibling	4579	B2		
+slim	4580	B2		
+someday	4581	B2		
+sophisticate	4582	B2		
+spam	4583	B2		
+stack	4584	B2		
+stance	4585	B2		
+static	4586	B2		1
+subway	4587	B2		
+supportive	4588	B2		
+surgical	4589	B2		
+tablet	4590	B2		
+tent	4591	B2		
+thesis	4592	B2		
+tide	4593	B2		
+wallace	4594	B2		
+warfare	4595	B2		
+withdraw	4596	B2		
+withdrawal	4597	B2		
+aging	4598	B2		
+anyways	4599	B2		
+audit	4600	B2		1
+authentic	4601	B2		1
+backwards	4602	B2		
+blonde	4603	B2		1
+bolt	4604	B2		
+brook	4605	B2		
+bust	4606	B2		
+clearing	4607	B2		
+collar	4608	B2		
+columbus	4609	B2		
+comply	4610	B2		
+cope	4611	B2		
+creepy	4612	B2		
+cum	4613	B2		
+denmark	4614	B2		
+echo	4615	B2		
+emotionally	4616	B2		
+finale	4617	B2		1
+flavor	4618	B2		
+glove	4619	B2		
+harper	4620	B2		1
+hart	4621	B2		1
+ignorance	4622	B2		1
+induce	4623	B2		
+intermediate	4624	B2		
+invention	4625	B2		1
+jesse	4626	B2		
+likewise	4627	B2		
+lineup	4628	B2		
+logan	4629	B2		
+magnificent	4630	B2		
+mathematical	4631	B2		
+meantime	4632	B2		
+nevada	4633	B2		
+nonetheless	4634	B2		
+orlando	4635	B2		
+pipeline	4636	B2		1
+placement	4637	B2		1
+pricing	4638	B2		
+pt	4639	B2		
+puerto	4640	B2		
+recreation	4641	B2		
+renew	4642	B2		
+resign	4643	B2		
+shallow	4644	B2		
+shanghai	4645	B2		
+shitty	4646	B2		
+singh	4647	B2		
+sketch	4648	B2		1
+soda	4649	B2		1
+spite	4650	B2		
+strengthen	4651	B2		
+sunset	4652	B2		
+taiwan	4653	B2		
+thanksgiving	4654	B2		
+thermal	4655	B2		
+workplace	4656	B2		
+yell	4657	B2		
+yorkshire	4658	B2		
+amsterdam	4659	B2		
+analyst	4660	B2		
+arabic	4661	B2		
+arctic	4662	B2		1
+bennett	4663	B2		
+bristol	4664	B2		
+calorie	4665	B2		
+cannabis	4666	B2		
+cease	4667	B2		
+chapel	4668	B2		
+cloth	4669	B2		
+container	4670	B2		
+cowboy	4671	B2		
+deploy	4672	B2		
+differ	4673	B2		
+dimensional	4674	B2		
+eager	4675	B2		
+elevate	4676	B2		
+essence	4677	B2		1
+fork	4678	B2		
+fur	4679	B2		
+gps	4680	B2		
+harold	4681	B2		
+harvest	4682	B2		
+headline	4683	B2		
+hudson	4684	B2		
+hype	4685	B2		
+jo	4686	B2		
+junk	4687	B2		
+kenny	4688	B2		
+kidney	4689	B2		
+ladder	4690	B2		
+lloyd	4691	B2		
+lobby	4692	B2		1
+marc	4693	B2		1
+mineral	4694	B2		
+mob	4695	B2		
+modest	4696	B2		
+mph	4697	B2		
+navigation	4698	B2		1
+nicholas	4699	B2		
+orbit	4700	B2		
+paragraph	4701	B2		
+passive	4702	B2		1
+peninsula	4703	B2		
+phillips	4704	B2		
+pork	4705	B2		
+portuguese	4706	B2		
+profitable	4707	B2		1
+ranch	4708	B2		
+reasonably	4709	B2		
+remainder	4710	B2		
+seize	4711	B2		1
+semester	4712	B2		1
+sentiment	4713	B2		1
+sock	4714	B2		
+sr	4715	B2		
+supplement	4716	B2		
+thereby	4717	B2		
+threshold	4718	B2		
+tin	4719	B2		
+tribal	4720	B2		
+trunk	4721	B2		
+uncertainty	4722	B2		
+vampire	4723	B2		1
+verdict	4724	B2		1
+accommodate	4725	B2		1
+accordingly	4726	B2		
+aesthetic	4727	B2		
+algorithm	4728	B2		
+anchor	4729	B2		
+angela	4730	B2		
+arch	4731	B2		
+au	4732	B2		
+axis	4733	B2		
+badge	4734	B2		1
+bernard	4735	B2		
+bizarre	4736	B2		1
+bounce	4737	B2		
+broadcasting	4738	B2		
+cannon	4739	B2		
+carol	4740	B2		
+complexity	4741	B2		
+consultation	4742	B2		1
+continental	4743	B2		1
+convenience	4744	B2		
+deliberately	4745	B2		
+diana	4746	B2		
+dictionary	4747	B2		
+dignity	4748	B2		
+doug	4749	B2		
+duncan	4750	B2		
+ego	4751	B2		
+enthusiasm	4752	B2		
+equation	4753	B2		
+extract	4754	B2		
+ferry	4755	B2		1
+fisher	4756	B2		
+flexibility	4757	B2		
+fridge	4758	B2		
+fusion	4759	B2		1
+gauge	4760	B2		
+goat	4761	B2		
+gut	4762	B2		
+heck	4763	B2		
+helmet	4764	B2		
+ideology	4765	B2		
+inclusion	4766	B2		1
+inning	4767	B2		
+insect	4768	B2		
+instructor	4769	B2		1
+isolation	4770	B2		1
+keeper	4771	B2		
+lamb	4772	B2		
+liar	4773	B2		
+machinery	4774	B2		1
+mansion	4775	B2		
+mega	4776	B2		
+mercury	4777	B2		
+namely	4778	B2		
+palmer	4779	B2		1
+pend	4780	B2		1
+platinum	4781	B2		
+possess	4782	B2		
+premise	4783	B2		
+probability	4784	B2		
+ps	4785	B2		
+resignation	4786	B2		
+rider	4787	B2		
+ritual	4788	B2		1
+shelf	4789	B2		
+slam	4790	B2		
+starter	4791	B2		
+subscribe	4792	B2		
+superman	4793	B2		1
+utterly	4794	B2		
+voltage	4795	B2		
+width	4796	B2		
+workout	4797	B2		
+aa	4798	B2		
+abu	4799	B2		
+activate	4800	B2		1
+adaptation	4801	B2		1
+advisor	4802	B2		
+aluminum	4803	B2		
+bail	4804	B2		1
+bradley	4805	B2		
+caroline	4806	B2		1
+characterize	4807	B2		
+civilization	4808	B2		
+creativity	4809	B2		
+delicate	4810	B2		
+den	4811	B2		
+derek	4812	B2		
+disappointment	4813	B2		
+disk	4814	B2		
+evaluate	4815	B2		
+formally	4816	B2		
+goddess	4817	B2		
+gov	4818	B2		
+hampshire	4819	B2		
+harassment	4820	B2		
+hugh	4821	B2		
+insert	4822	B2		
+joan	4823	B2		
+lebanon	4824	B2		
+leeds	4825	B2		
+legit	4826	B2		
+leonard	4827	B2		
+liquor	4828	B2		1
+loser	4829	B2		
+malcolm	4830	B2		
+massage	4831	B2		1
+milwaukee	4832	B2		
+nephew	4833	B2		
+notably	4834	B2		
+orchestra	4835	B2		
+oz	4836	B2		
+pad	4837	B2		
+pakistani	4838	B2		
+precision	4839	B2		
+preservation	4840	B2		
+privately	4841	B2		
+rumor	4842	B2		1
+sail	4843	B2		
+salmon	4844	B2		
+secretly	4845	B2		
+seller	4846	B2		
+sheer	4847	B2		
+simpson	4848	B2		
+specially	4849	B2		
+stark	4850	B2		
+sympathy	4851	B2		1
+tan	4852	B2		
+theoretical	4853	B2		
+thumb	4854	B2		
+timber	4855	B2		1
+transparent	4856	B2		1
+upside	4857	B2		
+vitamin	4858	B2		
+void	4859	B2		
+voluntary	4860	B2		
+wheat	4861	B2		
+whip	4862	B2		
+wipe	4863	B2		
+wrist	4864	B2		
+acute	4865	B2		
+admiral	4866	B2		
+arnold	4867	B2		
+banana	4868	B2		
+behave	4869	B2		
+blair	4870	B2		1
+borrow	4871	B2		
+capitol	4872	B2		
+celtic	4873	B2		1
+chan	4874	B2		
+chin	4875	B2		
+civic	4876	B2		1
+clerk	4877	B2		
+considerably	4878	B2		
+cottage	4879	B2		
+coup	4880	B2		1
+criticize	4881	B2		
+crude	4882	B2		
+dash	4883	B2		
+disclosure	4884	B2		
+disposal	4885	B2		
+distinctive	4886	B2		1
+drone	4887	B2		1
+escort	4888	B2		
+firmly	4889	B2		
+flour	4890	B2		
+geneva	4891	B2		
+hindu	4892	B2		
+holding	4893	B2		
+indie	4894	B2		
+indirect	4895	B2		1
+institutional	4896	B2		
+interim	4897	B2		1
+java	4898	B2		1
+jefferson	4899	B2		
+jerk	4900	B2		
+karl	4901	B2		
+kindly	4902	B2		
+kindness	4903	B2		
+lottery	4904	B2		
+louise	4905	B2		
+magnitude	4906	B2		1
+minus	4907	B2		
+nude	4908	B2		
+outlet	4909	B2		
+parameter	4910	B2		
+pause	4911	B2		1
+pledge	4912	B2		
+portal	4913	B2		
+prescription	4914	B2		1
+protester	4915	B2		1
+proving	4916	B2		
+publicity	4917	B2		
+punish	4918	B2		
+puppy	4919	B2		
+recruitment	4920	B2		
+shakespeare	4921	B2		
+silicon	4922	B2		
+slice	4923	B2		
+spur	4924	B2		
+subscriber	4925	B2		
+telegraph	4926	B2		
+tit	4927	B2		
+vaccine	4928	B2		
+vinyl	4929	B2		
+westminster	4930	B2		
+accurately	4931	B2		
+adelaide	4932	B2		
+affiliate	4933	B2		
+alfred	4934	B2		1
+asylum	4935	B2		
+barn	4936	B2		
+bent	4937	B2		
+brussels	4938	B2		
+cathedral	4939	B2		
+clause	4940	B2		1
+cluster	4941	B2		
+consistency	4942	B2		
+cylinder	4943	B2		1
+dancer	4944	B2		
+deaf	4945	B2		
+denial	4946	B2		
+dock	4947	B2		
+entrepreneur	4948	B2		1
+evident	4949	B2		
+expedition	4950	B2		
+facilitate	4951	B2		1
+feat	4952	B2		
+fossil	4953	B2		
+freight	4954	B2		
+goddamn	4955	B2		
+honesty	4956	B2		
+inappropriate	4957	B2		
+infant	4958	B2		
+initiate	4959	B2		1
+injection	4960	B2		1
+instrumental	4961	B2		
+insult	4962	B2		
+interference	4963	B2		
+interstate	4964	B2		
+julian	4965	B2		
+linux	4966	B2		
+luis	4967	B2		1
+mediterranean	4968	B2		
+neat	4969	B2		
+negotiate	4970	B2		
+offset	4971	B2		
+outbreak	4972	B2		
+pal	4973	B2		
+palestine	4974	B2		
+perfection	4975	B2		1
+pirate	4976	B2		1
+probe	4977	B2		
+prohibit	4978	B2		
+quarterly	4979	B2		
+recruit	4980	B2		
+rehabilitation	4981	B2		
+reid	4982	B2		
+remix	4983	B2		
+resistant	4984	B2		
+reynolds	4985	B2		
+roller	4986	B2		1
+skinny	4987	B2		
+sneak	4988	B2		
+sore	4989	B2		
+spark	4990	B2		
+speculation	4991	B2		
+steep	4992	B2		
+straw	4993	B2		
+successor	4994	B2		1
+uncertain	4995	B2		
+upload	4996	B2		
+vector	4997	B2		1
+weigh	4998	B2		
+whatsoever	4999	B2		
+wick	5000	B2		
+abraham	5001	B2		
+absent	5002	B2		1
+acoustic	5003	B2		1
+ancestor	5004	B2		
+atomic	5005	B2		1
+bicycle	5006	B2		
+bryan	5007	B2		
+bump	5008	B2		
+cart	5009	B2		
+circus	5010	B2		
+claire	5011	B2		1
+cocaine	5012	B2		
+cohen	5013	B2		
+compel	5014	B2		
+compile	5015	B2		1
+complication	5016	B2		1
+cord	5017	B2		
+cyber	5018	B2		
+dale	5019	B2		
+defendant	5020	B2		
+dense	5021	B2		1
+desperately	5022	B2		
+doctrine	5023	B2		1
+financially	5024	B2		
+freshman	5025	B2		
+furious	5026	B2		1
+gameplay	5027	B2		
+geography	5028	B2		
+gig	5029	B2		
+habitat	5030	B2		1
+harbour	5031	B2		
+hazard	5032	B2		
+hydrogen	5033	B2		
+imply	5034	B2		
+intact	5035	B2		1
+intake	5036	B2		
+irrelevant	5037	B2		
+jaw	5038	B2		
+kitty	5039	B2		
+lawn	5040	B2		
+martha	5041	B2		
+moses	5042	B2		
+nashville	5043	B2		
+nebraska	5044	B2		
+needle	5045	B2		
+ottawa	5046	B2		
+oval	5047	B2		
+pity	5048	B2		
+pond	5049	B2		
+porter	5050	B2		1
+prey	5051	B2		
+prophet	5052	B2		
+raymond	5053	B2		
+referendum	5054	B2		1
+regulate	5055	B2		
+ruby	5056	B2		
+sander	5057	B2		
+seasonal	5058	B2		
+sensible	5059	B2		
+sequel	5060	B2		
+stanford	5061	B2		
+teammate	5062	B2		
+township	5063	B2		
+vienna	5064	B2		
+wade	5065	B2		
+whale	5066	B2		
+admire	5067	B2		1
+af	5068	B2		
+amber	5069	B2		1
+ankle	5070	B2		
+armor	5071	B2		
+autism	5072	B2		
+bachelor	5073	B2		
+berry	5074	B2		
+brisbane	5075	B2		
+bully	5076	B2		
+capitalism	5077	B2		1
+caution	5078	B2		1
+certification	5079	B2		1
+clan	5080	B2		1
+clash	5081	B2		
+compatible	5082	B2		1
+condemn	5083	B2		
+configuration	5084	B2		1
+continuously	5085	B2		
+curiosity	5086	B2		
+determin	5087	B2		
+explosive	5088	B2		1
+flooding	5089	B2		
+fortunate	5090	B2		
+fortunately	5091	B2		
+frontier	5092	B2		
+frustration	5093	B2		1
+geographic	5094	B2		
+glenn	5095	B2		
+grande	5096	B2		1
+grasp	5097	B2		
+handy	5098	B2		
+hardcore	5099	B2		
+harmful	5100	B2		
+headache	5101	B2		
+hers	5102	B2		
+hispanic	5103	B2		
+incentive	5104	B2		
+inclusive	5105	B2		
+jackie	5106	B2		
+joel	5107	B2		
+licence	5108	B2		1
+madness	5109	B2		
+mandate	5110	B2		
+manga	5111	B2		1
+memorable	5112	B2		
+merger	5113	B2		
+ph	5114	B2		
+poker	5115	B2		1
+portable	5116	B2		1
+quebec	5117	B2		
+randomly	5118	B2		
+ranking	5119	B2		
+rico	5120	B2		
+robbery	5121	B2		
+rub	5122	B2		
+sally	5123	B2		
+scatter	5124	B2		
+scout	5125	B2		1
+sexuality	5126	B2		
+slap	5127	B2		
+steak	5128	B2		1
+succession	5129	B2		1
+superintendent	5130	B2		
+suspicion	5131	B2		1
+sweep	5132	B2		
+tactical	5133	B2		1
+therapist	5134	B2		
+thereafter	5135	B2		
+thorough	5136	B2		
+tuition	5137	B2		
+tumor	5138	B2		1
+wholesale	5139	B2		
+administer	5140	B2		1
+architectural	5141	B2		1
+artillery	5142	B2		1
+assemble	5143	B2		1
+bangladesh	5144	B2		
+barack	5145	B2		
+canvas	5146	B2		
+canyon	5147	B2		1
+casey	5148	B2		
+cheek	5149	B2		
+chen	5150	B2		
+cincinnati	5151	B2		
+circular	5152	B2		
+circulation	5153	B2		1
+clearance	5154	B2		
+coincidence	5155	B2		
+comedian	5156	B2		
+conscience	5157	B2		1
+cooler	5158	B2		
+countless	5159	B2		
+curry	5160	B2		1
+dame	5161	B2		1
+decease	5162	B2		
+dedication	5163	B2		
+detention	5164	B2		
+drake	5165	B2		
+enforce	5166	B2		
+explicit	5167	B2		
+explicitly	5168	B2		
+florence	5169	B2		
+flu	5170	B2		
+forbid	5171	B2		
+fraction	5172	B2		1
+infantry	5173	B2		
+integral	5174	B2		
+janet	5175	B2		
+kidnap	5176	B2		
+lightly	5177	B2		
+marble	5178	B2		
+maritime	5179	B2		1
+melt	5180	B2		
+monica	5181	B2		
+mumbai	5182	B2		
+nominee	5183	B2		
+oath	5184	B2		
+offence	5185	B2		
+packaging	5186	B2		
+patriot	5187	B2		
+pee	5188	B2		
+pillow	5189	B2		
+polar	5190	B2		1
+prediction	5191	B2		
+preview	5192	B2		
+puzzle	5193	B2		1
+rapper	5194	B2		
+rebecca	5195	B2		
+reconstruction	5196	B2		1
+renowned	5197	B2		
+revelation	5198	B2		
+sara	5199	B2		
+skirt	5200	B2		
+socially	5201	B2		
+spa	5202	B2		
+spike	5203	B2		
+sprint	5204	B2		1
+stir	5205	B2		
+substantially	5206	B2		
+suburb	5207	B2		
+superb	5208	B2		
+supposedly	5209	B2		
+tab	5210	B2		
+tendency	5211	B2		
+theirs	5212	B2		
+toast	5213	B2		
+touchdown	5214	B2		
+trait	5215	B2		1
+trek	5216	B2		
+tricky	5217	B2		
+triumph	5218	B2		
+underwear	5219	B2		
+unto	5220	B2		
+viable	5221	B2		1
+waist	5222	B2		
+wit	5223	B2		
+wreck	5224	B2		
+absurd	5225	B2		
+accessory	5226	B2		1
+adrian	5227	B2		
+ag	5228	B2		
+ambitious	5229	B2		1
+amid	5230	B2		
+ballet	5231	B2		1
+bargain	5232	B2		
+binary	5233	B2		1
+blend	5234	B2		
+brake	5235	B2		
+businessman	5236	B2		
+cab	5237	B2		
+ch	5238	B2		
+chi	5239	B2		
+col	5240	B2		
+collision	5241	B2		1
+colombia	5242	B2		
+compassion	5243	B2		1
+consume	5244	B2		
+correction	5245	B2		1
+cough	5246	B2		
+czech	5247	B2		
+depot	5248	B2		
+distress	5249	B2		
+documentation	5250	B2		1
+dramatically	5251	B2		
+elegant	5252	B2		
+elevator	5253	B2		
+ellis	5254	B2		
+feast	5255	B2		
+finland	5256	B2		
+frederick	5257	B2		
+frost	5258	B2		
+herald	5259	B2		
+hike	5260	B2		
+hollow	5261	B2		
+homeland	5262	B2		
+internationally	5263	B2		
+iraqi	5264	B2		
+kane	5265	B2		
+lame	5266	B2		1
+lily	5267	B2		
+locker	5268	B2		
+mainland	5269	B2		
+meditation	5270	B2		
+messenger	5271	B2		
+munich	5272	B2		
+norwegian	5273	B2		
+pencil	5274	B2		
+philosophical	5275	B2		1
+pierre	5276	B2		1
+plasma	5277	B2		1
+plea	5278	B2		
+purse	5279	B2		
+quarterback	5280	B2		
+reagan	5281	B2		
+ref	5282	B2		
+relieve	5283	B2		
+reservation	5284	B2		
+rhetoric	5285	B2		
+salvation	5286	B2		
+sanction	5287	B2		1
+secular	5288	B2		
+sensitivity	5289	B2		
+sigh	5290	B2		
+sixteen	5291	B2		
+sovereign	5292	B2		
+specification	5293	B2		
+spouse	5294	B2		
+supervisor	5295	B2		1
+synthetic	5296	B2		
+tense	5297	B2		
+terrify	5298	B2		1
+trader	5299	B2		
+troy	5300	B2		
+vegan	5301	B2		
+wang	5302	B2		
+wilderness	5303	B2		
+adviser	5304	B2		
+aggregate	5305	B2		
+anal	5306	B2		1
+anatomy	5307	B2		1
+annie	5308	B2		
+applicant	5309	B2		
+automobile	5310	B2		1
+barnes	5311	B2		
+cement	5312	B2		
+chess	5313	B2		
+composite	5314	B2		1
+consequently	5315	B2		
+cox	5316	B2		
+curtis	5317	B2		
+decorate	5318	B2		
+delegate	5319	B2		
+dull	5320	B2		
+fare	5321	B2		
+generator	5322	B2		
+grind	5323	B2		
+grove	5324	B2		
+gum	5325	B2		
+hobby	5326	B2		
+idol	5327	B2		
+illusion	5328	B2		1
+incorrect	5329	B2		
+jun	5330	B2		
+junction	5331	B2		
+lance	5332	B2		1
+leap	5333	B2		
+lou	5334	B2		
+lynch	5335	B2		
+masse	5336	B2		1
+medicare	5337	B2		
+motive	5338	B2		1
+newton	5339	B2		
+optimal	5340	B2		1
+overtime	5341	B2		
+postal	5342	B2		1
+prep	5343	B2		
+profound	5344	B2		
+prosecutor	5345	B2		
+rebellion	5346	B2		
+recipient	5347	B2		
+refund	5348	B2		
+risky	5349	B2		
+robust	5350	B2		
+scam	5351	B2		
+shareholder	5352	B2		
+simulation	5353	B2		1
+sober	5354	B2		1
+spice	5355	B2		
+squeeze	5356	B2		
+supervision	5357	B2		1
+swap	5358	B2		
+terrain	5359	B2		1
+thrill	5360	B2		
+towel	5361	B2		
+trio	5362	B2		1
+unconscious	5363	B2		
+verify	5364	B2		
+vibe	5365	B2		
+virtue	5366	B2		
+wi-fi	5367	B2		
+workforce	5368	B2		
+zombie	5369	B2		1
+amen	5370	B2		
+arise	5371	B2		
+automotive	5372	B2		
+battlefield	5373	B2		
+berkeley	5374	B2		
+bloom	5375	B2		
+bundle	5376	B2		
+butterfly	5377	B2		
+casualty	5378	B2		
+chad	5379	B2		
+clown	5380	B2		1
+conjunction	5381	B2		
+costly	5382	B2		
+cuban	5383	B2		
+davies	5384	B2		
+descent	5385	B2		
+desktop	5386	B2		
+dial	5387	B2		
+directory	5388	B2		1
+discharge	5389	B2		
+dodge	5390	B2		
+elimination	5391	B2		
+ginger	5392	B2		
+guild	5393	B2		
+halt	5394	B2		
+han	5395	B2		
+henderson	5396	B2		
+imaging	5397	B2		
+inability	5398	B2		
+incoming	5399	B2		
+isaac	5400	B2		
+jar	5401	B2		
+leicester	5402	B2		
+litigation	5403	B2		
+mentor	5404	B2		1
+merchandise	5405	B2		
+miner	5406	B2		1
+monk	5407	B2		
+neighborhood	5408	B2		
+noah	5409	B2		
+norm	5410	B2		
+offend	5411	B2		
+orthodox	5412	B2		
+overhead	5413	B2		
+pac	5414	B2		
+painter	5415	B2		
+perth	5416	B2		
+pierce	5417	B2		
+pistol	5418	B2		
+printer	5419	B2		
+prone	5420	B2		
+raider	5421	B2		1
+readily	5422	B2		
+regiment	5423	B2		
+reunion	5424	B2		
+revival	5425	B2		
+sanctuary	5426	B2		1
+sensor	5427	B2		
+seoul	5428	B2		
+siege	5429	B2		
+sixty	5430	B2		
+sleeve	5431	B2		
+sonic	5432	B2		
+soundtrack	5433	B2		
+spine	5434	B2		
+steer	5435	B2		
+sullivan	5436	B2		
+tenure	5437	B2		
+texture	5438	B2		1
+thankful	5439	B2		
+treasurer	5440	B2		
+triangle	5441	B2		1
+unclear	5442	B2		
+venezuela	5443	B2		
+venice	5444	B2		
+vladimir	5445	B2		
+wizard	5446	B2		
+yankees	5447	B2		1
+absorb	5448	B2		
+admin	5449	B2		
+affection	5450	B2		1
+airplane	5451	B2		
+altitude	5452	B2		1
+athens	5453	B2		
+bake	5454	B2		
+baking	5455	B2		
+beautifully	5456	B2		
+betty	5457	B2		
+biblical	5458	B2		1
+boo	5459	B2		
+cardiff	5460	B2		
+competent	5461	B2		
+countryside	5462	B2		
+crane	5463	B2		
+debris	5464	B2		
+delegation	5465	B2		
+demographic	5466	B2		
+donor	5467	B2		
+enroll	5468	B2		
+enrollment	5469	B2		
+essex	5470	B2		
+exceed	5471	B2		
+exclude	5472	B2		
+fierce	5473	B2		
+gabriel	5474	B2		
+garlic	5475	B2		
+gaza	5476	B2		1
+gratitude	5477	B2		1
+hail	5478	B2		
+heroin	5479	B2		
+illustration	5480	B2		1
+indicator	5481	B2		1
+inequality	5482	B2		
+interpret	5483	B2		
+jamaica	5484	B2		
+joey	5485	B2		
+joshua	5486	B2		
+leisure	5487	B2		
+lend	5488	B2		
+leon	5489	B2		
+lounge	5490	B2		
+luckily	5491	B2		
+manuscript	5492	B2		
+marco	5493	B2		
+mint	5494	B2		
+molecule	5495	B2		
+montgomery	5496	B2		
+notification	5497	B2		1
+nova	5498	B2		1
+oakland	5499	B2		
+outline	5500	B2		
+pasta	5501	B2		
+pi	5502	B2		
+polite	5503	B2		
+randy	5504	B2		
+receipt	5505	B2		
+reliability	5506	B2		
+retailer	5507	B2		
+runway	5508	B2		
+sculpture	5509	B2		1
+sharon	5510	B2		
+showcase	5511	B2		
+subsidiary	5512	B2		
+tampa	5513	B2		
+tenth	5514	B2		
+theology	5515	B2		
+underwater	5516	B2		
+velocity	5517	B2		
+wax	5518	B2		
+wikipedia	5519	B2		
+winston	5520	B2		
+yay	5521	B2		
+accountability	5522	B2		
+aerial	5523	B2		
+albeit	5524	B2		
+alcoholic	5525	B2		
+amaze	5526	B2		
+ambition	5527	B2		1
+ammunition	5528	B2		
+anthem	5529	B2		
+automate	5530	B2		1
+batch	5531	B2		
+carson	5532	B2		
+catalog	5533	B2		
+catalogue	5534	B2		1
+charitable	5535	B2		
+collector	5536	B2		1
+compliment	5537	B2		1
+continually	5538	B2		
+coordinator	5539	B2		1
+danish	5540	B2		
+def	5541	B2		
+deployment	5542	B2		
+enjoyable	5543	B2		
+exotic	5544	B2		1
+exterior	5545	B2		
+feminine	5546	B2		
+firearm	5547	B2		
+fountain	5548	B2		
+fury	5549	B2		
+genocide	5550	B2		
+glance	5551	B2		
+glow	5552	B2		
+hay	5553	B2		
+hebrew	5554	B2		
+hometown	5555	B2		
+humanitarian	5556	B2		
+hungary	5557	B2		
+idaho	5558	B2		
+immunity	5559	B2		
+inherit	5560	B2		
+liberation	5561	B2		
+likelihood	5562	B2		
+lone	5563	B2		
+massacre	5564	B2		1
+meme	5565	B2		
+mitch	5566	B2		
+mod	5567	B2		
+nationalist	5568	B2		1
+necessity	5569	B2		
+nickname	5570	B2		
+nixon	5571	B2		
+observer	5572	B2		1
+offshore	5573	B2		
+optional	5574	B2		
+papa	5575	B2		1
+paste	5576	B2		
+pioneer	5577	B2		
+plaza	5578	B2		
+prescribe	5579	B2		
+prosperity	5580	B2		
+recreational	5581	B2		
+refuge	5582	B2		1
+renewable	5583	B2		
+richardson	5584	B2		
+ronald	5585	B2		
+sack	5586	B2		
+sheffield	5587	B2		
+shortage	5588	B2		
+sophie	5589	B2		
+sphere	5590	B2		
+suburban	5591	B2		
+supplier	5592	B2		1
+terribly	5593	B2		
+territorial	5594	B2		1
+thriller	5595	B2		1
+toss	5596	B2		
+transgender	5597	B2		
+turtle	5598	B2		
+verbal	5599	B2		1
+violate	5600	B2		1
+wool	5601	B2		
+yang	5602	B2		
+accountable	5603	B2		
+advocacy	5604	B2		
+aftermath	5605	B2		
+aggression	5606	B2		
+analyze	5607	B2		
+arguably	5608	B2		
+armstrong	5609	B2		
+balloon	5610	B2		
+blunt	5611	B2		
+boob	5612	B2		
+brigade	5613	B2		1
+bulgaria	5614	B2		
+burial	5615	B2		
+cardinal	5616	B2		1
+champ	5617	B2		1
+champagne	5618	B2		1
+chorus	5619	B2		
+chrome	5620	B2		1
+clarity	5621	B2		
+cleaner	5622	B2		
+confidential	5623	B2		1
+coordination	5624	B2		1
+delaware	5625	B2		
+discretion	5626	B2		
+ditch	5627	B2		
+dome	5628	B2		
+dope	5629	B2		1
+drought	5630	B2		
+elevation	5631	B2		
+esteem	5632	B2		
+eva	5633	B2		
+fe	5634	B2		
+fog	5635	B2		
+gesture	5636	B2		
+ghana	5637	B2		
+gibson	5638	B2		
+gif	5639	B2		
+gilbert	5640	B2		
+gosh	5641	B2		
+griffin	5642	B2		
+historian	5643	B2		
+horizontal	5644	B2		1
+hospitality	5645	B2		
+hostage	5646	B2		
+individually	5647	B2		
+inevitably	5648	B2		
+jeffrey	5649	B2		
+kenneth	5650	B2		
+lad	5651	B2		
+leslie	5652	B2		
+listing	5653	B2		
+literacy	5654	B2		
+migrant	5655	B2		1
+mislead	5656	B2		
+moisture	5657	B2		
+monument	5658	B2		1
+mortality	5659	B2		
+ng	5660	B2		
+obsession	5661	B2		1
+opt	5662	B2		
+peanut	5663	B2		
+penn	5664	B2		
+persistent	5665	B2		1
+petroleum	5666	B2		
+pharmaceutical	5667	B2		1
+progression	5668	B2		1
+quinn	5669	B2		
+rack	5670	B2		
+rebuild	5671	B2		
+recording	5672	B2		
+rejection	5673	B2		
+reservoir	5674	B2		
+riley	5675	B2		
+scrap	5676	B2		
+sebastian	5677	B2		
+sensation	5678	B2		1
+shaft	5679	B2		
+shepherd	5680	B2		
+shuttle	5681	B2		
+slope	5682	B2		
+snack	5683	B2		
+spotlight	5684	B2		
+stab	5685	B2		
+stern	5686	B2		
+stiff	5687	B2		
+striker	5688	B2		
+sudan	5689	B2		
+tel	5690	B2		
+terrific	5691	B2		
+titan	5692	B2		1
+tomato	5693	B2		1
+tory	5694	B2		
+trafficking	5695	B2		
+transparency	5696	B2		
+trinity	5697	B2		
+unemployed	5698	B2		
+unlock	5699	B2		
+vault	5700	B2		
+vet	5701	B2		
+vince	5702	B2		
+wagon	5703	B2		1
+walt	5704	B2		
+adverse	5705	B2		1
+allah	5706	B2		
+alumnus	5707	B2		
+ana	5708	B2		
+awhile	5709	B2		
+aye	5710	B2		
+bastard	5711	B2		
+biography	5712	B2		1
+broker	5713	B2		
+browser	5714	B2		
+cellular	5715	B2		
+cocktail	5716	B2		1
+cod	5717	B2		
+conditioning	5718	B2		
+counseling	5719	B2		
+cub	5720	B2		
+destructive	5721	B2		
+dislike	5722	B2		
+embed	5723	B2		
+farewell	5724	B2		
+fist	5725	B2		
+fond	5726	B2		1
+foolish	5727	B2		
+frog	5728	B2		
+garcia	5729	B2		
+hawk	5730	B2		
+heir	5731	B2		
+holocaust	5732	B2		
+homer	5733	B2		
+hon	5734	B2		
+hopkins	5735	B2		
+imprisonment	5736	B2		
+indonesian	5737	B2		
+jenny	5738	B2		
+landlord	5739	B2		
+landmark	5740	B2		
+lanka	5741	B2		
+liable	5742	B2		
+memphis	5743	B2		
+midst	5744	B2		
+misery	5745	B2		
+module	5746	B2		1
+mommy	5747	B2		
+monroe	5748	B2		
+mosque	5749	B2		
+moss	5750	B2		
+nursery	5751	B2		
+onion	5752	B2		1
+peru	5753	B2		
+plague	5754	B2		
+positively	5755	B2		
+powell	5756	B2		
+rex	5757	B2		
+rogue	5758	B2		1
+roosevelt	5759	B2		
+sharply	5760	B2		
+sincerely	5761	B2		
+solidarity	5762	B2		
+specialty	5763	B2		
+supernatural	5764	B2		
+thirteen	5765	B2		
+tomb	5766	B2		
+trademark	5767	B2		
+trim	5768	B2		
+umbrella	5769	B2		
+voyage	5770	B2		1
+willie	5771	B2		
+abbey	5772	B2		
+adjustment	5773	B2		
+andrea	5774	B2		
+attachment	5775	B2		
+baron	5776	B2		1
+beatles	5777	B2		
+belfast	5778	B2		
+blah	5779	B2		
+bomber	5780	B2		
+bunny	5781	B2		
+candle	5782	B2		
+carve	5783	B2		
+choir	5784	B2		
+clutch	5785	B2		
+coconut	5786	B2		
+comprise	5787	B2		1
+confession	5788	B2		1
+corridor	5789	B2		1
+credibility	5790	B2		
+critically	5791	B2		
+distract	5792	B2		
+dolphin	5793	B2		
+ferguson	5794	B2		
+ferrari	5795	B2		
+fourteen	5796	B2		
+geometry	5797	B2		
+gossip	5798	B2		
+grandparent	5799	B2		
+haul	5800	B2		
+header	5801	B2		
+headphone	5802	B2		
+holly	5803	B2		
+immense	5804	B2		1
+interfere	5805	B2		
+intersection	5806	B2		1
+investigator	5807	B2		
+juvenile	5808	B2		
+karma	5809	B2		
+kurt	5810	B2		
+leverage	5811	B2		
+lil	5812	B2		
+lining	5813	B2		
+luther	5814	B2		
+manila	5815	B2		
+mankind	5816	B2		
+mapping	5817	B2		
+metric	5818	B2		
+militia	5819	B2		
+node	5820	B2		
+obstacle	5821	B2		1
+opener	5822	B2		
+overwhelm	5823	B2		
+performer	5824	B2		
+pl	5825	B2		
+pointless	5826	B2		
+poles	5827	B2		
+prompt	5828	B2		1
+proximity	5829	B2		
+qualification	5830	B2		1
+render	5831	B2		1
+sadness	5832	B2		
+selective	5833	B2		
+shiny	5834	B2		
+socialism	5835	B2		1
+sour	5836	B2		
+spoon	5837	B2		
+stressful	5838	B2		
+teddy	5839	B2		
+tenant	5840	B2		1
+terrace	5841	B2		
+thief	5842	B2		
+tribunal	5843	B2		1
+undoubtedly	5844	B2		
+villain	5845	B2		
+whistle	5846	B2		
+yale	5847	B2		
+yearly	5848	B2		
+yemen	5849	B2		
+abusive	5850	B2		1
+alley	5851	B2		
+appetite	5852	B2		
+backyard	5853	B2		
+beverly	5854	B2		
+billboard	5855	B2		
+boris	5856	B2		
+burke	5857	B2		
+calculation	5858	B2		
+conceive	5859	B2		
+cunt	5860	B2		
+damned	5861	B2		
+dissolve	5862	B2		
+dynasty	5863	B2		1
+economist	5864	B2		
+endorse	5865	B2		
+extensively	5866	B2		
+forehead	5867	B2		
+foreigner	5868	B2		
+forgiveness	5869	B2		
+gem	5870	B2		
+glen	5871	B2		
+gregory	5872	B2		
+haunt	5873	B2		
+hayes	5874	B2		
+heather	5875	B2		
+hypothesis	5876	B2		
+illegally	5877	B2		
+incline	5878	B2		1
+informal	5879	B2		1
+marker	5880	B2		
+marsh	5881	B2		
+marshal	5882	B2		
+maturity	5883	B2		
+maya	5884	B2		1
+messy	5885	B2		
+minneapolis	5886	B2		
+molly	5887	B2		
+morrison	5888	B2		
+muhammad	5889	B2		
+neighbour	5890	B2		
+ninja	5891	B2		
+optimistic	5892	B2		
+owl	5893	B2		
+pharmacy	5894	B2		1
+problematic	5895	B2		
+processor	5896	B2		1
+promotional	5897	B2		
+prospective	5898	B2		1
+psychiatric	5899	B2		1
+renaissance	5900	B2		1
+repeal	5901	B2		
+roast	5902	B2		
+robertson	5903	B2		
+rubbish	5904	B2		
+saga	5905	B2		1
+salon	5906	B2		1
+seventeen	5907	B2		
+sodium	5908	B2		1
+surplus	5909	B2		
+swallow	5910	B2		
+systematic	5911	B2		
+transmit	5912	B2		
+unacceptable	5913	B2		
+unaware	5914	B2		
+uncommon	5915	B2		
+underway	5916	B2		
+unify	5917	B2		
+unstable	5918	B2		
+upstairs	5919	B2		
+vague	5920	B2		1
+woo	5921	B2		
+zip	5922	B2		
+abundance	5923	B2		
+ahh	5924	B2		
+alberta	5925	B2		
+ant	5926	B2		
+antique	5927	B2		1
+autonomy	5928	B2		1
+baptist	5929	B2		1
+behavioral	5930	B2		
+booking	5931	B2		
+breeze	5932	B2		
+canadians	5933	B2		
+carnival	5934	B2		
+commodity	5935	B2		
+congressman	5936	B2		
+cooperative	5937	B2		
+coral	5938	B2		
+correlation	5939	B2		
+correspondent	5940	B2		1
+coupon	5941	B2		
+covid	5942	B2		
+crosse	5943	B2		1
+curtain	5944	B2		
+dentist	5945	B2		1
+dodger	5946	B2		
+dough	5947	B2		
+endangered	5948	B2		
+envelope	5949	B2		
+fade	5950	B2		1
+fatigue	5951	B2		1
+fellowship	5952	B2		
+fictional	5953	B2		
+fragile	5954	B2		1
+fringe	5955	B2		
+fulfill	5956	B2		
+granite	5957	B2		1
+handbook	5958	B2		
+hardy	5959	B2		
+instinct	5960	B2		1
+irony	5961	B2		
+ivan	5962	B2		
+joyce	5963	B2		
+judgement	5964	B2		
+judiciary	5965	B2		1
+legion	5966	B2		
+lethal	5967	B2		
+lime	5968	B2		1
+lively	5969	B2		
+logistics	5970	B2		
+lower	5971	B2		
+lynn	5972	B2		
+maid	5973	B2		
+manuel	5974	B2		1
+maple	5975	B2		
+mickey	5976	B2		1
+midfielder	5977	B2		
+mindset	5978	B2		
+mistress	5979	B2		
+mon	5980	B2		
+morality	5981	B2		
+mortal	5982	B2		1
+nonprofit	5983	B2		
+operative	5984	B2		
+panama	5985	B2		1
+pickup	5986	B2		
+prestigious	5987	B2		1
+radius	5988	B2		
+referee	5989	B2		
+relay	5990	B2		
+rig	5991	B2		
+sacramento	5992	B2		
+scroll	5993	B2		
+sh	5994	B2		
+sovereignty	5995	B2		
+stunt	5996	B2		
+sunlight	5997	B2		
+surf	5998	B2		1
+symbolic	5999	B2		1
+sync	6000	B2		
