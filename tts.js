@@ -116,7 +116,7 @@ function create({ dir, env = process.env, fetchImpl = fetch, timeoutMs = Number(
   }
   // Préchauffage (lot 7.2) : une phrase courte, jetée, pour charger le modèle avant le premier
   // clic. Passe par la file (une génération à la fois). Renvoie la durée en ms.
-  const WARM = { en: ["Hi.", "Hello there."], ko: ["안녕.", "안녕하세요."], zh: ["你好。", "你好，我是麻糬。"] };
+  const WARM = { en: ["Hi.", "Hello there."], ko: ["안녕.", "안녕하세요."], zh: ["你好。", "你好，我是麻糬。"], ru: ["Привет.", "Привет, я Мочи."] };
   async function warm(lang, n = 0) {
     const c = conf[lang], voice = c.voices[0], text = (WARM[lang] || ["Hi."])[n] || "Hi.";
     const q = queueOf(lang), t0 = Date.now();

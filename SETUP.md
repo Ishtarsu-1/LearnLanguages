@@ -230,7 +230,24 @@ TTS_MODEL_KO=melotts
 # Chinois : Kokoro a aussi des voix mandarin, dans le même conteneur que l'anglais
 TTS_URL_ZH=http://127.0.0.1:8880/v1
 TTS_VOICES_ZH=zf_xiaobei,zf_xiaoxiao,zm_yunxi,zm_yunjian
+# Russe : Piper (voir ci-dessous)
+TTS_URL_RU=http://127.0.0.1:8883/v1
+TTS_VOICES_RU=irina,denis,dmitri,ruslan
+TTS_MODEL_RU=piper
 ```
+
+**Voix russes avec Piper** (licence MIT, rapide sur processeur : ~0,3 s par phrase) :
+
+```bash
+uv venv --python 3.12 ~/piper && source ~/piper/bin/activate
+uv pip install piper-tts
+mkdir -p ~/piper/voices && cd ~/piper/voices
+for v in irina denis dmitri ruslan; do for e in onnx onnx.json; do
+  curl -L -o ru_RU-$v-medium.$e https://huggingface.co/rhasspy/piper-voices/resolve/main/ru/ru_RU/$v/medium/ru_RU-$v-medium.$e
+done; done
+cd - && python tools/piper_server.py        # → http://127.0.0.1:8883/v1 (lancé aussi par tools/start-voices.sh)
+```
+Irina est une voix féminine ; Denis, Dmitri et Ruslan sont masculines. D'autres langues de Piper s'ajoutent de la même façon (fichiers `.onnx` dans `~/piper/voices`).
 
 Relance `npm start`. La ligne de démarrage affiche `voix : en ×4, ko ×1`, et le Profil › Audio indique « 🎙️ Voix neuronales du serveur ». Si le moteur ne répond pas, Mochi repasse automatiquement sur la voix du navigateur.
 
@@ -489,7 +506,7 @@ Le chemin côté serveur est `DATA_DIR/tts` (`./data/tts` par défaut). Ensuite,
 | `MOCHI_LLM_GLOBAL_DAILY` | `500` | Appels à l'IA max par jour pour tout le site ; au-delà, correcteur hors ligne |
 | `MOCHI_LLM` | activé | Mettre `off` pour couper le correcteur IA |
 | `TTS_URL`, `TTS_URL_EN`, `TTS_URL_KO` | — | Moteur de voix (section 6 ter) ; sans valeur, voix du navigateur |
-| `TTS_VOICES_EN`, `TTS_VOICES_KO`, `TTS_VOICES_ZH` | — | Voix proposées, séparées par des virgules (chinois : voix `zf_…` / `zm_…` de Kokoro) |
+| `TTS_VOICES_EN`, `TTS_VOICES_KO`, `TTS_VOICES_ZH`, `TTS_VOICES_RU` | — | Voix proposées, séparées par des virgules (chinois : voix `zf_…` / `zm_…` de Kokoro) |
 | `TTS_MODEL`, `TTS_MODEL_EN`, `TTS_MODEL_KO` | `kokoro` | Champ `model` envoyé au moteur |
 | `TTS_TIMEOUT_MS` | `15000` | Délai maximum d'une génération (une fois lancée) |
 | `RESEND_API_KEY` | — | Envoi réel des e-mails (section 6 quater) ; sans clé, ils s'affichent dans le terminal |

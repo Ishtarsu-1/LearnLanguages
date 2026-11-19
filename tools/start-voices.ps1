@@ -13,6 +13,12 @@ if (Get-Command docker -ErrorAction SilentlyContinue) {
   else { Write-Host "✓ Kokoro tourne déjà" }
 } else { Write-Host "ℹ️  Docker introuvable : Kokoro n'est pas lancé" }
 
+# Piper (russe) : en arrière-plan s'il est installé
+$piper = if ($env:PIPER_VENV) { $env:PIPER_VENV } else { Join-Path $HOME "piper" }
+$piperPy = Join-Path $piper "Scripts\python.exe"
+if (Test-Path $piperPy) { Write-Host "▶ Piper (russe) → http://127.0.0.1:8883/v1"; Start-Process -NoNewWindow -FilePath $piperPy -ArgumentList "tools\piper_server.py" }
+else { Write-Host "ℹ️  Piper (voix russes) non installé : voir SETUP.md, Vraies voix" }
+
 $venv = if ($env:MELOTTS_VENV) { $env:MELOTTS_VENV } else { Join-Path $HOME "melotts" }
 $activate = Join-Path $venv "Scripts\Activate.ps1"
 if (-not (Test-Path $activate)) { Write-Host "⚠️  Environnement MeloTTS introuvable dans $venv (voir SETUP.md, Vraies voix)"; exit 1 }
