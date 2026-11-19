@@ -36,6 +36,11 @@ const SESSION_DAYS = 30;
 const MAX_STATE = 8 * 1024 * 1024;
 const MAX_AVATAR = 1024 * 1024;
 const LLM_ON = process.env.MOCHI_LLM !== "off";
+// Interrupteur de l'IA (tableau de bord admin) : MOCHI_LLM=off la coupe pour de bon ; sinon l'admin
+// peut la mettre en pause (machine trop lente pour Ollama). Réglage gardé dans DATA_DIR/settings.json.
+const SETTINGS_FILE = path.join(DATA, "settings.json");
+const settings = (() => { try { return JSON.parse(fs.readFileSync(SETTINGS_FILE, "utf8")); } catch { return {}; } })();
+const llmOn = () => LLM_ON && settings.llm !== false;
 const LLM_DAILY = Number(process.env.MOCHI_LLM_DAILY) || 30; // corrections par compte et par jour (coût)
 const LLM_GLOBAL_DAILY = Number(process.env.MOCHI_LLM_GLOBAL_DAILY) || 500; // appels à l'IA par jour, tout le site
 const LLM_CACHE_DAYS = 90;
@@ -256,7 +261,7 @@ const STABLE_LANGS = String(process.env.MOCHI_LANGS_STABLE || "en,ko").split(","
 const PORTABLE = process.env.MOCHI_PORTABLE === "1";
 // Mini-CTF pour débutants (version portable --ctf seulement, sur 127.0.0.1 : voir ctf-server.js)
 const ctf = ctfMod.create({ portable: PORTABLE, host: HOST });
-const featuresJson = (loggedIn = true) => JSON.stringify({ ctf: ctf.on, portable: PORTABLE, stable: STABLE_LANGS, llm: loggedIn && LLM_ON, engine: llm.ENGINE, tts: tts.info(), mail: mail.mode, ttsSlow: !!engines.ttsSlow, llmSlow: !!engines.llmSlow });
+const featuresJson = (loggedIn = true) => JSON.stringify({ ctf: ctf.on, portable: PORTABLE, stable: STABLE_LANGS, llm: loggedIn && llmOn(), engine: llm.ENGINE, tts: tts.info(), mail: mail.mode, ttsSlow: !!engines.ttsSlow, llmSlow: !!engines.llmSlow });
 
 function hashPassword(pw) {
   const salt = crypto.randomBytes(16);
@@ -735,7 +740,7 @@ async function api(req, res, url) {
     return send(res, 200, { ok: true }, { "Set-Cookie": sessionCookie("", 0) });
   }
   if (route === "POST /api/feedback") {
-    if (!LLM_ON) return fail(res, 503, "Correcteur désactivé.");
+    if (!llmOn()) return fail(res, 503, "Correcteur désactivé.");
     const b = await readJson(req);
     const str = (v, max) => typeof v === "string" && v.length <= max;
     if (!["en", "ko", "zh", "ru"].includes(b.lang) || !str(b.prompt, 300) || !str(b.text, 500) || !b.text.trim()
@@ -775,7 +780,7 @@ async function api(req, res, url) {
   }
   // Mode histoire : une réplique de jeu de rôle (compte dans le quota quotidien du correcteur)
   if (route === "POST /api/roleplay") {
-    if (!LLM_ON) return fail(res, 503, "IA désactivée.");
+    if (!llmOn()) return fail(res, 503, "IA désactivée.");
     const b = await readJson(req);
     const m = typeof b.mission === "string" && Object.hasOwn(MISSIONS, b.mission) ? MISSIONS[b.mission] : null;
     const h = Array.isArray(b.history) ? b.history : null;
@@ -876,6 +881,7 @@ async function api(req, res, url) {
   // Relecture et publication du contenu (CONTENU-PIPELINE, lots C6 et C8) : admins uniquement
   if (url.pathname.startsWith("/api/admin/content/")) {
     if (!auth.user.is_admin) return fail(res, 403, "Réservé aux administrateurs.");
+    if (route.endsWith("/regenerate") && !llmOn()) return fail(res, 503, "L'IA est en pause : réactive-la dans le tableau de bord pour régénérer.");
     try { return send(res, 200, await contentAdmin.handle(route, req, url, (r) => readJson(r, 256 * 1024), (auth.user.name || auth.user.email.split("@")[0]).toLowerCase())); }
     catch (e) { if (e.expose) return fail(res, e.status, e.message); throw e; }
   }
@@ -901,7 +907,7 @@ async function api(req, res, url) {
       llm: (() => {
         const g = globalRow();
         return { today: g.calls, cacheHits: g.cache_hits, hitRate: g.calls + g.cache_hits ? g.cache_hits / (g.calls + g.cache_hits) : 0, cost: g.cost,
-          total: one("SELECT COALESCE(sum(calls), 0) n FROM llm_global").n, engine: LLM_ON ? llm.ENGINE : null, daily: LLM_DAILY, globalDaily: LLM_GLOBAL_DAILY, cacheSize: one("SELECT count(*) n FROM llm_cache").n };
+          total: one("SELECT COALESCE(sum(calls), 0) n FROM llm_global").n, engine: llmOn() ? llm.ENGINE : null, provider: llm.ENGINE, paused: LLM_ON && !llmOn(), forcedOff: !LLM_ON, daily: LLM_DAILY, globalDaily: LLM_GLOBAL_DAILY, cacheSize: one("SELECT count(*) n FROM llm_cache").n };
       })(),
       tts: { voices: tts.info(), files: ttsFiles, bytes: ttsBytes },
       machine: machineInfo(),
@@ -913,6 +919,16 @@ async function api(req, res, url) {
           (SELECT count(*) FROM sync_cards c WHERE c.user_id = u.id) cards, (SELECT count(*) FROM review_logs r WHERE r.user_id = u.id) reviews
         FROM users u ORDER BY u.created_at DESC LIMIT 100`).all(),
     });
+  }
+  // Interrupteur de l'IA (correcteur, missions, régénération des brouillons)
+  if (route === "POST /api/admin/llm") {
+    if (!auth.user.is_admin) return fail(res, 403, "Réservé aux administrateurs.");
+    if (!LLM_ON) return fail(res, 409, "L'IA est coupée par MOCHI_LLM=off dans .env.");
+    const body = await readJson(req);
+    settings.llm = !!body.on;
+    fs.writeFileSync(SETTINGS_FILE, `${JSON.stringify(settings, null, 2)}\n`);
+    console.log(`[${new Date().toISOString()}] IA ${settings.llm ? "réactivée" : "mise en pause"} (admin n° ${auth.user.id})`);
+    return send(res, 200, { on: llmOn(), engine: llm.ENGINE });
   }
   // Diagnostic complet de la machine (admin uniquement, 1 par minute) : jamais dans /api/me
   if (route === "POST /api/admin/doctor") {
@@ -1048,7 +1064,7 @@ async function warmEngines(log = console.log) {
     try { await tts.warm(lang, 0); engines.tts[lang] = { ok: true, ms: await tts.warm(lang, 1) }; }
     catch (e) { engines.tts[lang] = { ok: false, error: e.cause?.code || e.message }; }
   });
-  const llmJob = llm.PROVIDER === "ollama" && LLM_ON
+  const llmJob = llm.PROVIDER === "ollama" && llmOn()
     ? llm.warmup().then((ms) => { engines.llm = { ok: true, ms }; }, (e) => { engines.llm = { ok: false, error: e.cause?.code || e.message }; })
     : null;
   await Promise.all([...jobs, llmJob]);
@@ -1078,7 +1094,7 @@ if (require.main === module) {
     throw e;
   });
   server.listen(PORT, HOST, () => {
-    console.log(`Mochi → ${local} · correcteur : ${LLM_ON ? llm.ENGINE : "désactivé"} · e-mails : ${mail.mode} · voix : ${tts.enabled ? Object.entries(tts.info()).map(([l, v]) => `${l} ×${v.length}`).join(", ") : "navigateur"}`);
+    console.log(`Mochi → ${local} · correcteur : ${llmOn() ? llm.ENGINE : LLM_ON ? "en pause (tableau de bord)" : "désactivé"} · e-mails : ${mail.mode} · voix : ${tts.enabled ? Object.entries(tts.info()).map(([l, v]) => `${l} ×${v.length}`).join(", ") : "navigateur"}`);
     if (PORTABLE) { console.log("\n🍡 Mochi est ouvert dans ton navigateur. Laisse cette fenêtre ouverte pendant que tu l'utilises ; ferme-la pour arrêter Mochi.\n"); if (process.env.MOCHI_OPEN_BROWSER !== "0") openBrowser(local); }
   });
 }

@@ -302,6 +302,9 @@ h1 { font-size: var(--text-3xl); }
 .ti-icon { font-size: var(--text-3xl); }
 .text-item > div { flex: 1 1 180px; min-width: 0; }
 .cov { display: flex; align-items: center; gap: 10px; margin-top: 8px; max-width: 320px; }
+.admin-table .cov { margin-top: 0; }
+.admin-table .cov .bar { flex: 1 1 48px; min-width: 48px; }
+.admin-table .cov b { white-space: nowrap; }
 .zone { padding: 6px 12px; border-radius: var(--radius-full); font-weight: 800; font-size: var(--text-sm); white-space: nowrap; background: var(--surface-2); }
 .zone.ideal { background: var(--matcha-50); color: var(--success); }
 .zone.gloss { background: var(--yuzu-100); }
@@ -642,7 +645,9 @@ code { background: var(--surface-2); padding: 2px 6px; border-radius: var(--radi
 .admin-table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
 .admin-table th, .admin-table td { text-align: left; padding: 8px 10px 8px 0; border-bottom: 1px solid var(--border); vertical-align: top; }
 .admin-table tr:last-child th, .admin-table tr:last-child td { border-bottom: none; }
-.admin-table th { font-weight: 700; white-space: nowrap; }
+.admin-table th { font-weight: 700; overflow-wrap: anywhere; }
+.admin-table td.num { text-align: right; white-space: nowrap; padding-right: 0; }
+.lang-grid > * { min-width: 0; }
 .admin-table.users td, .admin-table.users th { white-space: nowrap; }
 .table-scroll { overflow-x: auto; }
 .admin-links p { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 0 0 12px; }

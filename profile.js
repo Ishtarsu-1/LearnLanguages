@@ -251,9 +251,13 @@ function contentStats() {
       ["📒 Mots du lexique", Object.keys(LEXICON[l]).length, `${Object.keys(SEMANTIC_GROUPS[l] || {}).length} catégories, ${(CONFUSABLE[l] || []).length} paires de contraires`],
       ["💬 Exercices de production", PRODUCTION[l].length, `${(FREE_PROMPTS[l] || []).length} sujets libres`],
       ["🎧 Paires de sons", EAR[l].pairs.length, ""],
-      ["🎯 Types d'exercices", Object.keys(EX_KINDS).length, "communs aux deux langues"],
-      ...(l === "ko" ? [["🔤 Jours de Hangul", HANGUL_DAYS.length, ""], ["🧱 Points de grammaire", KO_GRAMMAR.length, `${Object.keys(REGISTERS).length} registres`], ["🧭 Test de niveau", KO_LOANS.length, "mots d'emprunt"]]
-        : [["🎭 Faux amis", FAUX_AMIS.length, ""], ["🧭 Test de niveau", EN_BANDS.length * EN_BANDS[0].length, `${EN_BANDS.length} tranches + ${EN_FAKE.length} faux mots`]]),
+      ["🎯 Types d'exercices", Object.keys(EX_KINDS).length, "communs à toutes les langues"],
+      ...({
+        ko: [["🔤 Jours de Hangul", HANGUL_DAYS.length, ""], ["🧱 Points de grammaire", KO_GRAMMAR.length, `${Object.keys(REGISTERS).length} registres`], ["🧭 Test de niveau", KO_LOANS.length, "mots d'emprunt"]],
+        en: [["🎭 Faux amis", FAUX_AMIS.length, ""], ["🧭 Test de niveau", EN_BANDS.length * EN_BANDS[0].length, `${EN_BANDS.length} tranches + ${EN_FAKE.length} faux mots`]],
+        zh: typeof PINYIN_DAYS !== "undefined" ? [["🈶 Jours de pinyin et tons", PINYIN_DAYS.length, ""]] : [],
+        ru: typeof CYR_DAYS !== "undefined" ? [["🔤 Jours d'alphabet cyrillique", CYR_DAYS.length, ""]] : [],
+      }[l] || []),
     ],
   }));
 }
@@ -305,7 +309,9 @@ function viewAdmin() {
   const kb = (b) => (b > 1e6 ? `${num1(b / 1e6)} Mo` : `${Math.round(b / 1e3)} Ko`);
   const stat = (ico, n, label) => `<div class="stat"><span class="ico">${ico}</span><div><b>${n}</b><small>${label}</small></div></div>`;
   const features = d ? [
-    ["Correcteur IA (Produire)", d.llm.engine ? `✅ ${esc(d.llm.engine)}` : "❌ désactivé", d.llm.engine ? `Aujourd'hui : ${d.llm.today} / ${plural(d.llm.globalDaily, "appel", "appels")} à l'IA, ${plural(d.llm.cacheHits, "servie", "servies")} depuis le cache (${Math.round(d.llm.hitRate * 100)} %), coût estimé ${d.llm.cost.toLocaleString("fr-FR", { style: "currency", currency: "USD", maximumFractionDigits: 2 })} · ${plural(d.llm.total, "appel", "appels")} au total · ${d.llm.daily} max / compte / jour · ${plural(d.llm.cacheSize, "réponse", "réponses")} en cache` : ""],
+    ["Correcteur IA (Produire)", d.llm.forcedOff ? "❌ désactivé (MOCHI_LLM=off)"
+      : `${d.llm.engine ? `✅ ${esc(d.llm.engine)}` : `⏸️ en pause <small class="muted">(${esc(d.llm.provider || "IA")})</small>`}<br/><button class="btn ghost small mt-6" data-act="admin-llm" data-on="${d.llm.engine ? "0" : "1"}">${d.llm.engine ? "⏸️ Mettre en pause" : "▶️ Réactiver"}</button>`,
+      d.llm.paused ? "Correcteur hors ligne pour tout le monde, missions guidées seulement, pas de régénération des brouillons. Ollama ne charge plus le modèle au démarrage." : d.llm.engine ? `Aujourd'hui : ${d.llm.today} / ${plural(d.llm.globalDaily, "appel", "appels")} à l'IA, ${plural(d.llm.cacheHits, "servie", "servies")} depuis le cache (${Math.round(d.llm.hitRate * 100)} %), coût estimé ${d.llm.cost.toLocaleString("fr-FR", { style: "currency", currency: "USD", maximumFractionDigits: 2 })} · ${plural(d.llm.total, "appel", "appels")} au total · ${d.llm.daily} max / compte / jour · ${plural(d.llm.cacheSize, "réponse", "réponses")} en cache` : ""],
     ["Vraies voix", Object.keys(d.tts.voices).length ? `✅ ${Object.entries(d.tts.voices).map(([l, v]) => `${LANGUAGES[l].flag} ×${v.length}`).join(" ")}` : "🔈 navigateur", `${plural(d.tts.files, "phrase", "phrases")} en cache (${kb(d.tts.bytes)})`],
     ["E-mails", d.mail === "resend" ? "✅ Resend" : "🖥️ terminal (pas d'envoi)", d.mail === "resend" ? "" : "RESEND_API_KEY absent"],
     ["Appli installable / hors ligne", "serviceWorker" in (globalThis.navigator || {}) ? "✅" : "❌ navigateur non compatible", ""],
@@ -336,7 +342,7 @@ function viewAdmin() {
     <h2 class="section-title">Contenu</h2>
     <p><a class="btn small" href="#/admin/contenu">📝 Relire et publier le contenu</a> <a class="btn ghost small" href="#/admin/contenu/couverture">📊 Couverture</a></p>
     <div class="lang-grid">${contentStats().map((c) => `<div class="card"><h3>${LANGUAGES[c.lang].flag} ${LANGUAGES[c.lang].name}</h3>
-      <table class="admin-table"><tbody>${c.rows.map(([n, v, info]) => `<tr><th scope="row">${n}</th><td><b>${v}</b></td><td class="muted">${info}</td></tr>`).join("")}</tbody></table></div>`).join("")}</div>
+      <table class="admin-table"><tbody>${c.rows.map(([n, v, info]) => `<tr><th scope="row">${n}${info ? `<br/><small class="muted">${info}</small>` : ""}</th><td class="num"><b>${v}</b></td></tr>`).join("")}</tbody></table></div>`).join("")}</div>
 
     <h2 class="section-title">Accès direct aux leçons</h2>
     <div class="card admin-links">

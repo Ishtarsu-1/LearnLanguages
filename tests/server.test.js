@@ -118,8 +118,17 @@ server.listen(0, "127.0.0.1", async () => {
       ok((await call("POST", "/api/admin/content/draft/en-n-existe-pas/reject", { reason: "x" })).status === 404, "rejet d'un brouillon inconnu → 404");
       const cov = await call("GET", "/api/admin/content/coverage");
       ok(cov.status === 200 && cov.data.coverage.ko.grammar.length > 5 && cov.data.coverage.en.goals.length >= 5, "tableau de bord de couverture");
+      // Interrupteur de l'IA (machine trop lente) : pause gardée dans DATA_DIR/settings.json
+      const wasOn = (await call("GET", "/api/me")).data.features.llm;
+      const off = await call("POST", "/api/admin/llm", { on: false });
+      ok(off.status === 200 && off.data.on === false && (await call("GET", "/api/me")).data.features.llm === false, "IA en pause : le site passe au correcteur hors ligne");
+      ok((await call("POST", "/api/feedback", { lang: "en", prompt: "x", text: "I like coffee." })).status === 503, "IA en pause : correcteur refusé");
+      ok((await call("GET", "/api/admin/stats")).data.llm.paused === true, "tableau de bord : IA en pause");
+      ok(JSON.parse(fs.readFileSync(path.join(process.env.DATA_DIR, "settings.json"), "utf8")).llm === false, "réglage gardé dans settings.json");
+      ok((await call("POST", "/api/admin/llm", { on: true })).data.on === wasOn, "IA réactivée");
       db.prepare("UPDATE users SET is_admin = 0 WHERE email = ?").run("Lea@Test.fr");
     }
+    ok((await call("POST", "/api/admin/llm", { on: false })).status === 403, "interrupteur de l'IA : réservé aux admins");
     ok(r.data.user.avatar_emoji === "mochi", "avatar par défaut : Mochi");
     ok(require(path.join((process.argv[2] || path.join(__dirname, "..")), "server.js")).db.prepare("SELECT terms_version, terms_accepted_at FROM users WHERE email = 'Lea@Test.fr'").get().terms_accepted_at, "acceptation des conditions enregistrée");
     ok(/HttpOnly/.test(r.headers.get("set-cookie")) && /SameSite=Lax/.test(r.headers.get("set-cookie")), "cookie flags");

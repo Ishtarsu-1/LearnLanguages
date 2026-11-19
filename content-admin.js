@@ -203,7 +203,7 @@ function create({ dir = L.CONTENT_DIR, out, analyze, onPublished = () => {}, spa
       out[lang] = {
         texts: texts.length, drafts: drafts.length, byLevel, byTheme, top1000: top(1000), top2000: top(2000), grammar,
         holes: { themesWithoutA1: L.THEME_IDS.filter((t) => !byTheme[t].A1), grammarUnder3: grammar.filter((g) => g.texts < 3).map((g) => g.label), missingFrequent },
-        goals: GOALS, units: { total: plan.units.filter((u) => !u.legacy).length, written: new Set(texts.map((t) => t.unit).filter(Boolean)).size },
+        goals: GOALS, units: { total: plan.units.filter((u) => !u.legacy).length, written: new Set(texts.map((t) => t.unit).filter(Boolean)).size, drafted: new Set(drafts.map((t) => t.unit).filter(Boolean)).size },
       };
     }
     return out;

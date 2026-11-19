@@ -75,6 +75,12 @@ const actions = {
   fr: (el) => { const i = +el.dataset.s; ui.reader.fr[i] = !ui.reader.fr[i]; render(); },
   speed: (el) => { state.settings.speed = +el.dataset.v; save(); render(); },
   "toggle-hide": () => { ui.reader.hide = !ui.reader.hide; render(); },
+  // Tableau de bord : mettre l'IA en pause / la réactiver (machine trop lente pour Ollama)
+  "admin-llm": async (el) => {
+    const on = el.dataset.on === "1";
+    if (!on && !confirm("Mettre l'IA en pause ? Le correcteur passe hors ligne pour tout le monde, jusqu'à ce que tu la réactives.")) return;
+    try { const r = await api("POST", "/api/admin/llm", { on }); features.llm = r.on; ui.admin = null; toast(r.on ? `IA réactivée (${r.engine}) ✓` : "IA en pause ⏸️"); render(); } catch (e) { toast(e.message); }
+  },
   "toggle-shadow": () => { ui.reader.shadow = !ui.reader.shadow; render(); },
   "toggle-aloud": () => { if (!SpeechRec()) return toast("Ton navigateur ne reconnaît pas la voix : essaie Chrome, Edge ou Safari."); ui.reader.aloud = !ui.reader.aloud; render(); },
   "speak-check": (el) => listenSentence(currentLang(), +el.dataset.s),

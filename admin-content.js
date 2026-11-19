@@ -153,7 +153,7 @@ function caCoverage() {
     <h2 class="section-title">${LANGUAGES[l].flag} ${LANGUAGES[l].name}</h2>
     <div class="lang-grid">
       <div class="card"><h3>Objectifs</h3><table class="admin-table"><tbody>${c.goals.map((g) => `<tr><th scope="row">Étape ${g.step} · ${esc(g.label)}</th><td>${bar(g.done, g.target)}</td><td>${g.done >= g.target ? "✓" : ""}</td></tr>`).join("")}</tbody></table>
-        <p class="muted"><small>${plural(c.texts, "texte", "textes")} publiés · ${plural(c.drafts, "brouillon", "brouillons")} · unités du plan : ${c.units.written} / ${c.units.total} écrites</small></p></div>
+        <p class="muted"><small>${plural(c.texts, "texte", "textes")} publiés · ${plural(c.drafts, "brouillon", "brouillons")} · unités du plan : ${c.units.written} / ${c.units.total} publiées${c.units.drafted ? `, ${c.units.drafted} en brouillon` : ""}</small></p></div>
       <div class="card"><h3>Mots fréquents vus</h3><table class="admin-table"><tbody>
         <tr><th scope="row">1 000 premiers</th><td>${bar(c.top1000.covered, c.top1000.total)}</td></tr>
         <tr><th scope="row">2 000 premiers</th><td>${bar(c.top2000.covered, c.top2000.total)}</td></tr></tbody></table>
