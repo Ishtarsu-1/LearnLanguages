@@ -16,6 +16,7 @@ const mailer = require("./mailer.js");
 const { MISSIONS } = require("./missions.js");
 const contentAdminMod = require("./content-admin.js");
 const socialMod = require("./social.js");
+const liveMod = require("./live.js");
 
 const PORT = Number(process.env.PORT) || 8000;
 const ROOT = __dirname;
@@ -190,6 +191,8 @@ const tts = ttsMod.create({ dir: path.join(DATA, "tts") });
 const mail = mailer.create();
 // Amis et défis (social.js) : tables créées au démarrage
 const social = socialMod.create(db);
+// Duel en direct (live.js) : parties en mémoire, temps réel par Server-Sent Events
+const live = liveMod.create({ social, db });
 const TOKEN_TTL = { reset: 30 * 60e3, verify: 7 * 864e5 };
 function issueToken(userId, kind) {
   const token = crypto.randomBytes(32).toString("base64url");
@@ -758,6 +761,16 @@ async function api(req, res, url) {
     sendMail(auth.user, "verify");
     return send(res, 200, { ok: true });
   }
+  // Duel en direct (live.js)
+  if (url.pathname.startsWith("/api/live/")) {
+    if (route === "POST /api/live/invite") {
+      const wait = waitFor(`friend:${uid}`);
+      if (wait) return tooMany(res, wait);
+      recordAttempt(`friend:${uid}`);
+    }
+    try { const r = await live.handle(route, uid, (q) => readJson(q, 4 * 1024), req, res); if (r !== undefined) return send(res, 200, r); return; }
+    catch (e) { if (e.expose) return fail(res, e.status, e.message); throw e; }
+  }
   // Amis et défis (social.js) : la progression des défis est calculée côté serveur
   if (route === "GET /api/friends" || /^POST \/api\/(friends|challenges)\//.test(route)) {
     if (/^POST \/api\/(friends\/(request|invite)|challenges\/new)$/.test(route)) {
@@ -867,6 +880,7 @@ const STATIC = {
   "/admin-content.js": ["admin-content.js", "text/javascript; charset=utf-8"],
   "/feedback.js": ["feedback.js", "text/javascript; charset=utf-8"],
   "/friends.js": ["friends.js", "text/javascript; charset=utf-8"],
+  "/duel.js": ["duel.js", "text/javascript; charset=utf-8"],
   "/styles.css": ["styles.css", "text/css; charset=utf-8"],
   "/tokens.css": ["tokens.css", "text/css; charset=utf-8"],
   "/fonts/pretendard.css": ["fonts/pretendard.css", "text/css; charset=utf-8"],
@@ -955,4 +969,4 @@ if (require.main === module) {
   warmEngines().catch((e) => console.error("Préchauffage :", e.message));
   hw.detectBasic().then((b) => { machine.basic = b; }).catch(() => {}); // léger : système, mémoire, nvidia-smi
 }
-module.exports = { server, contentAdmin, social, db, mail, clientIp, warmEngines, engines, tts, limiter: { waitFor, recordAttempt, clearAttempts } };
+module.exports = { server, contentAdmin, social, live, db, mail, clientIp, warmEngines, engines, tts, limiter: { waitFor, recordAttempt, clearAttempts } };

@@ -27,6 +27,7 @@ function route() {
   else if (parts[0] === "pourquoi") { html = viewWhy(); nav = "pourquoi"; }
   else if (parts[0] === "avis") { html = viewFeedback(); nav = ""; }
   else if (parts[0] === "amis") { html = viewFriends(parts[1], parts[2]); nav = "amis"; }
+  else if (parts[0] === "duel" && parts[1]) { html = viewDuel(parts[1]); nav = "amis"; }
   else if (parts[0] === "ami" && parts[1]) { html = viewInviteLink(decodeURIComponent(parts[1])); nav = "amis"; }
   else if (parts[0] === "admin" && parts[1] === "contenu") { html = viewAdminContent(parts[2] && decodeURIComponent(parts[2])); nav = "profil"; }
   else if (parts[0] === "admin") { html = viewAdmin(); nav = "profil"; }

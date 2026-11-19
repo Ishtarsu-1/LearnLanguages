@@ -958,3 +958,28 @@ img.friend-av { object-fit: cover; }
 .chips .chip { cursor: pointer; border: 1px solid var(--border); font: inherit; min-height: 44px; }
 .social-mini .challenge { box-shadow: none; padding: 10px 0; border: 0; border-top: 1px solid var(--border); border-radius: 0; margin: 0; }
 .count-badge { display: inline-grid; place-items: center; min-width: 22px; height: 22px; padding: 0 6px; border-radius: var(--radius-full); background: var(--primary); color: var(--on-primary); font-size: var(--text-xs); font-weight: 800; }
+
+/* ---------- Duel en direct (duel.js) ---------- */
+.live-banner { position: fixed; z-index: 60; left: 50%; transform: translateX(-50%); top: 76px; width: min(560px, calc(100% - 32px)); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; border: 2px solid var(--primary); box-shadow: 0 8px 24px rgb(0 0 0 / .18); }
+.live-ico { font-size: 1.8rem; }
+.duel-board { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; margin: 12px 0 16px; }
+.duel-player { display: grid; justify-items: center; gap: 6px; text-align: center; }
+.duel-vs { font-family: var(--font-display); font-size: var(--text-2xl); font-weight: 800; }
+.duel-dots { display: flex; gap: 4px; }
+.duel-dots span { width: 12px; height: 12px; border-radius: 50%; background: var(--border); }
+.duel-dots span.on { background: var(--reward); }
+.duel-player.me .duel-dots span.on { background: var(--primary); }
+.duel-stage { display: grid; justify-items: center; gap: 12px; text-align: center; padding-block: 28px; }
+.duel-word { font-size: clamp(2.2rem, 8vw, 3.6rem); font-weight: 800; line-height: 1.1; word-break: break-word; }
+.duel-count { font-size: 4rem; font-weight: 800; color: var(--primary); }
+.duel-timer { width: 100%; max-width: 420px; height: 8px; border-radius: var(--radius-full); background: var(--surface-2); overflow: hidden; }
+.duel-timer span { display: block; height: 100%; background: var(--primary); transition: width .2s linear; }
+.duel-form { display: flex; gap: 8px; width: 100%; max-width: 420px; }
+.duel-form .input { flex: 1; text-align: center; }
+.duel-result { font-size: var(--text-lg); margin: 0; }
+.duel-result.win { color: var(--success); }
+.duel-wrong { color: var(--error); margin: 0; font-weight: 800; }
+.input.shake { animation: duel-shake .3s; border-color: var(--error); }
+@keyframes duel-shake { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
+@media (prefers-reduced-motion: reduce) { .input.shake { animation: none; } .duel-timer span { transition: none; } }
+.duel-actions { justify-content: center; }

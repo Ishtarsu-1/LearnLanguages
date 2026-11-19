@@ -54,8 +54,17 @@ function challengeCard(c, { compact = false } = {}) {
       <small class="muted">${what} · ${c.days} jours (${new Date(`${c.start}T12:00`).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })} → ${new Date(`${c.end}T12:00`).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })})</small></div>${status}</div>
     ${body}${end}
     ${c.invited.length && !compact ? `<p class="muted m-0"><small>En attente : ${c.invited.map((p) => esc(p.name)).join(", ")}</small></p>` : ""}
-    ${!compact && c.state === "active" ? `<div class="wp-actions"><button class="btn ghost small" data-act="ch-leave" data-id="${c.id}">Quitter le défi</button></div>` : ""}
+    ${c.state === "active" && c.myStatus === "joined" ? `<div class="wp-actions">${challengeGo(c)}${compact ? "" : `<button class="btn ghost small" data-act="ch-leave" data-id="${c.id}">Quitter le défi</button>`}</div>` : ""}
   </div>`;
+}
+
+// Accès direct à l'exercice du défi
+function challengeGo(c) {
+  const lang = c.lang || (LANGUAGES[state.lastLang] ? state.lastLang : "en");
+  const [href, label] = c.type === "chapter" ? [`#/lang/${lang}/lire/${String(c.ref).replace(":", "-")}`, "📖 Lire le chapitre"]
+    : c.type === "reviews" || c.type === "solid" ? [`#/lang/${lang}/revisions/go`, "🔁 Réviser maintenant"]
+    : [`#/lang/${lang}/aujourdhui`, "☀️ Faire ma séance"];
+  return `<a class="btn small" href="${href}">${label}</a>`;
 }
 
 // ---------- Page « Amis et défis » ----------
@@ -89,10 +98,11 @@ function viewFriends(sub, arg) {
       <button class="btn small" data-act="fr-respond" data-id="${u.id}" data-a="1">Accepter</button><button class="btn ghost small" data-act="fr-respond" data-id="${u.id}" data-a="0">Refuser</button><button class="btn text" data-act="fr-block" data-id="${u.id}" title="Bloquer">🚫</button></li>`).join("")}</ul></div>` : ""}
 
     <h2 class="section-title">Mes amis (${d.friends.length})</h2>
+    ${d.friends.length ? `<p class="muted"><small>⚡ <b>Duel en direct</b> : un mot s'affiche, le premier qui écrit sa traduction marque un point, premier à 5 gagne. Ton ami doit être sur Mochi en même temps.</small></p>` : ""}
     ${d.friends.length ? `<div class="friend-grid">${d.friends.map((f) => `<div class="card friend">
       <div class="friend-top">${socialAvatar(f)}<div class="grow"><b>${esc(f.name)}</b><br/><small class="muted">@${esc(f.username)}</small></div></div>
       ${f.stats ? `<p class="friend-stats"><span>⏱️ ${num1(f.stats.hours)} h</span>${f.stats.langs.map((l) => `<span>${flagOf(l)} ${num0(f.stats.solid[l])} mots solides</span>`).join("")}</p>` : `<p class="muted"><small>Préfère garder ses stats pour lui·elle.</small></p>`}
-      <div class="wp-actions"><a class="btn small" href="#/amis/defi/${f.id}">⚔️ Défier</a><button class="btn ghost small" data-act="fr-remove" data-id="${f.id}" data-n="${esc(f.name)}">Retirer</button><button class="btn text" data-act="fr-block" data-id="${f.id}" title="Bloquer">🚫</button></div>
+      <div class="wp-actions">${Object.keys(LANGUAGES).map((l) => `<button class="btn small duel-btn" data-act="duel-invite" data-id="${f.id}" data-lang="${l}" title="Duel en direct en ${LANGUAGES[l].name.toLowerCase()}">⚡ Duel ${LANGUAGES[l].flag}</button>`).join("")}<a class="btn ghost small" href="#/amis/defi/${f.id}">⚔️ Défi</a><button class="btn ghost small" data-act="fr-remove" data-id="${f.id}" data-n="${esc(f.name)}">Retirer</button><button class="btn text" data-act="fr-block" data-id="${f.id}" title="Bloquer">🚫</button></div>
     </div>`).join("")}</div>` : `<div class="card"><p class="muted m-0">Pas encore d'ami ici. Envoie ton lien d'invitation !</p></div>`}
 
     <h2 class="section-title">Ajouter un ami</h2>

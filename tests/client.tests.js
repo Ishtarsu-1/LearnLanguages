@@ -670,6 +670,28 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
   ui.social.d.me.username = null; ok(viewFriends().includes("Choisis ton pseudo"), "amis : choisir son pseudo d'abord");
   account = a; ui.social = { at: 9e15 }; ui.newCh = null; // pas de chargement réseau pendant les tests suivants
 }
+{ // Défis : accès direct à l'exercice ; duel en direct
+  ok(challengeGo({ type: "chapter", lang: "en", ref: "en-lost-cat:2" }).includes('href="#/lang/en/lire/en-lost-cat-2"'), "défi chapitre → le chapitre");
+  ok(challengeGo({ type: "reviews", lang: "ko" }).includes("#/lang/ko/revisions/go") && challengeGo({ type: "regular", lang: null }).includes("/aujourdhui"), "défi révisions → réviser ; régularité → séance du jour");
+  const a = account; account = { id: 1, name: "Léa" };
+  const P = (me, score, id) => ({ id, name: me ? "Léa" : "Tom", me, score, avatar: "mochi" });
+  const base = { id: "abc1", lang: "ko", target: 5, maxRounds: 15, winner: null, history: [], players: [P(true, 2, 1), P(false, 1, 2)] };
+  ui.duel = { ...base, status: "waiting", players: [P(true, 0, 1), P(false, 0, 2)] };
+  ok(viewDuel("abc1").includes("En attente de Tom") && viewDuel("abc1").includes('data-act="duel-cancel"'), "duel : salle d'attente");
+  ui.duel = { ...base, status: "waiting", players: [P(false, 0, 2), P(true, 0, 1)] };
+  ok(viewDuel("abc1").includes('data-act="duel-join"'), "duel : l'invité peut rejoindre");
+  ui.duel = { ...base, status: "playing", round: { n: 3, word: "커피", endsAt: Date.now() + 10000, closed: false, result: null } };
+  let v = viewDuel("abc1");
+  ok(v.includes("커피") && v.includes('id="duel-answer"') && v.includes("2 – 1") && (v.match(/duel-dots/g) || []).length === 2, "duel : mot, champ de réponse, score");
+  ui.duel.round.result = { winner: 2, answer: "café" };
+  ok(viewDuel("abc1").includes("Tom a été plus rapide") && !viewDuel("abc1").includes('id="duel-answer"'), "duel : résultat de la manche");
+  ui.duel = { ...base, status: "finished", winner: 1, players: [P(true, 5, 1), P(false, 3, 2)], history: [{ word: "커피", fr: "café", winner: 1 }] };
+  v = viewDuel("abc1");
+  ok(v.includes("Victoire") && v.includes('data-act="duel-rematch"') && v.includes("café"), "duel : victoire, revanche, mots de la partie");
+  ui.duel.winner = 2; ok(viewDuel("abc1").includes("Bravo à Tom") && !/perdu|défaite|nul/i.test(viewDuel("abc1")), "duel : défaite annoncée avec bienveillance");
+  ok(!/ style="/.test(v), "duel : aucun style inline");
+  account = a; ui.duel = null;
+}
 { // « Donner mon avis » : plusieurs sujets dans le même formulaire
   ui.avis = null; ui.avisFrom = "#/lang/ko/lire";
   let v = viewFeedback();

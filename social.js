@@ -292,7 +292,7 @@ function create(db, { now = () => new Date() } = {}) {
     throw err(404, "Route inconnue.");
   }
 
-  return { handle, overview, pendingCount, measure, solidCount, dayOf, addDays, TYPES, USERNAME_RE };
+  return { handle, overview, pendingCount, areFriends, measure, solidCount, dayOf, addDays, TYPES, USERNAME_RE };
 }
 
 module.exports = { create, TYPES };
