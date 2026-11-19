@@ -259,7 +259,7 @@ EX_MORE.trou = {
       <p class="q-sentence ${k}">${blankHtml(q.s, q.wi, q.gi, R ? q.answer : null, R ? "right" : "")}</p>
       <p class="muted">« ${esc(q.s.fr)} »</p>
       ${R ? `${R.ok ? `<p class="ok-msg">Bien joué !</p>` : `<p class="ko-msg">Tu as écrit <b class="${k}">${esc(R.typed)}</b> · c'était <b class="${k}">${esc(q.answer)}</b> (${esc(lexFr(lang, q.g.lemmas[0]))})</p>`}${exNext}`
-        : `${E.hint ? `<p class="muted center"><small>💡 ${isZh(lang) ? `En pinyin : <b>${esc(zhPinyin(q.answer))}</b>` : `Commence par <b class="${k}">${esc([...q.answer][0])}</b>`} · ${[...q.answer].length} ${{ ko: "syllabe(s)", zh: "caractère(s)" }[lang] || "lettres"}</small></p>` : `<p class="center"><button class="btn ghost small" data-act="ex-hint">💡 Un indice</button></p>`}${typedField(lang, "Le mot qui manque…")}`}`;
+        : `${E.hint ? `<p class="muted center"><small>💡 ${isZh(lang) ? `En pinyin : <b>${esc(zhPinyin(q.answer))}</b>` : `Commence par <b class="${k}">${esc([...q.answer][0])}</b>`} · ${[...q.answer].length} ${{ ko: "syllabes", zh: "caractères" }[lang] || "lettres"}</small></p>` : `<p class="center"><button class="btn ghost small" data-act="ex-hint">💡 Un indice</button></p>`}${typedField(lang, "Le mot qui manque…")}`}`;
   },
   check(lang, E) {
     const t = typedValue(); if (!t) { toast("Écris le mot qui manque ✍️"); return false; }
@@ -389,7 +389,7 @@ EX_MORE.paires = {
         <div class="pairs-col">${q.words.map((w, i) => `<button class="choice ${k} ${q.matched.includes(i) ? "right" : q.sel === i ? "active" : ""}" data-act="pair-l" data-i="${i}" ${q.matched.includes(i) ? "disabled" : ""}>${esc(w)}</button>`).join("")}</div>
         <div class="pairs-col">${q.right.map((i) => `<button class="choice ${q.matched.includes(i) ? "right" : q.flash === i ? "wrong" : ""}" data-act="pair-r" data-i="${i}" ${q.matched.includes(i) ? "disabled" : ""}>${esc(LEXICON[lang][q.words[i]].fr)}</button>`).join("")}</div>
       </div>
-      ${done ? `<p class="ok-msg">${q.errors ? `Fini, avec ${q.errors} erreur(s).` : "Sans faute !"}</p>${exNext}` : `<p class="muted center"><small>Touche un mot à gauche, puis son sens à droite.</small></p>`}`;
+      ${done ? `<p class="ok-msg">${q.errors ? `Fini, avec ${plural(q.errors, "erreur", "erreurs")}.` : "Sans faute !"}</p>${exNext}` : `<p class="muted center"><small>Touche un mot à gauche, puis son sens à droite.</small></p>`}`;
   },
 };
 

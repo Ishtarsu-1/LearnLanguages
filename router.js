@@ -99,8 +99,11 @@ function renderTopStats(lang) {
   const el = document.getElementById("topbar-stats");
   if (!lang) { el.innerHTML = ""; return; }
   const L = state.langs[lang];
-  const n = reviewCount(lang);
-  el.innerHTML = `<span class="chip">${LANGUAGES[lang].flag}</span>
-    <a class="chip" href="#/lang/${lang}/revisions" title="Cartes à réviser">🧠 ${n}</a>
-    <span class="chip" title="Semaines régulières d'affilée (5 jours sur 7)">📅 ${currentStreak(L)}</span>`;
+  const n = reviewCount(lang), streak = currentStreak(L);
+  const begun = state.cards.some((c) => c.lang === lang) || streak > 0 || Object.keys(L.fullDays).length > 0;
+  if (!begun) { el.innerHTML = `<span class="chip" aria-label="${LANGUAGES[lang].name}">${LANGUAGES[lang].flag}</span>`; return; }
+  const rev = `${plural(n, "révision", "révisions")} à faire`, ser = `Série : ${plural(streak, "semaine régulière", "semaines régulières")}`;
+  el.innerHTML = `<span class="chip" aria-label="${LANGUAGES[lang].name}">${LANGUAGES[lang].flag}</span>
+    <a class="chip" href="#/lang/${lang}/revisions" title="${rev}" aria-label="${rev}">🧠 ${n}</a>
+    <span class="chip" title="${ser} (5 jours sur 7)" aria-label="${ser}">📅 ${streak}</span>`;
 }

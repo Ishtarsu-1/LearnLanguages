@@ -99,7 +99,7 @@ function tabThemes(lang) {
         <button class="fav ${p.fav ? "on" : ""}" data-act="theme-fav" data-t="${p.id}" aria-pressed="${p.fav}" title="${p.fav ? "Retirer des favoris" : "Thème préféré"}">${p.fav ? "★" : "☆"}</button>
         ${flavorMochi(p, p.unlocked ? "proud" : "curious", !p.unlocked)}
         <h3>${p.icon} ${esc(p.name)}</h3>
-        <small class="muted">${p.unlocked ? `Saveur ${esc(p.flavor)} débloquée !` : `Saveur ${esc(p.flavor)} · encore ${Math.max(0, p.need - p.solid)} mot(s) solide(s)`}</small>
+        <small class="muted">${p.unlocked ? `Saveur ${esc(p.flavor)} débloquée !` : `Saveur ${esc(p.flavor)} · encore ${plural(Math.max(0, p.need - p.solid), "mot solide", "mots solides")}`}</small>
         <div class="cov"><div class="bar"><span data-bar-w="${p.words.length ? (p.solid / p.words.length) * 100 : 0}"></span></div><b>${p.solid} / ${p.words.length}</b></div>
         <div class="theme-texts">${p.texts.length ? p.texts.map((t) => `<a class="chip" href="#/lang/${lang}/lire/${t.id}">${t.icon} ${esc(t.title)}${state.langs[lang].readTexts[t.id] ? " ✓" : ""}</a>`).join("") : `<small class="muted">Textes à venir</small>`}</div>
       </div>`).join("")}
@@ -121,18 +121,23 @@ function tabLibrary(lang) {
       ${used.map((th) => `<button class="chip ${filter === th.id ? "active" : ""}" data-act="lib-theme" data-t="${th.id}">${th.icon} ${esc(th.name)}${favs.includes(th.id) ? " ⭐" : ""}</button>`).join("")}
     </div>
     ${!filter && BOOKS[lang].length ? `<h2 class="section-title">📚 Livres gradués</h2><div class="text-list">${bookCards(lang)}</div><h2 class="section-title">Textes courts</h2>` : ""}
-    <div class="text-list">
-      ${list.map(({ t, c, z }) => `
-        <a class="card text-item" href="#/lang/${lang}/lire/${t.id}">
+    ${(() => {
+      // Le plus lisible en haut ; sous 80 % de mots connus : « Pour plus tard » (PEDAGOGIE §3)
+      const now = list.filter((x) => x.c >= 0.8), later = list.filter((x) => x.c < 0.8).sort((a, b) => b.c - a.c);
+      const item = ({ t, c, z }) => `
+        <a class="card text-item ${c < 0.8 ? "later" : ""}" href="#/lang/${lang}/lire/${t.id}">
           <span class="ti-icon">${t.icon}</span>
           <div>
             <h3>${esc(t.title)} ${state.langs[lang].readTexts[t.id] ? '<small class="muted">· lu ✓</small>' : ""}</h3>
-            <small class="muted">${t.kind} · ${t.sentences.length} phrases · 🔊 audio${(t.themes || []).map((x) => ` · ${themeOf(x)?.icon || ""} ${esc(themeOf(x)?.name || x)}`).join("")}</small>
+            <small class="muted">${t.kind} · ${plural(t.sentences.length, "phrase", "phrases")} · 🔊 audio${(t.themes || []).map((x) => ` · ${themeOf(x)?.icon || ""} ${esc(themeOf(x)?.name || x)}`).join("")}</small>
             <div class="cov"><div class="bar"><span data-bar-w="${pct(c)}"></span></div><b>${pct(c)} %</b></div>
           </div>
-          <span class="zone ${z.k}">${z.label}</span>
-        </a>`).join("")}
-    </div>`;
+          ${c < 0.8 ? "" : `<span class="zone ${z.k}">${z.label}</span>`}
+        </a>`;
+      return `${now.length ? `<div class="text-list">${now.map(item).join("")}</div>` : `<div class="card"><p class="m-0">${mochi("small", "curious")} Aucun texte n'est encore lisible pour toi : apprends tes premiers mots (<a class="lnk" href="#/lang/${lang}/aujourdhui">Aujourd'hui</a>), ils deviendront lisibles très vite.</p></div>`}
+        ${later.length ? `<h2 class="section-title">Pour plus tard</h2><p class="muted mt-0">Apprends quelques mots d'abord : ces textes deviendront lisibles. Tu peux quand même les ouvrir, avec le glossaire.</p>
+        <div class="text-list">${later.map(item).join("")}</div>` : ""}`;
+    })()}`;
 }
 
 function viewReader(lang, textId) {
@@ -237,9 +242,9 @@ function tabReviews(lang) {
   return `
     <div class="card empty">
       ${mochi("small", due + fresh ? "happy" : "sleepy")}
-      <h2>${due + fresh ? `${due + fresh} carte(s) à réviser` : "Tout est à jour"}</h2>
-      <p class="muted">${due} à revoir · ${fresh} nouvelle(s) (max ${state.settings.newPerDay} / jour)<br/>Rétention visée : ${pct(state.settings.retention)} %</p>
-      ${waitingNew(lang) ? `<p class="muted"><small>${waitingNew(lang)} mot(s) proche(s) d'un mot déjà vu aujourd'hui attendent demain : les apprendre ensemble les mélangerait.</small></p>` : ""}
+      <h2>${due + fresh ? `${plural(due + fresh, "carte", "cartes")} à réviser` : "Tout est à jour"}</h2>
+      <p class="muted">${due} à revoir · ${plural(fresh, "nouvelle", "nouvelles")} (max ${state.settings.newPerDay} / jour)<br/>Rétention visée : ${pct(state.settings.retention)} %</p>
+      ${waitingNew(lang) ? `<p class="muted"><small>${plural(waitingNew(lang), "mot proche", "mots proches")} d'un mot déjà vu aujourd'hui attendent demain : les apprendre ensemble les mélangerait.</small></p>` : ""}
       ${due + fresh && HAS_FSRS ? `<a class="btn" href="#/lang/${lang}/revisions/go">Commencer</a>` : `<a class="btn ghost" href="#/lang/${lang}/lire">Lire un texte pour capturer des mots</a>`}
     </div>
     <div class="stat-grid card mt-16">
@@ -326,7 +331,7 @@ function viewReviewSession(lang) {
     if (R.done) bumpSession(lang, "review");
     const ex = currentExercise(lang);
     return `<section class="view lesson-shell">${top}<div class="card empty mt-30">${mochi()}
-      <h2>Révisions terminées !</h2><p class="muted">${R.done} carte(s) revue(s). FSRS a planifié les prochaines juste avant que tu les oublies.</p>
+      <h2>Révisions terminées !</h2><p class="muted">${plural(R.done, "carte revue", "cartes revues")}. FSRS a planifié les prochaines juste avant que tu les oublies.</p>
       <a class="btn" href="#/lang/${lang}/produire">Maintenant, produis une phrase 💬</a>
       <p class="muted mt-14"><small>Prochain exercice : « ${esc(ex.prompt)} »</small></p></div></section>`;
   }
@@ -402,7 +407,7 @@ function tabProduce(lang) {
         <button class="btn small" data-act="next-ex">Phrase suivante →</button>
       </div>
       ${P.why && why ? `<p class="why">💡 ${esc(why)}</p>` : ""}
-      <p class="muted corrector"><small>${r.llm ? `✨ Corrigé par ${esc(P.engine || features.engine || "l'IA")}${P.remaining != null ? ` · ${P.remaining} correction(s) restante(s) aujourd'hui` : ""}` : /pause pour aujourd'hui/.test(P.llmError || "") ? `☕ ${esc(P.llmError)}` : `Correcteur hors ligne${P.llmError ? ` (${esc(P.llmError)})` : ""} : compare avec des réponses types.`}</small></p>
+      <p class="muted corrector"><small>${r.llm ? `✨ Corrigé par ${esc(P.engine || features.engine || "l'IA")}${P.remaining != null ? ` · ${plural(P.remaining, "correction restante", "corrections restantes")} aujourd'hui` : ""}` : /pause pour aujourd'hui/.test(P.llmError || "") ? `☕ ${esc(P.llmError)}` : `Correcteur hors ligne${P.llmError ? ` (${esc(P.llmError)})` : ""} : compare avec des réponses types.`}</small></p>
     </div>`;
   }
   const modes = `<div class="seg-ctl mode-ctl">

@@ -115,7 +115,7 @@ function tabPlacement(lang) {
     const r = P.result;
     const lines = isKo(lang)
       ? [r.hangul ? "✓ Tu lis le Hangul : le module d'alphabet est validé." : "On commence par le Hangul : c'est l'affaire d'une semaine environ.",
-         r.grammar?.length ? `✓ ${r.grammar.length} point(s) de grammaire validé(s).` : ""]
+         r.grammar?.length ? `✓ ${plural(r.grammar.length, "point de grammaire validé", "points de grammaire validés")}.` : ""]
       : [`Tu connais environ <b>${r.words.toLocaleString("fr-FR")} mots</b> d'anglais.`, r.marked ? `${r.marked} mots de nos textes sont marqués comme connus.` : "",
          r.fakeRate > 0.2 ? "Tu as coché des mots qui n'existent pas : l'estimation en tient compte, et elle reste prudente." : ""];
     return `<div class="card empty">${mochi("", "proud")}<h2>Test terminé</h2>

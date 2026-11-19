@@ -594,6 +594,23 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
   ok(viewHangul(1).includes("Comment lire les repères"), "explication des repères");
   state.langs.ko.hangulDone = hd; account = acc;
 }
+{ // v0.5 lot 3 : pluriels, une action principale, bibliothèque d'un débutant, « Réviser » neutre
+  ok(plural(0, "semaine") === "0 semaine" && plural(1, "semaine") === "1 semaine" && plural(3, "semaine régulière", "semaines régulières") === "3 semaines régulières" && plural(1200, "mot") === `${(1200).toLocaleString("fr-FR")} mots`, "pluriels");
+  const cards0 = state.cards, zh0 = state.langs.zh.pinyinDays; state.cards = []; state.langs.zh.pinyinDays = {};
+  const tz = tabToday("zh");
+  ok((tz.match(/class="btn(?! ghost)(?! small ghost)[^"]*"/g) || []).filter((c) => !/ghost/.test(c)).length === 1, "chinois : une seule action principale (les tons) " + (tz.match(/class="btn[^"]*"/g) || []).join(" | "));
+  state.langs.zh.pinyinDays = { 1: true };
+  ok(/class="btn small " data-act="learn-first"/.test(tabToday("zh")), "tons commencés : « Apprendre » redevient principal");
+  state.langs.zh.pinyinDays = zh0;
+  const known0 = state.langs.en.known; state.langs.en.known = {};
+  const lib = tabLibrary("en");
+  ok(lib.includes("Pour plus tard") && lib.includes("Apprends quelques mots d'abord") && lib.includes("Aucun texte n'est encore lisible"), "bibliothèque d'un débutant : « Pour plus tard », rien présenté comme lisible");
+  const later = lib.slice(lib.indexOf("Pour plus tard")), pcts = [...later.matchAll(/<b>(\d+) %<\/b>/g)].map((m) => +m[1]);
+  ok(pcts.length > 3 && pcts.every((v, i) => i === 0 || pcts[i - 1] >= v), "« Pour plus tard » : le plus lisible d'abord " + pcts.join(","));
+  const t0 = tabToday("en");
+  ok(t0.includes("Pas encore de cartes") && !/step done[^]*?Réviser/.test(t0.slice(t0.indexOf("🫳"))), "« Réviser » neutre pour un nouveau venu");
+  state.langs.en.known = known0; state.cards = cards0;
+}
 { // Accueil : langues stables en haut, langues expérimentales à part, plus de cartes « Bientôt »
   const f0 = features;
   let h = viewHome();

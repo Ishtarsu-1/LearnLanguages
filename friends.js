@@ -39,7 +39,7 @@ function challengeCard(c, { compact = false } = {}) {
     const n = c.progress.perPerson;
     body = `<ul class="ch-people">${c.people.map((p) => `<li>${p.value >= n ? "✅" : "⏳"} ${who(p)} <span class="muted">· ${c.type === "chapter" ? (p.value ? "lu et compris" : "pas encore") : `${num0(p.value)} / ${n}`}</span></li>`).join("")}</ul>`;
   } else {
-    body = `<ul class="ch-people">${c.people.map((p) => `<li>${c.progress.leaders.includes(p.id) ? "👑" : "🌱"} ${who(p)} <span class="muted">· ${num0(p.value)} mot(s) solide(s)</span></li>`).join("")}</ul>`;
+    body = `<ul class="ch-people">${c.people.map((p) => `<li>${c.progress.leaders.includes(p.id) ? "👑" : "🌱"} ${who(p)} <span class="muted">· ${plural(num0(p.value), "mot solide", "mots solides")}</span></li>`).join("")}</ul>`;
   }
   const status = c.state === "success" ? `<span class="zone ideal">Réussi 🎉</span>`
     : c.state === "finished" ? `<span class="zone">Terminé</span>`

@@ -33,11 +33,11 @@ function caQueue() {
   return Object.keys(LANGUAGES).map((l) => {
     const ds = list.filter((d) => d.lang === l);
     if (!ds.length) return "";
-    return `<h2 class="section-title">${LANGUAGES[l].flag} ${LANGUAGES[l].name} · ${ds.length} brouillon(s)</h2>
+    return `<h2 class="section-title">${LANGUAGES[l].flag} ${LANGUAGES[l].name} · ${plural(ds.length, "brouillon", "brouillons")}</h2>
       <div class="ca-list">${ds.map((d) => `<a class="card ca-item" href="#/admin/contenu/${esc(d.id)}">
         <span class="ca-dot" title="${d.status === "green" ? "tout est vert" : d.status === "orange" ? "avertissements" : "problèmes bloquants"}">${CA_DOT[d.status]}</span>
         <div class="grow"><b>${esc(d.icon || "")} ${esc(d.title)}</b> <small class="muted">· ${esc(d.unit || "hors plan")} · ${esc(d.kind)} · ${d.sentences} phrases</small><br/>
-          <small class="muted">${d.coverage !== null ? `couverture ${num1(d.coverage)} % · ` : ""}${d.blocking ? `${d.blocking} bloquant(s) · ` : ""}${d.warnings ? `${d.warnings} avertissement(s) · ` : ""}${d.notes ? `${d.notes} remarque(s) du relecteur · ` : ""}${d.lexiconTodo ? `${d.lexiconTodo} mot(s) à traduire` : ""}${d.regenerating ? " · ⏳ régénération en cours" : ""}</small></div>
+          <small class="muted">${d.coverage !== null ? `couverture ${num1(d.coverage)} % · ` : ""}${d.blocking ? `${plural(d.blocking, "bloquant", "bloquants")} · ` : ""}${d.warnings ? `${plural(d.warnings, "avertissement", "avertissements")} · ` : ""}${d.notes ? `${plural(d.notes, "remarque", "remarques")} du relecteur · ` : ""}${d.lexiconTodo ? `${plural(d.lexiconTodo, "mot", "mots")} à traduire` : ""}${d.regenerating ? " · ⏳ régénération en cours" : ""}</small></div>
         <span class="tag">Relire →</span></a>`).join("")}</div>`;
   }).join("") + `<p class="mt-20"><button class="btn ghost small" data-act="ca-refresh" data-k="queue">↻ Actualiser</button></p>`;
 }
@@ -133,7 +133,7 @@ async function lexPost(body, msg) {
 Object.assign(actions, {
   "lex-one": (el) => lexPost({ lang: el.dataset.l, action: "accept", items: lexInputs(el.dataset.l, el.dataset.lemma) }, () => "Ajouté au lexique ✓"),
   "lex-skip": (el) => lexPost({ lang: el.dataset.l, action: "skip", items: [{ lemma: el.dataset.lemma }] }, () => "Ignoré"),
-  "lex-page": (el) => { if (confirm("Ajouter ces traductions au lexique, telles qu'elles sont affichées ?")) lexPost({ lang: el.dataset.l, action: "accept", items: lexInputs(el.dataset.l) }, (n) => `${n} mot(s) ajouté(s) ✓`); },
+  "lex-page": (el) => { if (confirm("Ajouter ces traductions au lexique, telles qu'elles sont affichées ?")) lexPost({ lang: el.dataset.l, action: "accept", items: lexInputs(el.dataset.l) }, (n) => `${plural(n, "mot ajouté", "mots ajoutés")} ✓`); },
 });
 
 // ---------- Couverture (lot C8) ----------
@@ -153,7 +153,7 @@ function caCoverage() {
     <h2 class="section-title">${LANGUAGES[l].flag} ${LANGUAGES[l].name}</h2>
     <div class="lang-grid">
       <div class="card"><h3>Objectifs</h3><table class="admin-table"><tbody>${c.goals.map((g) => `<tr><th scope="row">Étape ${g.step} · ${esc(g.label)}</th><td>${bar(g.done, g.target)}</td><td>${g.done >= g.target ? "✓" : ""}</td></tr>`).join("")}</tbody></table>
-        <p class="muted"><small>${c.texts} texte(s) publiés · ${c.drafts} brouillon(s) · unités du plan : ${c.units.written} / ${c.units.total} écrites</small></p></div>
+        <p class="muted"><small>${plural(c.texts, "texte", "textes")} publiés · ${plural(c.drafts, "brouillon", "brouillons")} · unités du plan : ${c.units.written} / ${c.units.total} écrites</small></p></div>
       <div class="card"><h3>Mots fréquents vus</h3><table class="admin-table"><tbody>
         <tr><th scope="row">1 000 premiers</th><td>${bar(c.top1000.covered, c.top1000.total)}</td></tr>
         <tr><th scope="row">2 000 premiers</th><td>${bar(c.top2000.covered, c.top2000.total)}</td></tr></tbody></table>

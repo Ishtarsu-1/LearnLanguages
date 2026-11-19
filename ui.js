@@ -5,6 +5,8 @@
 // ============================================================
 // ---------- Utilitaires ----------
 const $app = document.getElementById("app");
+// Pluriel français : 0 et 1 au singulier (« 0 semaine », « 2 semaines »). Nombre formaté (« 1 200 »).
+const plural = (n, one, many = `${one}s`) => `${Number(n || 0).toLocaleString("fr-FR")} ${Math.abs(Number(n || 0)) >= 2 ? many : one}`;
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const today = (d = new Date()) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 const yesterday = () => today(new Date(Date.now() - 864e5));

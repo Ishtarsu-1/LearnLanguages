@@ -57,7 +57,7 @@ const actions = {
     const lang = currentLang(), t = textById(lang, ui.reader.id);
     let n = 0;
     for (const { si, wi, gi } of unknownLemmas(lang, t.parsed).values()) if (captureSeg(lang, t.parsed[si], wi, gi, t.id)) n++;
-    ui.reader.glossOpen = true; toast(`${n} carte(s) ajoutée(s) ✓`); render();
+    ui.reader.glossOpen = true; toast(`${plural(n, "carte ajoutée", "cartes ajoutées")} ✓`); render();
   },
   "mark-known": () => {
     const lang = currentLang(), R = ui.reader, seg = textById(lang, R.id).parsed[R.sel.s].words[R.sel.w].segs[R.sel.g];
@@ -129,7 +129,7 @@ const actions = {
   "toggle-unknown": (el) => { const L = state.langs[currentLang()]; delete L.known[el.dataset.l]; L.unknown[el.dataset.l] = true; save(); render(); },
   "add-frequent": () => {
     const n = addFrequent(currentLang(), 5);
-    save(); toast(`${n} mot(s) ajouté(s), chacun avec sa phrase ✓`); render();
+    save(); toast(`${plural(n, "mot ajouté", "mots ajoutés")}, chacun avec sa phrase ✓`); render();
   },
   // Débutant complet : les premiers mots fréquents, puis on les découvre tout de suite (phrase + audio)
   "learn-first": (el) => {
@@ -146,7 +146,7 @@ const actions = {
       if (i < 0) continue;
       if (addCard("en", { lemma: f.lemma, before: f.s.slice(0, i), surface: f.s.slice(i, i + f.lemma.length), after: f.s.slice(i + f.lemma.length), contextFr: f.sfr, fr: f.fr, source: "faux-amis", note: "Faux ami !" })) n++;
     }
-    save(); toast(`${n} faux ami(s) ajouté(s) ✓`); render();
+    save(); toast(`${plural(n, "faux ami ajouté", "faux amis ajoutés")} ✓`); render();
   },
 
   // Oreille

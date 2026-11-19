@@ -177,7 +177,7 @@ function activityCard() {
   for (const d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
     const key = today(d), x = daySum(key), min = Math.round(x.sec / 60);
     const lvl = !x.sec && !x.rev ? 0 : min < 5 ? 1 : min < 15 ? 2 : min < 30 ? 3 : 4;
-    cells.push(`<span class="hm l${lvl}" title="${d.toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" })} : ${min} min, ${x.rev} révision(s)"></span>`);
+    cells.push(`<span class="hm l${lvl}" title="${d.toLocaleDateString("fr-FR", { weekday: "short", day: "numeric", month: "short" })} : ${min} min, ${plural(x.rev, "révision", "révisions")}"></span>`);
   }
   const days = Object.keys(H).filter((d) => daySum(d).sec || daySum(d).rev);
   const tot = Object.keys(H).reduce((a, d) => { const x = daySum(d); return { sec: a.sec + x.sec, prod: a.prod + x.prod, read: a.read + x.read }; }, { sec: 0, prod: 0, read: 0 });
@@ -227,7 +227,7 @@ function viewAuth(mode) {
       ${signup ? `<label class="row consent"><input type="checkbox" name="accept" required /> <span>J'accepte les <a class="lnk" href="#/legal/cgu" target="_blank">conditions d'utilisation</a> et la <a class="lnk" href="#/legal/confidentialite" target="_blank">politique de confidentialité</a>, et j'ai au moins 15 ans (sinon, l'accord d'un parent).</span></label>` : ""}
       <p class="form-err" hidden></p>
       <button class="btn">${signup ? "Créer mon compte" : "Se connecter"}</button>
-      ${signup && (cards || xp) ? `<p class="muted center"><small>✨ Ta progression actuelle (${cards} carte(s), ${xp} XP) sera rattachée à ton compte.</small></p>` : ""}
+      ${signup && (cards || xp) ? `<p class="muted center"><small>✨ Ta progression actuelle (${plural(cards, "carte", "cartes")}, ${xp} XP) sera rattachée à ton compte.</small></p>` : ""}
     </form>
     <p class="center muted">${signup ? `Déjà un compte ? <a class="lnk" href="#/connexion">Se connecter</a>` : `<a class="lnk" href="#/mot-de-passe-oublie">Mot de passe oublié ?</a> · Pas encore de compte ? <a class="lnk" href="#/inscription">Créer un compte</a>`}</p>
   </section>`;
@@ -284,8 +284,8 @@ function viewAdmin() {
   const kb = (b) => (b > 1e6 ? `${num1(b / 1e6)} Mo` : `${Math.round(b / 1e3)} Ko`);
   const stat = (ico, n, label) => `<div class="stat"><span class="ico">${ico}</span><div><b>${n}</b><small>${label}</small></div></div>`;
   const features = d ? [
-    ["Correcteur IA (Produire)", d.llm.engine ? `✅ ${esc(d.llm.engine)}` : "❌ désactivé", d.llm.engine ? `Aujourd'hui : ${d.llm.today} / ${d.llm.globalDaily} appel(s) à l'IA, ${d.llm.cacheHits} servie(s) depuis le cache (${Math.round(d.llm.hitRate * 100)} %), coût estimé ${d.llm.cost.toLocaleString("fr-FR", { style: "currency", currency: "USD", maximumFractionDigits: 2 })} · ${d.llm.total} appel(s) au total · ${d.llm.daily} max / compte / jour · ${d.llm.cacheSize} réponse(s) en cache` : ""],
-    ["Vraies voix", Object.keys(d.tts.voices).length ? `✅ ${Object.entries(d.tts.voices).map(([l, v]) => `${LANGUAGES[l].flag} ×${v.length}`).join(" ")}` : "🔈 navigateur", `${d.tts.files} phrase(s) en cache (${kb(d.tts.bytes)})`],
+    ["Correcteur IA (Produire)", d.llm.engine ? `✅ ${esc(d.llm.engine)}` : "❌ désactivé", d.llm.engine ? `Aujourd'hui : ${d.llm.today} / ${plural(d.llm.globalDaily, "appel", "appels")} à l'IA, ${plural(d.llm.cacheHits, "servie", "servies")} depuis le cache (${Math.round(d.llm.hitRate * 100)} %), coût estimé ${d.llm.cost.toLocaleString("fr-FR", { style: "currency", currency: "USD", maximumFractionDigits: 2 })} · ${plural(d.llm.total, "appel", "appels")} au total · ${d.llm.daily} max / compte / jour · ${plural(d.llm.cacheSize, "réponse", "réponses")} en cache` : ""],
+    ["Vraies voix", Object.keys(d.tts.voices).length ? `✅ ${Object.entries(d.tts.voices).map(([l, v]) => `${LANGUAGES[l].flag} ×${v.length}`).join(" ")}` : "🔈 navigateur", `${plural(d.tts.files, "phrase", "phrases")} en cache (${kb(d.tts.bytes)})`],
     ["E-mails", d.mail === "resend" ? "✅ Resend" : "🖥️ terminal (pas d'envoi)", d.mail === "resend" ? "" : "RESEND_API_KEY absent"],
     ["Appli installable / hors ligne", "serviceWorker" in (globalThis.navigator || {}) ? "✅" : "❌ navigateur non compatible", ""],
     ["FSRS (révisions espacées)", HAS_FSRS ? "✅ ts-fsrs 5.2.3" : "⚠️ non chargé", ""],

@@ -34,7 +34,7 @@ function bumpSession(lang, key) {
   if (sessionComplete(lang) && !L.fullDays[today()]) {
     L.fullDays[today()] = true;
     const w = weekly(L);
-    toast(w.thisWeek === WEEK_GOAL ? `🍡 Semaine régulière réussie ! Série : ${w.streak} semaine(s)` : `✓ Séance complète · ${w.thisWeek}/${WEEK_GOAL} cette semaine`);
+    toast(w.thisWeek === WEEK_GOAL ? `🍡 Semaine régulière réussie ! Série : ${plural(w.streak, "semaine", "semaines")}` : `✓ Séance complète · ${w.thisWeek}/${WEEK_GOAL} cette semaine`);
   }
   save();
 }
@@ -309,7 +309,7 @@ function viewLanguage(lang, tab) {
           <div class="stat-grid">
             <div class="stat"><span class="ico">⏱️</span><div><b>${num1(hours)} h</b><small>d'apprentissage</small></div></div>
             <div class="stat"><span class="ico">📒</span><div><b>${num0(knownCount(lang))}</b><small>mots connus</small></div></div>
-            <div class="stat"><span class="ico">📅</span><div><b>${currentStreak(L)}</b><small>semaine(s) régulière(s)</small></div></div>
+            <div class="stat"><span class="ico">📅</span><div><b>${currentStreak(L)}</b><small>${currentStreak(L) >= 2 ? "semaines régulières" : "semaine régulière"}</small></div></div>
             <div class="stat"><span class="ico">⭐</span><div><b>${num0(L.xp)}</b><small>XP</small></div></div>
           </div>
         </div>
@@ -330,7 +330,7 @@ function viewLanguage(lang, tab) {
 function weekCard(L) {
   const w = weekly(L), names = ["L", "M", "M", "J", "V", "S", "D"];
   const msg = w.thisWeek >= WEEK_GOAL ? "Semaine réussie ! Les jours restants sont des jours de repos."
-    : w.reachable ? `Encore ${WEEK_GOAL - w.thisWeek} jour(s) cette semaine. 2 jours de repos sont inclus.`
+    : w.reachable ? `Encore ${plural(WEEK_GOAL - w.thisWeek, "jour", "jours")} cette semaine. 2 jours de repos sont inclus.`
     : "Cette semaine ne comptera pas pour la série, et ce n'est pas grave : chaque séance fait progresser.";
   return `<div class="card week">
     <h3>Ma semaine · ${w.thisWeek}/${WEEK_GOAL}</h3>
@@ -398,6 +398,8 @@ Object.assign(TAB_VIEWS, { pratique: (l) => tabPractice(l), aujourdhui: (l) => t
 const BEGINNER_COVERAGE = 0.8, BEGINNER_WORDS = 50, FIRST_WORDS = 10;
 const isBeginner = (lang, best) => best.c < BEGINNER_COVERAGE && knownCount(lang) < BEGINNER_WORDS;
 
+// Chinois / russe : tons ou alphabet pas encore commencés → c'est l'action principale (charte §3)
+const scriptPending = (lang) => (isZh(lang) && !Object.keys(state.langs.zh.pinyinDays).length) || (lang === "ru" && !Object.keys(state.langs.ru.alphabetDays).length);
 function tabToday(lang) {
   if (hangulGate(lang)) {
     // Coréen, Hangul pas fini : une seule action principale, le jour suivant du Hangul (charte §3)
@@ -414,6 +416,7 @@ function tabToday(lang) {
   const s = session(lang);
   const best = rankedTexts(lang)[0];
   const due = reviewQueue(lang).length, fresh = newCards(lang).length;
+  const hasCards = state.cards.some((c) => c.lang === lang);
   const reviewDone = s.review || due + fresh === 0;
   const ex = currentExercise(lang);
   const all = sessionComplete(lang);
@@ -431,7 +434,7 @@ function tabToday(lang) {
         `<div class="step-acts"><a class="btn small" href="#/lang/${lang}/niveau">Faire le test</a><button class="btn ghost small" data-act="learn-first" data-l="${lang}">🌱 Mes ${FIRST_WORDS} premiers mots</button></div>`)
       : stepCard(1, "🌱", `Apprendre mes ${FIRST_WORDS} premiers mots`, step1Done,
         step1Done ? "Tes premiers mots sont dans tes révisions : chacun avec sa phrase et son audio." : "Les mots les plus fréquents d'abord, chacun dans sa phrase et avec son audio. Les textes deviendront lisibles très vite.",
-        step1Done ? "" : `<button class="btn small" data-act="learn-first" data-l="${lang}">Apprendre</button>`);
+        step1Done ? "" : `<button class="btn small ${scriptPending(lang) ? "ghost" : ""}" data-act="learn-first" data-l="${lang}">Apprendre</button>`);
   return `
     ${isZh(lang) && typeof pinyinTodayCard === "function" ? pinyinTodayCard() : ""}
     ${lang === "ru" && typeof cyrillicTodayCard === "function" ? cyrillicTodayCard() : ""}
@@ -440,8 +443,8 @@ function tabToday(lang) {
     ${all ? `<div class="card celebrate">${mochi("small", w.thisWeek >= WEEK_GOAL ? "proud" : "happy")}<div><h3>Séance du jour bouclée</h3><p class="muted">${w.thisWeek}/${WEEK_GOAL} jours cette semaine. Tu peux continuer, mais l'essentiel est fait.</p></div></div>`
       : w.resting ? `<div class="card celebrate">${mochi("small", "sleepy")}<div><h3>Jour de repos possible</h3><p class="muted">Objectif de la semaine atteint. Mochi fait la sieste, ta série est en sécurité. Tu peux quand même pratiquer si tu en as envie.</p></div></div>` : ""}
     ${step1}
-    ${stepCard(2, "🫳", "Capturer", s.captured > 0, s.captured ? `${s.captured} mot(s) capturé(s) aujourd'hui.` : "Pendant la lecture, touche un mot inconnu pour l'ajouter.", "")}
-    ${stepCard(3, "🧠", "Réviser", reviewDone, due + fresh ? `${due} carte(s) à revoir, ${fresh} nouvelle(s).` : "Rien à réviser pour l'instant.",
+    ${stepCard(2, "🫳", "Capturer", s.captured > 0, s.captured ? `${plural(s.captured, "mot capturé", "mots capturés")} aujourd'hui.` : "Pendant la lecture, touche un mot inconnu pour l'ajouter.", "")}
+    ${stepCard(3, "🧠", "Réviser", reviewDone && hasCards, !hasCards ? "Pas encore de cartes : elles arrivent avec tes premiers mots." : due + fresh ? `${plural(due, "carte", "cartes")} à revoir, ${plural(fresh, "nouvelle", "nouvelles")}.` : "Rien à réviser pour l'instant.",
       due + fresh ? `<a class="btn small ${nextStep === 3 ? "" : "ghost"}" href="#/lang/${lang}/revisions/go">Réviser</a>` : "")}
     ${stepCard(4, "💬", "Produire", s.production, `« ${esc(ex.prompt)} »`, `<a class="btn small ${nextStep === 4 ? "" : "ghost"}" href="#/lang/${lang}/produire">Écrire</a>`)}
   `;

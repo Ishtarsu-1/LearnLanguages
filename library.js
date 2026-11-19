@@ -82,7 +82,7 @@ function chapterList(lang, b) {
             ${next.tag ? `<span class="tag">${next.tag}</span>` : ""}
           </a>
           ${kwMissing.length ? `<button class="btn small" data-act="book-keywords" data-id="${ch.id}">+ Mots clés en révision (${kwMissing.join(", ")})</button>` : ""}
-          ${unknown ? `<button class="btn ghost small" data-act="book-capture" data-id="${ch.id}">+ ${unknown} mot(s) inconnu(s) en révision</button>` : ""}
+          ${unknown ? `<button class="btn ghost small" data-act="book-capture" data-id="${ch.id}">+ ${plural(unknown, "mot inconnu", "mots inconnus")} en révision</button>` : ""}
         </div>`;
       }).join("")}
     </div>
@@ -137,13 +137,13 @@ Object.assign(actions, {
     t.parsed.forEach((s) => s.words.forEach((w, wi) => w.segs.forEach((g, gi) => {
       if (g.lemmas.some((l) => want.has(l)) && captureSeg(lang, s, wi, gi, t.id)) { n++; g.lemmas.forEach((l) => want.delete(l)); }
     })));
-    save(); toast(`${n} mot(s) clé(s) en révision ✓`); render();
+    save(); toast(`${plural(n, "mot clé", "mots clés")} en révision ✓`); render();
   },
   // Mots inconnus d'un chapitre terminé → cartes de révision (§15)
   "book-capture": (el) => {
     const lang = currentLang(), t = CHAPTER_TEXTS[lang][el.dataset.id];
     let n = 0;
     for (const { si, wi, gi } of unknownLemmas(lang, t.parsed).values()) if (captureSeg(lang, t.parsed[si], wi, gi, t.id)) n++;
-    save(); toast(`${n} carte(s) ajoutée(s) ✓`); render();
+    save(); toast(`${plural(n, "carte ajoutée", "cartes ajoutées")} ✓`); render();
   },
 });
