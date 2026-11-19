@@ -217,12 +217,38 @@ function annotateZh(sentence, ctx) {
   return out.join(" ");
 }
 
+// ============================================================
+//  Russe : pas d'analyseur installé ; on s'appuie sur les formes déjà annotées dans le contenu
+//  (молоком → молоко) et sur le lexique. Forme inconnue : gardée telle quelle (à relire dans l'admin).
+//  Majuscule en milieu de phrase et absente du lexique : nom propre (@).
+// ============================================================
+let RU_FORMS = null;
+function ruForms() {
+  if (RU_FORMS) return RU_FORMS;
+  RU_FORMS = new Map();
+  const all = [...L.loadKind("texts", { published: false }).ru, ...L.loadKind("books", { published: false }).ru, ...L.loadKind("story", { published: false }).ru];
+  for (const [src] of all.flatMap((x) => x.sentences || (x.chapters || []).flatMap((c) => c.sentences))) for (const g of L.segments(src, "ru")) if (!g.proper) RU_FORMS.set(g.surface.toLowerCase(), g.lemmas.join("+"));
+  return RU_FORMS;
+}
+function annotateRu(sentence, ctx) {
+  const forms = ruForms();
+  return sentence.split(/\s+/).filter(Boolean).map((w, i, all) => {
+    const [, pre, core, post] = w.match(PUNCT_RE);
+    if (!core) return w;
+    const lc = core.toLowerCase(), first = i === 0 || /[.!?…:"«]$/.test(all[i - 1]);
+    if (ctx.proper.has(core) || (/^[А-ЯЁ]/.test(core) && !first && !ctx.lexicon[lc] && !forms.has(lc))) return `${pre}@${core}${post}`;
+    const lem = ctx.lexicon[lc] ? lc : forms.get(lc) || lc;
+    return `${pre}${core}${lem === lc ? "" : `=${lem}`}${post}`;
+  }).join(" ");
+}
+
 // ---------- API ----------
 // Annote une liste de phrases brutes. opts : { lexicon, freq, proper, analyze (bouchon Kiwi) }
 async function annotate(sentences, lang, opts = {}) {
   const ctx = context(lang, opts);
   if (lang === "en") return sentences.map((s) => annotateEn(s.trim(), ctx));
   if (lang === "zh") return sentences.map((s) => annotateZh(s.trim(), ctx));
+  if (lang === "ru") return sentences.map((s) => annotateRu(s.trim(), ctx));
   const out = [];
   for (const s of sentences) out.push(await annotateKo(s.trim().replace(/\s+/g, " "), ctx, opts));
   return out;
@@ -246,7 +272,7 @@ async function evaluate(lang, { texts, ...opts } = {}) {
   const r = { lemmas: { tot: 0, hit: 0 }, particles: { tot: 0, hit: 0 }, gaps: [] };
   for (const t of texts) for (const [src] of t.sentences) {
     const raw = L.plainText(src, lang);
-    const auto = lang === "en" ? annotateEn(raw, ctx) : lang === "zh" ? annotateZh(raw, ctx) : await annotateKo(raw, ctx, opts);
+    const auto = lang === "en" ? annotateEn(raw, ctx) : lang === "zh" ? annotateZh(raw, ctx) : lang === "ru" ? annotateRu(raw, ctx) : await annotateKo(raw, ctx, opts);
     const c = compare(src, auto, lang);
     for (const k of ["lemmas", "particles"]) { r[k].tot += c[k].tot; r[k].hit += c[k].hit; }
     if (c.lemmas.miss.length || c.particles.miss.length) r.gaps.push({ id: t.id, manual: src, auto, missing: [...c.lemmas.miss, ...c.particles.miss.map((p) => `particule ${p}`)] });
@@ -277,4 +303,4 @@ if (require.main === module) {
     for (const s of await annotate(sentences, lang)) console.log(s);
   })().catch((e) => { console.error(e.message); process.exit(1); });
 }
-module.exports = { annotate, annotateEn, annotateKo, annotateZh, enLemma, context, kiwiAnalyze, kiwiHealth, evaluate, evalReport, compare, KIWI_URL };
+module.exports = { annotate, annotateEn, annotateKo, annotateZh, annotateRu, enLemma, context, kiwiAnalyze, kiwiHealth, evaluate, evalReport, compare, KIWI_URL };

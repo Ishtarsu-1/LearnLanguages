@@ -171,6 +171,16 @@ Règles pour le gérer :
 - **Écoute** : paires minimales de tons (妈/骂, 买/卖, 汤/糖…) et de consonnes difficiles (zh/z, q/ch, aspirées) dans « Oreille », sur plusieurs voix (§14).
 - Pas de conjugaison : l'exercice « la bonne forme » ne s'applique pas ; la grammaire passe par l'ordre des mots, les classificateurs (个, 杯, 口) et les particules (了, 吗, 吧, 的).
 
+## 6 ter. Règles spécifiques au RUSSE
+
+**Pourquoi :** l'alphabet cyrillique s'apprend en quelques jours (plusieurs lettres sont des « fausses amies » : Р = r, Н = n, В = v), mais l'accent tonique (non écrit, il change la prononciation des voyelles : молоко se dit « malakó ») et les déclinaisons demandent du temps. Le FSI l'estime à ~1 100 h pour un anglophone.
+
+- **L'alphabet d'abord** : module « Alphabet cyrillique » (6 courtes séances), mis en avant dans « Aujourd'hui », sans bloquer la lecture. Comme pour le Hangul, pas de translittération dans les textes : le russe se lit en cyrillique.
+- **Accent tonique** montré dans le glossaire (молоко́), jamais dans les textes eux-mêmes (comme dans les vrais textes russes).
+- **Écrire sans clavier russe** : le cyrillique est comparé strictement ; les lettres latines sont acceptées avec tolérance (ou/u, ch/sh/tch, kh/h), parce que c'est une aide pour débutants, pas une dictée notée.
+- **Écoute** : ы / и, consonnes dures et mouillées (мат / мать), accent qui change le sens (за́мок / замо́к).
+- **Formes** : les mots se déclinent et se conjuguent ; chaque forme est rattachée à son lemme pour les cartes et la couverture, et l'exercice « la bonne forme » s'applique.
+
 ## 7. Règles spécifiques à l'ANGLAIS (pour francophones)
 
 - Exploiter les **mots transparents** (cognats FR/EN) pour proposer du vrai contenu très tôt : les compter comme « probablement connus » dans le calcul de couverture du §3 (pondération réglable), mais permettre à l'utilisateur de les marquer inconnus.

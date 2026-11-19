@@ -35,6 +35,17 @@ ok(s2.text === "No, that's all." && s2.words[1].segs[0].lemmas.join() === "that,
   ok(!placementPending("zh") && !practiceTools("zh").some(([k]) => k === "niveau" || k === "fauxamis") && practiceTools("zh").some(([k]) => k === "pinyin"), "outils du chinois : pinyin, sans test de niveau ni faux amis");
   ok(tabToday("zh").includes("Pinyin & tons"), "Aujourd'hui : les tons d'abord");
 }
+// 2 ter. Russe : majuscules, réponses en cyrillique (strict) ou en lettres latines (tolérant), alphabet
+{
+  const r = toSentence("Привет! Меня=я зовут=звать @Маша.", "ru");
+  ok(r.text === "Привет! Меня зовут Маша." && r.words[0].segs[0].lemmas[0] === "привет", "russe : texte et lemme en minuscules");
+  for (const [typed, want] of [["Привет", "Привет!"], ["privet", "Привет!"], ["privièt", "Привет!"], ["spassibo", "спасибо"], ["tchai", "чай"], ["ya lyublyu kino", "Я люблю кино."], ["молоко́", "молоко"], ["ёж", "еж"]]) ok(sameAnswer("ru", typed, want), `russe accepté : ${typed} = ${want}`);
+  ok(!sameAnswer("ru", "мат", "мать") && !sameAnswer("ru", "бить", "быть") && !sameAnswer("ru", "chai", "кофе"), "russe en cyrillique : strict (мат ≠ мать)");
+  ok(lexFr("ru", "молоко") === "молоко́ · lait", "glossaire : accent tonique " + lexFr("ru", "молоко"));
+  for (let d = 1; d <= CYR_DAYS.length; d++) for (const q of cyrillicQuestions(d)) ok(q.options.includes(q.answer) && new Set(q.options).size === q.options.length && q.audioLang === "ru", `alphabet séance ${d} : ${q.options}`);
+  ok(practiceTools("ru").some(([k]) => k === "alphabet") && !practiceTools("ru").some(([k]) => k === "niveau") && tabToday("ru").includes("Alphabet cyrillique"), "russe : alphabet dans les outils et Aujourd'hui, pas de test de niveau");
+  ok(EX_KINDS.forme.langs.includes("ru") && !EX_KINDS.forme.langs.includes("zh"), "« la bonne forme » : russe oui, chinois non");
+}
 // 3. Hangul
 ok(composeHangul("ㄴ", "ㅏ") === "나" && decomposeHangul("져").join("") === "ㅈㅕ", "compose");
 for (let d = 1; d <= HANGUL_DAYS.length; d++) { const qs = hangulQuestions(d); ok(qs.length > 0, "hangul q " + d); for (const q of qs) if (q.type) ok(q.target && q.fr, "écriture " + d); else if (!q.build) ok(q.options.includes(q.answer) && new Set(q.options).size === q.options.length, `hangul day ${d} options ${q.options}`); else ok(q.leads.includes(q.target_l) && q.vowels.includes(q.target_v), "build opts"); }
@@ -53,7 +64,7 @@ iss = koChecks(ex, "저는 커피를 좋아합니다", parseSentence(ex.target, 
 // 6. Rendu de toutes les routes + flux
 const routes = ["", "#/pourquoi", "#/profil", "#/learn", "#/nope"];
 for (const lang of Object.keys(LANGUAGES)) for (const [t] of TABS[lang]) routes.push(`#/lang/${lang}/${t}`);
-routes.push("#/lang/zh/pinyin/1", "#/lang/zh/pinyin/6", "#/lang/zh/lire/zh-cafe", "#/lang/zh/pratique", "#/lang/zh/histoire");
+routes.push("#/lang/ru/alphabet/1", "#/lang/ru/alphabet/6", "#/lang/ru/lire/ru-cafe", "#/lang/zh/pinyin/1", "#/lang/zh/pinyin/6", "#/lang/zh/lire/zh-cafe", "#/lang/zh/pratique", "#/lang/zh/histoire");
 const render1 = (h) => { location.hash = h; try { route(); } catch (e) { fails++; console.log("FAIL route", h, e.stack.split("\n").slice(0, 3).join(" | ")); } };
 routes.forEach(render1);
 // Flux anglais : lire → capturer → réviser → produire

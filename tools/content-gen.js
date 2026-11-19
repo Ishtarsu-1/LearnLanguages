@@ -18,7 +18,7 @@ const { annotate } = require("./annotate.js");
 const { checkText, score, LENGTH, expectedRegister } = require("./content-check.js");
 const llm = require("../llm.js");
 
-const LANG_NAMES = { en: "English", ko: "Korean", zh: "Mandarin Chinese" };
+const LANG_NAMES = { en: "English", ko: "Korean", zh: "Mandarin Chinese", ru: "Russian" };
 const THEME_EN = { cafe: "at a café", rencontre: "meeting someone", transports: "public transport", cuisine: "cooking", sport: "sport", series: "TV series and K-dramas", gaming: "video games", travail: "at work" };
 const KIND_EN = { Dialogue: "a dialogue between two people (alternate speakers)", "Récit": "a short first-person or third-person story", Monologue: "a short monologue where someone talks about themselves", Message: "a short text message or note to a friend" };
 const ICONS = { cafe: "☕", rencontre: "👋", transports: "🚇", cuisine: "🍳", sport: "⚽", series: "📺", gaming: "🎮", travail: "💼" };
@@ -62,6 +62,11 @@ Mandarin Chinese rules:
 - Simplified characters only. NO pinyin and no Latin letters in "text" (pinyin is added automatically).
 - Natural spoken Mandarin from mainland China, with the right measure words (个, 杯, 口…) and particles (了, 吗, 吧, 的).
 - Accurate Chinese culture, no clichés.`;
+const RU_RULES = `
+Russian rules:
+- Cyrillic only. NO transliteration and no Latin letters in "text".
+- Natural spoken Russian with correct cases, aspects and agreement. No stress marks in "text".
+- Accurate Russian culture, no clichés.`;
 const EN_RULES = `
 English rules:
 - Everyday spoken English, contractions are welcome (I'm, don't).
@@ -72,7 +77,7 @@ function genPrompt(lang, unit, kind, { known, lengths }) {
   const grammar = unit.grammar.map((g) => unit._grammarLabels?.[g] || g).join(", ");
   const allowed = [...known].filter((w) => !/^\d+$/.test(w) && !P.BASE[lang].has(w)).slice(0, 700);
   return {
-    system: GEN_SYSTEM + (lang === "ko" ? KO_RULES.replace("REGISTER_HERE", reg) : lang === "zh" ? ZH_RULES : EN_RULES),
+    system: GEN_SYSTEM + (lang === "ko" ? KO_RULES.replace("REGISTER_HERE", reg) : lang === "zh" ? ZH_RULES : lang === "ru" ? RU_RULES : EN_RULES),
     user: [
       `Language: ${LANG_NAMES[lang]} · level ${unit.level}`,
       `Kind of text: ${KIND_EN[kind] || kind}`,

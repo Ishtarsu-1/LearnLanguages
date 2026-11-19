@@ -13,6 +13,7 @@
 | Apprentissage | Session du jour, lecteur calibré, cartes en contexte, révisions FSRS, production corrigée, exercices, oreille |
 | Coréen | Module Hangul (10 jours), 9 briques de grammaire, sélecteur de registre, particules en couleur |
 | Anglais | Mots transparents, faux amis, prononciation |
+| Russe | 4ᵉ langue : module « Alphabet cyrillique » (6 séances : lettres familières, fausses amies, nouvelles lettres, voyelles mouillées et signes, accent tonique), 9 textes A1 sur les thèmes, 146 mots avec l'accent tonique dans le glossaire (молоко́), réponses en cyrillique (strict) **ou en lettres latines** (tolérant : privet, spassibo), paires de sons (ы/и, consonnes dures et mouillées), « la bonne forme » (déclinaisons, conjugaisons), duel et défis ; voix du navigateur |
 | Chinois | 3ᵉ langue : module « Pinyin & tons » (6 séances : les 4 tons, initiales, finales, changements de ton, quiz d'écoute), pinyin au-dessus des caractères (désactivable), 9 textes A1 sur les 8 thèmes, 158 mots avec pinyin, réponses acceptées en caractères **ou en pinyin** (sans clavier chinois), paires de tons dans « Oreille », exercices, production corrigée, duel et défis ; voix mandarin de Kokoro |
 | Correcteur IA | Claude (API) ou Ollama (local et gratuit), avec garde-fous et repli hors ligne ; plafond global quotidien, quota de 30 par compte, cache des réponses (90 jours), coût suivi dans l'admin |
 | Comptes | Inscription, photo de profil, suivi d'activité, sécurité, synchronisation multi-appareils |

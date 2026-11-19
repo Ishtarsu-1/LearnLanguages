@@ -80,6 +80,10 @@ function checkText(t, ctx = {}) {
     if (L.plainText(src, lang).trim() === fr.trim()) blocking.push(`Format : phrase ${i + 1} non traduite`);
     if (/[\u3040-\u30ff\u3400-\u9fff\uac00-\ud7af]/u.test(fr)) blocking.push(`Format : phrase ${i + 1}, caractères asiatiques dans la traduction française`);
     if (lang !== "zh" && /[\u3040-\u30ff\u3400-\u9fff]/u.test(src)) blocking.push(`Format : phrase ${i + 1}, caractères chinois ou japonais dans le texte`);
+    if (lang === "ru") {
+      const latin = L.segments(src, lang).filter((g) => !g.proper && /[A-Za-z]/.test(g.surface) && !LATIN_OK.has(g.surface.toUpperCase()));
+      if (latin.length) blocking.push(`Romanisation : phrase ${i + 1}, lettres latines dans le russe (${latin.map((g) => g.surface).join(", ")})`);
+    }
     if (lang === "zh") {
       if (/[\uac00-\ud7af\u3040-\u30ff]/u.test(src)) blocking.push(`Format : phrase ${i + 1}, caractères coréens ou japonais dans un texte chinois`);
       // Pas de pinyin ni de lettres latines dans le texte : le pinyin vient du lexique (sauf noms propres et sigles)

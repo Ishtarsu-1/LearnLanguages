@@ -192,6 +192,11 @@ const c6 = (async () => {
   ok(zh.lemmaRate >= 0.95, `annotation chinoise : ${(zh.lemmaRate * 100).toFixed(1)} % des lemmes (≥ 95 %)`);
   if (zh.gaps.length) console.log(A.evalReport("zh", zh));
   ok((await A.annotate(["我在北京喝茶，很好喝。"], "zh"))[0] === "我 在 @北京 喝 茶， 很 好 喝。", "chinois : mots, ponctuation, nom propre connu");
+  // Russe : formes déjà annotées + lexique, noms propres
+  ok((await A.annotate(["Сегодня я пью чай с молоком в Париже."], "ru"))[0] === "Сегодня я пью=пить чай с молоком=молоко в @Париже.", "russe : formes fléchies et nom propre");
+  { const { checkText } = require("../tools/content-check.js");
+    const t = L.loadKind("texts").ru[0];
+    ok(checkText({ ...t, sentences: [["Privet! Я пью чай.", "Salut ! Je bois du thé."], ...t.sentences.slice(1)] }).blocking.some((b) => /Romanisation/.test(b)), "russe : translittération dans le texte → bloqué"); }
   // Cas particuliers
   const ctx = { lexicon: { "go": { fr: "" }, "cat": { fr: "" } }, freq: [] };
   const [s1] = await A.annotate(["Let's go! I don't know, it's Tom's cat."], "en", ctx);
