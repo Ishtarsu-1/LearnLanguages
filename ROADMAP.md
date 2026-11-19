@@ -19,6 +19,11 @@
 
 ---
 
+## v0.5 (19 novembre 2026) : avant et pendant la bêta entre amis
+
+Fait (`AMELIORATIONS-v0.5.md`) : recentrage sur l'anglais et le coréen (chinois et russe « En test »), outillage de la chaîne de contenu pour produire en volume (plans de 40 unités, lexique relu dans l'admin, leçons des rejets, qualité par moteur), finitions vues à l'écran (mobile, pluriels, bibliothèque d'un débutant), bêta via Cloudflare (IP réelle, récapitulatif des avis, entonnoir et rétention), README et CI, tests Playwright, licences des voix.
+**En cours** : la production du contenu elle-même (vagues de 10 textes : génération, puis relecture humaine dans l'admin). Sans clé Anthropic, la génération passe par Ollama : lente sur processeur et souvent rejetée ; si le taux de rejet dépasse 40 %, passer sur Anthropic. Objectifs : 30 puis 50 textes par langue (étapes 2 et 3), puis 2 livres et 5 chapitres d'histoire de plus par langue. Aucune nouvelle langue avant l'étape 2.
+
 ## Vue d'ensemble
 
 | Priorité | Feature | Effort | Coût | Dépend de |
