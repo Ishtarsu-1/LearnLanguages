@@ -108,9 +108,39 @@ async function detect({ execFileImpl, fetchImpl = fetch, env = process.env, ...b
   const kh = await getJson(fetchImpl, `${kiwiUrl}/health`);
   const nlpVenv = env.NLP_VENV || path.join(os.homedir(), "mochi-nlp");
   r.nlp = { kiwiUrl, kiwiUp: !!(kh.ok && kh.data?.ok), venv: fs.existsSync(path.join(nlpVenv, platform === "win32" ? "Scripts" : "bin")) ? nlpVenv : null };
+  r.voiceLicenses = voiceLicenseWarnings(env);
   r.anthropicKey = !!env.ANTHROPIC_API_KEY; // jamais la valeur
   r.urls = Object.fromEntries(["TTS_URL", "TTS_URL_EN", "TTS_URL_KO", "TTS_URL_ZH", "TTS_URL_RU", "OLLAMA_URL"].filter((k) => env[k]).map((k) => [k, env[k]]));
   return r;
+}
+
+// ---------- Licences des voix (v0.5, lot 6) ----------
+// Chaque voix a sa licence (celle du jeu de données d'enregistrement, pas seulement celle du moteur).
+// ok : utilisable sur un site public ; note : à afficher dans les crédits.
+const VOICE_LICENSES = {
+  kokoro: { ok: true, license: "Apache 2.0", note: "Kokoro-82M (hexgrad), modèle et voix sous Apache 2.0" },
+  melotts: { ok: true, license: "MIT", note: "MeloTTS (MyShell.ai)" },
+  "piper:denis": { ok: true, license: "CC0", note: "Piper ru_RU-denis (données CC0, base rdh CC0)" },
+  "piper:dmitri": { ok: true, license: "CC0 + CC BY 4.0", note: "Piper ru_RU-dmitri (données CC0, base Hi-Fi TTS lecteur 92, CC BY 4.0 : attribution)" },
+  "piper:irina": { ok: false, license: "inconnue", note: "Piper ru_RU-irina : licence des données inconnue (RHVoice)" },
+  "piper:ruslan": { ok: false, license: "CC BY-NC-SA 4.0", note: "Piper ru_RU-ruslan : pas d'usage commercial" },
+};
+// Licence d'une voix configurée : modèle (TTS_MODEL_xx) + nom de la voix
+function voiceLicense(model, voice) {
+  const m = String(model || "kokoro").toLowerCase();
+  return VOICE_LICENSES[`${m}:${voice}`] || (m === "piper" ? null : VOICE_LICENSES[m]) || null;
+}
+function voiceLicenseWarnings(env = process.env) {
+  const out = [];
+  for (const l of ["EN", "KO", "ZH", "RU"]) {
+    const model = env[`TTS_MODEL_${l}`] || env.TTS_MODEL || "kokoro";
+    for (const v of String(env[`TTS_VOICES_${l}`] || "").split(",").map((x) => x.trim()).filter(Boolean)) {
+      const lic = voiceLicense(model, v);
+      if (!lic) out.push(`Voix ${v} (${model}) : licence inconnue de Mochi. Vérifie sa fiche (MODEL_CARD) avant une mise en ligne publique, puis ajoute-la à VOICE_LICENSES (hardware.js).`);
+      else if (!lic.ok) out.push(`Voix ${v} : ${lic.note}. À retirer de TTS_VOICES_${l} avant une mise en ligne publique.`);
+    }
+  }
+  return out;
 }
 
 // ---------- Profils ----------
@@ -140,7 +170,7 @@ function recommend(r, profile = chooseProfile(r)) {
   const win = r.system.platform === "win32", gpu = profile.startsWith("gpu"), ram = r.ram.total / GB;
   const env = {}, commands = [], warnings = [], notes = [];
   const voicesOn = profile !== "light";
-  if (voicesOn) Object.assign(env, { TTS_URL_EN: "http://127.0.0.1:8880/v1", TTS_VOICES_EN: VOICES_EN, TTS_URL_KO: "http://127.0.0.1:8881/v1", TTS_VOICES_KO: "KR", TTS_MODEL_KO: "melotts", TTS_URL_ZH: "http://127.0.0.1:8880/v1", TTS_VOICES_ZH: VOICES_ZH, TTS_URL_RU: "http://127.0.0.1:8883/v1", TTS_VOICES_RU: "irina,denis,dmitri,ruslan", TTS_MODEL_RU: "piper" });
+  if (voicesOn) Object.assign(env, { TTS_URL_EN: "http://127.0.0.1:8880/v1", TTS_VOICES_EN: VOICES_EN, TTS_URL_KO: "http://127.0.0.1:8881/v1", TTS_VOICES_KO: "KR", TTS_MODEL_KO: "melotts", TTS_URL_ZH: "http://127.0.0.1:8880/v1", TTS_VOICES_ZH: VOICES_ZH, TTS_URL_RU: "http://127.0.0.1:8883/v1", TTS_VOICES_RU: "denis,dmitri", TTS_MODEL_RU: "piper" });
   // Correcteur IA
   const model = MODEL_BY_PROFILE[profile];
   if (gpu || profile === "apple") Object.assign(env, { MOCHI_LLM_PROVIDER: "ollama", MOCHI_MODEL: model, OLLAMA_URL: "http://127.0.0.1:11434" });
@@ -183,6 +213,7 @@ function recommend(r, profile = chooseProfile(r)) {
       : ["uv venv --python 3.12 ~/mochi-nlp && source ~/mochi-nlp/bin/activate", "uv pip install kiwipiepy", "python tools/kiwi_server.py"] });
   if (env.MOCHI_LLM_PROVIDER === "ollama" && !r.ollama?.models?.includes(model)) commands.push({ title: `Correcteur IA : Ollama (${model})`, lines: [...(r.ollama?.up ? [] : [win ? "# Installe Ollama pour Windows : https://ollama.com/download" : "curl -fsSL https://ollama.com/install.sh | sh"]), `ollama pull ${model}`] });
 
+  if (r.voiceLicenses) warnings.push(...r.voiceLicenses);
   if (r.node && !r.node.ok) warnings.push(`Node ${r.node.version} est trop ancien : Mochi a besoin de Node 22.5 ou plus (base SQLite intégrée). ${win ? "Installe la version LTS sur nodejs.org." : "nvm install 22 (le fichier .nvmrc l'indique)."}`);
   // Incohérences et mémoire
   const loaded = r.ollama?.loaded || [];
@@ -235,4 +266,4 @@ function writeEnv(file, wanted, { now = new Date() } = {}) {
 }
 
 const fmtGB = (b) => `${(b / GB).toLocaleString("fr-FR", { maximumFractionDigits: 1 })} Go`;
-module.exports = { nodeOk, run, parseNvidia, detectBasic, detect, chooseProfile, recommend, writeEnv, PROFILES, WRITABLE, fmtGB, GB };
+module.exports = { VOICE_LICENSES, voiceLicense, voiceLicenseWarnings, nodeOk, run, parseNvidia, detectBasic, detect, chooseProfile, recommend, writeEnv, PROFILES, WRITABLE, fmtGB, GB };

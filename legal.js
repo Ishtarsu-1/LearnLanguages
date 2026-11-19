@@ -181,7 +181,9 @@ function legalCredits() {
   <h2>Analyse de la langue</h2>
   <ul>${li("Analyse morphologique du coréen", "Kiwi / kiwipiepy (bab2min)", "LGPL-3.0")}</ul>
   <h2>Voix</h2>
-  <ul>${li("Voix anglaises", "Kokoro (hexgrad)", "Apache 2.0")}${li("Voix coréenne", "MeloTTS (MyShell.ai)", "MIT")}</ul>
+  <ul>${li("Voix anglaises et chinoises", "Kokoro-82M (hexgrad)", "Apache 2.0")}${li("Voix coréenne", "MeloTTS (MyShell.ai)", "MIT")}
+    ${li("Voix russes", "Piper (Open Home Foundation / rhasspy), voix « denis » et « dmitri » (enregistrements OHF voice-datasets)", "moteur MIT ; voix CC0")}
+    ${li("Voix russe « dmitri » : modèle de base", "Hi-Fi TTS, lecteur 92 (Cori Samuel)", "CC BY 4.0")}</ul>
   <h2>Polices et bibliothèques</h2>
   <ul>
     ${li("Pretendard", "Kil Hyung-jin", "SIL Open Font License 1.1")}${li("Jua", "Woowahan Brothers", "SIL Open Font License 1.1")}${li("Fredoka", "Milena Brandão", "SIL Open Font License 1.1")}

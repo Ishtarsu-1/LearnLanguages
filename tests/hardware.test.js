@@ -36,6 +36,11 @@ const basic = (outputs, o = {}) => hw.detectBasic({ execFileImpl: fakeExec(outpu
     // Incohérences
     rec = hw.recommend({ ...(await basic({ "nvidia-smi": "RTX 4090, 24564, 0, 1" })), docker: { installed: true, running: true, nvidia: true, kokoroImage: "ghcr.io/remsky/kokoro-fastapi-cpu:latest" }, ollama: { up: true, url: "x", models: [], loaded: [{ name: "qwen2.5:14b-instruct", gpuShare: 0 }] }, urls: { TTS_URL_EN: "http://localhost:8880/v1" }, voices: {} });
     ok(rec.warnings.some((w) => /image CPU/.test(w)) && rec.warnings.some((w) => /100 % sur le processeur/.test(w)) && rec.warnings.some((w) => /localhost/.test(w)), "incohérences signalées : " + rec.warnings.length);
+    // Licences des voix
+    ok(!hw.voiceLicenseWarnings({ TTS_VOICES_EN: "af_heart", TTS_VOICES_KO: "KR", TTS_MODEL_KO: "melotts", TTS_VOICES_RU: "denis,dmitri", TTS_MODEL_RU: "piper" }).length, "voix configurées par défaut : licences connues et compatibles");
+    const lw = hw.voiceLicenseWarnings({ TTS_VOICES_RU: "irina,ruslan,olga", TTS_MODEL_RU: "piper" });
+    ok(lw.length === 3 && lw.some((w) => /irina.*inconnue/.test(w)) && lw.some((w) => /ruslan.*commercial/.test(w)) && lw.some((w) => /olga.*MODEL_CARD/.test(w)), "doctor : voix sans licence connue ou non commerciale signalées");
+    ok(hw.recommend({ ...(await basic({})), voiceLicenses: lw }).warnings.length >= 3, "avertissements de licence dans les recommandations");
     // Version de Node (node:sqlite : 22.5 ou plus)
     ok(hw.nodeOk("v22.5.0") && hw.nodeOk("v26.1.0") && !hw.nodeOk("v22.4.1") && !hw.nodeOk("v20.11.0"), "version de Node minimale");
     ok(hw.recommend({ ...(await basic({}, { nodeVersion: "v20.11.0" })) }).warnings.some((w) => /Node v20\.11\.0 est trop ancien/.test(w)), "doctor : Node trop ancien signalé");

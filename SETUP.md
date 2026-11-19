@@ -232,7 +232,7 @@ TTS_URL_ZH=http://127.0.0.1:8880/v1
 TTS_VOICES_ZH=zf_xiaobei,zf_xiaoxiao,zm_yunxi,zm_yunjian
 # Russe : Piper (voir ci-dessous)
 TTS_URL_RU=http://127.0.0.1:8883/v1
-TTS_VOICES_RU=irina,denis,dmitri,ruslan
+TTS_VOICES_RU=denis,dmitri
 TTS_MODEL_RU=piper
 ```
 
@@ -242,12 +242,12 @@ TTS_MODEL_RU=piper
 uv venv --python 3.12 ~/piper && source ~/piper/bin/activate
 uv pip install piper-tts
 mkdir -p ~/piper/voices && cd ~/piper/voices
-for v in irina denis dmitri ruslan; do for e in onnx onnx.json; do
+for v in denis dmitri; do for e in onnx onnx.json; do
   curl -L -o ru_RU-$v-medium.$e https://huggingface.co/rhasspy/piper-voices/resolve/main/ru/ru_RU/$v/medium/ru_RU-$v-medium.$e
 done; done
 cd - && python tools/piper_server.py        # → http://127.0.0.1:8883/v1 (lancé aussi par tools/start-voices.sh)
 ```
-Irina est une voix féminine ; Denis, Dmitri et Ruslan sont masculines. D'autres langues de Piper s'ajoutent de la même façon (fichiers `.onnx` dans `~/piper/voices`).
+**Licences des voix** : le moteur Piper est sous MIT, mais **chaque voix a la licence de ses enregistrements** (fiche `MODEL_CARD` à côté du modèle). Pour le russe, seules **Denis** (CC0) et **Dmitri** (CC0, base Hi-Fi TTS en CC BY 4.0 : attribution sur la page Crédits) conviennent à un site public : **Irina** (licence inconnue) et **Ruslan** (CC BY-NC-SA, pas d'usage commercial) sont écartées. Il n'existe pas encore de voix russe féminine sous licence libre dans Piper. `npm run doctor` signale toute voix configurée dont la licence est inconnue ou non commerciale (table `VOICE_LICENSES` dans `hardware.js`). Kokoro (anglais, chinois) : Apache 2.0 ; MeloTTS (coréen) : MIT.
 
 Relance `npm start`. La ligne de démarrage affiche `voix : en ×4, ko ×1`, et le Profil › Audio indique « 🎙️ Voix neuronales du serveur ». Si le moteur ne répond pas, Mochi repasse automatiquement sur la voix du navigateur.
 
