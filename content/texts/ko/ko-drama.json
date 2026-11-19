@@ -19,5 +19,9 @@
     ["드라마|로 한국어|를 공부해요=공부하다!", "J'apprends le coréen avec les dramas !"]
   ],
   "speakers": null,
-  "review": { "by": "nathan", "at": "2026-11-19" }
+  "review": { "by": "nathan", "at": "2026-11-19" },
+  "questions": [
+    { "q": "Comment est l'histoire du drama ?", "options": ["Un peu triste", "Très drôle", "Effrayante"] },
+    { "q": "Avec quels sous-titres regarde-t-elle le drama ?", "options": ["En coréen", "En français", "Sans sous-titres"] }
+  ]
 }

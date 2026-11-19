@@ -19,5 +19,10 @@
     ["건강|이 제일 중요해요=중요하다!", "La santé, c'est le plus important !"]
   ],
   "speakers": null,
-  "review": { "by": "nathan", "at": "2026-11-19" }
+  "review": { "by": "nathan", "at": "2026-11-19" },
+  "questions": [
+    { "q": "Où court-elle d'habitude ?", "options": ["Au parc", "Au bord de la mer", "Dans une salle de sport"] },
+    { "q": "Que fait-elle le week-end ?", "options": ["Du foot avec des amis", "De la natation", "Rien, elle se repose"] },
+    { "q": "Qu'est-ce qui est le plus important ?", "options": ["La santé", "Gagner", "Le foot"] }
+  ]
 }

@@ -22,6 +22,7 @@
 ## v0.5 (19 novembre 2026) : avant et pendant la bêta entre amis
 
 Fait (`AMELIORATIONS-v0.5.md`) : recentrage sur l'anglais et le coréen (chinois et russe « En test »), outillage de la chaîne de contenu pour produire en volume (plans de 40 unités, lexique relu dans l'admin, leçons des rejets, qualité par moteur), finitions vues à l'écran (mobile, pluriels, bibliothèque d'un débutant), bêta via Cloudflare (IP réelle, récapitulatif des avis, entonnoir et rétention), README et CI, tests Playwright, licences des voix.
+**Vague 1 (20 novembre 2026)** : 9 brouillons écrits à la main avec Claude et vérifiés (anglais : unités 1 à 4, coréen : unités 1 et 2), avec questions de compréhension, à relire dans `#/admin/contenu`. Les brouillons d'Ollama (qwen2.5 7B) répétaient chaque phrase : remplacés.
 **En cours** : la production du contenu elle-même (vagues de 10 textes : génération, puis relecture humaine dans l'admin). Sans clé Anthropic, la génération passe par Ollama : lente sur processeur et souvent rejetée ; si le taux de rejet dépasse 40 %, passer sur Anthropic. Objectifs : 30 puis 50 textes par langue (étapes 2 et 3), puis 2 livres et 5 chapitres d'histoire de plus par langue. Aucune nouvelle langue avant l'étape 2.
 
 ## Vue d'ensemble
@@ -39,7 +40,7 @@ Fait (`AMELIORATIONS-v0.5.md`) : recentrage sur l'anglais et le coréen (chinois
 | ~~**P1**~~ | ~~Analyseur morphologique coréen côté serveur~~ ✅ fait (Kiwi + lemmatiseur anglais, `tools/annotate.js`) | 🟡 | 🆓 | backend |
 | **P1** | Beaucoup plus de contenu + thèmes et situations (🟢 thèmes faits, 🟢 chaîne de production prête ; reste : produire et relire le volume) | 🔴 | 🆓 | analyseur |
 | ~~**P1**~~ | ~~Ordre d'introduction des nouveaux mots (anti-interférence)~~ ✅ fait | 🟢 | 🆓 | thèmes |
-| ~~**P1**~~ | ~~Nouveaux types d'exercices + alternance~~ ✅ (12 types ; reste : dialogue entier + questions) | 🟡 | 🆓 | — |
+| ~~**P1**~~ | ~~Nouveaux types d'exercices + alternance~~ ✅ (12 types ; ✅ questions de compréhension après chaque texte ; reste : dialogue entier en écoute seule + questions) | 🟡 | 🆓 | — |
 | **P1** | Paires minimales multi-voix (✅ avec les voix du navigateur ; reste : vraies voix) | 🟡 | 🆓 | vraies voix |
 | **P1** | Bibliothèque de lectures graduées (lecture + écoute) (🟢 moteur + 2 livres ; reste : volume, surlignage mot à mot) | 🔴 | 🆓 | contenu, voix |
 | **P1** | Génération de textes calibrés par LLM (🟢 chaîne `content:gen` + vérification + relecture faite ; reste : textes à la demande par utilisateur) | 🔴 | 🆓/💶 | LLM + analyseur |

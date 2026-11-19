@@ -19,5 +19,10 @@
     ["After that, we usually eat lunch together.", "Après ça, on déjeune souvent ensemble."]
   ],
   "speakers": null,
-  "review": { "by": "nathan", "at": "2026-11-19" }
+  "review": { "by": "nathan", "at": "2026-11-19" },
+  "questions": [
+    { "q": "Comment se sent la nouvelle graphiste ?", "options": ["Un peu stressée", "Très fatiguée", "Triste"] },
+    { "q": "Où est son bureau ?", "options": ["Près de la fenêtre", "Près de l'ascenseur", "À côté de la cuisine"] },
+    { "q": "À quelle heure est la réunion ?", "options": ["Onze heures", "Neuf heures", "Midi"] }
+  ]
 }

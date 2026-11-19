@@ -19,5 +19,9 @@
     ["만나서=만나다 반가워요=반갑다!", "Enchantée !"]
   ],
   "speakers": null,
-  "review": { "by": "nathan", "at": "2026-11-19" }
+  "review": { "by": "nathan", "at": "2026-11-19" },
+  "questions": [
+    { "q": "Où habite Minji ?", "options": ["À Séoul", "À Busan", "À Paris"] },
+    { "q": "Qu'est-ce que Minji aime ?", "options": ["Le café", "Le thé", "Le sport"] }
+  ]
 }

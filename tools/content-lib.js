@@ -113,6 +113,8 @@ function validateText(t, { draft = false } = {}) {
   if (!KINDS.includes(t.kind)) errors.push(`${where} : type invalide (${t.kind})`);
   if (!draft && t.status !== "published") errors.push(`${where} : statut ${t.status}`);
   validateSentences(t.sentences, where, errors);
+  // Questions de compréhension (facultatives) : la bonne réponse est la première option
+  if (t.questions !== undefined && (!Array.isArray(t.questions) || t.questions.some((q) => !q?.q || !Array.isArray(q.options) || q.options.length < 2 || new Set(q.options).size !== q.options.length))) errors.push(`${where} : questions invalides (q + au moins 2 options différentes, la bonne en premier)`);
   return errors;
 }
 function validateBook(b) {

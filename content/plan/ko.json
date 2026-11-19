@@ -160,7 +160,7 @@
       "level": "A1",
       "grammar": ["eseo"],
       "themes": ["cafe"],
-      "new_words": ["것", "되다", "수", "나", "없다"],
+      "new_words": ["것", "되다", "수", "나", "없다", "카페"],
       "review_words": [],
       "texts": 2,
       "kinds": ["Dialogue", "Message"]
@@ -170,7 +170,7 @@
       "level": "A1",
       "grammar": ["eseo"],
       "themes": ["transports"],
-      "new_words": ["않다", "아니다", "등", "때", "같다"],
+      "new_words": ["않다", "아니다", "등", "때", "같다", "지하철"],
       "review_words": ["것", "되다"],
       "texts": 2,
       "kinds": ["Monologue", "Dialogue"]

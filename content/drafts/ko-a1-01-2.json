@@ -1,0 +1,49 @@
+{
+  "id": "ko-a1-01-2",
+  "lang": "ko",
+  "level": "A1",
+  "unit": "ko-A1-01",
+  "themes": ["cafe"],
+  "grammar": ["eseo"],
+  "title": "Message à Minji",
+  "icon": "💬",
+  "kind": "Message",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["@민지, 나|는 지금 카페|에서 공부해요=공부하다.", "Minji, je suis en train de travailler au café."],
+    ["여기 커피|가 정말 맛있어요=맛있다.", "Le café ici est vraiment bon."],
+    ["오늘 돼요=되다? 카페|에서 같이 공부할=공부하다 수 있어요=있다?", "Tu es dispo aujourd'hui ? On peut travailler ensemble au café ?"],
+    ["나|는 다섯 시|까지 여기 있어요=있다.", "Je suis là jusqu'à cinq heures."],
+    ["카페|에 사람|이 많이 없어요=없다.", "Il n'y a pas beaucoup de monde au café."],
+    ["하지만 먹을=먹다 것|은 없어요=없다.", "Mais il n'y a rien à manger."],
+    ["그래서 점심|을 먼저 먹어요=먹다!", "Alors mange d'abord ton déjeuner !"],
+    ["마실=마시다 것|은 많아요=많다. 카드|도 돼요=되다.", "Il y a plein de boissons. Et la carte, ça marche."],
+    ["여기|에서 김치찌개|는 먹을=먹다 수 없어요=없다.", "Ici, on ne peut pas manger de kimchi-jjigae."],
+    ["나|는 여기|에서 기다려요=기다리다!", "Je t'attends ici !"]
+  ],
+  "speakers": null,
+  "checks": {
+    "blocking": [],
+    "warnings": ["Couverture : 90.2 % (idéal 92-98 %)"],
+    "stats": {
+      "sentences": 10,
+      "wordsPerSentence": 4.6,
+      "lexiconMissing": [],
+      "coverage": 90.2,
+      "tokens": 61,
+      "newWords": ["나", "카페", "되다", "수", "없다", "것"],
+      "outside": [],
+      "grammar:eseo": 4
+    },
+    "status": "orange",
+    "at": "2026-11-19T19:19:22.890Z"
+  },
+  "questions": [
+    { "q": "Jusqu'à quelle heure est-elle au café ?", "options": ["Cinq heures", "Neuf heures", "Midi"] },
+    {
+      "q": "Pourquoi Minji doit-elle déjeuner avant ?",
+      "options": ["Il n'y a rien à manger au café", "Le café est fermé à midi", "C'est trop cher"]
+    }
+  ]
+}

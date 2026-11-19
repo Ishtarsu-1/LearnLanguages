@@ -1,0 +1,47 @@
+{
+  "id": "en-a1-02-1",
+  "lang": "en",
+  "level": "A1",
+  "unit": "en-A1-02",
+  "themes": ["cafe"],
+  "grammar": ["be-present"],
+  "title": "Un cappuccino, s'il vous plaît",
+  "icon": "☕",
+  "kind": "Dialogue",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["A question, please: is=be this the menu?", "Une question, s'il vous plaît : c'est la carte ?"],
+    ["Yes, this is=be the menu.", "Oui, c'est la carte."],
+    ["I like this cappuccino. Is=be this with cream?", "J'aime ce cappuccino. C'est avec de la crème ?"],
+    ["This cappuccino is=be not with cream. This cappuccino is=be with chocolate.", "Ce cappuccino n'est pas à la crème. Ce cappuccino est au chocolat."],
+    ["Perfect! A cappuccino with chocolate, please.", "Parfait ! Un cappuccino au chocolat, s'il vous plaît."],
+    ["And you have a croissant? I like the croissant with coffee.", "Et vous avez un croissant ? J'aime le croissant avec le café."],
+    ["Yes, I have a croissant. This croissant is=be not with sugar.", "Oui, j'ai un croissant. Ce croissant n'est pas au sucre."],
+    ["OK, a croissant, please. And the total?", "D'accord, un croissant, s'il vous plaît. Et le total ?"],
+    ["The total is=be 5 euros=euro. You have a card?", "Le total, c'est 5 euros. Vous avez une carte ?"],
+    ["Yes, I have a card. This cafe is=be perfect and the croissant is=be delicious!", "Oui, j'ai une carte. Ce café est parfait et le croissant est délicieux !"]
+  ],
+  "speakers": null,
+  "checks": {
+    "blocking": [],
+    "warnings": ["Couverture : 91 % (idéal 92-98 %)"],
+    "stats": {
+      "sentences": 10,
+      "wordsPerSentence": 8.9,
+      "lexiconMissing": [],
+      "coverage": 91,
+      "tokens": 89,
+      "newWords": ["please", "this", "yes", "with", "not", "you", "have"],
+      "outside": [],
+      "grammar:be-present": 7
+    },
+    "status": "orange",
+    "at": "2026-11-19T19:17:46.701Z"
+  },
+  "questions": [
+    { "q": "Comment est le cappuccino ?", "options": ["Au chocolat, sans crème", "À la crème", "Au sucre"] },
+    { "q": "Combien coûte la commande ?", "options": ["5 euros", "3 euros", "10 euros"] },
+    { "q": "Comment paie la cliente ?", "options": ["Par carte", "En espèces", "Elle ne paie pas"] }
+  ]
+}

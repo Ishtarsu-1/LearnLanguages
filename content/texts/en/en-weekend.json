@@ -19,5 +19,10 @@
     ["Next time, I'm=i+be going=go to choose the movie.", "La prochaine fois, c'est moi qui choisis le film."]
   ],
   "speakers": null,
-  "review": { "by": "nathan", "at": "2026-11-19" }
+  "review": { "by": "nathan", "at": "2026-11-19" },
+  "questions": [
+    { "q": "Avec qui est-il allé au cinéma ?", "options": ["Sa sœur", "Son frère", "Un ami"] },
+    { "q": "Au début, il voulait…", "options": ["rester à la maison", "aller au restaurant", "jouer au foot"] },
+    { "q": "La prochaine fois…", "options": ["c'est lui qui choisit le film", "ils restent à la maison", "sa sœur choisit encore"] }
+  ]
 }

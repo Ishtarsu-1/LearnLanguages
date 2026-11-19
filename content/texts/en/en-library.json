@@ -19,5 +19,9 @@
     ["Have a nice day!", "Bonne journée !"]
   ],
   "speakers": null,
-  "review": { "by": "nathan", "at": "2026-11-19" }
+  "review": { "by": "nathan", "at": "2026-11-19" },
+  "questions": [
+    { "q": "Où est la bibliothèque ?", "options": ["Au deuxième étage, à côté de l'ascenseur", "Au rez-de-chaussée", "Dans un autre bâtiment"] },
+    { "q": "Le dimanche, la bibliothèque…", "options": ["ouvre, mais ferme à quatre heures", "est fermée", "ferme à minuit"] }
+  ]
 }

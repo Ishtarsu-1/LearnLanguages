@@ -20,5 +20,9 @@
     ["네, 있어요=있다. 감사합니다=감사하다!", "Oui, j'en ai une. Merci !"]
   ],
   "speakers": null,
-  "review": { "by": "nathan", "at": "2026-11-19" }
+  "review": { "by": "nathan", "at": "2026-11-19" },
+  "questions": [
+    { "q": "Quelle ligne faut-il prendre pour Gangnam ?", "options": ["La ligne 2", "La ligne 5", "La ligne 1"] },
+    { "q": "Combien de temps dure le trajet ?", "options": ["Dix minutes", "Cinq minutes", "Une demi-heure"] }
+  ]
 }

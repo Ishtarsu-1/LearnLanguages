@@ -27,12 +27,14 @@ const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
     ok(same(noId(now.BOOKS[lang]), before.books[lang]), `${lang} : livres identiques`);
     ok(same(noId(now.STORIES[lang]), before.stories[lang]), `${lang} : histoires identiques`);
     // Lexique : mêmes lemmes dans le même ordre (le rang sert aux exercices), mêmes traductions
-    ok(same(Object.keys(now.LEXICON[lang]), Object.keys(before.lexicon[lang])), `${lang} : mêmes lemmes, même ordre`);
+    // (le lexique grandit avec le contenu : les nouveaux lemmes viennent après les anciens)
+    ok(same(Object.keys(now.LEXICON[lang]).slice(0, Object.keys(before.lexicon[lang]).length), Object.keys(before.lexicon[lang])), `${lang} : mêmes lemmes, même ordre (puis les nouveaux)`);
     const keep = (e) => ({ fr: e.fr, cog: e.cog, faux: e.faux });
     ok(Object.entries(before.lexicon[lang]).every(([k, e]) => same(keep(now.LEXICON[lang][k]), keep(e))), `${lang} : mêmes traductions et marques (cog, faux)`);
     // Anti-interférence : même appartenance aux groupes, mêmes paires (l'ordre n'a pas d'effet)
     const groupOf = (G) => Object.fromEntries(Object.entries(G).flatMap(([g, ws]) => ws.map((w) => [w, g])).sort());
-    ok(same(groupOf(now.SEMANTIC_GROUPS[lang]), groupOf(before.semantic_groups[lang])), `${lang} : mêmes groupes sémantiques`);
+    const nowG = groupOf(now.SEMANTIC_GROUPS[lang]);
+    ok(Object.entries(groupOf(before.semantic_groups[lang])).every(([w, g]) => nowG[w] === g), `${lang} : mêmes groupes sémantiques (les nouveaux mots peuvent s'y ajouter)`);
     const pairs = (P) => P.map((p) => [...p].sort().join("|")).sort();
     ok(same(pairs(now.CONFUSABLE[lang]), pairs(before.confusable[lang])), `${lang} : mêmes paires confusables`);
   }

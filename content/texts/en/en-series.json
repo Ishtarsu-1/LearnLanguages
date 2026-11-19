@@ -19,5 +19,10 @@
     ["Four? You need to sleep more!", "Quatre ? Tu as besoin de dormir plus !"]
   ],
   "speakers": null,
-  "review": { "by": "nathan", "at": "2026-11-19" }
+  "review": { "by": "nathan", "at": "2026-11-19" },
+  "questions": [
+    { "q": "Comment est l'histoire de la série ?", "options": ["Un peu triste, mais belle", "Très drôle", "Ennuyeuse"] },
+    { "q": "Combien d'épisodes y a-t-il ?", "options": ["Seize", "Quatre", "Six"] },
+    { "q": "Combien d'épisodes a-t-il regardés hier soir ?", "options": ["Quatre", "Seize", "Un seul"] }
+  ]
 }

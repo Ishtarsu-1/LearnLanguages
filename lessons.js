@@ -128,7 +128,7 @@ function tabLibrary(lang) {
         <a class="card text-item ${c < 0.8 ? "later" : ""}" href="#/lang/${lang}/lire/${t.id}">
           <span class="ti-icon">${t.icon}</span>
           <div>
-            <h3>${esc(t.title)} ${state.langs[lang].readTexts[t.id] ? '<small class="muted">· lu ✓</small>' : ""}</h3>
+            <h3>${esc(t.title)} ${state.langs[lang].readTexts[t.id] ? `<small class="muted">· lu ✓${t.questions?.length && state.langs[lang].books[`text:${t.id}`] !== undefined ? ` · compris ${state.langs[lang].books[`text:${t.id}`]}/${t.questions.length}` : ""}</small>` : ""}</h3>
             <small class="muted">${t.kind} · ${plural(t.sentences.length, "phrase", "phrases")} · 🔊 audio${(t.themes || []).map((x) => ` · ${themeOf(x)?.icon || ""} ${esc(themeOf(x)?.name || x)}`).join("")}</small>
             <div class="cov"><div class="bar"><span data-bar-w="${pct(c)}"></span></div><b>${pct(c)} %</b></div>
           </div>

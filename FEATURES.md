@@ -70,7 +70,8 @@ Les 4 étapes de la boucle, avec leur état :
 - **Lecteur** :
   - touche un mot pour voir sa traduction et sa forme de base, puis l'ajouter aux révisions ou le marquer comme connu ;
   - glossaire automatique des mots inconnus quand le texte est trop dur, avec un bouton « Tout ajouter » ;
-  - code couleur : mot nouveau (pointillé), en révision (surligné), transparent, particule coréenne (violet, désactivable).
+  - code couleur : mot nouveau (pointillé), en révision (surligné), transparent, particule coréenne (violet, désactivable) ;
+  - **questions de compréhension** après « J'ai fini » (2 ou 3, en français, erreurs reposées), puis la suite de la séance ; score « compris x/y » dans la liste des textes. Champ `questions` des textes (la bonne réponse en premier).
 - **Audio** (voix du serveur si configurées, sinon synthèse vocale du navigateur) :
   - écouter tout le texte, avec la phrase en cours surlignée ;
   - écouter une seule phrase, à la vitesse 0,75×, 1× ou 1,25× ;

@@ -408,6 +408,23 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
   ok(state.cards.length > before, "mots inconnus du chapitre en cartes");
   account = { id: 1, is_admin: true }; ok(chapterOpen("en", b, 2), "admin : tout ouvert"); account = acc;
   location.hash = ""; ui.quiz = null;
+  // Questions de compréhension d'un texte : après « J'ai fini », puis la suite de la séance
+  {
+    const t = TEXTS.en.find((x) => x.questions?.length);
+    ok(!!t, "des textes ont des questions de compréhension");
+    delete L.books[`text:${t.id}`]; delete L.readTexts[t.id];
+    location.hash = `#/lang/en/lire/${t.id}`; route();
+    actions["finish-read"]();
+    ok(location.hash === `#/lang/en/lire/${t.id}/quiz`, "texte lu : les questions " + location.hash);
+    route();
+    let g = 0, first = true;
+    while (ui.quiz.queue.length && g++ < 20) { const q = ui.quiz.qs[ui.quiz.queue[0]]; answerQuiz(!first, first ? q.options.find((o) => o !== q.answer) : q.answer); first = false; nextQuiz(); }
+    viewTextQuiz("en", t.id);
+    ok(L.books[`text:${t.id}`] === t.questions.length - 1, "score du premier coup (une erreur reposée)");
+    location.hash = `#/lang/en/lire/${t.id}`; route(); actions["finish-read"]();
+    ok(!location.hash.endsWith("/quiz"), "questions déjà faites : directement la suite");
+    location.hash = ""; ui.quiz = null;
+  }
 }
 { // Mode histoire
   for (const lang of ["en", "ko"]) for (const b of STORIES[lang]) for (const ch of b.chapters) {

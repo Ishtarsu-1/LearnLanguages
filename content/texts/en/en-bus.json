@@ -20,5 +20,10 @@
     ["Great, thanks a lot!", "Super, merci beaucoup !"]
   ],
   "speakers": null,
-  "review": { "by": "nathan", "at": "2026-11-19" }
+  "review": { "by": "nathan", "at": "2026-11-19" },
+  "questions": [
+    { "q": "Quel bus faut-il prendre pour la gare ?", "options": ["Le 12", "Le 2", "Le 10"] },
+    { "q": "Où est l'arrêt ?", "options": ["De l'autre côté de la rue", "Devant la gare", "À côté de l'école"] },
+    { "q": "Où peut-on acheter un ticket ?", "options": ["Dans le bus", "À la gare", "Au café"] }
+  ]
 }

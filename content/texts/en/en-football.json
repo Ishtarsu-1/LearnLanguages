@@ -19,5 +19,13 @@
     ["Don't=do+not forget your shoes=shoe and some water!", "N'oublie pas tes chaussures et de l'eau !"]
   ],
   "speakers": null,
-  "review": { "by": "nathan", "at": "2026-11-19" }
+  "review": { "by": "nathan", "at": "2026-11-19" },
+  "questions": [
+    { "q": "Quand est le match ?", "options": ["Samedi à dix heures", "Dimanche à dix heures", "Samedi soir"] },
+    {
+      "q": "Pourquoi ce n'est pas grave d'être mauvais ?",
+      "options": ["On joue juste pour s'amuser", "Le match est annulé", "Il y a un entraîneur"]
+    },
+    { "q": "Qu'est-ce qu'il ne faut pas oublier ?", "options": ["Ses chaussures et de l'eau", "Le ballon", "Son ticket de bus"] }
+  ]
 }

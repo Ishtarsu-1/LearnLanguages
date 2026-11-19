@@ -12,7 +12,7 @@ const L = require("./content-lib.js");
 
 const OUT = path.join(L.ROOT, "content.data.js");
 // Champs utiles au site (le reste — statut, source, relecture, rapports — reste dans content/)
-const TEXT_FIELDS = ["id", "level", "themes", "grammar", "title", "icon", "kind", "sentences", "speakers"];
+const TEXT_FIELDS = ["id", "level", "themes", "grammar", "title", "icon", "kind", "sentences", "speakers", "questions"];
 const BOOK_DROP = new Set(["lang", "order", "status", "source", "review", "_file", "checks", "review_notes"]);
 const pick = (o, keys) => Object.fromEntries(keys.filter((k) => o[k] !== undefined && o[k] !== null).map((k) => [k, o[k]]));
 

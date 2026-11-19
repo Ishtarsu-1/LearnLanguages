@@ -19,5 +19,9 @@
     ["이번|에|는 꼭 이겨요=이기다!", "Cette fois, on gagne, c'est sûr !"]
   ],
   "speakers": null,
-  "review": { "by": "nathan", "at": "2026-11-19" }
+  "review": { "by": "nathan", "at": "2026-11-19" },
+  "questions": [
+    { "q": "Pourquoi faut-il attendre ?", "options": ["Il est en train de manger", "Il dort", "Il travaille"] },
+    { "q": "Quel est le problème ?", "options": ["Internet est trop lent", "Le jeu est trop dur", "Il n'a pas d'ordinateur"] }
+  ]
 }

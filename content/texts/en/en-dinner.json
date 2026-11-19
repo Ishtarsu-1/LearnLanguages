@@ -20,5 +20,10 @@
     ["Dinner is=be ready in five minutes=minute.", "Le dîner est prêt dans cinq minutes."]
   ],
   "speakers": null,
-  "review": { "by": "nathan", "at": "2026-11-19" }
+  "review": { "by": "nathan", "at": "2026-11-19" },
+  "questions": [
+    { "q": "Qu'est-ce qu'ils cuisinent ?", "options": ["Des pâtes à la tomate", "Une soupe à l'oignon", "Une pizza"] },
+    { "q": "Où est l'ail ?", "options": ["Dans la cuisine, à côté du pain", "Sur la table", "Il n'y en a pas"] },
+    { "q": "Le dîner est prêt dans combien de temps ?", "options": ["Cinq minutes", "Dix minutes", "Une heure"] }
+  ]
 }

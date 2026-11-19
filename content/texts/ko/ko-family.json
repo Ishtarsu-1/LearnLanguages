@@ -19,5 +19,10 @@
     ["주말|에 같이 밥|을 먹어요=먹다.", "Le week-end, on mange ensemble."]
   ],
   "speakers": null,
-  "review": { "by": "nathan", "at": "2026-11-19" }
+  "review": { "by": "nathan", "at": "2026-11-19" },
+  "questions": [
+    { "q": "Combien sont-ils dans la famille ?", "options": ["Quatre", "Trois", "Cinq"] },
+    { "q": "Quel est le métier de la mère ?", "options": ["Professeure", "Employée de bureau", "Infirmière"] },
+    { "q": "Quel âge a la grande sœur ?", "options": ["Vingt-cinq ans", "Quinze ans", "Trente ans"] }
+  ]
 }

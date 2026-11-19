@@ -19,5 +19,10 @@
     ["여섯 시|에 퇴근해요=퇴근하다.", "Je quitte le travail à six heures."]
   ],
   "speakers": null,
-  "review": { "by": "nathan", "at": "2026-11-19" }
+  "review": { "by": "nathan", "at": "2026-11-19" },
+  "questions": [
+    { "q": "À quelle heure arrive-t-elle au travail ?", "options": ["Neuf heures", "Huit heures", "Dix heures"] },
+    { "q": "Avec qui mange-t-elle le midi ?", "options": ["Ses collègues", "Sa famille", "Seule"] },
+    { "q": "À quelle heure quitte-t-elle le travail ?", "options": ["Six heures", "Cinq heures", "Sept heures"] }
+  ]
 }

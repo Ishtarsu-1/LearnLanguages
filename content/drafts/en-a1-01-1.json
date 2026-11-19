@@ -1,0 +1,47 @@
+{
+  "id": "en-a1-01-1",
+  "lang": "en",
+  "level": "A1",
+  "unit": "en-A1-01",
+  "themes": ["rencontre"],
+  "grammar": ["be-present"],
+  "title": "Moi, en quelques mots",
+  "icon": "😊",
+  "kind": "Monologue",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["I am=be @Léa.", "Je suis Léa."],
+    ["I am=be a student and I am=be curious.", "Je suis étudiante et je suis curieuse."],
+    ["The university is=be a calm campus.", "L'université est un campus calme."],
+    ["I like the campus and I like the cafe.", "J'aime le campus et j'aime le café."],
+    ["The cafe is=be perfect and the coffee is=be delicious.", "Le café est parfait et le café (la boisson) est délicieux."],
+    ["I like music: jazz, rock and classical music.", "J'aime la musique : le jazz, le rock et la musique classique."],
+    ["The music is=be important and the cinema is=be a passion.", "La musique est importante et le cinéma est une passion."],
+    ["I like the cinema and I like chocolate.", "J'aime le cinéma et j'aime le chocolat."],
+    ["I am=be nervous, and the university is=be interesting!", "Je suis nerveuse, et l'université est intéressante !"],
+    ["The coffee is=be a ritual and the ritual is=be perfect!", "Le café est un rituel, et le rituel est parfait !"]
+  ],
+  "speakers": null,
+  "checks": {
+    "blocking": [],
+    "warnings": [],
+    "stats": {
+      "sentences": 10,
+      "wordsPerSentence": 7.9,
+      "lexiconMissing": [],
+      "coverage": 92.3,
+      "tokens": 78,
+      "newWords": ["i", "be", "a", "and", "the", "like"],
+      "outside": [],
+      "grammar:be-present": 7
+    },
+    "status": "green",
+    "at": "2026-11-19T19:17:46.680Z"
+  },
+  "questions": [
+    { "q": "Que fait Léa ?", "options": ["Elle est étudiante", "Elle est cheffe", "Elle travaille dans un café"] },
+    { "q": "Comment est le campus ?", "options": ["Calme", "Bruyant", "Fermé"] },
+    { "q": "Qu'est-ce que Léa n'a pas dit aimer ?", "options": ["Le sport", "Le cinéma", "Le chocolat"] }
+  ]
+}

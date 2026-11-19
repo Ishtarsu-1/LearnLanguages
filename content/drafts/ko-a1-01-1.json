@@ -1,0 +1,47 @@
+{
+  "id": "ko-a1-01-1",
+  "lang": "ko",
+  "level": "A1",
+  "unit": "ko-A1-01",
+  "themes": ["cafe"],
+  "grammar": ["eseo"],
+  "title": "Ici, on peut boire ?",
+  "icon": "☕",
+  "kind": "Dialogue",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["안녕하세요! 여기|에서 먹을=먹다 것 있어요=있다?", "Bonjour ! Il y a quelque chose à manger ici ?"],
+    ["먹을=먹다 것|은 없어요=없다. 마실=마시다 것|만 있어요=있다.", "Il n'y a rien à manger. Il n'y a que des boissons."],
+    ["네. 아메리카노 한=하나 잔 주세요=주다.", "D'accord. Un americano, s'il vous plaît."],
+    ["여기|에서 마실=마시다 수 있어요=있다?", "Je peux le boire ici ?"],
+    ["네, 여기|에서 마실=마시다 수 있어요=있다. 사천 원|이에요=이다.", "Oui, vous pouvez le boire ici. C'est 4 000 wons."],
+    ["카드 돼요=되다?", "Vous prenez la carte ?"],
+    ["네, 카드 돼요=되다.", "Oui, la carte, ça marche."],
+    ["물|은 없어요=없다?", "Il n'y a pas d'eau ?"],
+    ["물|은 있어요=있다. 여기 있어요=있다.", "Si, il y a de l'eau. Elle est ici."],
+    ["감사합니다=감사하다! 커피|가 정말 맛있어요=맛있다.", "Merci ! Le café est vraiment bon."]
+  ],
+  "speakers": null,
+  "checks": {
+    "blocking": [],
+    "warnings": [],
+    "stats": {
+      "sentences": 10,
+      "wordsPerSentence": 4.2,
+      "lexiconMissing": [],
+      "coverage": 92.2,
+      "tokens": 51,
+      "newWords": ["것", "없다", "수", "되다"],
+      "outside": [],
+      "grammar:eseo": 3
+    },
+    "status": "green",
+    "at": "2026-11-19T19:19:22.862Z"
+  },
+  "questions": [
+    { "q": "Qu'est-ce qu'on trouve dans ce café ?", "options": ["Seulement des boissons", "Seulement à manger", "Rien du tout"] },
+    { "q": "Combien coûte l'americano ?", "options": ["4 000 wons", "5 000 wons", "10 000 wons"] },
+    { "q": "Peut-on payer par carte ?", "options": ["Oui", "Non", "Seulement en espèces"] }
+  ]
+}

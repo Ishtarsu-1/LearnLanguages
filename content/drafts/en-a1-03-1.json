@@ -1,0 +1,47 @@
+{
+  "id": "en-a1-03-1",
+  "lang": "en",
+  "level": "A1",
+  "unit": "en-A1-03",
+  "themes": ["transports"],
+  "grammar": ["can"],
+  "title": "Direction le musée",
+  "icon": "🚕",
+  "kind": "Dialogue",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["What is=be this station?", "C'est quelle gare, ici ?"],
+    ["This is=be the central station.", "C'est la gare centrale."],
+    ["We go to the museum. Can we go in a taxi?", "On va au musée. On peut y aller en taxi ?"],
+    ["A taxi is=be not economical. The train is=be practical.", "Un taxi, ce n'est pas économique. Le train, c'est pratique."],
+    ["What is=be the destination? The museum in the center?", "C'est quoi, la destination ? Le musée dans le centre ?"],
+    ["Yes, the museum is=be in the center.", "Oui, le musée est dans le centre."],
+    ["You have a ticket?", "Tu as un ticket ?"],
+    ["I have a ticket. And you can have this ticket.", "J'ai un ticket. Et toi, tu peux prendre ce ticket."],
+    ["Perfect! We can go to the platform.", "Parfait ! On peut aller sur le quai."],
+    ["In 5 minutes=minute, we are=be in the center!", "Dans 5 minutes, on est dans le centre !"]
+  ],
+  "speakers": null,
+  "checks": {
+    "blocking": [],
+    "warnings": ["Couverture : 90.5 % (idéal 92-98 %)"],
+    "stats": {
+      "sentences": 10,
+      "wordsPerSentence": 7.4,
+      "lexiconMissing": [],
+      "coverage": 90.5,
+      "tokens": 74,
+      "newWords": ["what", "we", "go", "to", "can", "in"],
+      "outside": [],
+      "grammar:can": 3
+    },
+    "status": "orange",
+    "at": "2026-11-19T19:18:36.151Z"
+  },
+  "questions": [
+    { "q": "Où vont-ils ?", "options": ["Au musée", "À l'université", "Au cinéma"] },
+    { "q": "Pourquoi ne prennent-ils pas le taxi ?", "options": ["Ce n'est pas économique", "Il n'y a pas de taxi", "C'est trop lent"] },
+    { "q": "Combien de temps dure le trajet ?", "options": ["5 minutes", "Une heure", "15 minutes"] }
+  ]
+}

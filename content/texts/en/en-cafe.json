@@ -19,5 +19,9 @@
     ["It's=it+be three dollars=dollar.", "C'est trois dollars."]
   ],
   "speakers": null,
-  "review": { "by": "nathan", "at": "2026-11-19" }
+  "review": { "by": "nathan", "at": "2026-11-19" },
+  "questions": [
+    { "q": "Que commande la personne ?", "options": ["Un café avec un peu de lait", "Un thé", "Un café sans lait"] },
+    { "q": "Combien ça coûte ?", "options": ["Trois dollars", "Deux dollars", "Cinq dollars"] }
+  ]
 }

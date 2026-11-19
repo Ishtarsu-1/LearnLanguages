@@ -19,5 +19,10 @@
     ["밥|이랑 같이 먹어요=먹다.", "On le mange avec du riz."]
   ],
   "speakers": null,
-  "review": { "by": "nathan", "at": "2026-11-19" }
+  "review": { "by": "nathan", "at": "2026-11-19" },
+  "questions": [
+    { "q": "Que met-on après le kimchi ?", "options": ["Le porc et le tofu", "Du riz", "Des œufs"] },
+    { "q": "Combien de temps faut-il le faire cuire ?", "options": ["Vingt minutes", "Dix minutes", "Une heure"] },
+    { "q": "Avec quoi le mange-t-on ?", "options": ["Du riz", "Du pain", "Des nouilles"] }
+  ]
 }

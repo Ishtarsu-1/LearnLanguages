@@ -209,5 +209,19 @@
   "싶다": {"fr":"vouloir (-고 싶다 : avoir envie de)"},
   "들어가다": {"fr":"entrer"},
   "직원": {"fr":"employé(e)"},
-  "인사하다": {"fr":"saluer"}
+  "인사하다": {"fr":"saluer"},
+  "것": {"fr":"chose, truc (먹을 것 : de quoi manger)"},
+  "없다": {"fr":"ne pas y avoir, ne pas avoir"},
+  "수": {"fr":"moyen, possibilité (-ㄹ 수 있다 : pouvoir)"},
+  "되다": {"fr":"devenir ; être possible, marcher (카드 돼요? : la carte, ça marche ?)"},
+  "나": {"fr":"je, moi (familier)"},
+  "만": {"fr":"seulement (particule)"},
+  "까지": {"fr":"jusqu'à"},
+  "않다": {"fr":"ne pas (-지 않다 : négation)"},
+  "아니다": {"fr":"ne pas être (학생이 아니에요 : je ne suis pas étudiant)"},
+  "등": {"fr":"etc., et cetera"},
+  "때": {"fr":"moment, quand (-ㄹ 때 : quand…)"},
+  "같다": {"fr":"être pareil, le même ; ressembler"},
+  "지하철": {"fr":"métro","semantic_group":"transport"},
+  "랑": {"fr":"avec, et (particule familière)"}
 }

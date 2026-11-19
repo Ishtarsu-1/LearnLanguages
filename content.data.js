@@ -287,7 +287,49 @@ const CONTENT = {
       "friday": { "fr": "vendredi" },
       "everybody": { "fr": "tout le monde" },
       "clap": { "fr": "applaudir" },
-      "dance": { "fr": "danser", "cog": true }
+      "dance": { "fr": "danser", "cog": true },
+      "jazz": { "fr": "jazz", "cog": true, "semantic_group": "musique" },
+      "chocolate": { "fr": "chocolat", "cog": true },
+      "campus": { "fr": "campus", "cog": true },
+      "calm": { "fr": "calme", "cog": true },
+      "perfect": { "fr": "parfait", "cog": true },
+      "cafe": { "fr": "café (le lieu)", "cog": true },
+      "curious": { "fr": "curieux", "cog": true },
+      "rock": { "fr": "rock (musique)", "cog": true },
+      "classical": { "fr": "classique", "cog": true },
+      "important": { "fr": "important", "cog": true },
+      "passion": { "fr": "passion", "cog": true },
+      "ritual": { "fr": "rituel", "cog": true },
+      "cappuccino": { "fr": "cappuccino", "cog": true, "semantic_group": "boisson" },
+      "croissant": { "fr": "croissant", "cog": true },
+      "menu": { "fr": "menu, carte", "cog": true },
+      "cream": { "fr": "crème", "cog": true },
+      "sugar": { "fr": "sucre", "cog": true },
+      "total": { "fr": "total", "cog": true },
+      "euro": { "fr": "euro", "cog": true },
+      "card": { "fr": "carte (bancaire)", "cog": true },
+      "question": { "fr": "question", "cog": true },
+      "taxi": { "fr": "taxi", "cog": true, "semantic_group": "transport" },
+      "economical": { "fr": "économique", "cog": true },
+      "practical": { "fr": "pratique", "cog": true },
+      "destination": { "fr": "destination", "cog": true },
+      "platform": { "fr": "quai (de gare)", "cog": true },
+      "central": { "fr": "central", "cog": true },
+      "italy": { "fr": "Italie", "cog": true },
+      "market": { "fr": "marché", "cog": true },
+      "dessert": { "fr": "dessert", "cog": true },
+      "sauce": { "fr": "sauce", "cog": true },
+      "favorite": { "fr": "préféré", "cog": true },
+      "olive": { "fr": "olive", "cog": true },
+      "oil": { "fr": "huile" },
+      "from": { "fr": "de (provenance)" },
+      "or": { "fr": "ou" },
+      "as": { "fr": "comme" },
+      "chef": { "fr": "chef (cuisinier)", "cog": true },
+      "photo": { "fr": "photo", "cog": true },
+      "secret": { "fr": "secret", "cog": true },
+      "cousin": { "fr": "cousin", "cog": true },
+      "promise": { "fr": "promettre", "cog": true }
     },
     "ko": {
       "이다": { "fr": "être (copule : c'est…)" },
@@ -500,7 +542,21 @@ const CONTENT = {
       "싶다": { "fr": "vouloir (-고 싶다 : avoir envie de)" },
       "들어가다": { "fr": "entrer" },
       "직원": { "fr": "employé(e)" },
-      "인사하다": { "fr": "saluer" }
+      "인사하다": { "fr": "saluer" },
+      "것": { "fr": "chose, truc (먹을 것 : de quoi manger)" },
+      "없다": { "fr": "ne pas y avoir, ne pas avoir" },
+      "수": { "fr": "moyen, possibilité (-ㄹ 수 있다 : pouvoir)" },
+      "되다": { "fr": "devenir ; être possible, marcher (카드 돼요? : la carte, ça marche ?)" },
+      "나": { "fr": "je, moi (familier)" },
+      "만": { "fr": "seulement (particule)" },
+      "까지": { "fr": "jusqu'à" },
+      "않다": { "fr": "ne pas (-지 않다 : négation)" },
+      "아니다": { "fr": "ne pas être (학생이 아니에요 : je ne suis pas étudiant)" },
+      "등": { "fr": "etc., et cetera" },
+      "때": { "fr": "moment, quand (-ㄹ 때 : quand…)" },
+      "같다": { "fr": "être pareil, le même ; ressembler" },
+      "지하철": { "fr": "métro", "semantic_group": "transport" },
+      "랑": { "fr": "avec, et (particule familière)" }
     },
     "zh": {
       "我": { "fr": "je, moi", "py": "wǒ", "semantic_group": "pronom" },
@@ -828,6 +884,10 @@ const CONTENT = {
           ["Anything else?", "Autre chose ?"],
           ["No, that's=that+be all. How much is=be it?", "Non, c'est tout. C'est combien ?"],
           ["It's=it+be three dollars=dollar.", "C'est trois dollars."]
+        ],
+        "questions": [
+          { "q": "Que commande la personne ?", "options": ["Un café avec un peu de lait", "Un thé", "Un café sans lait"] },
+          { "q": "Combien ça coûte ?", "options": ["Trois dollars", "Deux dollars", "Cinq dollars"] }
         ]
       },
       {
@@ -845,6 +905,10 @@ const CONTENT = {
           ["No, I work in a hospital. I'm=i+be a nurse.", "Non, je travaille dans un hôpital. Je suis infirmier."],
           ["That's=that+be interesting! I'm=i+be a student at the university.", "C'est intéressant ! Moi, je suis étudiante à l'université."],
           ["Cool. See you later!", "Cool. À plus tard !"]
+        ],
+        "questions": [
+          { "q": "Quel est le métier de Sam ?", "options": ["Infirmier", "Étudiant", "Médecin"] },
+          { "q": "Que fait Léa ?", "options": ["Elle est étudiante", "Elle est infirmière", "Elle travaille dans un café"] }
         ]
       },
       {
@@ -862,6 +926,11 @@ const CONTENT = {
           ["Actually, I wanted=want to stay home, but she insisted=insist.", "En fait, je voulais rester à la maison, mais elle a insisté."],
           ["Eventually, I had=have a great time!", "Finalement, j'ai passé un super moment !"],
           ["Next time, I'm=i+be going=go to choose the movie.", "La prochaine fois, c'est moi qui choisis le film."]
+        ],
+        "questions": [
+          { "q": "Avec qui est-il allé au cinéma ?", "options": ["Sa sœur", "Son frère", "Un ami"] },
+          { "q": "Au début, il voulait…", "options": ["rester à la maison", "aller au restaurant", "jouer au foot"] },
+          { "q": "La prochaine fois…", "options": ["c'est lui qui choisit le film", "ils restent à la maison", "sa sœur choisit encore"] }
         ]
       },
       {
@@ -879,6 +948,10 @@ const CONTENT = {
           ["Yes, but it closes=close early, at four.", "Oui, mais elle ferme tôt, à quatre heures."],
           ["That's=that+be sensible. People need rest on Sunday too.", "C'est raisonnable. Les gens ont besoin de repos le dimanche aussi."],
           ["Have a nice day!", "Bonne journée !"]
+        ],
+        "questions": [
+          { "q": "Où est la bibliothèque ?", "options": ["Au deuxième étage, à côté de l'ascenseur", "Au rez-de-chaussée", "Dans un autre bâtiment"] },
+          { "q": "Le dimanche, la bibliothèque…", "options": ["ouvre, mais ferme à quatre heures", "est fermée", "ferme à minuit"] }
         ]
       },
       {
@@ -897,6 +970,11 @@ const CONTENT = {
           ["How long does=do it take?", "Ça prend combien de temps ?"],
           ["About ten minutes=minute. You can buy a ticket on the bus.", "Environ dix minutes. Vous pouvez acheter un ticket dans le bus."],
           ["Great, thanks a lot!", "Super, merci beaucoup !"]
+        ],
+        "questions": [
+          { "q": "Quel bus faut-il prendre pour la gare ?", "options": ["Le 12", "Le 2", "Le 10"] },
+          { "q": "Où est l'arrêt ?", "options": ["De l'autre côté de la rue", "Devant la gare", "À côté de l'école"] },
+          { "q": "Où peut-on acheter un ticket ?", "options": ["Dans le bus", "À la gare", "Au café"] }
         ]
       },
       {
@@ -915,6 +993,11 @@ const CONTENT = {
           ["Yes, in the kitchen, next to the bread.", "Oui, dans la cuisine, à côté du pain."],
           ["Oh, it smells=smell delicious!", "Oh, ça sent super bon !"],
           ["Dinner is=be ready in five minutes=minute.", "Le dîner est prêt dans cinq minutes."]
+        ],
+        "questions": [
+          { "q": "Qu'est-ce qu'ils cuisinent ?", "options": ["Des pâtes à la tomate", "Une soupe à l'oignon", "Une pizza"] },
+          { "q": "Où est l'ail ?", "options": ["Dans la cuisine, à côté du pain", "Sur la table", "Il n'y en a pas"] },
+          { "q": "Le dîner est prêt dans combien de temps ?", "options": ["Cinq minutes", "Dix minutes", "Une heure"] }
         ]
       },
       {
@@ -932,6 +1015,14 @@ const CONTENT = {
           ["OK! What time does=do the game start?", "D'accord ! Le match commence à quelle heure ?"],
           ["At ten, in the park near the school.", "À dix heures, dans le parc près de l'école."],
           ["Don't=do+not forget your shoes=shoe and some water!", "N'oublie pas tes chaussures et de l'eau !"]
+        ],
+        "questions": [
+          { "q": "Quand est le match ?", "options": ["Samedi à dix heures", "Dimanche à dix heures", "Samedi soir"] },
+          {
+            "q": "Pourquoi ce n'est pas grave d'être mauvais ?",
+            "options": ["On joue juste pour s'amuser", "Le match est annulé", "Il y a un entraîneur"]
+          },
+          { "q": "Qu'est-ce qu'il ne faut pas oublier ?", "options": ["Ses chaussures et de l'eau", "Le ballon", "Son ticket de bus"] }
         ]
       },
       {
@@ -949,6 +1040,10 @@ const CONTENT = {
           ["Wait, my connection is=be really slow today.", "Attends, ma connexion est vraiment lente aujourd'hui."],
           ["No problem. We can start later.", "Pas de problème. On peut commencer plus tard."],
           ["Ready? Let's=let+us win this time!", "Prêt ? Cette fois, on gagne !"]
+        ],
+        "questions": [
+          { "q": "Pourquoi faut-il attendre cinq minutes ?", "options": ["Il est en train de manger", "Il dort", "Il fait ses devoirs"] },
+          { "q": "Quel est le problème ?", "options": ["La connexion est lente", "Le jeu ne marche pas", "L'équipe est complète"] }
         ]
       },
       {
@@ -966,6 +1061,11 @@ const CONTENT = {
           ["Your desk is=be here, by the window.", "Ton bureau est ici, près de la fenêtre."],
           ["We have a meeting at eleven.", "On a une réunion à onze heures."],
           ["After that, we usually eat lunch together.", "Après ça, on déjeune souvent ensemble."]
+        ],
+        "questions": [
+          { "q": "Comment se sent la nouvelle graphiste ?", "options": ["Un peu stressée", "Très fatiguée", "Triste"] },
+          { "q": "Où est son bureau ?", "options": ["Près de la fenêtre", "Près de l'ascenseur", "À côté de la cuisine"] },
+          { "q": "À quelle heure est la réunion ?", "options": ["Onze heures", "Neuf heures", "Midi"] }
         ]
       },
       {
@@ -983,6 +1083,11 @@ const CONTENT = {
           ["How many episodes=episode are=be there?", "Il y a combien d'épisodes ?"],
           ["Sixteen. I watched=watch four last night.", "Seize. J'en ai regardé quatre hier soir."],
           ["Four? You need to sleep more!", "Quatre ? Tu as besoin de dormir plus !"]
+        ],
+        "questions": [
+          { "q": "Comment est l'histoire de la série ?", "options": ["Un peu triste, mais belle", "Très drôle", "Ennuyeuse"] },
+          { "q": "Combien d'épisodes y a-t-il ?", "options": ["Seize", "Quatre", "Six"] },
+          { "q": "Combien d'épisodes a-t-il regardés hier soir ?", "options": ["Quatre", "Seize", "Un seul"] }
         ]
       }
     ],
@@ -1002,6 +1107,10 @@ const CONTENT = {
           ["여기 있어요=있다.", "Voilà."],
           ["감사해요=감사하다!", "Merci !"],
           ["커피|가 정말 맛있어요=맛있다.", "Le café est vraiment bon."]
+        ],
+        "questions": [
+          { "q": "Que commande la personne ?", "options": ["Un americano", "Un thé", "Un café au lait"] },
+          { "q": "Combien ça coûte ?", "options": ["4 000 wons", "1 000 wons", "10 000 wons"] }
         ]
       },
       {
@@ -1019,6 +1128,10 @@ const CONTENT = {
           ["@서울|에 살아요=살다.", "J'habite à Séoul."],
           ["저|는 커피|를 좋아해요=좋아하다.", "J'aime le café."],
           ["만나서=만나다 반가워요=반갑다!", "Enchantée !"]
+        ],
+        "questions": [
+          { "q": "Où habite Minji ?", "options": ["À Séoul", "À Busan", "À Paris"] },
+          { "q": "Qu'est-ce que Minji aime ?", "options": ["Le café", "Le thé", "Le sport"] }
         ]
       },
       {
@@ -1036,6 +1149,11 @@ const CONTENT = {
           ["언니|도 있어요=있다.", "J'ai aussi une grande sœur."],
           ["언니|는 스물다섯=스물+다섯 살|이에요=이다.", "Ma grande sœur a vingt-cinq ans."],
           ["주말|에 같이 밥|을 먹어요=먹다.", "Le week-end, on mange ensemble."]
+        ],
+        "questions": [
+          { "q": "Combien sont-ils dans la famille ?", "options": ["Quatre", "Trois", "Cinq"] },
+          { "q": "Quel est le métier de la mère ?", "options": ["Professeure", "Employée de bureau", "Infirmière"] },
+          { "q": "Quel âge a la grande sœur ?", "options": ["Vingt-cinq ans", "Quinze ans", "Trente ans"] }
         ]
       },
       {
@@ -1053,6 +1171,10 @@ const CONTENT = {
           ["그리고 영화|를 봤어요=보다.", "Et puis on a regardé un film."],
           ["영화|가 정말 재미있었어요=재미있다.", "Le film était vraiment bien."],
           ["다음 주|에|도 만나요=만나다.", "On se revoit la semaine prochaine aussi."]
+        ],
+        "questions": [
+          { "q": "Qu'ont-ils mangé au marché ?", "options": ["Des tteokbokki", "Du kimchi-jjigae", "Du riz"] },
+          { "q": "Qu'ont-ils fait ensuite ?", "options": ["Ils ont regardé un film", "Ils ont fait du sport", "Ils sont rentrés"] }
         ]
       },
       {
@@ -1071,6 +1193,10 @@ const CONTENT = {
           ["다섯 정거장|이에요=이다. 십 분 걸려요=걸리다.", "Cinq arrêts. Ça prend dix minutes."],
           ["교통 카드|가 있어요=있다?", "Vous avez une carte de transport ?"],
           ["네, 있어요=있다. 감사합니다=감사하다!", "Oui, j'en ai une. Merci !"]
+        ],
+        "questions": [
+          { "q": "Quelle ligne faut-il prendre pour Gangnam ?", "options": ["La ligne 2", "La ligne 5", "La ligne 1"] },
+          { "q": "Combien de temps dure le trajet ?", "options": ["Dix minutes", "Cinq minutes", "Une demi-heure"] }
         ]
       },
       {
@@ -1088,6 +1214,11 @@ const CONTENT = {
           ["물|을 붓고=붓다 이십 분 끓여요=끓이다.", "Je verse de l'eau et je fais cuire vingt minutes."],
           ["조금 매워요=맵다. 하지만 정말 맛있어요=맛있다!", "C'est un peu piquant. Mais c'est vraiment bon !"],
           ["밥|이랑 같이 먹어요=먹다.", "On le mange avec du riz."]
+        ],
+        "questions": [
+          { "q": "Que met-on après le kimchi ?", "options": ["Le porc et le tofu", "Du riz", "Des œufs"] },
+          { "q": "Combien de temps faut-il le faire cuire ?", "options": ["Vingt minutes", "Dix minutes", "Une heure"] },
+          { "q": "Avec quoi le mange-t-on ?", "options": ["Du riz", "Du pain", "Des nouilles"] }
         ]
       },
       {
@@ -1105,6 +1236,11 @@ const CONTENT = {
           ["축구|는 힘들어요=힘들다. 그래도 재미있어요=재미있다.", "Le foot, c'est dur. Mais c'est amusant."],
           ["운동 후|에 물|을 많이 마셔요=마시다.", "Après le sport, je bois beaucoup d'eau."],
           ["건강|이 제일 중요해요=중요하다!", "La santé, c'est le plus important !"]
+        ],
+        "questions": [
+          { "q": "Où court-elle d'habitude ?", "options": ["Au parc", "Au bord de la mer", "Dans une salle de sport"] },
+          { "q": "Que fait-elle le week-end ?", "options": ["Du foot avec des amis", "De la natation", "Rien, elle se repose"] },
+          { "q": "Qu'est-ce qui est le plus important ?", "options": ["La santé", "Gagner", "Le foot"] }
         ]
       },
       {
@@ -1122,6 +1258,10 @@ const CONTENT = {
           ["괜찮아요=괜찮다. 기다릴게요=기다리다.", "Pas de souci. Je t'attends."],
           ["인터넷|이 너무 느려요=느리다.", "Internet est trop lent."],
           ["이번|에|는 꼭 이겨요=이기다!", "Cette fois, on gagne, c'est sûr !"]
+        ],
+        "questions": [
+          { "q": "Pourquoi faut-il attendre ?", "options": ["Il est en train de manger", "Il dort", "Il travaille"] },
+          { "q": "Quel est le problème ?", "options": ["Internet est trop lent", "Le jeu est trop dur", "Il n'a pas d'ordinateur"] }
         ]
       },
       {
@@ -1139,6 +1279,11 @@ const CONTENT = {
           ["점심|은 동료|들|하고 같이 먹어요=먹다.", "Le midi, je mange avec mes collègues."],
           ["일|이 바빠요=바쁘다. 그래도 회사|가 좋아요=좋다.", "Le travail est chargé. Mais j'aime bien mon entreprise."],
           ["여섯 시|에 퇴근해요=퇴근하다.", "Je quitte le travail à six heures."]
+        ],
+        "questions": [
+          { "q": "À quelle heure arrive-t-elle au travail ?", "options": ["Neuf heures", "Huit heures", "Dix heures"] },
+          { "q": "Avec qui mange-t-elle le midi ?", "options": ["Ses collègues", "Sa famille", "Seule"] },
+          { "q": "À quelle heure quitte-t-elle le travail ?", "options": ["Six heures", "Cinq heures", "Sept heures"] }
         ]
       },
       {
@@ -1156,6 +1301,10 @@ const CONTENT = {
           ["그래서 많이 울었어요=울다.", "Alors j'ai beaucoup pleuré."],
           ["한국어 자막|으로 봐요=보다.", "Je le regarde avec les sous-titres coréens."],
           ["드라마|로 한국어|를 공부해요=공부하다!", "J'apprends le coréen avec les dramas !"]
+        ],
+        "questions": [
+          { "q": "Comment est l'histoire du drama ?", "options": ["Un peu triste", "Très drôle", "Effrayante"] },
+          { "q": "Avec quels sous-titres regarde-t-elle le drama ?", "options": ["En coréen", "En français", "Sans sous-titres"] }
         ]
       }
     ],

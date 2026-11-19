@@ -89,7 +89,8 @@ const actions = {
     stopAudio();
     const t = textById(lang, id);
     if (t?.book) return finishChapter(lang, t);
-    location.hash = reviewCount(lang) ? `#/lang/${lang}/revisions/go` : `#/lang/${lang}/produire`;
+    if (t?.questions?.length && L.books[`text:${id}`] === undefined) return void (location.hash = `#/lang/${lang}/lire/${id}/quiz`);
+    location.hash = afterReading(lang);
   },
 
   // Révisions

@@ -19,5 +19,9 @@
     ["Ready? Let's=let+us win this time!", "Prêt ? Cette fois, on gagne !"]
   ],
   "speakers": null,
-  "review": { "by": "nathan", "at": "2026-11-19" }
+  "review": { "by": "nathan", "at": "2026-11-19" },
+  "questions": [
+    { "q": "Pourquoi faut-il attendre cinq minutes ?", "options": ["Il est en train de manger", "Il dort", "Il fait ses devoirs"] },
+    { "q": "Quel est le problème ?", "options": ["La connexion est lente", "Le jeu ne marche pas", "L'équipe est complète"] }
+  ]
 }

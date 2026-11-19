@@ -94,7 +94,7 @@
       "first_steps": true,
       "grammar": ["be-present"],
       "themes": ["cafe"],
-      "new_words": ["you", "have", "this", "not", "with", "but"],
+      "new_words": ["you", "have", "this", "not", "with", "but", "yes", "please"],
       "review_words": ["i", "be", "the", "a"],
       "texts": 1,
       "kinds": ["Dialogue"],

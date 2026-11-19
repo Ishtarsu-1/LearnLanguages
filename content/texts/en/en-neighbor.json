@@ -19,5 +19,9 @@
     ["Cool. See you later!", "Cool. À plus tard !"]
   ],
   "speakers": null,
-  "review": { "by": "nathan", "at": "2026-11-19" }
+  "review": { "by": "nathan", "at": "2026-11-19" },
+  "questions": [
+    { "q": "Quel est le métier de Sam ?", "options": ["Infirmier", "Étudiant", "Médecin"] },
+    { "q": "Que fait Léa ?", "options": ["Elle est étudiante", "Elle est infirmière", "Elle travaille dans un café"] }
+  ]
 }

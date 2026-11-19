@@ -43,7 +43,7 @@ function route() {
     lang = parts[1]; nav = navOfTab(parts[2]);
     state.lastLang = lang; state.langs[lang].started = true; save();
     const [, , tab, a] = parts;
-    if (tab === "lire" && a) html = viewReader(lang, a);
+    if (tab === "lire" && a) html = parts[4] === "quiz" ? viewTextQuiz(lang, a) : viewReader(lang, a);
     else if (tab === "livre" && a) { html = viewBook(lang, a, parts[4], parts[5]); nav = "lire"; }
     else if (tab === "revisions" && a === "go") { if (hashChanged) ui.review = null; html = viewReviewSession(lang); }
     else if (tab === "hangul" && isKo(lang)) html = viewHangul(Number(a) || 1);

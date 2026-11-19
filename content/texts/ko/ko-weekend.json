@@ -19,5 +19,9 @@
     ["다음 주|에|도 만나요=만나다.", "On se revoit la semaine prochaine aussi."]
   ],
   "speakers": null,
-  "review": { "by": "nathan", "at": "2026-11-19" }
+  "review": { "by": "nathan", "at": "2026-11-19" },
+  "questions": [
+    { "q": "Qu'ont-ils mangé au marché ?", "options": ["Des tteokbokki", "Du kimchi-jjigae", "Du riz"] },
+    { "q": "Qu'ont-ils fait ensuite ?", "options": ["Ils ont regardé un film", "Ils ont fait du sport", "Ils sont rentrés"] }
+  ]
 }

@@ -1,0 +1,47 @@
+{
+  "id": "en-a1-04-1",
+  "lang": "en",
+  "level": "A1",
+  "unit": "en-A1-04",
+  "themes": ["cuisine"],
+  "grammar": ["present-simple"],
+  "title": "Les pâtes de Marco",
+  "icon": "🍝",
+  "kind": "Dialogue",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["What do you cook tonight?", "Qu'est-ce que tu cuisines ce soir ?"],
+    ["I cook pasta. My cousin @Marco is=be from @Italy.", "Je fais des pâtes. Mon cousin Marco vient d'Italie."],
+    ["He cooks=cook pasta with a lot of garlic.", "Il fait les pâtes avec beaucoup d'ail."],
+    ["Is=be he a chef?", "Il est chef ?"],
+    ["No, he is=be a nurse, but he loves=love the kitchen.", "Non, il est infirmier, mais il adore la cuisine."],
+    ["The tomatoes=tomato are=be from the market, and the sauce is=be from @Marco.", "Les tomates viennent du marché, et la sauce vient de Marco."],
+    ["Do you want pasta with garlic or with tomato?", "Tu veux des pâtes à l'ail ou à la tomate ?"],
+    ["With tomato, please! And a bit of garlic.", "À la tomate, s'il te plaît ! Et un peu d'ail."],
+    ["As a dessert, I have chocolate or a little milk.", "Comme dessert, j'ai du chocolat ou un peu de lait."],
+    ["Chocolate! As a dessert, chocolate is=be my favorite.", "Du chocolat ! Comme dessert, le chocolat, c'est mon préféré."]
+  ],
+  "speakers": null,
+  "checks": {
+    "blocking": [],
+    "warnings": [],
+    "stats": {
+      "sentences": 10,
+      "wordsPerSentence": 8.3,
+      "lexiconMissing": [],
+      "coverage": 93.8,
+      "tokens": 80,
+      "newWords": ["from", "he", "of", "or", "as"],
+      "outside": [],
+      "grammar:present-simple": 4
+    },
+    "status": "green",
+    "at": "2026-11-19T19:20:26.743Z"
+  },
+  "questions": [
+    { "q": "D'où vient Marco ?", "options": ["D'Italie", "D'Espagne", "De France"] },
+    { "q": "Quel est le métier de Marco ?", "options": ["Infirmier", "Chef", "Étudiant"] },
+    { "q": "Que choisit l'invité comme dessert ?", "options": ["Du chocolat", "Du lait", "Rien"] }
+  ]
+}

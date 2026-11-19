@@ -123,6 +123,21 @@ function startBookQuiz(lang, b, i) {
     save();
   });
 }
+// Questions de compréhension d'un texte (après « J'ai fini ») : même quiz que les livres,
+// score gardé dans books["text:<id>"] (synchronisé), puis la suite de la séance.
+const afterReading = (lang) => (reviewCount(lang) ? `#/lang/${lang}/revisions/go` : `#/lang/${lang}/produire`);
+function viewTextQuiz(lang, id) {
+  const t = textById(lang, id);
+  if (!t?.questions?.length) return viewNotFound();
+  const key = `text-${id}`;
+  if (ui.quiz?.key !== key) startQuiz(key, t.questions.map((x) => ({ ask: esc(x.q), prompt: "", options: shuffle(x.options), answer: x.options[0] })), (score) => {
+    const L = state.langs[lang], k = `text:${id}`;
+    if (L.books[k] === undefined) L.xp += 5;
+    L.books[k] = Math.max(score, L.books[k] ?? 0);
+    save();
+  });
+  return viewQuiz(afterReading(lang), "Compréhension");
+}
 // Après « J'ai fini » sur un chapitre : on passe aux questions plutôt qu'aux révisions
 function finishChapter(lang, t) {
   location.hash = `#/lang/${lang}/livre/${t.book}/quiz/${t.chapter + 1}`;
