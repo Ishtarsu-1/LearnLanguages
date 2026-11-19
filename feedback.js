@@ -23,7 +23,7 @@ function viewFeedback() {
   if (F.sent) return `<section class="view lesson-shell"><div class="card empty">${mochi("small", "proud")}
     <h2>Merci, c'est envoyé ! 🍡</h2><p class="muted">Ton retour aide vraiment à améliorer Mochi.</p>
     <div class="wp-actions avis-done"><a class="btn" href="${esc(ui.avisFrom || "#/")}">Revenir où j'étais</a><button class="btn ghost" data-act="avis-again">Envoyer un autre retour</button></div></div></section>`;
-  const lang = (ui.avisFrom || "").match(/#\/lang\/(en|ko|zh)/)?.[1] || state.lastLang || "";
+  const lang = (ui.avisFrom || "").match(/#\/lang\/(en|ko|zh|ru)/)?.[1] || state.lastLang || "";
   const chosen = AVIS_KINDS.filter(([k]) => F.kinds.includes(k));
   return `<section class="view lesson-shell">
     <div class="avis-head">${mochi("small", "curious")}<div><h1 class="m-0">Donner mon avis</h1>

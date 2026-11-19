@@ -7,7 +7,7 @@ const fs = require("node:fs"), path = require("node:path");
 
 const ROOT = path.join(__dirname, "..");
 const CONTENT_DIR = path.join(ROOT, "content");
-const LANGS = ["en", "ko", "zh"];
+const LANGS = ["en", "ko", "zh", "ru"];
 const LEVELS = ["A1", "A2", "B1", "B2"];
 const KINDS = ["Dialogue", "Récit", "Monologue", "Message"];
 // Identifiant d'un texte ou d'un livre : jamais de chemin fourni par le client (lot C6)
@@ -52,7 +52,7 @@ function parseWords(src, lang) {
     const segs = core.split("|").map((raw, i) => {
       const proper = raw.startsWith("@");
       const [surface, lem] = (proper ? raw.slice(1) : raw).split("=");
-      const lemmas = proper ? [] : lem ? lem.split("+") : [lang === "en" ? surface.toLowerCase() : surface];
+      const lemmas = proper ? [] : lem ? lem.split("+") : [lang === "en" || lang === "ru" ? surface.toLowerCase() : surface];
       const particle = lang === "ko" && i > 0 && lemmas.length === 1 && KO_PARTICLES.has(lemmas[0]);
       return { surface, lemmas, proper, particle };
     });

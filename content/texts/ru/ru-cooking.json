@@ -1,0 +1,23 @@
+{
+  "id": "ru-cooking",
+  "lang": "ru",
+  "level": "A1",
+  "order": 50,
+  "themes": ["cuisine"],
+  "grammar": [],
+  "title": "Ce soir, je cuisine",
+  "icon": "🍲",
+  "kind": "Récit",
+  "status": "published",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "sentences": [
+    ["Сегодня вечером=вечер я готовлю=готовить ужин.", "Ce soir, je prépare le dîner."],
+    ["Я делаю=делать суп с курицей=курица.", "Je fais une soupe au poulet."],
+    ["Сначала я режу=резать морковь и лук.", "D'abord, je coupe les carottes et l'oignon."],
+    ["Потом я варю=варить всё в воде=вода.", "Ensuite, je fais cuire le tout dans l'eau."],
+    ["Добавляю=добавлять немного соли=соль.", "J'ajoute un peu de sel."],
+    ["Очень вкусно!", "C'est très bon !"]
+  ],
+  "speakers": null,
+  "review": { "by": "nathan", "at": "2026-11-19" }
+}

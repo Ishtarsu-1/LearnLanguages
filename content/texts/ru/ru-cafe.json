@@ -1,0 +1,23 @@
+{
+  "id": "ru-cafe",
+  "lang": "ru",
+  "level": "A1",
+  "order": 10,
+  "themes": ["cafe"],
+  "grammar": [],
+  "title": "Au café",
+  "icon": "☕",
+  "kind": "Dialogue",
+  "status": "published",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "sentences": [
+    ["Здравствуйте! Можно один кофе, пожалуйста?", "Bonjour ! Je peux avoir un café, s'il vous plaît ?"],
+    ["Конечно. С молоком=молоко?", "Bien sûr. Avec du lait ?"],
+    ["Да, немного молока=молоко, спасибо.", "Oui, un peu de lait, merci."],
+    ["Что-нибудь ещё?", "Autre chose ?"],
+    ["Нет, это всё. Сколько стоит=стоить?", "Non, c'est tout. C'est combien ?"],
+    ["Двести рублей=рубль.", "Deux cents roubles."]
+  ],
+  "speakers": null,
+  "review": { "by": "nathan", "at": "2026-11-19" }
+}

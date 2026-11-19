@@ -24,7 +24,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const crypto = require("node:crypto");
 
-const LANGS = ["en", "ko", "zh"];
+const LANGS = ["en", "ko", "zh", "ru"];
 const MAX_CHARS = 300;
 const VOICE_RE = /^[A-Za-z0-9_.:+-]{1,64}$/;
 

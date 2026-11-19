@@ -90,7 +90,15 @@ function lcs(a, b, key = (x) => x) {
 const normEn = (s) => s.toLowerCase().replace(/[’']/g, "'").replace(/[.,!?;:"«»]/g, "").replace(/\s+/g, " ").trim();
 const normKo = (s) => s.replace(/[.,!?;:"«»~\s。，！？、：；「」]/gu, "");
 // Clé de comparaison d'une réponse : le chinois s'accepte en caractères ou en pinyin (zh.js)
-const normFor = (lang) => (isZh(lang) ? zhKey : isKo(lang) ? normKo : normEn);
+const normFor = (lang) => (isZh(lang) ? zhKey : isKo(lang) ? normKo : lang === "ru" ? normRu : normEn);
+// Russe tapé en cyrillique : comparaison stricte (seuls l'accent tonique et ё/е sont ignorés)
+const normRu = (s) => normEn(String(s).normalize("NFD").replace(/\u0301/g, "").normalize("NFC").replace(/ё/g, "е"));
+const hasLatin = (s) => /[a-z]/i.test(s);
+// Deux réponses sont-elles la même ? Russe tapé en latin : translittération tolérante (ru.js)
+function sameAnswer(lang, typed, expected) {
+  if (lang === "ru" && (hasLatin(typed) || hasLatin(expected))) return ruKey(typed) === ruKey(expected);
+  return normFor(lang)(typed) === normFor(lang)(expected);
+}
 // Renvoie {html de la version correcte, html de la phrase de l'utilisateur, similarité}
 function recast(user, target, lang) {
   // Chinois tapé en pinyin : on compare les pinyins (sans tons) et on montre la phrase avec son pinyin
@@ -108,7 +116,7 @@ function recast(user, target, lang) {
     return { tHtml, uHtml, sim: r.len / Math.max(a.length, b.length, 1) };
   }
   const a = user.trim().split(/\s+/), b = target.trim().split(/\s+/);
-  const r = lcs(a, b, normEn);
+  const r = lcs(a, b, lang === "ru" ? ruKey : normEn); // russe : un mot tapé en latin compte
   const tHtml = b.map((w, j) => (r.keepB[j] ? esc(w) : `<ins>${esc(w)}</ins>`)).join(" ");
   const uHtml = a.map((w, i) => (r.keepA[i] ? esc(w) : `<del>${esc(w)}</del>`)).join(" ");
   return { tHtml, uHtml, sim: r.len / Math.max(a.length, b.length, 1) };
@@ -244,6 +252,7 @@ function practiceTools(lang) {
   const K = state.langs.ko, hDone = Object.keys(K.hangulDays).length, gDone = KO_GRAMMAR.filter((g) => K.grammarDone[g.id]).length;
   const tools = [
     isKo(lang) && ["parcours", "🗺️", "Parcours", "L'alphabet puis la grammaire, un pas à la fois.", K.hangulDone ? `Grammaire ${gDone}/${KO_GRAMMAR.length}` : `Hangul ${hDone}/${HANGUL_DAYS.length}`],
+    lang === "ru" && ["alphabet", "🔤", "Alphabet cyrillique", "Les 33 lettres, les fausses amies et l'accent tonique.", `${Object.keys(L.alphabetDays).length}/${CYR_DAYS.length} séances`],
     isZh(lang) && ["pinyin", "🎵", "Pinyin & tons", "Entendre et reconnaître les 4 tons, puis les sons du chinois.", `${Object.keys(L.pinyinDays).length}/${PINYIN_DAYS.length} séances`],
     ["revisions", "🧠", "Réviser", "Les mots à revoir aujourd'hui, au bon moment pour ne pas les oublier.", due ? `${due} à revoir` : "À jour ✓", due > 0],
     ["exercices", "🎯", "Exercices", "Dictée, phrases à remettre dans l'ordre, compréhension… tout mélangé.", ""],
@@ -251,7 +260,7 @@ function practiceTools(lang) {
     ["oreille", "🎧", "Écouter les sons", "Distingue les sons qui se ressemblent, avec plusieurs voix.", ""],
     lang === "en" && ["fauxamis", "🎭", "Faux amis", "Les mots qui ressemblent au français… mais ne veulent pas dire la même chose.", ""],
     ["mots", "📒", "Mes mots", "Tous les mots que tu apprends, et ceux que tu connais déjà.", mine ? `${mine} carte${mine > 1 ? "s" : ""}` : ""],
-    !isZh(lang) && ["niveau", "🧭", "Test de niveau", "5 minutes pour savoir où tu en es.", L.placement ? "Fait ✓" : ""],
+    ["en", "ko"].includes(lang) && ["niveau", "🧭", "Test de niveau", "5 minutes pour savoir où tu en es.", L.placement ? "Fait ✓" : ""],
   ];
   return tools.filter(Boolean);
 }
@@ -429,6 +438,7 @@ function tabToday(lang) {
         step1Done ? "" : `<button class="btn small" data-act="learn-first" data-l="${lang}">Apprendre</button>`);
   return `
     ${isZh(lang) && typeof pinyinTodayCard === "function" ? pinyinTodayCard() : ""}
+    ${lang === "ru" && typeof cyrillicTodayCard === "function" ? cyrillicTodayCard() : ""}
     ${beginner ? "" : placementOffer(lang)}
     ${s.welcomeBack ? `<div class="card celebrate">${mochi("small")}<div><h3>Content de te revoir !</h3><p class="muted">On reprend en douceur : ${CATCHUP_FIRST} révisions aujourd'hui, le reste plus tard, réparti sur les prochains jours. Pas de nouvelles cartes en attendant.</p></div></div>` : ""}
     ${all ? `<div class="card celebrate">${mochi("small", w.thisWeek >= WEEK_GOAL ? "proud" : "happy")}<div><h3>Séance du jour bouclée</h3><p class="muted">${w.thisWeek}/${WEEK_GOAL} jours cette semaine. Tu peux continuer, mais l'essentiel est fait.</p></div></div>`

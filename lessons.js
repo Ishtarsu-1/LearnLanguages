@@ -346,7 +346,7 @@ function viewReviewSession(lang) {
       <p class="q-sentence ${k}">${blank(c)}</p><p class="muted">${esc(c.contextFr)}</p>`;
     if (!R.revealed) input = `<input class="input answer ${k}" id="answer" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Ta réponse…" value="${esc(R.typed)}" />`;
     else {
-      const ok = norm(lang, R.typed) === norm(lang, c.surface);
+      const ok = sameAnswer(lang, R.typed, c.surface);
       const r = recast(R.typed || "—", c.surface, lang);
       back = `<p class="a-word ${k}">${ok ? "✅ " : ""}${r.tHtml}</p>${ok ? "" : `<p class="muted">Ta réponse : <span class="${k}">${r.uHtml}</span></p>`}<p class="q-sentence ${k}">${marked(c)}</p><p class="muted"><small>${esc(c.fr)}</small></p>${sayCtx}`;
     }
@@ -420,7 +420,7 @@ function tabProduce(lang) {
       ${ex.who ? `<div class="who"><span class="tag">👤 ${esc(ex.who)}</span>${isKo(lang) ? `<span class="tag">Registre : poli en -요</span>` : ""}</div>` : ""}
       <h2 class="mt-10 mb-14 mx-0">${esc(ex.prompt)}</h2>
       ${P.mode === "free" && recent.length ? `<p class="muted mt-n6 mb-12 mx-0">Essaie de réutiliser un de tes mots récents 👇</p>` : ""}
-      <textarea id="prod-text" class="input ${k}" rows="${P.mode === "free" ? 3 : 2}" maxlength="500" placeholder="${{ ko: "한국어로 써 보세요…", zh: "用中文写（汉字或拼音）…" }[lang] || "Write in English…"}" ${r || P.loading ? "disabled" : ""}>${esc(P.text)}</textarea>
+      <textarea id="prod-text" class="input ${k}" rows="${P.mode === "free" ? 3 : 2}" maxlength="500" placeholder="${{ ko: "한국어로 써 보세요…", zh: "用中文写（汉字或拼音）…", ru: "Напиши по-русски (ou en lettres latines)…" }[lang] || "Write in English…"}" ${r || P.loading ? "disabled" : ""}>${esc(P.text)}</textarea>
       ${recent.length ? `<p class="muted mt-10 mb-0 mx-0"><small>Tes mots récents : ${recent.map((w) => `<span class="tag ${k}">${esc(w)}</span>`).join(" ")}</small></p>` : ""}
       ${r || P.loading ? "" : `<div class="wp-actions"><button class="btn" data-act="check-prod">Vérifier</button><button class="btn ghost small" data-act="next-ex">Autre phrase</button></div>`}
     </div>
@@ -459,7 +459,7 @@ async function checkProduction(lang, text) {
       const { feedback: f, remaining, engine } = await api("POST", "/api/feedback", { lang, prompt: ex.prompt, who: ex.who || null, register: ex.register || null, reference, text });
       const perfect = f.verdict !== "errors";
       const d = recast(text, f.recast, lang);
-      P.result = { llm: true, perfect, verdict: f.verdict, alt: perfect && norm(lang, f.recast) !== norm(lang, text) ? f.recast : "", target: f.recast, tHtml: d.tHtml, uHtml: d.uHtml, errors: f.errors, explanation: f.explanation, encouragement: f.encouragement };
+      P.result = { llm: true, perfect, verdict: f.verdict, alt: perfect && !sameAnswer(lang, f.recast, text) ? f.recast : "", target: f.recast, tHtml: d.tHtml, uHtml: d.uHtml, errors: f.errors, explanation: f.explanation, encouragement: f.encouragement };
       P.remaining = remaining; P.engine = engine;
       // Particules ratées → cartes ciblées, à partir de la phrase corrigée
       const pes = isKo(lang) ? f.errors.filter((e) => e.particle && KO_PARTICLES.has(e.particle)).map((e) => {
@@ -486,11 +486,11 @@ function checkProductionLocal(lang, text) {
   const tWords = parseSentence(ex.target, lang);
   const target = plain(tWords);
   const cands = [target, ...ex.accept];
-  const match = cands.find((c) => norm(lang, c) === norm(lang, text));
+  const match = cands.find((c) => sameAnswer(lang, c, text));
   const issues = isKo(lang) ? koChecks(ex, text, tWords) : { register: [], particles: [] };
   if (match) {
     issues.particles = [];
-    P.result = { perfect: true, alt: norm(lang, match) === norm(lang, target) ? (ex.accept[0] || "") : target, target, issues };
+    P.result = { perfect: true, alt: sameAnswer(lang, match, target) ? (ex.accept[0] || "") : target, target, issues };
   } else {
     const best = cands.map((c) => ({ c, r: recast(text, c, lang) })).sort((a, b) => b.r.sim - a.r.sim)[0];
     P.result = { perfect: false, ...best.r, target: best.c, issues };

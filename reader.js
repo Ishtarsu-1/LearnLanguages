@@ -12,7 +12,7 @@ function parseSentence(src, lang) {
     const segs = core.split("|").map((raw, i) => {
       const proper = raw.startsWith("@");
       const [surface, lem] = (proper ? raw.slice(1) : raw).split("=");
-      const lemmas = proper ? [] : lem ? lem.split("+") : [lang === "en" ? surface.toLowerCase() : surface];
+      const lemmas = proper ? [] : lem ? lem.split("+") : [lang === "en" || lang === "ru" ? surface.toLowerCase() : surface]; // écritures à majuscules
       const particle = isKo(lang) && i > 0 && lemmas.length === 1 && KO_PARTICLES.has(lemmas[0]);
       return { surface, lemmas, proper, particle };
     });
@@ -96,5 +96,6 @@ function knownCount(lang) {
 }
 const lexFr = (lang, lemma) => {
   const fr = lemma.split(" + ").map((l) => LEXICON[lang][l]?.fr || "?").join(" + ");
+  if (lang === "ru") { const st = lemma.split(" + ").map(ruStressed).join(" + "); return st !== lemma ? `${st} · ${fr}` : fr; }
   return isZh(lang) ? `${zhLemmaPy(lemma.split(" + "))} · ${fr}` : fr;
 };

@@ -1,0 +1,23 @@
+{
+  "id": "ru-intro",
+  "lang": "ru",
+  "level": "A1",
+  "order": 20,
+  "themes": ["rencontre"],
+  "grammar": [],
+  "title": "Se présenter",
+  "icon": "🙋",
+  "kind": "Monologue",
+  "status": "published",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "sentences": [
+    ["Привет! Меня=я зовут=звать @Маша.", "Salut ! Je m'appelle Macha."],
+    ["Я из @Москвы.", "Je viens de Moscou."],
+    ["Я студентка, я изучаю=изучать французский язык.", "Je suis étudiante, j'apprends le français."],
+    ["Я очень люблю=любить кино.", "J'adore le cinéma."],
+    ["А ты? Как тебя=ты зовут=звать?", "Et toi ? Comment tu t'appelles ?"],
+    ["Очень приятно!", "Enchantée !"]
+  ],
+  "speakers": null,
+  "review": { "by": "nathan", "at": "2026-11-19" }
+}

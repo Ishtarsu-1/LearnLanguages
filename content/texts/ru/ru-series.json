@@ -1,0 +1,23 @@
+{
+  "id": "ru-series",
+  "lang": "ru",
+  "level": "A1",
+  "order": 90,
+  "themes": ["series"],
+  "grammar": [],
+  "title": "Une série russe",
+  "icon": "📺",
+  "kind": "Monologue",
+  "status": "published",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "sentences": [
+    ["Сейчас я смотрю=смотреть русский сериал.", "En ce moment, je regarde une série russe."],
+    ["Главная=главный героиня очень красивая=красивый.", "L'héroïne est très belle."],
+    ["История немного грустная=грустный.", "L'histoire est un peu triste."],
+    ["Я даже плакала=плакать.", "J'ai même pleuré."],
+    ["Я смотрю=смотреть с русскими=русский субтитрами=субтитры.", "Je regarde avec les sous-titres russes."],
+    ["Учить русский язык по сериалам=сериал очень интересно!", "Apprendre le russe avec les séries, c'est très intéressant !"]
+  ],
+  "speakers": null,
+  "review": { "by": "nathan", "at": "2026-11-19" }
+}

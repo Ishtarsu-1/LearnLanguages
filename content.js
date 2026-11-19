@@ -89,6 +89,14 @@ const PRODUCTION = {
     { id: "p-zh-5", prompt: "Dis que tu habites à Pékin.", target: "我 住 在 @北京。", accept: ["我住北京。", "我在北京住。"], words: ["住", "在"], why: "住在 + lieu = habiter à. Le lieu vient après 在." },
     { id: "p-zh-6", prompt: "Demande à quelqu'un s'il aime le sport.", target: "你 喜欢 运动 吗？", accept: ["你喜欢运动吗", "你喜不喜欢运动？"], words: ["喜欢", "运动", "吗"], why: "Pour une question oui/non, on garde la phrase telle quelle et on ajoute 吗 à la fin." },
   ],
+  ru: [
+    { id: "p-ru-1", who: "Au serveur", prompt: "Demande un thé, poliment.", target: "Можно чай, пожалуйста?", accept: ["Чай, пожалуйста.", "Можно чай?", "Один чай, пожалуйста."], words: ["можно", "чай", "пожалуйста"], why: "Можно… ? = « est-ce que je peux avoir… ? » : la façon simple et polie de commander." },
+    { id: "p-ru-2", prompt: "Dis que tu t'appelles Léa.", target: "Меня=я зовут=звать @Леа.", accept: ["Я Леа.", "Меня зовут Лея."], words: ["звать"], why: "Mot à mot : « on m'appelle Léa ». Меня = « me » (я à l'accusatif)." },
+    { id: "p-ru-3", prompt: "Dis que tu aimes le café.", target: "Я люблю=любить кофе.", accept: ["Я очень люблю кофе."], words: ["любить", "кофе"], why: "люблю = j'aime (любить, 1re personne). кофе ne se décline jamais." },
+    { id: "p-ru-4", prompt: "Demande combien ça coûte.", target: "Сколько это стоит=стоить?", accept: ["Сколько стоит?"], words: ["сколько", "стоить"], why: "Сколько стоит ? = « combien ça coûte ? ». это (ça) est facultatif." },
+    { id: "p-ru-5", prompt: "Dis que tu habites à Paris.", target: "Я живу=жить в @Париже.", accept: ["Я живу в Париже"], words: ["жить", "в"], why: "в + le lieu, qui prend une terminaison (le prépositionnel) : Париж → в Париже." },
+    { id: "p-ru-6", prompt: "Dis que tu as un frère.", target: "У меня=я есть брат.", accept: ["У меня брат."], words: ["у", "есть", "брат"], why: "Pour « avoir », le russe dit « chez moi, il y a » : у меня есть." },
+  ],
 };
 
 // ---------- Faux amis (§7) ----------
@@ -169,6 +177,23 @@ const EAR = {
     notes: [
       { t: "Changements de ton", lines: [["你好", "deux 3es tons à la suite : le premier devient un 2e ton (ní hǎo)"], ["不是", "不 (bù) devient bú devant un 4e ton : bú shì"], ["一起", "一 (yī) devient yì devant les tons 1, 2 et 3 : yìqǐ"]] },
       { t: "Consonnes soufflées", lines: [["爸 / 怕", "b n'est pas un vrai « b » français : c'est un p sans souffle ; p est soufflé"], ["大 / 他", "même chose : d = t sans souffle, t = t soufflé"]] },
+    ],
+  },
+  ru: {
+    pairs: [
+      { label: "ы / и", items: ["быть", "бить"] },
+      { label: "ы / и", items: ["мыл", "мил"] },
+      { label: "Consonne dure / mouillée", items: ["мат", "мать"] },
+      { label: "Consonne dure / mouillée", items: ["брат", "брать"] },
+      { label: "Consonne dure / mouillée", items: ["кон", "конь"] },
+      { label: "у / ю", items: ["лук", "люк"] },
+      { label: "ж / ш", items: ["жар", "шар"] },
+      { label: "р / л", items: ["рак", "лак"] },
+      { label: "Accent tonique", items: ["за́мок", "замо́к"] },
+    ],
+    notes: [
+      { t: "Voyelles réduites", lines: [["молоко", "se prononce [malakó] : un о sans accent sonne presque a"], ["хорошо", "se prononce [kharachó]"], ["язык", "se prononce [iizýk] : un я sans accent sonne presque i"]] },
+      { t: "Consonnes finales assourdies", lines: [["хлеб", "se prononce [khliep] : б → p en fin de mot"], ["друг", "se prononce [drouk]"], ["год", "se prononce [got]"]] },
     ],
   },
 };
@@ -311,6 +336,7 @@ const LEVEL_HOURS = {
   ko: { label: "Coréen", steps: [["B1", 800, "≈ 700–900 h"], ["Pro (FSI)", 2200, "≈ 2 200 h de cours"]] },
   en: { label: "Anglais", steps: [["B1", 375, "≈ 350–400 h guidées"], ["B2", 550, "≈ 500–600 h guidées"]] },
   zh: { label: "Chinois", steps: [["HSK 3 (≈ B1)", 900, "≈ 800–1 000 h"], ["Pro (FSI)", 2200, "≈ 2 200 h de cours"]] },
+  ru: { label: "Russe", steps: [["B1", 600, "≈ 500–700 h"], ["Pro (FSI)", 1100, "≈ 1 100 h de cours"]] },
 };
 
 // ---------- Phrases libres (production ouverte, corrigée par le LLM, §4) ----------
@@ -339,5 +365,12 @@ const FREE_PROMPTS = {
     { prompt: "Commande quelque chose au café." },
     { prompt: "Dis ce que tu aimes faire le week-end." },
     { prompt: "Parle d'un membre de ta famille." },
+  ],
+  ru: [
+    { prompt: "Présente-toi (prénom, ville, études ou métier)." },
+    { prompt: "Dis ce que tu aimes faire le week-end." },
+    { prompt: "Commande quelque chose au café." },
+    { prompt: "Parle d'un membre de ta famille." },
+    { prompt: "Raconte ce que tu as mangé aujourd'hui." },
   ],
 };

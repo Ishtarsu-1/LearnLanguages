@@ -1,0 +1,23 @@
+{
+  "id": "ru-office",
+  "lang": "ru",
+  "level": "A1",
+  "order": 80,
+  "themes": ["travail"],
+  "grammar": [],
+  "title": "Au bureau",
+  "icon": "💼",
+  "kind": "Monologue",
+  "status": "published",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "sentences": [
+    ["Я работаю=работать в большой компании=компания.", "Je travaille dans une grande entreprise."],
+    ["Я начинаю=начинать работу=работа в девять часов=час.", "Je commence le travail à neuf heures."],
+    ["Утром=утро у нас=мы собрание.", "Le matin, nous avons une réunion."],
+    ["Днём=день я обедаю=обедать с коллегами=коллега.", "En journée, je déjeune avec mes collègues."],
+    ["Работы=работа много, но мне=я нравится=нравиться.", "Il y a beaucoup de travail, mais ça me plaît."],
+    ["В шесть часов=час я иду=идти домой.", "À six heures, je rentre à la maison."]
+  ],
+  "speakers": null,
+  "review": { "by": "nathan", "at": "2026-11-19" }
+}

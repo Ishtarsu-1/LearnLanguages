@@ -1,0 +1,23 @@
+{
+  "id": "ru-sport",
+  "lang": "ru",
+  "level": "A1",
+  "order": 60,
+  "themes": ["sport"],
+  "grammar": [],
+  "title": "Le sport",
+  "icon": "🏃",
+  "kind": "Monologue",
+  "status": "published",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "sentences": [
+    ["Я бегаю=бегать каждое=каждый утро.", "Je cours tous les matins."],
+    ["В выходные я играю=играть в футбол с друзьями=друг.", "Le week-end, je joue au foot avec des amis."],
+    ["Играть в футбол трудно, но интересно.", "Jouer au foot, c'est dur, mais intéressant."],
+    ["После спорта=спорт я пью=пить много воды=вода.", "Après le sport, je bois beaucoup d'eau."],
+    ["Здоровье очень важно!", "La santé, c'est très important !"],
+    ["А ты любишь=любить спорт?", "Et toi, tu aimes le sport ?"]
+  ],
+  "speakers": null,
+  "review": { "by": "nathan", "at": "2026-11-19" }
+}

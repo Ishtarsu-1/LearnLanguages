@@ -10,7 +10,7 @@
 const crypto = require("node:crypto");
 
 const USERNAME_RE = /^[a-z0-9_]{3,20}$/;
-const LANGS = ["en", "ko", "zh"];
+const LANGS = ["en", "ko", "zh", "ru"];
 const DAYS = [3, 7, 14];
 // type → règles. target : valeurs proposées (coopératif : total à atteindre ensemble)
 const TYPES = {

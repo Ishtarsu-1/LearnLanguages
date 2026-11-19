@@ -56,7 +56,7 @@ function viewMission(lang, b, i) {
     input = `<div class="card celebrate">${mochi("small", "proud")}<div><h3>Mission réussie !</h3><p class="muted">+20 XP. ${i + 1 < b.chapters.length ? "Mets les mots clés en révision pour ouvrir le chapitre suivant." : "Tu as fini cette partie de l'histoire. La suite arrive bientôt !"}</p><a class="btn small" href="${back}">Continuer</a></div></div>`;
   } else if (S.mode === "ai") {
     input = `<form class="mission-form" data-mission="1">
-        <textarea id="mission-text" class="input ${k}" rows="2" maxlength="300" placeholder="${{ ko: "한국어로 말해 보세요…", zh: "用中文说…" }[lang] || "Say something in English…"}" ${S.loading ? "disabled" : ""}></textarea>
+        <textarea id="mission-text" class="input ${k}" rows="2" maxlength="300" placeholder="${{ ko: "한국어로 말해 보세요…", zh: "用中文说…", ru: "Скажи по-русски…" }[lang] || "Say something in English…"}" ${S.loading ? "disabled" : ""}></textarea>
         <div class="wp-actions"><button class="btn" ${S.loading ? "disabled" : ""}>${S.loading ? "…" : "Envoyer"}</button>
           ${S.hint ? `<button type="button" class="btn ghost small" data-act="mission-hint">💡 Un indice</button>` : ""}
           <button type="button" class="btn ghost small" data-act="mission-mode" data-m="guided">Mode guidé</button></div>

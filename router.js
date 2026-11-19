@@ -48,6 +48,7 @@ function route() {
     else if (tab === "hangul" && isKo(lang)) html = viewHangul(Number(a) || 1);
     else if (tab === "atelier" && isKo(lang)) html = viewAtelier();
     else if (tab === "pinyin" && isZh(lang) && a) html = viewPinyin(a);
+    else if (tab === "alphabet" && lang === "ru" && a) html = viewCyrillic(a);
     else if (tab === "grammaire" && isKo(lang)) html = viewGrammar(a);
     else html = viewLanguage(lang, tab === "pratique" || TABS[lang].some(([k]) => k === tab) ? tab : "aujourdhui");
   } else html = viewNotFound();
@@ -56,7 +57,7 @@ function route() {
   applyDisplay();
   $app.innerHTML = html + (typeof legalFooter === "function" ? legalFooter() : ""); // legal.js
   const logo = document.getElementById("logo-o"); if (logo && !logo.innerHTML) logo.innerHTML = LOGO_FACE;
-  $app.querySelectorAll(".ko, .en, .zh").forEach((e) => { if (!e.classList.contains("lang-card")) e.lang = e.classList.contains("ko") ? "ko" : e.classList.contains("zh") ? "zh-CN" : "en"; });
+  $app.querySelectorAll(".ko, .en, .zh, .ru").forEach((e) => { if (!e.classList.contains("lang-card")) e.lang = e.classList.contains("ko") ? "ko" : e.classList.contains("zh") ? "zh-CN" : e.classList.contains("ru") ? "ru" : "en"; });
   if (!hashChanged) $app.querySelector(".view")?.classList.add("still");
   // Navigation principale : état actif (aria-current) et pastille des cartes à revoir
   const due = lang ? reviewCount(lang) : 0;

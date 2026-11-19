@@ -133,7 +133,7 @@ function audioCard() {
     const sv = serverVoices(id), bv = voicesFor(id), src = audioSource(id), pref = S.voices?.[id] || "";
     const status = src === "server" ? `<span class="badge ok">🎙️ Voix neuronales du serveur (${sv.length})</span>`
       : src === "browser" ? `<span class="badge">🔈 Voix du navigateur (${bv.length})</span>`
-      : `<span class="badge warn">🔇 Aucune voix ${{ ko: "coréenne", zh: "chinoise" }[id] || "anglaise"}</span>`;
+      : `<span class="badge warn">🔇 Aucune voix ${{ ko: "coréenne", zh: "chinoise", ru: "russe" }[id] || "anglaise"}</span>`;
     const opts = [
       ...sv.map((v) => [v, `🎙️ ${v} (serveur)`]),
       ...bv.map((v) => [`browser:${v.name}`, `🔈 ${v.name}${/natural|neural|online|premium|enhanced/i.test(v.name) ? " ✨" : ""}`]),
@@ -142,7 +142,7 @@ function audioCard() {
       <div class="audio-head"><b>${l.flag} ${l.name}</b> ${status}</div>
       ${opts.length ? `<div class="audio-ctl">
         <select class="input" data-voice="${id}" aria-label="Voix ${l.name}"><option value="">Automatique (la meilleure trouvée)</option>${opts.map(([v, t]) => `<option value="${esc(v)}" ${v === pref ? "selected" : ""}>${esc(t)}</option>`).join("")}</select>
-        <button class="btn ghost small" data-act="say" data-lang="${id}" data-text="${esc({ ko: "안녕하세요! 저는 모찌예요.", zh: "你好！我是麻糬。" }[id] || "Hi! I'm Mochi. Nice to meet you.")}">▶ Tester</button>
+        <button class="btn ghost small" data-act="say" data-lang="${id}" data-text="${esc({ ko: "안녕하세요! 저는 모찌예요.", zh: "你好！我是麻糬。", ru: "Привет! Я Мочи. Очень приятно!" }[id] || "Hi! I'm Mochi. Nice to meet you.")}">▶ Tester</button>
       </div>` : ""}
     </div>`;
   }).join("");

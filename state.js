@@ -8,6 +8,7 @@
 const LANGUAGES = {
   en: { name: "Anglais", native: "English", flag: "🇬🇧", hello: "Hello!", deco: "Hi", speechLang: "en-GB", tagline: "Des dialogues du quotidien, et beaucoup d'écoute" },
   ko: { name: "Coréen", native: "한국어", flag: "🇰🇷", hello: "안녕하세요!", deco: "한", speechLang: "ko-KR", tagline: "Hangul d'abord, puis les briques de la phrase" },
+  ru: { name: "Russe", native: "Русский", flag: "🇷🇺", hello: "Привет!", deco: "Я", speechLang: "ru-RU", tagline: "L'alphabet cyrillique d'abord, puis des phrases du quotidien" },
   zh: { name: "Chinois", native: "中文", flag: "🇨🇳", hello: "你好！", deco: "中", speechLang: "zh-CN", tagline: "Les tons et le pinyin d'abord, puis des phrases du quotidien" },
 };
 
@@ -30,7 +31,7 @@ const STORE_KEY = "mochi-state-v2";
 const langDefaults = () => ({
   xp: 0, streak: 0, lastStreakDay: null, seconds: 0, todayDate: null, todaySec: 0, started: false,
   known: {}, unknown: {}, readTexts: {}, fullDays: {}, catchUp: false, session: {}, introduced: { date: null, count: 0 },
-  hangulDone: false, hangulDays: {}, pinyinDays: {}, grammarDone: {}, grammarMiss: {}, earStats: {}, errors: {}, prodDone: {}, quests: {}, books: {},
+  hangulDone: false, hangulDays: {}, pinyinDays: {}, alphabetDays: {}, grammarDone: {}, grammarMiss: {}, earStats: {}, errors: {}, prodDone: {}, quests: {}, books: {},
 });
 const defaultState = () => ({
   name: "", avatar: "mochi", goal: 10, lastLang: null,

@@ -123,7 +123,7 @@ function create({ social, db, roundMs = 20000, pauseMs = 2500, countdownMs = 300
   // ---------- Actions ----------
   function invite(uid, friend, lang) {
     friend = Number(friend);
-    if (!["en", "ko", "zh"].includes(lang)) throw err(400, "Choisis la langue du duel.");
+    if (!["en", "ko", "zh", "ru"].includes(lang)) throw err(400, "Choisis la langue du duel.");
     if (!social.areFriends(uid, friend)) throw err(403, "Tu ne peux défier que tes amis.");
     for (const m of matches.values()) if (["waiting", "countdown", "playing"].includes(m.status) && m.players.includes(uid)) throw err(409, "Tu as déjà un duel en cours.");
     const pool = wordPool(lang, lexicon?.[lang]);

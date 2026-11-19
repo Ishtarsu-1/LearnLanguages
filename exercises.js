@@ -8,17 +8,17 @@
 // group : rangement du menu (Écoute · Écrit · Grammaire · Vocabulaire). Les types qui
 // ne sont pas de l'écoute sont majoritaires : l'écoute a déjà l'onglet « Écouter les sons ».
 const EX_KINDS = {
-  melange: { icon: "🔀", label: "Mélange", langs: ["en", "ko", "zh"] },
-  dictee: { icon: "✍️", label: "Dictée", langs: ["en", "ko", "zh"], group: "listen" },
-  ecoute: { icon: "🎧", label: "Compréhension orale", langs: ["en", "ko", "zh"], group: "listen" },
-  trou: { icon: "✏️", label: "Phrase à trou", langs: ["en", "ko", "zh"], group: "write" },
-  traduction: { icon: "🔁", label: "Traduis", langs: ["en", "ko", "zh"], group: "write" },
-  forme: { icon: "🔤", label: "La bonne forme", langs: ["en", "ko"], group: "write" },
-  ordre: { icon: "🧩", label: "Remettre dans l'ordre", langs: ["en", "ko", "zh"], group: "grammar" },
+  melange: { icon: "🔀", label: "Mélange", langs: ["en", "ko", "zh", "ru"] },
+  dictee: { icon: "✍️", label: "Dictée", langs: ["en", "ko", "zh", "ru"], group: "listen" },
+  ecoute: { icon: "🎧", label: "Compréhension orale", langs: ["en", "ko", "zh", "ru"], group: "listen" },
+  trou: { icon: "✏️", label: "Phrase à trou", langs: ["en", "ko", "zh", "ru"], group: "write" },
+  traduction: { icon: "🔁", label: "Traduis", langs: ["en", "ko", "zh", "ru"], group: "write" },
+  forme: { icon: "🔤", label: "La bonne forme", langs: ["en", "ko", "ru"], group: "write" },
+  ordre: { icon: "🧩", label: "Remettre dans l'ordre", langs: ["en", "ko", "zh", "ru"], group: "grammar" },
   particule: { icon: "🧷", label: "La bonne particule", langs: ["ko"], group: "grammar" },
   registre: { icon: "🙇", label: "Quel registre ?", langs: ["ko"], group: "grammar" },
-  confusion: { icon: "⚖️", label: "Ne pas confondre", langs: ["en", "ko", "zh"], group: "vocab" },
-  paires: { icon: "🔗", label: "Associe", langs: ["en", "ko", "zh"], group: "vocab" },
+  confusion: { icon: "⚖️", label: "Ne pas confondre", langs: ["en", "ko", "zh", "ru"], group: "vocab" },
+  paires: { icon: "🔗", label: "Associe", langs: ["en", "ko", "zh", "ru"], group: "vocab" },
   faux: { icon: "🎭", label: "Faux amis", langs: ["en"], group: "vocab" },
 };
 const EX_GROUPS = [["listen", "🎧 Écoute"], ["write", "✍️ Écrit"], ["grammar", "🧩 Grammaire"], ["vocab", "📒 Vocabulaire"]];
@@ -198,7 +198,7 @@ Object.assign(actions, {
       const typed = (document.getElementById("ex-answer")?.value || "").trim();
       if (!typed) return toast("Écris ce que tu entends ✍️");
       const r = recast(typed, q.s.text, lang);
-      E.result = { ...r, ok: norm(lang, typed) === norm(lang, q.s.text) };
+      E.result = { ...r, ok: sameAnswer(lang, typed, q.s.text) };
     } else if (EX_MORE[q.kind]?.check) {
       if (EX_MORE[q.kind].check(lang, E) === false) return; // rien à vérifier (champ vide…)
       if (E.result?.async) return; // vérification par l'IA en cours : exDone sera appelé à la réponse
@@ -263,7 +263,7 @@ EX_MORE.trou = {
   },
   check(lang, E) {
     const t = typedValue(); if (!t) { toast("Écris le mot qui manque ✍️"); return false; }
-    E.result = { typed: t, ok: norm(lang, t) === norm(lang, E.q.answer) };
+    E.result = { typed: t, ok: sameAnswer(lang, t, E.q.answer) };
     speak(E.q.s.text, lang);
   },
 };
@@ -282,11 +282,11 @@ EX_MORE.forme = {
       <p class="muted">« ${esc(q.s.fr)} »</p>
       ${R ? `${R.ok ? `<p class="ok-msg">Parfait !</p>` : `<p class="ko-msg">Tu as écrit <b class="${k}">${esc(R.typed)}</b></p>`}
           <p class="ex-note"><b class="${k}">${esc(base)}</b> → <b class="${k}">${esc(q.answer)}</b>${isKo(lang) ? (/요$/.test(q.answer) ? " · terminaison polie en -요" : "") : ""}</p>${exNext}`
-        : typedField(lang, isKo(lang) ? "ex. 먹어요" : "ex. went")}`;
+        : typedField(lang, { ko: "ex. 먹어요", ru: "ex. люблю" }[lang] || "ex. went")}`;
   },
   check(lang, E) {
     const t = typedValue(); if (!t) { toast("Écris la forme du mot ✍️"); return false; }
-    E.result = { typed: t, ok: norm(lang, t) === norm(lang, E.q.answer) };
+    E.result = { typed: t, ok: sameAnswer(lang, t, E.q.answer) };
     speak(E.q.s.text, lang);
   },
 };
@@ -305,12 +305,12 @@ EX_MORE.traduction = {
           ${R.explain ? `<p class="ex-note">${esc(R.explain)}</p>` : ""}
           ${R.local && !R.ok ? `<p class="muted"><small>Comparée à une traduction possible : d'autres formulations peuvent être justes.${llmReady() ? "" : " Connecte-toi pour une correction par l'IA."}</small></p>` : ""}
           <div class="center"><button class="btn ghost small" data-act="say" data-text="${esc(q.s.text)}" data-lang="${lang}">🔊 Écouter</button></div>${exNext}`
-        : `<textarea class="input answer ${k}" id="ex-answer" rows="2" maxlength="300" placeholder="${{ ko: "한국어로…", zh: "用中文（汉字或拼音）…" }[lang] || "In English…"}"></textarea>
+        : `<textarea class="input answer ${k}" id="ex-answer" rows="2" maxlength="300" placeholder="${{ ko: "한국어로…", zh: "用中文（汉字或拼音）…", ru: "По-русски (ou en lettres latines)…" }[lang] || "In English…"}"></textarea>
            <div class="wp-actions center"><button class="btn" data-act="ex-check">Vérifier</button></div>`}`;
   },
   check(lang, E) {
     const t = typedValue(), q = E.q; if (!t) { toast("Écris ta traduction ✍️"); return false; }
-    if (norm(lang, t) === norm(lang, q.s.text)) { E.result = { typed: t, ok: true }; return; }
+    if (sameAnswer(lang, t, q.s.text)) { E.result = { typed: t, ok: true }; return; }
     if (!llmReady()) { E.result = { typed: t, ok: false, local: true, ...recast(t, q.s.text, lang) }; return; }
     E.result = { async: true };
     api("POST", "/api/feedback", { lang, prompt: `Traduis en ${LANGUAGES[lang].name.toLowerCase()} : « ${q.s.fr} »`, reference: q.s.text, text: t })
@@ -362,7 +362,7 @@ EX_MORE.confusion = {
   },
   view(lang, E) {
     const q = E.q, k = koCls(lang);
-    if (q.empty) return `<p class="q-label">⚖️ Ne pas confondre</p><p>Cet exercice oppose deux mots qui se ressemblent ou s'opposent (${{ ko: "먹다 / 마시다, 출근하다 / 퇴근하다", zh: "吃 / 喝, 上班 / 下班" }[lang] || "early / late, open / close"}).</p>
+    if (q.empty) return `<p class="q-label">⚖️ Ne pas confondre</p><p>Cet exercice oppose deux mots qui se ressemblent ou s'opposent (${{ ko: "먹다 / 마시다, 출근하다 / 퇴근하다", zh: "吃 / 喝, 上班 / 下班", ru: "идти / ехать, учить / изучать" }[lang] || "early / late, open / close"}).</p>
       <p class="muted">Il s'ouvre quand tu connais <b>les deux</b> mots d'une paire. C'est voulu : les apprendre en même temps les mélange en mémoire. Une fois les deux bien installés, les opposer aide à les distinguer.</p>`;
     return `<p class="q-label">Quel mot va dans le trou ? <small class="muted">(forme de base)</small></p>
       <p class="q-sentence ${k}">${blankHtml(q.s, q.wi, q.gi, E.picked ? q.g.surface : null, E.picked ? "right" : "")}</p>

@@ -29,7 +29,7 @@ const costOf = (usage) => {
 let client = null;
 const getClient = () => (client ||= new Anthropic({ timeout: 60_000, maxRetries: 2 }));
 
-const LANG_NAMES = { en: "English", ko: "Korean", zh: "Mandarin Chinese (simplified characters)" };
+const LANG_NAMES = { en: "English", ko: "Korean", zh: "Mandarin Chinese (simplified characters)", ru: "Russian" };
 
 const FeedbackSchema = z.object({
   verdict: z.enum(["correct", "acceptable", "errors"]),
@@ -46,7 +46,8 @@ const FeedbackSchema = z.object({
 });
 
 // Prompt système figé (préfixe stable pour le cache)
-const SYSTEM = `You are the writing tutor of Mochi, a language-learning site for French speakers learning English, Korean or Mandarin Chinese.
+const SYSTEM = `You are the writing tutor of Mochi, a language-learning site for French speakers learning English, Korean, Mandarin Chinese or Russian.
+Russian learners may write in Cyrillic or in Latin transliteration (no Russian keyboard): accept it, give "recast" in Cyrillic.
 The learner wrote one short sentence for an exercise. Give corrective feedback the way research on second-language acquisition recommends: a recast.
 
 How to correct:
