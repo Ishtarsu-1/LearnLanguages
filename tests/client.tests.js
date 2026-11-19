@@ -755,6 +755,11 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
   ok(q.includes("#/admin/contenu/ko-a1-01-1") && q.includes("🔴"), "admin contenu : file de relecture");
   ok(v.includes('class="w nw') && v.includes("pt pt-") && v.includes('data-act="ca-note"') && v.includes('data-act="say"') && /data-act="ca-publish" disabled/.test(v), "admin contenu : mots nouveaux surlignés, particules, remarques, écoute, publication bloquée");
   ok(c.includes("30 textes A1-A2") && c.includes("에서"), "admin contenu : couverture");
+  ui.ca.lex = { d: { lexicon: { en: { size: 300, proposals: [{ lemma: "kettle", fr: "bouilloire", unit: "en-A1-05" }] }, ko: { size: 211, proposals: [] }, zh: { size: 158, proposals: [] }, ru: { size: 146, proposals: [] } } } };
+  const lx = viewAdminContent("lexique");
+  ok(lx.includes('data-lemma="kettle"') && lx.includes('data-act="lex-page"') && lx.includes("1 à relire") && !lx.includes("Chinois"), "admin lexique : propositions à relire (langues stables)");
+  ui.ca.cov.d.quality = [{ engine: "Ollama", clean: 1, edited: 2, rejected: 5, total: 8, rejectRate: 0.625, switch: true }];
+  ok(viewAdminContent("couverture").includes("Qualité de la chaîne") && viewAdminContent("couverture").includes("passe les prochaines vagues sur Anthropic"), "admin : qualité par moteur, alerte au-delà de 40 % de rejets");
   account = { id: 2 }; ok(!viewAdminContent().includes("File de relecture"), "admin contenu : invisible aux non-admins");
   account = a; ui.ca = null;
 }

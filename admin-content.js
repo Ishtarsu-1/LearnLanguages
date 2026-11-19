@@ -18,8 +18,8 @@ const caReset = (key) => { if (ui.ca) delete ui.ca[key]; };
 
 function viewAdminContent(sub) {
   if (!isAdmin()) return viewNotFound();
-  const tabs = `<div class="ca-tabs"><a class="chip ${!sub ? "on" : ""}" href="#/admin/contenu">📝 File de relecture</a><a class="chip ${sub === "couverture" ? "on" : ""}" href="#/admin/contenu/couverture">📊 Couverture</a><a class="chip" href="#/admin">← Tableau de bord</a></div>`;
-  const body = !sub ? caQueue() : sub === "couverture" ? caCoverage() : caDraft(sub);
+  const tabs = `<div class="ca-tabs"><a class="chip ${!sub ? "on" : ""}" href="#/admin/contenu">📝 File de relecture</a><a class="chip ${sub === "lexique" ? "on" : ""}" href="#/admin/contenu/lexique">📒 Lexique</a><a class="chip ${sub === "couverture" ? "on" : ""}" href="#/admin/contenu/couverture">📊 Couverture</a><a class="chip" href="#/admin">← Tableau de bord</a></div>`;
+  const body = !sub ? caQueue() : sub === "couverture" ? caCoverage() : sub === "lexique" ? caLexicon() : caDraft(sub);
   return `<section class="view"><h1>🛠️ Contenu</h1>${tabs}${body}</section>`;
 }
 
@@ -107,14 +107,49 @@ function caDraft(id) {
     <p><a href="#/admin/contenu">← Retour à la file</a></p>`;
 }
 
+// ---------- Lexique : traductions proposées par le LLM, à relire (v0.5, lot 2.2) ----------
+const CA_PAGE = 40;
+function caLexicon() {
+  const S = caLoad("lex", "/api/admin/content/lexicon");
+  if (S.err) return `<div class="card"><p class="form-err">${esc(S.err)}</p></div>`;
+  if (!S.d) return `<div class="card"><p class="muted">Chargement…</p></div>`;
+  const langs = Object.entries(S.d.lexicon).filter(([l, x]) => x.proposals.length || isStable(l));
+  return `<p class="muted">Traductions proposées par <code>npm run content:lexicon</code>. Corrige si besoin, puis valide : le mot entre dans le lexique (et le site est reconstruit). Objectif : 1 000 lemmes par langue.</p>
+    ${langs.map(([l, x]) => {
+      const page = x.proposals.slice(0, CA_PAGE);
+      return `<h2 class="section-title">${LANGUAGES[l]?.flag || ""} ${LANGUAGES[l]?.name || l} · ${num0(x.size)} lemmes · ${num0(x.proposals.length)} à relire</h2>
+      ${page.length ? `<div class="card table-scroll"><table class="admin-table ca-lex-table"><tbody>${page.map((p) => `<tr>
+        <th scope="row" class="${koCls(l)}">${esc(p.lemma)}${p.unit ? ` <small class="muted">${esc(p.unit)}</small>` : ""}</th>
+        <td><input class="input ca-lex" data-lexl="${l}" data-lemma="${esc(p.lemma)}" maxlength="120" value="${esc(p.fr)}" aria-label="Traduction de ${esc(p.lemma)}"/></td>
+        <td class="ca-lex-acts"><button class="btn small" data-act="lex-one" data-l="${l}" data-lemma="${esc(p.lemma)}" title="Valider">✓</button><button class="btn ghost small" data-act="lex-skip" data-l="${l}" data-lemma="${esc(p.lemma)}" title="Ignorer (ne pas ajouter)">✕</button></td></tr>`).join("")}</tbody></table>
+        <p class="mt-12"><button class="btn" data-act="lex-page" data-l="${l}">✓ Valider les ${page.length} affichés</button></p></div>` : `<div class="card"><p class="muted m-0">Rien à relire. ${x.size < 1000 ? "Lance <code>npm run content:lexicon -- --lang " + l + "</code> pour en proposer d'autres." : "Objectif atteint ✓"}</p></div>`}`;
+    }).join("")}`;
+}
+const lexInputs = (l, lemma) => [...document.querySelectorAll(`input[data-lexl="${l}"]`)].filter((i) => !lemma || i.dataset.lemma === lemma).map((i) => ({ lemma: i.dataset.lemma, fr: i.value }));
+async function lexPost(body, msg) {
+  try { const r = await api("POST", "/api/admin/content/lexicon", body); caReset("lex"); toast(`${msg(r.done)} · ${num0(r.size)} lemmes`); } catch (e) { toast(e.message); }
+  render();
+}
+Object.assign(actions, {
+  "lex-one": (el) => lexPost({ lang: el.dataset.l, action: "accept", items: lexInputs(el.dataset.l, el.dataset.lemma) }, () => "Ajouté au lexique ✓"),
+  "lex-skip": (el) => lexPost({ lang: el.dataset.l, action: "skip", items: [{ lemma: el.dataset.lemma }] }, () => "Ignoré"),
+  "lex-page": (el) => { if (confirm("Ajouter ces traductions au lexique, telles qu'elles sont affichées ?")) lexPost({ lang: el.dataset.l, action: "accept", items: lexInputs(el.dataset.l) }, (n) => `${n} mot(s) ajouté(s) ✓`); },
+});
+
 // ---------- Couverture (lot C8) ----------
 function caCoverage() {
   const S = caLoad("cov", "/api/admin/content/coverage");
   if (S.err) return `<div class="card"><p class="form-err">${esc(S.err)}</p></div>`;
   if (!S.d) return `<div class="card"><p class="muted">Chargement…</p></div>`;
   const pctOf = (a, b) => (b ? Math.round((a / b) * 100) : 0);
+  const Q = S.d.quality || [];
+  const quality = `<h2 class="section-title">Qualité de la chaîne</h2>
+    <div class="card">${Q.length ? `<table class="admin-table"><thead><tr><th>Moteur</th><th>Publiés tels quels</th><th>Publiés modifiés</th><th>Rejetés</th><th>Taux de rejet</th></tr></thead><tbody>
+      ${Q.map((q) => `<tr><th scope="row">${esc(q.engine)}</th><td>${q.clean}</td><td>${q.edited}</td><td>${q.rejected}</td><td>${Math.round(q.rejectRate * 100)} %</td></tr>`).join("")}</tbody></table>
+      ${Q.some((q) => q.switch) ? `<p class="form-err mt-12">Ollama dépasse 40 % de rejets : passe les prochaines vagues sur Anthropic (<code>--engine anthropic</code>, clé ANTHROPIC_API_KEY).</p>` : ""}`
+      : `<p class="muted m-0">Pas encore de texte généré publié ou rejeté.</p>`}</div>`;
   const bar = (a, b) => `<div class="cov"><div class="bar"><span data-bar-w="${pctOf(a, b)}"></span></div><b>${num0(a)} / ${num0(b)}</b></div>`;
-  return Object.entries(S.d.coverage).map(([l, c]) => `
+  return quality + Object.entries(S.d.coverage).filter(([l]) => isStable(l)).map(([l, c]) => `
     <h2 class="section-title">${LANGUAGES[l].flag} ${LANGUAGES[l].name}</h2>
     <div class="lang-grid">
       <div class="card"><h3>Objectifs</h3><table class="admin-table"><tbody>${c.goals.map((g) => `<tr><th scope="row">Étape ${g.step} · ${esc(g.label)}</th><td>${bar(g.done, g.target)}</td><td>${g.done >= g.target ? "✓" : ""}</td></tr>`).join("")}</tbody></table>

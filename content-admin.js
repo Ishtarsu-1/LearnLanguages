@@ -80,6 +80,7 @@ function create({ dir = L.CONTENT_DIR, out, analyze, onPublished = () => {}, spa
       if (body.title !== undefined) { const t = String(body.title).trim(); if (!t || t.length > 80) throw httpError(400, "Titre invalide."); d.title = t; }
       if (body.icon !== undefined) d.icon = [...String(body.icon)].slice(0, 2).join("") || d.icon;
     } else throw httpError(400, "Action inconnue.");
+    if (a !== "lexicon" && !(a === "note" && body.decision === "ignore")) d.edited = true; // texte touché par la relecture
     recheck(d);
     saveDraft(d);
     return d;
@@ -96,8 +97,8 @@ function create({ dir = L.CONTENT_DIR, out, analyze, onPublished = () => {}, spa
     // Texte : ordre après le dernier texte publié de la langue
     const texts = L.loadKind("texts", { dir, published: false })[d.lang];
     const order = Math.max(0, ...texts.map((t) => t.order || 0)) + 10;
-    const { checks, review_notes, review_overall, lexicon_new, variants_scores, _file, ...rest } = d;
-    const text = { ...rest, order, status: "published", review: { by, at: new Date().toISOString().slice(0, 10) } };
+    const { checks, review_notes, review_overall, lexicon_new, variants_scores, _file, edited, ...rest } = d;
+    const text = { ...rest, source: { ...rest.source, ...(rest.source?.type === "generated" ? { edited: !!edited } : {}) }, order, status: "published", review: { by, at: new Date().toISOString().slice(0, 10) } };
     const errs = L.validateText(text);
     if (errs.length) throw httpError(409, errs.join(" ; "));
     const target = path.join(dir, "texts", d.lang, `${d.id}.json`);
@@ -135,6 +136,48 @@ function create({ dir = L.CONTENT_DIR, out, analyze, onPublished = () => {}, spa
     return { started: true };
   }
 
+  // ---------- Lexique : propositions du LLM à relire (v0.5, lot 2.2) ----------
+  const propFile = (lang) => path.join(dir, "lexicon", `${lang}.proposals.json`);
+  const readProps = (lang) => { try { return L.readJSON(propFile(lang)); } catch { return {}; } };
+  function lexiconView() {
+    const lex = L.loadLexicon(dir);
+    return Object.fromEntries(L.LANGS.map((l) => [l, { size: Object.keys(lex[l]).length, proposals: Object.entries(readProps(l)).map(([lemma, v]) => ({ lemma, fr: v.fr, unit: v.unit || null })) }]));
+  }
+  function lexiconAct(b) {
+    if (!L.LANGS.includes(b.lang)) throw httpError(400, "Langue inconnue.");
+    if (!["accept", "skip"].includes(b.action)) throw httpError(400, "Action inconnue.");
+    const items = Array.isArray(b.items) ? b.items.slice(0, 200) : [];
+    const props = readProps(b.lang), lexFile = path.join(dir, "lexicon", `${b.lang}.json`), lex = L.readJSON(lexFile);
+    let n = 0;
+    for (const it of items) {
+      const lemma = String(it?.lemma || "");
+      if (!props[lemma]) continue; // seulement des mots proposés : jamais un mot inventé par le client
+      if (b.action === "accept") {
+        const fr = String(it.fr ?? props[lemma].fr).trim();
+        if (!fr || fr.length > 120) throw httpError(400, `Traduction invalide pour « ${lemma} ».`);
+        if (!lex[lemma]) lex[lemma] = { fr };
+      }
+      delete props[lemma]; n++;
+    }
+    if (b.action === "accept") L.writeLexicon(lexFile, lex);
+    L.writeJSON(propFile(b.lang), props);
+    if (b.action === "accept" && n) { const r = build({ dir, out, log() {} }); if (!r.ok) throw httpError(500, `Le build a échoué : ${r.errors.join(" ; ")}`); }
+    return { done: n, ...lexiconView()[b.lang] };
+  }
+
+  // Qualité de la chaîne (v0.5, lot 2.5) : publiés sans / avec modification, rejetés, par moteur
+  function pipelineQuality() {
+    const by = {};
+    const eng = (e) => (/ollama/i.test(e || "") ? "Ollama" : /anthropic|claude/i.test(e || "") ? "Anthropic" : "Autre");
+    const add = (e, k) => { const x = (by[eng(e)] ||= { clean: 0, edited: 0, rejected: 0 }); x[k]++; };
+    for (const l of L.LANGS) for (const t of L.loadKind("texts", { dir })[l]) if (t.source?.type === "generated") add(t.source.engine, t.source.edited ? "edited" : "clean");
+    try { for (const line of fs.readFileSync(path.join(draftsDir, "rejected.jsonl"), "utf8").split("\n").filter(Boolean)) add(JSON.parse(line).engine, "rejected"); } catch {}
+    return Object.entries(by).map(([engine, x]) => {
+      const total = x.clean + x.edited + x.rejected;
+      return { engine, ...x, total, rejectRate: total ? x.rejected / total : 0, switch: engine === "Ollama" && total >= 5 && x.rejected / total > 0.4 };
+    });
+  }
+
   // ---------- Tableau de bord de couverture (lot C8) ----------
   function coverage() {
     const out = {};
@@ -168,7 +211,7 @@ function create({ dir = L.CONTENT_DIR, out, analyze, onPublished = () => {}, spa
 
   // ---------- Routeur ----------
   async function handle(route, req, url, readJson, user) {
-    const m = route.match(/^(GET|POST) \/api\/admin\/content\/(drafts|draft|coverage)(?:\/([^/]+))?(?:\/(publish|reject|regenerate))?$/);
+    const m = route.match(/^(GET|POST) \/api\/admin\/content\/(drafts|draft|coverage|lexicon)(?:\/([^/]+))?(?:\/(publish|reject|regenerate))?$/);
     if (!m) throw httpError(404, "Route inconnue.");
     const [, method, kind, id, verb] = m;
     if (method === "GET" && kind === "drafts" && !id) {
@@ -176,7 +219,9 @@ function create({ dir = L.CONTENT_DIR, out, analyze, onPublished = () => {}, spa
       const list = L.loadDrafts(dir).map((d) => summary(d, planIdx)).sort((a, b) => a.lang.localeCompare(b.lang) || a.unitIndex - b.unitIndex || a.id.localeCompare(b.id));
       return { drafts: list, jobs: [...jobs.keys()] };
     }
-    if (method === "GET" && kind === "coverage" && !id) return { coverage: coverage() };
+    if (method === "GET" && kind === "coverage" && !id) return { coverage: coverage(), quality: pipelineQuality() };
+    if (method === "GET" && kind === "lexicon" && !id) return { lexicon: lexiconView() };
+    if (method === "POST" && kind === "lexicon" && !id) return lexiconAct(await readJson(req));
     if (kind !== "draft" || !id) throw httpError(404, "Route inconnue.");
     if (method === "GET" && !verb) {
       const d = readDraft(id), plan = L.loadPlan(d.lang, dir), unit = plan.units.find((u) => u.unit === d.unit) || null;
@@ -190,7 +235,7 @@ function create({ dir = L.CONTENT_DIR, out, analyze, onPublished = () => {}, spa
     if (verb === "regenerate") return regenerate(id);
     throw httpError(404, "Route inconnue.");
   }
-  return { handle, coverage, publish, reject, act, regenerate, jobs };
+  return { handle, coverage, publish, reject, act, regenerate, jobs, lexiconAct, lexiconView, pipelineQuality };
 }
 const httpError = (status, message) => Object.assign(new Error(message), { status, expose: true });
 

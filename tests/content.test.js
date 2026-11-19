@@ -163,6 +163,18 @@ const c6 = (async () => {
   await Promise.resolve().then(() => CA.reject("en-a1-test-2", "")).then(() => ok(false, "rejet sans raison"), (e) => ok(e.status === 400, "rejet sans raison refusé"));
   CA.reject("en-a1-test-2", "Trop scolaire");
   ok(fs.readFileSync(path.join(tmp, "drafts", "rejected.jsonl"), "utf8").includes("Trop scolaire") && !fs.existsSync(path.join(tmp, "drafts", "en-a1-test-2.json")), "rejet : raison gardée, brouillon retiré");
+  // v0.5 lot 2 : qualité par moteur (publié tel quel / modifié / rejeté), leçons tirées des rejets
+  const Qy = CA.pipelineQuality();
+  ok(Qy.find((q) => q.engine === "Autre")?.edited === 1 && Qy.find((q) => q.engine === "Autre")?.rejected === 1, "qualité de la chaîne : 1 publié modifié, 1 rejeté " + JSON.stringify(Qy));
+  ok(require("../tools/content-gen.js").rejectionLessons("en", path.join(tmp, "drafts", "rejected.jsonl"))[0] === "Trop scolaire", "raison de rejet reprise dans le prompt");
+  // v0.5 lot 2.2 : propositions de lexique relues dans l'admin
+  L.writeJSON(path.join(tmp, "lexicon", "en.proposals.json"), { "kettle": { fr: "bouilloire", todo_review: true }, "teapot": { fr: "théière", todo_review: true } });
+  let lx = CA.lexiconAct({ lang: "en", action: "accept", items: [{ lemma: "kettle", fr: "bouilloire (électrique)" }, { lemma: "inventé", fr: "x" }] });
+  ok(lx.done === 1 && L.readJSON(path.join(tmp, "lexicon", "en.json")).kettle.fr === "bouilloire (électrique)" && !L.readJSON(path.join(tmp, "lexicon", "en.proposals.json")).kettle, "lexique : traduction relue ajoutée, mot non proposé ignoré");
+  ok(!L.readJSON(path.join(tmp, "lexicon", "en.json")).inventé && fs.readFileSync(out, "utf8").includes("bouilloire (électrique)"), "lexique : rien d'inventé, site reconstruit");
+  lx = CA.lexiconAct({ lang: "en", action: "skip", items: [{ lemma: "teapot" }] });
+  ok(lx.proposals.length === 0 && !L.readJSON(path.join(tmp, "lexicon", "en.json")).teapot, "lexique : mot ignoré retiré des propositions");
+  await Promise.resolve().then(() => CA.lexiconAct({ lang: "xx", action: "accept", items: [] })).then(() => ok(false, "langue inconnue"), (e) => ok(e.status === 400, "lexique : langue inconnue refusée"));
   // Jamais de chemin fourni par le client
   for (const bad of ["../texts/en/en-cafe", "en-cafe/../../x", "/etc/passwd", "en-x.json"]) await Promise.resolve().then(() => CA.act(bad, { action: "meta", title: "x" })).then(() => ok(false, "chemin accepté : " + bad), (e) => ok(e.status === 400, "identifiant refusé : " + bad));
   fs.rmSync(tmp, { recursive: true });

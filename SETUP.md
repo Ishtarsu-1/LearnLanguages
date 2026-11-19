@@ -431,6 +431,14 @@ npm run plan:suggest -- --lang ko --next 10 --write  # les ajoute au plan
 
 Il prend les mots les plus fréquents pas encore couverts, jamais deux mots du même groupe ni deux contraires dans la même unité (§12), et le prochain point de grammaire vu dans moins de 3 textes (coréen : ordre du §6).
 
+### Enrichir le lexique
+
+```bash
+npm run content:lexicon -- --lang en                  # traductions des mots du plan absents du lexique, puis des plus fréquents (jusqu'à 1 000 lemmes)
+npm run content:lexicon -- --lang ko --dry-run        # combien il en manque
+```
+Les traductions proposées par le LLM vont dans `content/lexicon/<langue>.proposals.json`, **jamais** directement dans le lexique : relis-les dans l'admin, onglet **📒 Lexique** (corriger, ✓ valider, ✕ ignorer, ou valider une page entière).
+
 ### Générer des brouillons
 
 ```bash
@@ -441,6 +449,8 @@ npm run content:gen -- --unit ko-A1-03 --dry-run           # affiche seulement l
 ```
 
 Moteur par défaut : celui du correcteur (`MOCHI_LLM_PROVIDER`). **Ollama suffit pour des brouillons** sur le PC (≈ 3 min par texte avec qwen2.5:7b sur processeur, bien moins avec une carte graphique), mais un modèle 7B se trompe souvent en coréen : la vérification le montre en rouge. `--engine anthropic` (Claude Opus 5.5, ~quelques centimes par texte) donne des textes nettement plus justes.
+
+Les **raisons de rejet** données dans l'admin sont réinjectées dans le prompt (les 5 plus fréquentes par langue, « erreurs à éviter »). L'onglet **Couverture** montre, par moteur, les textes publiés tels quels, modifiés et rejetés : au-delà de 40 % de rejets avec Ollama, il conseille de passer sur Anthropic.
 
 Pour chaque texte : 2 variantes, annotation (Kiwi / lemmatiseur), vérification, un tour de réparation si la meilleure est encore rouge, puis un **deuxième appel** de relecteur natif qui signale les phrases peu naturelles (sans réécrire) et des traductions proposées pour les mots absents du lexique. Résultat : `content/drafts/<id>.json`.
 

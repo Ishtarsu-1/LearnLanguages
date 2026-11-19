@@ -72,12 +72,28 @@ English rules:
 - Everyday spoken English, contractions are welcome (I'm, don't).
 - Obvious French-English cognates (important, music, restaurant, student…) count as known: you may use them freely.`;
 
+// Erreurs relevées par la relecture humaine (v0.5, lot 2.4) : les 5 raisons de rejet les plus
+// fréquentes pour la langue (content/drafts/rejected.jsonl) s'ajoutent au prompt.
+function rejectionLessons(lang, file = path.join(L.CONTENT_DIR, "drafts", "rejected.jsonl")) {
+  let lines = [];
+  try { lines = require("node:fs").readFileSync(file, "utf8").split("\n").filter(Boolean).map((l) => JSON.parse(l)); } catch { return []; }
+  const count = new Map();
+  for (const r of lines) {
+    if (r.lang !== lang || !r.reason) continue;
+    const key = r.reason.trim().replace(/\s+/g, " ").replace(/[.!]+$/, "");
+    const k = key.toLowerCase(), cur = count.get(k) || { text: key, n: 0 };
+    cur.n++; count.set(k, cur);
+  }
+  return [...count.values()].sort((a, b) => b.n - a.n).slice(0, 5).map((x) => x.text);
+}
 function genPrompt(lang, unit, kind, { known, lengths }) {
   const reg = { haeyo: "polite 해요체 (-아요/-어요 endings)", formal: "formal 합니다체 (-ㅂ니다 endings)", plain: "casual 반말 between close friends" }[expectedRegister(unit)];
   const grammar = unit.grammar.map((g) => unit._grammarLabels?.[g] || g).join(", ");
+  const lessons = rejectionLessons(lang);
   const allowed = [...known].filter((w) => !/^\d+$/.test(w) && !P.BASE[lang].has(w)).slice(0, 700);
   return {
-    system: GEN_SYSTEM + (lang === "ko" ? KO_RULES.replace("REGISTER_HERE", reg) : lang === "zh" ? ZH_RULES : lang === "ru" ? RU_RULES : EN_RULES),
+    system: GEN_SYSTEM + (lang === "ko" ? KO_RULES.replace("REGISTER_HERE", reg) : lang === "zh" ? ZH_RULES : lang === "ru" ? RU_RULES : EN_RULES)
+      + (lessons.length ? `\n\nErrors to avoid (the human reviewer rejected earlier texts for these reasons, in French):\n${lessons.map((x) => `- ${x}`).join("\n")}` : ""),
     user: [
       `Language: ${LANG_NAMES[lang]} · level ${unit.level}`,
       `Kind of text: ${KIND_EN[kind] || kind}`,
@@ -219,4 +235,4 @@ if (require.main === module) {
   run(process.argv.slice(2)).then((w) => { if (w.length) console.log(`\n${w.length} brouillon(s) prêt(s) : relis-les dans l'admin (#/admin/contenu).`); })
     .catch((e) => { console.error(`✗ ${e.message}`); process.exit(1); });
 }
-module.exports = { run, generateText, genPrompt, pendingUnits, GenSchema, ReviewSchema, LexSchema };
+module.exports = { run, generateText, genPrompt, rejectionLessons, pendingUnits, GenSchema, ReviewSchema, LexSchema };

@@ -1008,3 +1008,6 @@ img.friend-av { object-fit: cover; }
 .ru { font-style: normal; }
 .s-text.ru { font-size: var(--text-lg); }
 .cyr-big { font-size: 2.4rem; }
+
+.ca-lex-table .input { min-height: 40px; }
+.ca-lex-acts { white-space: nowrap; display: flex; gap: 6px; }
