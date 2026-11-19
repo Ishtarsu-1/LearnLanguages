@@ -11,7 +11,9 @@
     "tts:pregen": "node --env-file-if-exists=.env tools/pregen-tts.js",
     "content:build": "node tools/content-build.js",
     "content:annotate": "node --env-file-if-exists=.env tools/annotate.js",
-    "plan:suggest": "node tools/plan-suggest.js"
+    "plan:suggest": "node tools/plan-suggest.js",
+    "content:gen": "node --env-file-if-exists=.env tools/content-gen.js",
+    "content:check": "node --env-file-if-exists=.env tools/content-check.js"
   },
   "engines": {
     "node": ">=22.5"

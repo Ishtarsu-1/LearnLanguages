@@ -14,6 +14,7 @@ const ttsMod = require("./tts.js");
 const hw = require("./hardware.js");
 const mailer = require("./mailer.js");
 const { MISSIONS } = require("./missions.js");
+const contentAdminMod = require("./content-admin.js");
 
 const PORT = Number(process.env.PORT) || 8000;
 const ROOT = __dirname;
@@ -439,6 +440,18 @@ function syncUser(uid, b) {
   };
 }
 
+// ---------- Contenu : relecture et publication (CONTENU-PIPELINE, lot C6) ----------
+// Après une publication : content.data.js est reconstruit (le site le prend au prochain chargement),
+// et l'audio des nouvelles phrases est pré-généré en arrière-plan si des voix serveur sont configurées.
+const contentAdmin = contentAdminMod.create({
+  onPublished: (lang) => {
+    spokenCache = null;
+    if (!tts.enabled || !tts.info()[lang]) return;
+    require("node:child_process").execFile(process.execPath, [path.join(ROOT, "tools", "pregen-tts.js"), "--lang", lang], { cwd: ROOT, env: process.env, timeout: 6 * 3600e3 },
+      (e) => { if (e) console.error(`Pré-génération de l'audio (${lang}) :`, e.message); });
+  },
+});
+
 // ---------- Bloc « Machine » de l'admin (lot 8.5) ----------
 // Phrases du site, calculées une fois avec le code du client (spokenSentences) : sert à compter
 // ce qui reste à pré-générer.
@@ -694,6 +707,12 @@ async function api(req, res, url) {
     sendMail(auth.user, "verify");
     return send(res, 200, { ok: true });
   }
+  // Relecture et publication du contenu (CONTENU-PIPELINE, lots C6 et C8) : admins uniquement
+  if (url.pathname.startsWith("/api/admin/content/")) {
+    if (!auth.user.is_admin) return fail(res, 403, "Réservé aux administrateurs.");
+    try { return send(res, 200, await contentAdmin.handle(route, req, url, (r) => readJson(r, 256 * 1024), (auth.user.name || auth.user.email.split("@")[0]).toLowerCase())); }
+    catch (e) { if (e.expose) return fail(res, e.status, e.message); throw e; }
+  }
   // Tableau de bord admin : chiffres globaux, jamais de contenu personnel au-delà de la liste des comptes
   if (route === "GET /api/admin/stats") {
     if (!auth.user.is_admin) return fail(res, 403, "Réservé aux administrateurs.");
@@ -782,6 +801,7 @@ const STATIC = {
   "/cosmetics.js": ["cosmetics.js", "text/javascript; charset=utf-8"],
   "/tour.js": ["tour.js", "text/javascript; charset=utf-8"],
   "/legal.js": ["legal.js", "text/javascript; charset=utf-8"],
+  "/admin-content.js": ["admin-content.js", "text/javascript; charset=utf-8"],
   "/styles.css": ["styles.css", "text/css; charset=utf-8"],
   "/tokens.css": ["tokens.css", "text/css; charset=utf-8"],
   "/fonts/pretendard.css": ["fonts/pretendard.css", "text/css; charset=utf-8"],
@@ -870,4 +890,4 @@ if (require.main === module) {
   warmEngines().catch((e) => console.error("Préchauffage :", e.message));
   hw.detectBasic().then((b) => { machine.basic = b; }).catch(() => {}); // léger : système, mémoire, nvidia-smi
 }
-module.exports = { server, db, mail, clientIp, warmEngines, engines, tts, limiter: { waitFor, recordAttempt, clearAttempts } };
+module.exports = { server, contentAdmin, db, mail, clientIp, warmEngines, engines, tts, limiter: { waitFor, recordAttempt, clearAttempts } };

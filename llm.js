@@ -97,8 +97,8 @@ function postProcess(input, f) {
   // Coréen, registre poli attendu : la terminaison se vérifie mécaniquement
   if (input.lang === "ko" && input.register === "haeyo") {
     const last = lastWord(input.text);
-    const formal = /(니다|니까)$/u.test(last);
-    const polite = /요$/u.test(last);
+    const formal = koRegister(last) === "formal";
+    const polite = koRegister(last) === "haeyo";
     if (formal || polite) {
       // 합니다체 (plus formel) ou -요 : le registre n'est pas fautif
       f.errors = f.errors.filter((e) => e.type !== "registre");
@@ -286,7 +286,60 @@ async function roleplay(mission, history, meta = {}) {
   return out;
 }
 
+// ============================================================
+//  Appel structuré générique (chaîne de contenu : tools/content-gen.js, relecture critique).
+//  engine : "ollama" | "anthropic" (par défaut : le moteur configuré). Sortie validée par zod.
+// ============================================================
+async function structured({ system, user, schema, engine, model, temperature = 0.7, effort = "medium", timeoutMs = 600_000, maxTokens = 16000 }, meta = {}) {
+  engine = (engine || (PROVIDER === "ollama" ? "ollama" : "anthropic")).toLowerCase();
+  if (engine === "ollama") {
+    const m = model || (PROVIDER === "ollama" ? MODEL : "qwen2.5:7b-instruct");
+    let r;
+    try {
+      r = await fetch(`${OLLAMA_URL}/api/chat`, {
+        method: "POST", headers: { "Content-Type": "application/json" }, signal: AbortSignal.timeout(timeoutMs),
+        body: JSON.stringify({ model: m, stream: false, keep_alive: "30m", format: z.toJSONSchema(schema), options: { temperature, num_ctx: 16384 },
+          messages: [{ role: "system", content: `${system}\n\nReply with the JSON object only.` }, { role: "user", content: user }] }),
+      });
+    } catch (e) {
+      if (e.name === "TimeoutError") throw new LlmUnavailable("Le modèle local a mis trop de temps à répondre.");
+      throw new LlmUnavailable(`Ollama ne répond pas sur ${OLLAMA_URL} (lance « ollama serve »).`);
+    }
+    if (r.status === 404) throw new LlmUnavailable(`Modèle ${m} absent : lance « ollama pull ${m} ».`);
+    if (!r.ok) throw new LlmUnavailable(`Erreur d'Ollama (${r.status}).`);
+    const data = await r.json().catch(() => null);
+    let parsed; try { parsed = schema.safeParse(JSON.parse(data?.message?.content ?? "")); } catch { parsed = { success: false }; }
+    if (!parsed.success) throw new LlmUnavailable("Réponse du modèle local illisible.");
+    meta.engine = `Ollama (${m})`;
+    return parsed.data;
+  }
+  const m = model || (PROVIDER === "ollama" ? "claude-opus-5-5" : MODEL);
+  let response;
+  try {
+    response = await getClient().beta.messages.parse({
+      model: m, max_tokens: maxTokens,
+      ...(/^claude-(opus-5|sonnet-5-5|fable-5)/.test(m) ? { betas: ["server-side-fallback-2026-07-01"], fallbacks: "default" } : {}),
+      output_config: { effort, format: betaZodOutputFormat(schema) },
+      system, messages: [{ role: "user", content: user }],
+    }, { timeout: timeoutMs });
+  } catch (e) {
+    if (e instanceof Anthropic.AuthenticationError || e instanceof Anthropic.PermissionDeniedError) throw new LlmUnavailable("Clé Anthropic manquante ou invalide (ANTHROPIC_API_KEY).");
+    if (e instanceof Anthropic.RateLimitError) throw new LlmUnavailable("API Anthropic saturée, réessaie dans un instant.");
+    if (e instanceof Anthropic.APIConnectionError) throw new LlmUnavailable("API Anthropic injoignable.");
+    if (e instanceof Anthropic.APIError) throw new LlmUnavailable(`Erreur de l'API Anthropic (${e.status}).`);
+    if (e instanceof Anthropic.AnthropicError || /authentication method|api ?key/i.test(e?.message || "")) throw new LlmUnavailable("Clé Anthropic manquante (ANTHROPIC_API_KEY).");
+    throw e;
+  }
+  meta.usage = response.usage; meta.engine = `Anthropic (${m})`;
+  if (response.stop_reason === "refusal" || !response.parsed_output) throw new LlmUnavailable("Le modèle n'a pas pu répondre.");
+  return response.parsed_output;
+}
+
+// Registre d'une fin de phrase coréenne (garde-fou déterministe, partagé avec content-check) :
+// "haeyo" (-요), "formal" (-니다 / -니까), sinon "plain" (반말 ou style écrit en -다).
+const koRegister = (word) => (/(니다|니까)$/u.test(word) ? "formal" : /요$/u.test(word) ? "haeyo" : "plain");
+
 // Version du prompt (entre dans la clé du cache : changer le prompt invalide les anciennes réponses)
 const PROMPT_VERSION = require("node:crypto").createHash("sha256").update(SYSTEM + OLLAMA_EXTRA + OLLAMA_REMINDER).digest("hex").slice(0, 12);
 
-module.exports = { getFeedback, costOf, PROMPT_VERSION, warmup, OLLAMA_URL, postProcess, LlmUnavailable, FeedbackSchema, userMessage, SYSTEM, MODEL, PROVIDER, ENGINE, roleplay, RoleplaySchema, roleplayMessage, ROLEPLAY_SYSTEM };
+module.exports = { structured, koRegister, lastWord, getFeedback, costOf, PROMPT_VERSION, warmup, OLLAMA_URL, postProcess, LlmUnavailable, FeedbackSchema, userMessage, SYSTEM, MODEL, PROVIDER, ENGINE, roleplay, RoleplaySchema, roleplayMessage, ROLEPLAY_SYSTEM };

@@ -306,6 +306,7 @@ function viewAdmin() {
     ${machineCard(d.machine)}`}
 
     <h2 class="section-title">Contenu</h2>
+    <p><a class="btn small" href="#/admin/contenu">📝 Relire et publier le contenu</a> <a class="btn ghost small" href="#/admin/contenu/couverture">📊 Couverture</a></p>
     <div class="lang-grid">${contentStats().map((c) => `<div class="card"><h3>${LANGUAGES[c.lang].flag} ${LANGUAGES[c.lang].name}</h3>
       <table class="admin-table"><tbody>${c.rows.map(([n, v, info]) => `<tr><th scope="row">${n}</th><td><b>${v}</b></td><td class="muted">${info}</td></tr>`).join("")}</tbody></table></div>`).join("")}</div>
 
