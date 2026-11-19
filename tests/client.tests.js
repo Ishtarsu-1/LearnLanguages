@@ -640,6 +640,22 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
   Object.assign(state, saved);
   location.hash = "";
 }
+{ // Admin › Contenu (CONTENU-PIPELINE, lots C6 et C8) : rendu de la file, d'un brouillon, de la couverture
+  const a = account; account = { id: 1, email: "a@b.co", is_admin: true, created_at: new Date().toISOString() };
+  const draft = { id: "ko-a1-01-1", lang: "ko", level: "A1", unit: "ko-A1-01", title: "Au café", icon: "☕", kind: "Dialogue", status: "draft",
+    sentences: [["커피|를 마셔요=마시다.", "Je bois un café."]], speakers: ["민지"], checks: { status: "red", blocking: ["Couverture : 80 %"], warnings: [], stats: { coverage: 80, newWords: ["커피"] } },
+    review_notes: [{ id: "n1", sentence: 1, type: "naturel", issue_fr: "Un peu sec", suggestion: "커피를 마시고 있어요.", suggestion_fr: "Je bois un café.", status: "open" }], lexicon_new: { "마시다": { fr: "boire", todo_review: true } } };
+  ui.ca = { queue: { d: { drafts: [{ id: draft.id, lang: "ko", unit: "ko-A1-01", title: "Au café", icon: "☕", kind: "Dialogue", status: "red", blocking: 1, warnings: 0, coverage: 80, notes: 1, lexiconTodo: 1, sentences: 1 }] } },
+    [`d:${draft.id}`]: { d: { draft, unit: { unit: "ko-A1-01", new_words: ["커피", "마시다"], grammar: [] }, grammar: [] } },
+    cov: { d: { coverage: { ko: { texts: 10, drafts: 1, byLevel: { A1: 10 }, byTheme: { cafe: { total: 1, A1: 1 } }, top1000: { total: 1000, covered: 100 }, top2000: { total: 2000, covered: 150 }, grammar: [{ id: "eseo", label: "에서", phase: 2, texts: 0 }], holes: { themesWithoutA1: [], grammarUnder3: ["에서"], missingFrequent: ["것"] }, goals: [{ step: 2, label: "30 textes A1-A2", done: 10, target: 30 }], units: { total: 10, written: 0 } } } } } };
+  const q = viewAdminContent(), v = viewAdminContent(draft.id), c = viewAdminContent("couverture");
+  ok(q.includes("#/admin/contenu/ko-a1-01-1") && q.includes("🔴"), "admin contenu : file de relecture");
+  ok(v.includes('class="w nw') && v.includes("pt pt-") && v.includes('data-act="ca-note"') && v.includes('data-act="say"') && /data-act="ca-publish" disabled/.test(v), "admin contenu : mots nouveaux surlignés, particules, remarques, écoute, publication bloquée");
+  ok(c.includes("30 textes A1-A2") && c.includes("에서"), "admin contenu : couverture");
+  account = { id: 2 }; ok(!viewAdminContent().includes("File de relecture"), "admin contenu : invisible aux non-admins");
+  account = a; ui.ca = null;
+}
+
 console.log(fails ? `${fails} échec(s)` : "OK : parcours débutant");
 // Nombres au format français
 ok(num1(1.5) === "1,5" && num1(0) === "0,0" && num0(1234).replace(/\s/g, " ") === "1 234" && /^1\u202f234$/.test(num0(1234)), "nombres au format français : " + num0(1234));
