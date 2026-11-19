@@ -6,10 +6,10 @@
 //  - Le reste de l'API n'est jamais mis en cache : la synchro gère le hors-ligne
 //    (les changements attendent le retour du réseau, voir syncNow dans sync.js).
 // ============================================================
-const VERSION = "mochi-v21";
+const VERSION = "mochi-v22";
 const SHELL = `${VERSION}-shell`, STATIC = `${VERSION}-static`, AUDIO = "mochi-audio"; // l'audio survit aux mises à jour
 const SHELL_FILES = [
-  "/", "/state.js", "/sync.js", "/ui.js", "/audio.js", "/reader.js", "/fsrs-cards.js", "/today.js", "/lessons.js", "/profile.js", "/router.js", "/actions.js", "/app.js", "/content.data.js", "/content.js", "/zh.js", "/ru.js", "/exercises.js", "/placement.js", "/library.js", "/missions.js", "/story.js", "/keyboard.js", "/hangul.js", "/pinyin.js", "/cyrillic.js", "/cosmetics.js", "/tour.js", "/legal.js", "/admin-content.js", "/feedback.js", "/friends.js", "/duel.js", "/ctf.js", "/styles.css", "/tokens.css",
+  "/", "/state.js", "/sync.js", "/ui.js", "/audio.js", "/reader.js", "/fsrs-cards.js", "/today.js", "/lessons.js", "/profile.js", "/router.js", "/actions.js", "/app.js", "/content.data.js", "/content.js", "/zh.js", "/ru.js", "/exercises.js", "/placement.js", "/library.js", "/missions.js", "/story.js", "/keyboard.js", "/hangul.js", "/pinyin.js", "/cyrillic.js", "/cosmetics.js", "/tour.js", "/legal.js", "/admin-content.js", "/feedback.js", "/reminders.js", "/friends.js", "/duel.js", "/ctf.js", "/styles.css", "/tokens.css",
   "/fonts/pretendard.css", "/fonts/jua.css", "/fonts/fredoka.css", "/fonts/flags.css", "/favicon.svg", "/vendor/ts-fsrs-5.2.3.umd.js",
   "/manifest.webmanifest", "/icons/mochi-192.png",
 ];
@@ -60,4 +60,22 @@ self.addEventListener("fetch", (e) => {
   if (url.pathname.startsWith("/fonts/") && url.pathname.endsWith(".woff2")) return e.respondWith(cacheFirst(req, STATIC));
   if (url.pathname.startsWith("/avatars/") || url.pathname.startsWith("/icons/")) return e.respondWith(cacheFirst(req, STATIC));
   e.respondWith(networkFirst(req));
+});
+
+// Rappels (Web Push, v0.6) : le serveur envoie { title, body, url, tag } chiffré
+self.addEventListener("push", (e) => {
+  let d = {};
+  try { d = e.data ? e.data.json() : {}; } catch {}
+  e.waitUntil(self.registration.showNotification(d.title || "Mochi 🍡", {
+    body: d.body || "", icon: "/icons/mochi-192.png", badge: "/icons/mochi-192.png", tag: d.tag || "mochi-rappel", data: { url: d.url || "/#/aujourdhui" },
+  }));
+});
+self.addEventListener("notificationclick", (e) => {
+  e.notification.close();
+  const url = new URL(e.notification.data?.url || "/", self.location.origin).href;
+  e.waitUntil(self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((wins) => {
+    const w = wins.find((x) => x.url.startsWith(self.location.origin));
+    if (w) return w.focus().then(() => w.navigate?.(url));
+    return self.clients.openWindow(url);
+  }));
 });

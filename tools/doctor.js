@@ -50,15 +50,20 @@ const OS = { win32: "Windows", linux: "Linux", darwin: "macOS" };
     console.log(`\n📋 Commandes à copier (${r.system.platform === "win32" ? "PowerShell" : "terminal"}) : rien n'est lancé automatiquement`);
     for (const c of rec.commands) { console.log(`\n  ${c.title}`); for (const l of c.lines) console.log(`    ${l}`); }
   }
+  // Rappels Web Push : clés VAPID créées une seule fois (changer de clés désabonne tout le monde)
+  if (!process.env.VAPID_PUBLIC_KEY || !process.env.VAPID_PRIVATE_KEY) {
+    const k = require("../push.js").generateVapid();
+    Object.assign(rec.env, { VAPID_PUBLIC_KEY: k.publicKey, VAPID_PRIVATE_KEY: k.privateKey });
+  }
   console.log("\n⚙️  Variables recommandées pour .env");
-  for (const [k, v] of Object.entries(rec.env)) console.log(`    ${k}=${v}`);
+  for (const [k, v] of Object.entries(rec.env)) console.log(`    ${k}=${/PRIVATE|SECRET|_KEY$/.test(k) && k !== "VAPID_PUBLIC_KEY" ? "(nouvelle clé, écrite avec --write)" : v}`);
 
   if (opt.write) {
     const res = hw.writeEnv(path.join(ROOT, ".env"), rec.env);
     if (!res.changed) console.log("\n✓ .env est déjà à jour.");
     else {
       console.log(`\n✍️  .env mis à jour${res.backup ? ` (sauvegarde : ${path.basename(res.backup)})` : " (nouveau fichier)"} :`);
-      for (const d of res.diff) console.log(`    ${d}`);
+      for (const d of res.diff) console.log(`    ${d.replace(/(VAPID_PRIVATE_KEY=).*/, "$1••••••••")}`);
       console.log("  Les secrets (ANTHROPIC_API_KEY, RESEND_API_KEY…) n'ont pas été touchés. Relance npm start.");
     }
   } else console.log("\n→ Pour les écrire dans .env (avec une copie de sauvegarde) : npm run doctor -- --write");

@@ -49,7 +49,7 @@ Fait (`AMELIORATIONS-v0.5.md`) : recentrage sur l'anglais et le coréen (chinois
 | ~~**P2**~~ | ~~Série flexible + quêtes hebdomadaires~~ ✅ fait (reste : récompenses cosmétiques) | 🟡 | 🆓 | — |
 | **P2** | Mode histoire (🟢 moteur + 5 chapitres par langue ; reste : la suite de l'histoire) | 🔴 | 🆓 | bibliothèque |
 | ~~**P2**~~ | ~~Application installable (PWA) + hors ligne~~ ✅ fait | 🟡 | 🆓 | — |
-| **P2** | Rappels et notifications | 🟡 | 🆓 | PWA |
+| ~~**P2**~~ | ~~Rappels et notifications~~ ✅ Web Push (heure et jours au choix, 1 par jour au plus, jamais si la séance est faite ni les jours de repos ; clés VAPID par `doctor --write` ; reste : e-mail hebdomadaire) | 🟡 | 🆓 | PWA |
 | ~~**P2**~~ | ~~Liste d'amis~~ ✅ fait (pseudo, demande ou lien d'invitation, blocage, stats masquables) | 🟡 | 🆓 | comptes |
 | ~~**P2**~~ | ~~Défis entre amis~~ ✅ fait (semaine régulière, temps, révisions, mots solides, même chapitre ; calculés côté serveur ; reste : défis d'écoute et de production) | 🟡 | 🆓 | liste d'amis |
 | **P2** | Reconnaissance vocale (exercices oraux) (🟢 étape 1 : « 🗣️ À voix haute » dans le lecteur, API Web Speech ; reste : exercices oraux dédiés, Whisper) | 🔴 | 🆓 | backend |

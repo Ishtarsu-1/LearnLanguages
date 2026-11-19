@@ -18,6 +18,7 @@ const contentAdminMod = require("./content-admin.js");
 const socialMod = require("./social.js");
 const liveMod = require("./live.js");
 const ctfMod = require("./ctf-server.js");
+const push = require("./push.js");
 
 const PORT = Number(process.env.PORT) || 8000;
 const ROOT = __dirname;
@@ -123,6 +124,11 @@ db.exec(`
     key TEXT PRIMARY KEY, count INTEGER NOT NULL, window_start INTEGER NOT NULL, blocked_until INTEGER NOT NULL DEFAULT 0
   );
   -- Retours des testeurs (formulaire « Donner mon avis ») : copie en base, en plus de l'e-mail
+  CREATE TABLE IF NOT EXISTS push_subs (
+    endpoint TEXT PRIMARY KEY, user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    p256dh TEXT NOT NULL, auth TEXT NOT NULL, hour INTEGER NOT NULL, days TEXT NOT NULL, tz TEXT NOT NULL,
+    last_sent TEXT, created_at TEXT NOT NULL
+  );
   CREATE TABLE IF NOT EXISTS site_feedback (
     id INTEGER PRIMARY KEY AUTOINCREMENT, created_at TEXT NOT NULL, user_id INTEGER, kind TEXT NOT NULL, rating INTEGER,
     message TEXT NOT NULL, page TEXT, lang TEXT, contact TEXT, user_agent TEXT, mailed_at TEXT, mail_error TEXT, parts TEXT
@@ -280,7 +286,32 @@ async function relayFeedback(fetchImpl = fetch) {
 }
 // Mini-CTF pour débutants (version portable --ctf seulement, sur 127.0.0.1 : voir ctf-server.js)
 const ctf = ctfMod.create({ portable: PORTABLE, host: HOST });
-const featuresJson = (loggedIn = true) => JSON.stringify({ ctf: ctf.on, portable: PORTABLE, relay: !!RELAY, stable: STABLE_LANGS, llm: loggedIn && llmOn(), engine: llm.ENGINE, tts: tts.info(), mail: mail.mode, ttsSlow: !!engines.ttsSlow, llmSlow: !!engines.llmSlow });
+// Rappels Web Push (v0.6, lot 3.3) : clés VAPID dans .env (npm run doctor -- --write les crée)
+const VAPID = process.env.VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY && !PORTABLE
+  ? { publicKey: process.env.VAPID_PUBLIC_KEY, privateKey: process.env.VAPID_PRIVATE_KEY, subject: process.env.VAPID_SUBJECT || (process.env.FEEDBACK_TO ? `mailto:${process.env.FEEDBACK_TO}` : "mailto:mochi@localhost") } : null;
+// Envoie les rappels dus (appelé toutes les 5 minutes) : au plus 1 par jour et par appareil, à l'heure
+// choisie, jamais un jour exclu, ni si la séance du jour est faite, ni si l'objectif de la semaine
+// est atteint (jour de repos, §16).
+async function sendReminders(now = new Date(), sender = (s, m) => push.send(s, m, VAPID)) {
+  if (!VAPID) return { sent: 0 };
+  let sent = 0;
+  for (const s of db.prepare("SELECT * FROM push_subs").all()) {
+    const practicedOn = (date) => !!db.prepare("SELECT 1 FROM sync_kv WHERE user_id = ? AND key LIKE 'langs.%.fullDays.' || ? AND value = 'true'").get(s.user_id, date);
+    const d = push.decide(s, now, {
+      practiced: practicedOn,
+      weekDone: (dates) => dates.filter(practicedOn).length,
+      due: (iso) => db.prepare("SELECT count(*) n FROM sync_cards WHERE user_id = ? AND json_extract(data, '$.deleted') IS NULL AND json_extract(data, '$.fsrs.due') <= ?").get(s.user_id, iso).n,
+    });
+    if (!d) continue;
+    db.prepare("UPDATE push_subs SET last_sent = ? WHERE endpoint = ?").run(d.date, s.endpoint); // une fois par jour, même en cas d'échec
+    try {
+      const r = await sender({ endpoint: s.endpoint, keys: { p256dh: s.p256dh, auth: s.auth } }, d.message);
+      if (r.gone) db.prepare("DELETE FROM push_subs WHERE endpoint = ?").run(s.endpoint); else sent++;
+    } catch (e) { console.error(`[${new Date().toISOString()}] Rappel : ${e.message}`); }
+  }
+  return { sent };
+}
+const featuresJson = (loggedIn = true) => JSON.stringify({ ctf: ctf.on, portable: PORTABLE, relay: !!RELAY, push: VAPID ? VAPID.publicKey : null, stable: STABLE_LANGS, llm: loggedIn && llmOn(), engine: llm.ENGINE, tts: tts.info(), mail: mail.mode, ttsSlow: !!engines.ttsSlow, llmSlow: !!engines.llmSlow });
 
 function hashPassword(pw) {
   const salt = crypto.randomBytes(16);
@@ -967,6 +998,26 @@ async function api(req, res, url) {
     machine.basic = machine.report; machine.at = now();
     return send(res, 200, { machine: machineInfo() });
   }
+  // Rappels : un abonnement par appareil (adresse du service de push du navigateur)
+  if (route === "POST /api/push/subscribe") {
+    if (!VAPID) return fail(res, 503, "Les rappels ne sont pas configurés sur ce serveur.");
+    const b = await readJson(req, 8 * 1024), s = b.subscription || {};
+    const hour = Number(b.hour), days = Array.isArray(b.days) ? [...new Set(b.days.map(Number))].filter((d) => d >= 1 && d <= 7).sort() : [];
+    if (typeof s.endpoint !== "string" || !/^https:\/\/[^\s]{10,}$/.test(s.endpoint) || s.endpoint.length > 1000) return fail(res, 400, "Abonnement invalide.");
+    if (!/^[A-Za-z0-9_-]{80,100}$/.test(s.keys?.p256dh || "") || !/^[A-Za-z0-9_-]{16,32}$/.test(s.keys?.auth || "")) return fail(res, 400, "Clés d'abonnement invalides.");
+    if (!Number.isInteger(hour) || hour < 6 || hour > 22) return fail(res, 400, "Heure invalide (6 h à 22 h).");
+    const tz = typeof b.tz === "string" && push.validTz(b.tz) ? b.tz : "Europe/Paris";
+    if (db.prepare("SELECT count(*) n FROM push_subs WHERE user_id = ?").get(uid).n >= 10 && !db.prepare("SELECT 1 FROM push_subs WHERE endpoint = ?").get(s.endpoint)) return fail(res, 400, "Trop d'appareils abonnés (10 au plus).");
+    db.prepare(`INSERT INTO push_subs (endpoint, user_id, p256dh, auth, hour, days, tz, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT(endpoint) DO UPDATE SET user_id = excluded.user_id, p256dh = excluded.p256dh, auth = excluded.auth, hour = excluded.hour, days = excluded.days, tz = excluded.tz`)
+      .run(s.endpoint, uid, s.keys.p256dh, s.keys.auth, hour, JSON.stringify(days), tz, now());
+    return send(res, 200, { ok: true, hour, days, tz });
+  }
+  if (route === "POST /api/push/unsubscribe") {
+    const b = await readJson(req, 4 * 1024);
+    db.prepare("DELETE FROM push_subs WHERE endpoint = ? AND user_id = ?").run(String(b.endpoint || ""), uid);
+    return send(res, 200, { ok: true });
+  }
   if (route === "GET /api/sessions") {
     const rows = db.prepare("SELECT token_hash, created_at, last_seen_at, user_agent FROM sessions WHERE user_id = ? AND expires_at > ? ORDER BY last_seen_at DESC").all(uid, now());
     return send(res, 200, { sessions: rows.map((r) => ({ current: r.token_hash === auth.session.token_hash, created_at: r.created_at, last_seen_at: r.last_seen_at, user_agent: r.user_agent })) });
@@ -1019,6 +1070,7 @@ const STATIC = {
   "/legal.js": ["legal.js", "text/javascript; charset=utf-8"],
   "/admin-content.js": ["admin-content.js", "text/javascript; charset=utf-8"],
   "/feedback.js": ["feedback.js", "text/javascript; charset=utf-8"],
+  "/reminders.js": ["reminders.js", "text/javascript; charset=utf-8"],
   "/friends.js": ["friends.js", "text/javascript; charset=utf-8"],
   "/duel.js": ["duel.js", "text/javascript; charset=utf-8"],
   "/ctf.js": ["ctf.js", "text/javascript; charset=utf-8"],
@@ -1140,6 +1192,8 @@ if (require.main === module) {
   process.on("unhandledRejection", (e) => console.error(`[${new Date().toISOString()}] Promesse rejetée non gérée :`, e));
   process.on("uncaughtException", (e) => { console.error(`[${new Date().toISOString()}] Erreur fatale :`, e); process.exit(1); });
 }
+// Rappels Web Push : vérifiés toutes les 5 minutes
+if (require.main === module && VAPID) setInterval(() => sendReminders().catch((e) => console.error("Rappels :", e.message)), 5 * 60e3).unref();
 // Version portable : avis en attente renvoyés au démarrage, puis toutes les 10 minutes
 if (require.main === module && RELAY) { setTimeout(() => relayFeedback().catch(() => {}), 5000).unref(); setInterval(() => relayFeedback().catch(() => {}), 10 * 60e3).unref(); }
 if (require.main === module && FEEDBACK_MAIL === "daily") setInterval(() => feedbackDigest().catch(() => {}), 30 * 60e3).unref();
@@ -1147,4 +1201,4 @@ if (require.main === module) {
   warmEngines().catch((e) => console.error("Préchauffage :", e.message));
   hw.detectBasic().then((b) => { machine.basic = b; }).catch(() => {}); // léger : système, mémoire, nvidia-smi
 }
-module.exports = { relayFeedback, server, ctf, contentAdmin, social, live, db, mail, feedbackDigest, betaMetrics, clientIp, warmEngines, engines, tts, limiter: { waitFor, recordAttempt, clearAttempts } };
+module.exports = { sendReminders, relayFeedback, server, ctf, contentAdmin, social, live, db, mail, feedbackDigest, betaMetrics, clientIp, warmEngines, engines, tts, limiter: { waitFor, recordAttempt, clearAttempts } };

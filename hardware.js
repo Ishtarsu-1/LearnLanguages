@@ -238,7 +238,7 @@ function recommend(r, profile = chooseProfile(r)) {
 
 // ---------- Écriture du .env (avec accord : --write) ----------
 // Seules ces clés peuvent être écrites. Les secrets (clés API, SMTP, Resend…) ne sont JAMAIS touchés.
-const WRITABLE = /^(TTS_[A-Z_]+|MOCHI_LLM_PROVIDER|MOCHI_MODEL|OLLAMA_URL|OLLAMA_MODEL)$/;
+const WRITABLE = /^(TTS_[A-Z_]+|MOCHI_LLM_PROVIDER|MOCHI_MODEL|OLLAMA_URL|OLLAMA_MODEL|VAPID_PUBLIC_KEY|VAPID_PRIVATE_KEY)$/;
 const stamp = (d = new Date()) => `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, "0")}${String(d.getDate()).padStart(2, "0")}-${String(d.getHours()).padStart(2, "0")}${String(d.getMinutes()).padStart(2, "0")}`;
 function writeEnv(file, wanted, { now = new Date() } = {}) {
   const exists = fs.existsSync(file);

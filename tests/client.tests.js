@@ -421,6 +421,16 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
     ok(wordTrack.ends.length === ko.words.length && Math.abs(wordTrack.ends.at(-1) - 1) < 1e-9, "surlignage (coréen) : par syllabes");
     wordTrack = null;
   }
+  // Rappels : carte du profil seulement avec un compte et des clés VAPID sur le serveur
+  {
+    const f0 = features, a0 = account;
+    features = { ...f0, push: null }; ok(!reminderCard().includes("Rappels"), "rappels : rien sans clés VAPID");
+    features = { ...f0, push: "BAAA" }; account = null; ok(!reminderCard(), "rappels : rien sans compte");
+    account = { id: 1, email: "x@y.fr" };
+    const html = reminderCard();
+    ok(html.includes('data-act="rem-toggle"') && html.includes("Activer les rappels") && html.includes('id="rem-hour"') && (html.match(/data-act="rem-day"/g) || []).length === 7, "rappels : bouton, heure, 7 jours");
+    features = f0; account = a0;
+  }
   // Lire à voix haute : comparaison tolérante de la transcription
   {
     const m = speechMatch("Hi! Is this the menu?", ["hi is this the menu"], "en");

@@ -12,7 +12,7 @@ Toutes les commandes se lancent depuis le dossier du projet. Celles qui commence
 | `npm start` | Lance le site sur http://localhost:8000. Préchauffe les voix et Ollama en arrière-plan. |
 | `npm test` | Lance tous les tests (site, comptes, synchro, correcteur, voix, matériel, contenu). À faire avant chaque commit. |
 | `npm run doctor` | Diagnostic de la machine : carte graphique, RAM, Docker, Ollama, voix, analyseur Kiwi. Affiche les commandes à copier. Ne change rien. |
-| `npm run doctor -- --write` | Écrit les réglages recommandés dans `.env`, avec une copie de sauvegarde. Ne touche jamais aux clés secrètes. |
+| `npm run doctor -- --write` | Écrit les réglages recommandés dans `.env`, avec une copie de sauvegarde. Ne touche jamais aux clés secrètes existantes ; crée les clés VAPID des rappels si elles manquent. |
 | `npm run doctor -- --pull` | Propose de télécharger le modèle Ollama recommandé. |
 
 ## 💾 Sauvegardes et mise en ligne

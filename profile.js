@@ -90,6 +90,7 @@ function viewProfile() {
 
     <h2 class="section-title">Audio</h2>
     ${audioCard()}
+    ${reminderCard()}
 
     ${account ? `
     <h2 class="section-title">Sécurité du compte</h2>
