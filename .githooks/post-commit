@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+ROOT="$(git rev-parse --show-toplevel)"
+HASH="$(git rev-parse --short HEAD)"
+BRANCH="$(git branch --show-current)"
+AUTHOR="$(git log -1 --pretty=%an)"
+MSG="$(git log -1 --pretty=%B)"
+REPO="$(basename "$ROOT")"
+
+"$ROOT/scripts/notify-discord.sh" "📦 **[$REPO] Commit \`$HASH\`** sur \`$BRANCH\` par $AUTHOR
+$MSG" || true

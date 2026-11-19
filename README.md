@@ -47,6 +47,17 @@ npm run test:e2e         # vrai navigateur : toutes les pages en 1280, 390 et 32
 npm run content:check    # vérification du contenu publié
 ```
 
+### Notifications Discord
+
+Chaque commit est annoncé sur Discord (hook `.githooks/post-commit`). Après un clone :
+
+```bash
+git config core.hooksPath .githooks
+cp -n .env.example .env   # puis renseigne DISCORD_WEBHOOK_URL dans .env
+```
+
+Envoi manuel : `./scripts/notify-discord.sh "message"`.
+
 ## Sécurité
 
 - **Mots de passe** : scrypt avec sel aléatoire, comparaison à temps constant (`timingSafeEqual`) ; même temps de réponse pour un e-mail inconnu et un mauvais mot de passe.
