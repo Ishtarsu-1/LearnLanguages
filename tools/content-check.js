@@ -25,6 +25,11 @@ const LATIN_OK = new Set(["TV", "PC", "KTX", "SNS", "OK", "K", "DJ", "CD", "DVD"
 // Formules figées en 합니다체, normales même dans un texte en 해요체
 const KO_FORMULAS = new Set(["감사하다", "실례하다", "죄송하다", "반갑다", "축하하다", "수고하다", "먹다", "안녕하다", "부탁하다", "알다"]);
 const FORMAL_GRAMMAR = { hamnida: "formal", banmal: "plain" };
+// Mots grammaticaux anglais (exclus du calcul « mots pleins »)
+const EN_FUNCTION = new Set("a an the and or but so if as of to in on at for with from by up out into than then i you he she it we they me us him her them my your his its our their this that these those be have do can will would not no yes what who which when where how there here".split(" "));
+// Noms souvent employés au sens général : « I like coffee », jamais « I like the coffee »
+const EN_GENERAL_NOUNS = "coffee|tea|music|cinema|chocolate|sport|sports|football|tennis|jazz|rock|pasta|bread|milk|water|art|dance|games|movies|films|books|cats|dogs|nature|cooking|reading|series";
+const EN_LIKE_THE = new RegExp(`\\b(like|likes|love|loves|hate|hates|prefer|prefers|adore|adores)\\s+the\\s+(${EN_GENERAL_NOUNS})\\b`, "gi");
 
 // Registre attendu d'une unité : 해요체, sauf unité de phase 3 sur 반말 / 합니다체
 const expectedRegister = (unit) => (unit?.grammar || []).map((g) => FORMAL_GRAMMAR[g]).find(Boolean) || "haeyo";
@@ -135,15 +140,39 @@ function checkText(t, ctx = {}) {
       else if (g) seen[g] = w;
       for (const c of lexicon[w]?.confusable_with || []) if (fresh.includes(c) && w < c) blocking.push(`Interférence : « ${w} » et « ${c} » sont confusables`);
     }
-    // Grammaire ciblée
+    // Grammaire ciblée : au moins 3 phrases (v0.6)
     for (const gid of unit.grammar || []) {
       const g = (plan.grammar_order || []).find((x) => x.id === gid);
       if (!g) continue;
       const n = P.grammarHits(lang, g, sentences);
       stats[`grammar:${gid}`] = n;
-      if (n < 2) warnings.push(`Grammaire : « ${g.label} » dans ${n} phrase(s) (au moins 2)`);
+      if (n < 3) warnings.push(`Grammaire : « ${g.label} » dans ${n} phrase(s) (au moins 3)`);
+    }
+    // Texte gonflé aux mots transparents (anglais) : au-delà de 35 % des mots pleins. Pas pour les
+    // « tout premiers pas » : ils n'ont que 6 mots non transparents, le reste l'est forcément.
+    if (lang === "en" && !unit.first_steps) {
+      const cogs = new Set([...Object.entries(lexicon).filter(([, v]) => v.cog && !v.faux).map(([k]) => k), ...freq.filter((f) => f.cog && !lexicon[f.lemma]?.faux).map((f) => f.lemma)]);
+      const full = L.textLemmas(sentences, lang).filter((l) => !EN_FUNCTION.has(l) && !/^\d+$/.test(l));
+      const share = full.length ? full.filter((l) => cogs.has(l)).length / full.length : 0, max = 0.35;
+      stats.cognateShare = Math.round(share * 100);
+      if (share > max) warnings.push(`Mots transparents : ${stats.cognateShare} % des mots pleins (au plus ${max * 100} %) — texte gonflé aux mots transparents, au détriment du naturel`);
     }
   } else if (t.unit && !unit) blocking.push(`Plan : unité « ${t.unit} » introuvable`);
+  // Schémas répétés : la même suite de 3 lemmes en début de phrase plus de 2 fois
+  const starts = {};
+  for (const [src] of sentences) for (const c of clauses(src, lang)) {
+    const head = c.slice(0, 3).flatMap((w) => w.segs.filter((g) => !g.particle).map((g) => (g.proper ? "@" : g.lemmas[0]))).slice(0, 3);
+    if (head.length === 3) { const k = head.join(" "); starts[k] = (starts[k] || 0) + 1; }
+  }
+  const rep = Object.entries(starts).filter(([, n]) => n > 2);
+  if (rep.length) warnings.push(`Schémas répétés : ${rep.map(([k, n]) => `« ${k}… » ×${n}`).join(", ")} en début de phrase — varier la structure`);
+  // Anglais : article devant un nom au sens général (erreur typique des francophones)
+  if (lang === "en") {
+    const hits = sentences.flatMap(([src], i) => [...L.plainText(src, lang).matchAll(EN_LIKE_THE)].map((m) => `phrase ${i + 1} : « ${m[0]} »`));
+    if (hits.length) warnings.push(`Article : ${hits.join(" ; ")} — au sens général, pas de « the » (I like coffee)`);
+  }
+  // Relecture critique (IA) : non faite ou en échec → visible
+  if (draft && t.ai_review && t.ai_review.ran === false) warnings.push(`Relecture critique : non faite${t.ai_review.error ? ` (${t.ai_review.error})` : ""}`);
   return finish({ blocking, warnings, stats });
 }
 function finish(r) {

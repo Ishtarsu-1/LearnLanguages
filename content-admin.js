@@ -97,7 +97,7 @@ function create({ dir = L.CONTENT_DIR, out, analyze, onPublished = () => {}, spa
     // Texte : ordre après le dernier texte publié de la langue
     const texts = L.loadKind("texts", { dir, published: false })[d.lang];
     const order = Math.max(0, ...texts.map((t) => t.order || 0)) + 10;
-    const { checks, review_notes, review_overall, lexicon_new, variants_scores, _file, edited, ...rest } = d;
+    const { checks, review_notes, review_overall, review_checklist, ai_review, lexicon_new, variants_scores, _file, edited, ...rest } = d;
     const text = { ...rest, source: { ...rest.source, ...(rest.source?.type === "generated" ? { edited: !!edited } : {}) }, order, status: "published", review: { by, at: new Date().toISOString().slice(0, 10) } };
     const errs = L.validateText(text);
     if (errs.length) throw httpError(409, errs.join(" ; "));

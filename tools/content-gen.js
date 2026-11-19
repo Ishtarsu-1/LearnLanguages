@@ -28,10 +28,13 @@ const GenSchema = z.object({
   icon: z.string(),
   sentences: z.array(z.object({ speaker: z.string(), text: z.string(), fr: z.string() })),
 });
+// Liste de contrôle de la relecture critique (v0.6) : une réponse explicite par critère
+const REVIEW_CRITERIA = ["coherence", "naturel", "langue", "repetitions", "traduction"];
 const ReviewSchema = z.object({
+  checklist: z.array(z.object({ criterion: z.enum(REVIEW_CRITERIA), ok: z.boolean(), comment_fr: z.string() })),
   notes: z.array(z.object({
     sentence: z.number().int(),
-    type: z.enum(["naturel", "erreur", "traduction", "culture", "ambiguite"]),
+    type: z.enum(["naturel", "erreur", "traduction", "culture", "ambiguite", "coherence", "repetition"]),
     issue_fr: z.string(),
     suggestion: z.string(),
     suggestion_fr: z.string(),
@@ -112,8 +115,15 @@ function genPrompt(lang, unit, kind, { known, lengths }) {
     ].filter((l) => l !== null).join("\n"),
   };
 }
-const REVIEW_SYSTEM = `You are a native LANG speaker and an experienced teacher reviewing a graded reader for French-speaking beginners.
-For each sentence, flag only real problems: unnatural phrasing ("naturel"), errors ("erreur"), inaccurate French translation ("traduction"), cultural inaccuracy or cliché ("culture"), ambiguity ("ambiguite").
+const PROMPT_VERSION = "v0.6";
+const REVIEW_SYSTEM = `You are a native LANG speaker and an experienced teacher reviewing a graded reader for French-speaking beginners. Be demanding: a text that passes automatic checks can still be unnatural.
+Go through this CHECKLIST and answer EVERY criterion in "checklist" (ok true/false + one short French comment; "rien à signaler" must be an explicit, justified answer):
+- coherence: no two sentences contradict each other; the order of events is logical; who speaks is clear.
+- naturel: would a native speaker really say each sentence? No word chosen only because it is transparent for French speakers.
+- langue: ENGLISH: no article with general nouns ("I like coffee", never "I like the coffee"), false friends, adjective order. KOREAN: the same register everywhere, correct particles, natural spoken contractions (저는 → 전 in speech), vocabulary really used in Seoul today.
+- repetitions: the same sentence pattern is not used more than twice (e.g. "I like X and I like Y" three times).
+- traduction: the French translation is natural and faithful.
+Then, for each sentence, flag real problems in "notes": unnatural phrasing ("naturel"), errors ("erreur"), inaccurate French translation ("traduction"), cultural inaccuracy or cliché ("culture"), ambiguity ("ambiguite"), contradiction ("coherence"), repeated pattern ("repetition").
 Do not rewrite the text. For each problem give: sentence (1-based number), type, issue_fr (one short French sentence), suggestion (the corrected sentence in the target language, plain text without annotations, or the corrected French translation for "traduction"), suggestion_fr (French translation of the suggestion).
 "suggestion" is written in the TARGET LANGUAGE (LANG), except for "traduction" notes where it is the corrected French. Keep suggestions within the same simple vocabulary. If everything is fine, return an empty list. overall_fr: one short French sentence on the text as a whole.`;
 const LEX_SYSTEM = `You write a bilingual glossary for French speakers. For each lemma (dictionary form), give a short French gloss (1 to 4 words, the meaning used in the sentences given). For Korean verbs and adjectives, use a French infinitive (« être grand », « manger »).`;
@@ -140,6 +150,7 @@ async function generateText(lang, unit, n, opts = {}) {
       id, lang, level: unit.level, unit: unit.unit, themes: unit.themes, grammar: unit.grammar,
       title: out.title_fr.trim().slice(0, 80), icon: [...(out.icon || "")].slice(0, 2).join("") || ICONS[unit.themes[0]] || "📖", kind,
       status: "draft", source: { type: "generated", engine: meta.engine, author: "Mochi", license: "CC BY-NC 4.0" },
+      gen: { engine: meta.engine || null, model: opts.model || llm.MODEL || null, prompt_version: PROMPT_VERSION, at: new Date().toISOString() },
       sentences: annotated.map((s, i) => [s, raw[i].fr.trim()]),
       speakers: kind === "Dialogue" && raw.some((s) => s.speaker) ? raw.map((s) => s.speaker || "") : null,
     };
@@ -182,12 +193,22 @@ async function generateText(lang, unit, n, opts = {}) {
   // Relecture critique (2e appel) : propose, ne réécrit pas
   if (opts.review !== false) {
     try {
+      const rmeta = {};
       const r = await llm.structured({ system: REVIEW_SYSTEM.replaceAll("LANG", LANG_NAMES[lang]), schema: ReviewSchema, engine: opts.engine, model: opts.model, temperature: 0.2, effort: "high",
-        user: draft.sentences.map(([s, fr], i) => `${i + 1}. ${L.plainText(s, lang)}\n   FR: ${fr}`).join("\n") });
+        user: draft.sentences.map(([s, fr], i) => `${i + 1}. ${L.plainText(s, lang)}\n   FR: ${fr}`).join("\n") }, rmeta);
       draft.review_notes = r.notes.filter((x) => x.sentence >= 1 && x.sentence <= draft.sentences.length).map((x, i) => ({ id: `n${i + 1}`, ...x, status: "open" }));
       draft.review_overall = r.overall_fr;
-    } catch (e) { opts.log?.(`   relecture critique : ${e.message}\n`); draft.review_notes = []; }
-  }
+      draft.review_checklist = r.checklist;
+      const missingCrit = REVIEW_CRITERIA.filter((c) => !r.checklist.some((x) => x.criterion === c));
+      draft.ai_review = { engine: rmeta.engine || null, model: opts.model || llm.MODEL || null, ran: missingCrit.length === 0, ...(missingCrit.length ? { error: `critères sans réponse : ${missingCrit.join(", ")}` } : {}) };
+    } catch (e) {
+      opts.log?.(`   relecture critique : ${e.message}\n`);
+      draft.review_notes = [];
+      draft.ai_review = { engine: opts.engine || null, model: opts.model || llm.MODEL || null, ran: false, error: e.message.slice(0, 200) };
+    }
+  } else draft.ai_review = { ran: false, error: "relecture désactivée (--no-review)" };
+  // La relecture change le statut : non faite ou incomplète → orange, visible dans l'admin
+  draft.checks = checkText(draft, { plan, lexicon, freq, texts, others: opts.others });
   draft.generated_at = new Date().toISOString();
   return { draft };
 }

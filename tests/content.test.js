@@ -123,6 +123,20 @@ const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
   bad("traduction manquante", ok1.map((x, i) => (i === 0 ? [x[0], ""] : x)), /traduction/);
   bad("chinois dans la traduction", ok1.map((x, i) => (i === 0 ? [x[0], "Je vais au 韩语 café."] : x)), /asiatiques/);
   ok(checkText({ ...T(ok1), sentences: [...ok1, ...ok1] }, ctx).warnings.some((w) => /Longueur/.test(w)), "trop de phrases → avertissement");
+  // v0.6 : nouvelles vérifications (avertissements)
+  const warn = (r, re) => r.warnings.some((w) => re.test(w));
+  ok(warn(checkText(T(ok1), ctx), /Grammaire.*au moins 3/), "point de grammaire vu 2 fois → avertissement (au moins 3)");
+  ok(warn(checkText({ ...T(ok1), ai_review: { ran: false, error: "Ollama en pause" } }, ctx), /Relecture critique : non faite \(Ollama en pause\)/), "relecture critique non faite → visible");
+  const rep = ok1.map((x, i) => (i < 3 ? ["저|는 커피|를 마셔요=마시다.", "Je bois du café."] : x));
+  ok(warn(checkText(T(rep), ctx), /Schémas répétés/), "même début de phrase ×3 → avertissement");
+  {
+    const enLex = { i: { fr: "je" }, like: { fr: "aimer" }, the: { fr: "le" }, coffee: { fr: "café", cog: true }, music: { fr: "musique", cog: true }, and: { fr: "et" }, a: { fr: "un" }, cinema: { fr: "cinéma", cog: true }, ritual: { fr: "rituel", cog: true }, passion: { fr: "passion", cog: true }, be: { fr: "être" }, tea: { fr: "thé" }, friend: { fr: "ami" }, drink: { fr: "boire" }, my: { fr: "mon" }, with: { fr: "avec" } };
+    const enPlan = { grammar_order: [], units: [{ unit: "en-A1-05", level: "A1", grammar: [], themes: ["cafe"], new_words: Object.keys(enLex), review_words: [], texts: 1, kinds: ["Monologue"] }] };
+    const E = (sentences) => checkText({ id: "en-a1-05-1", lang: "en", level: "A1", unit: "en-A1-05", themes: ["cafe"], grammar: [], title: "Essai", icon: "☕", kind: "Monologue", status: "draft", sentences }, { plan: enPlan, lexicon: enLex, freq: [], texts: [] });
+    ok(warn(E([["I like the coffee.", "J'aime le café."], ["I drink tea with my friend.", "Je bois du thé avec mon ami."]]), /Article : phrase 1 : « like the coffee »/), "anglais : « like the coffee » → avertissement");
+    ok(!warn(E([["I like coffee.", "J'aime le café."], ["I drink the tea with my friend.", "Je bois le thé avec mon ami."]]), /Article/), "anglais : « I like coffee » accepté");
+    ok(warn(E([["The coffee is a ritual and the ritual is a passion.", "…"], ["Music is a passion.", "…"]]), /Mots transparents/), "texte gonflé aux mots transparents → avertissement");
+  }
   // Le contenu publié passe la vérification (CI)
   for (const lang of L.LANGS) for (const t of L.loadKind("texts")[lang]) { const r = checkText(t); if (r.blocking.length) ok(false, `${t.id} publié : ${r.blocking.join(" ; ")}`); }
   ok(true, "aucun texte publié bloquant");

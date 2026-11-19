@@ -63,13 +63,14 @@ function caDraft(id) {
     <div class="card">
       <div class="ca-head"><span class="ca-dot">${CA_DOT[C.status] || "🔴"}</span>
         <div class="grow"><h2 class="m-0">${esc(d.icon || "")} ${esc(d.title)} <small class="muted">· ${esc(d.id)}</small></h2>
-          <p class="muted mt-4 mb-0 mx-0">${LANGUAGES[lang].flag} ${esc(d.level)} · ${esc(d.kind)} · unité ${esc(d.unit || "—")}${C.stats.coverage !== undefined ? ` · couverture <b>${num1(C.stats.coverage)} %</b>` : ""}${d.source?.engine ? ` · ${esc(d.source.engine)}` : ""}</p></div></div>
+          <p class="muted mt-4 mb-0 mx-0">${LANGUAGES[lang].flag} ${esc(d.level)} · ${esc(d.kind)} · unité ${esc(d.unit || "—")}${C.stats.coverage !== undefined ? ` · couverture <b>${num1(C.stats.coverage)} %</b>` : ""}${d.gen?.engine || d.source?.engine ? ` · ${esc(d.gen?.engine || d.source.engine)}${d.gen?.prompt_version ? ` (prompt ${esc(d.gen.prompt_version)})` : ""}` : ""}</p></div></div>
       ${unit ? `<p class="mt-8 mb-0 mx-0"><small>Mots nouveaux : ${unit.new_words.map((w) => `<span class="chip ${k} ${(C.stats.newWords || []).includes(w) ? "" : "ca-absent"}">${esc(w)}</span>`).join(" ")}
         ${grammar.length ? ` · grammaire : ${grammar.map((g) => esc(g.label)).join(", ")}` : ""}</small></p>` : ""}
       ${C.blocking.length ? `<ul class="ca-checks red">${C.blocking.map((b) => `<li>✗ ${esc(b)}</li>`).join("")}</ul>` : ""}
       ${C.warnings.length ? `<ul class="ca-checks orange">${C.warnings.map((w) => `<li>! ${esc(w)}</li>`).join("")}</ul>` : ""}
       ${!C.blocking.length && !C.warnings.length ? `<p class="mt-8 mb-0 mx-0">✓ Toutes les vérifications automatiques sont vertes.</p>` : ""}
-      ${d.review_overall ? `<p class="tip">🧐 Relecteur IA : ${esc(d.review_overall)}</p>` : ""}
+      ${d.review_overall ? `<p class="tip">🧐 Relecteur IA${d.ai_review?.engine ? ` (${esc(d.ai_review.engine)})` : ""} : ${esc(d.review_overall)}</p>` : ""}
+      ${d.review_checklist?.length ? `<ul class="ca-checks">${d.review_checklist.map((c) => `<li>${c.ok ? "✓" : "!"} <b>${esc({ coherence: "Cohérence", naturel: "Naturel", langue: "Langue", repetitions: "Répétitions", traduction: "Traduction" }[c.criterion] || c.criterion)}</b> : ${esc(c.comment_fr)}</li>`).join("")}</ul>` : ""}
     </div>
 
     <h2 class="section-title">Phrases</h2>
