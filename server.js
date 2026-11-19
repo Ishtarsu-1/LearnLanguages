@@ -116,13 +116,15 @@ db.exec(`
   -- Retours des testeurs (formulaire « Donner mon avis ») : copie en base, en plus de l'e-mail
   CREATE TABLE IF NOT EXISTS site_feedback (
     id INTEGER PRIMARY KEY AUTOINCREMENT, created_at TEXT NOT NULL, user_id INTEGER, kind TEXT NOT NULL, rating INTEGER,
-    message TEXT NOT NULL, page TEXT, lang TEXT, contact TEXT, user_agent TEXT, mailed_at TEXT, mail_error TEXT
+    message TEXT NOT NULL, page TEXT, lang TEXT, contact TEXT, user_agent TEXT, mailed_at TEXT, mail_error TEXT, parts TEXT
   );
   CREATE INDEX IF NOT EXISTS sync_kv_rev ON sync_kv (user_id, rev);
   CREATE INDEX IF NOT EXISTS sync_cards_rev ON sync_cards (user_id, rev);
   CREATE INDEX IF NOT EXISTS review_logs_rev ON review_logs (user_id, rev);
   CREATE INDEX IF NOT EXISTS sync_counters_rev ON sync_counters (user_id, rev);
 `);
+// Migration : plusieurs sujets par retour (JSON [{ kind, message }])
+if (!db.prepare("PRAGMA table_info(site_feedback)").all().some((c) => c.name === "parts")) db.exec("ALTER TABLE site_feedback ADD COLUMN parts TEXT");
 // Migration : colonnes de synchro sur users
 const userCols = db.prepare("PRAGMA table_info(users)").all().map((c) => c.name);
 if (!userCols.includes("sync_rev")) db.exec("ALTER TABLE users ADD COLUMN sync_rev INTEGER NOT NULL DEFAULT 0");
@@ -560,13 +562,21 @@ async function api(req, res, url) {
   // Retour d'un testeur (« Donner mon avis ») : ouvert aux invités, enregistré, puis envoyé par e-mail
   // à FEEDBACK_TO. Limité par IP. L'adresse de destination ne vient jamais de la requête.
   if (route === "POST /api/feedback-site") {
-    const b = await readJson(req, 16 * 1024);
-    const kind = mailer.FEEDBACK_KINDS.includes(b.kind) ? b.kind : null;
-    const message = typeof b.message === "string" ? b.message.trim() : "";
+    const b = await readJson(req, 32 * 1024);
+    // Plusieurs sujets dans le même envoi : parts = [{ kind, message }] (ancien format { kind, message } accepté)
+    const raw = Array.isArray(b.parts) ? b.parts : [{ kind: b.kind, message: b.message }];
+    const parts = [];
+    for (const p of raw.slice(0, 8)) {
+      const kind = mailer.FEEDBACK_KINDS.includes(p?.kind) ? p.kind : null, message = typeof p?.message === "string" ? p.message.trim() : "";
+      if (!kind) return fail(res, 400, "Choisis le type de retour.");
+      if (parts.some((x) => x.kind === kind)) return fail(res, 400, "Chaque sujet ne peut apparaître qu'une fois.");
+      if (message.length < 3 || message.length > 3000) return fail(res, 400, "Chaque message doit faire entre 3 et 3 000 caractères.");
+      parts.push({ kind, message });
+    }
+    if (!parts.length) return fail(res, 400, "Choisis au moins un sujet.");
+    const kind = parts.map((x) => x.kind).join(","), message = parts.map((x) => (parts.length > 1 ? `[${x.kind}] ${x.message}` : x.message)).join("\n\n");
     const rating = Number.isInteger(b.rating) && b.rating >= 1 && b.rating <= 5 ? b.rating : null;
     const contact = typeof b.contact === "string" && b.contact.trim() ? b.contact.trim() : null;
-    if (!kind) return fail(res, 400, "Choisis le type de retour.");
-    if (message.length < 3 || message.length > 3000) return fail(res, 400, "Ton message doit faire entre 3 et 3 000 caractères.");
     if (contact && (contact.length > 254 || !EMAIL_RE.test(contact))) return fail(res, 400, "Adresse e-mail de contact invalide.");
     const wait = waitFor(`avis:${ip}`);
     if (wait) return tooMany(res, wait);
@@ -574,11 +584,11 @@ async function api(req, res, url) {
     const who = currentSession(req)?.user || null;
     const page = typeof b.page === "string" ? b.page.slice(0, 200) : null, lang = ["en", "ko"].includes(b.lang) ? b.lang : null;
     const ua = String(req.headers["user-agent"] || "").slice(0, 300), at = now();
-    const id = Number(db.prepare("INSERT INTO site_feedback (created_at, user_id, kind, rating, message, page, lang, contact, user_agent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)")
-      .run(at, who?.id ?? null, kind, rating, message, page, lang, contact, ua).lastInsertRowid);
+    const id = Number(db.prepare("INSERT INTO site_feedback (created_at, user_id, kind, rating, message, page, lang, contact, user_agent, parts) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+      .run(at, who?.id ?? null, kind, rating, message, page, lang, contact, ua, JSON.stringify(parts)).lastInsertRowid);
     const to = process.env.FEEDBACK_TO;
     if (to) {
-      const m = mailer.feedbackMail({ id, kind, rating, message, page, lang: lang && { en: "anglais", ko: "coréen" }[lang], contact, userAgent: ua, name: who?.name, email: who?.email,
+      const m = mailer.feedbackMail({ id, parts, rating, page, lang: lang && { en: "anglais", ko: "coréen" }[lang], contact, userAgent: ua, name: who?.name, email: who?.email,
         date: new Date(at).toLocaleString("fr-FR", { dateStyle: "full", timeStyle: "short", timeZone: "Europe/Paris" }) });
       mail.send({ to, ...m, replyTo: contact || who?.email || undefined })
         .then(() => db.prepare("UPDATE site_feedback SET mailed_at = ? WHERE id = ?").run(now(), id))

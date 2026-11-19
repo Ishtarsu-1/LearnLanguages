@@ -79,8 +79,17 @@ server.listen(0, "127.0.0.1", async () => {
       await new Promise((ok2) => setTimeout(ok2, 20));
       const m = mail.outbox.at(-1);
       ok(m.to === "editeur@test.fr" && m.replyTo === "ami@test.fr" && /🐞 Bug/.test(m.subject) && m.html.includes("&lt;b&gt;Lire&lt;/b&gt;") && !m.html.includes("<b>Lire"), "avis : e-mail à FEEDBACK_TO, réponse à l'ami, HTML échappé");
+      // Plusieurs sujets dans le même envoi
+      ok((await call("POST", "/api/feedback-site", { parts: [{ kind: "bug", message: "a b c" }, { kind: "bug", message: "d e f" }] }, { ck: "" })).status === 400, "avis : même sujet deux fois refusé");
+      ok((await call("POST", "/api/feedback-site", { parts: [{ kind: "avis", message: "Super site" }, { kind: "idee", message: "" }] }, { ck: "" })).status === 400, "avis : un sujet vide refusé");
+      const r2 = await call("POST", "/api/feedback-site", { parts: [{ kind: "avis", message: "Super site" }, { kind: "bug", message: "Le son coupe" }, { kind: "idee", message: "Un mode nuit" }], rating: 5 }, { ck: "" });
+      await new Promise((ok2) => setTimeout(ok2, 20));
+      const m2 = mail.outbox.at(-1), row = db.prepare("SELECT kind, parts FROM site_feedback WHERE id = ?").get(r2.data.id);
+      ok(r2.status === 201 && /3 sujets/.test(m2.subject) && m2.html.includes("Le son coupe") && m2.html.includes("Un mode nuit") && m2.text.indexOf("Avis général") < m2.text.indexOf("Bug"), "avis : 3 sujets, une section chacun dans l'e-mail");
+      ok(row.kind === "avis,bug,idee" && JSON.parse(row.parts).length === 3, "avis : sujets enregistrés en base");
+      db.prepare("DELETE FROM site_feedback WHERE id = ?").run(r2.data.id);
       ok(db.prepare("SELECT count(*) n FROM site_feedback").get().n === 1 && db.prepare("SELECT mailed_at FROM site_feedback").get().mailed_at, "avis : enregistré en base, envoi noté");
-      for (let i = 0; i < 4; i++) await call("POST", "/api/feedback-site", { kind: "avis", message: "encore un" }, { ck: "" });
+      for (let i = 0; i < 3; i++) await call("POST", "/api/feedback-site", { kind: "avis", message: "encore un" }, { ck: "" });
       ok((await call("POST", "/api/feedback-site", { kind: "avis", message: "de trop" }, { ck: "" })).status === 429, "avis : 5 par heure et par IP");
       delete process.env.FEEDBACK_TO;
     }

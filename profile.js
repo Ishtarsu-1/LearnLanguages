@@ -307,7 +307,7 @@ function viewAdmin() {
     ${machineCard(d.machine)}
     ${d.feedback ? `<h2 class="section-title">Retours des testeurs (${d.feedback.total})</h2>
     <div class="card">${d.feedback.to ? "" : `<p class="muted"><small>FEEDBACK_TO absent de .env : les retours sont seulement enregistrés, pas envoyés par e-mail.</small></p>`}
-      ${d.feedback.last.length ? `<table class="admin-table"><tbody>${d.feedback.last.map((f) => `<tr><th scope="row">${{ avis: "💬", bug: "🐞", idee: "💡", contenu: "📖" }[f.kind] || "💬"} ${fmtDate(f.created_at)}${f.rating ? ` · ${"★".repeat(f.rating)}` : ""}</th>
+      ${d.feedback.last.length ? `<table class="admin-table"><tbody>${d.feedback.last.map((f) => `<tr><th scope="row">${String(f.kind).split(",").map((k) => ({ avis: "💬", bug: "🐞", idee: "💡", contenu: "📖" })[k] || "💬").join("")} ${fmtDate(f.created_at)}${f.rating ? ` · ${"★".repeat(f.rating)}` : ""}</th>
         <td>${esc(f.message.length > 160 ? `${f.message.slice(0, 160)}…` : f.message)}${f.page ? `<br/><small class="muted">${esc(f.page)}</small>` : ""}</td>
         <td class="muted">${f.mailed ? "✉️ envoyé" : f.mail_error ? `⚠️ ${esc(f.mail_error)}` : "—"}</td></tr>`).join("")}</tbody></table>` : `<p class="muted m-0">Aucun retour pour l'instant.</p>`}</div>` : ""}`}
 

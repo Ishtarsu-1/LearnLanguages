@@ -927,3 +927,8 @@ mark.todo { background: var(--honey-50); color: var(--warning); font-weight: 800
 .avis-field .input { font-weight: 500; font-size: var(--text-md); }
 .avis-line { margin: 0 0 8px; }
 .avis-done { justify-content: center; }
+.avis-part { padding-left: 12px; border-left: 4px solid var(--border); }
+.avis-part.avis-avis { border-color: var(--success); }
+.avis-part.avis-bug { border-color: var(--error); }
+.avis-part.avis-idee { border-color: var(--reward); }
+.avis-part.avis-contenu { border-color: var(--grammar); }

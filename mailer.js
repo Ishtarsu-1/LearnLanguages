@@ -78,11 +78,13 @@ const KINDS = {
 // Mochi en SVG inline : la mascotte de la charte (§8), saveur Sakura
 const MOCHI_SVG = `<svg width="56" height="48" viewBox="0 0 56 48" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><ellipse cx="28" cy="27" rx="26" ry="20" fill="#F6C1D3" stroke="${C.ink}" stroke-width="2"/><circle cx="20" cy="25" r="2.6" fill="${C.ink}"/><circle cx="36" cy="25" r="2.6" fill="${C.ink}"/><path d="M24 31 q4 4 8 0" stroke="${C.ink}" stroke-width="2" fill="none" stroke-linecap="round"/><ellipse cx="15" cy="31" rx="4" ry="2.4" fill="#E0628F" opacity=".6"/><ellipse cx="41" cy="31" rx="4" ry="2.4" fill="#E0628F" opacity=".6"/></svg>`;
 
+// f.parts : [{ kind, message }] — un ou plusieurs sujets dans le même retour
 function feedbackMail(f) {
-  const k = KINDS[f.kind] || KINDS.avis;
+  const parts = (f.parts || [{ kind: f.kind, message: f.message }]).map((p) => ({ ...p, k: KINDS[p.kind] || KINDS.avis }));
   const stars = f.rating ? "★".repeat(f.rating) + "☆".repeat(5 - f.rating) : null;
   const who = f.name || f.email || f.contact || "Un·e testeur·se anonyme";
-  const subject = `${k.icon} ${k.label} sur Mochi${f.rating ? ` · ${f.rating}/5` : ""} — ${who}`;
+  const label = parts.length === 1 ? `${parts[0].k.icon} ${parts[0].k.label}` : `${parts.map((p) => p.k.icon).join("")} ${parts.length} sujets`;
+  const subject = `${label} sur Mochi${f.rating ? ` · ${f.rating}/5` : ""} — ${who}`;
   const meta = [
     ["De", [f.name, f.email].filter(Boolean).join(" · ") || "invité (sans compte)"],
     ...(f.contact ? [["Pour répondre", f.contact]] : []),
@@ -91,22 +93,21 @@ function feedbackMail(f) {
     ["Date", f.date],
     ["Navigateur", f.userAgent || "—"],
   ];
-  const text = `${k.icon} ${k.label}${stars ? ` · ${stars}` : ""}\n\n${f.message}\n\n${meta.map(([a, b]) => `${a} : ${b}`).join("\n")}\n\n— Mochi 🍡`;
+  const text = `${stars ? `Note : ${stars}\n\n` : ""}${parts.map((p) => `${p.k.icon} ${p.k.label}\n${p.message}`).join("\n\n")}\n\n${meta.map(([a, b]) => `${a} : ${b}`).join("\n")}\n\n— Mochi 🍡`;
   const font = "'Fredoka','Pretendard',system-ui,-apple-system,'Segoe UI',sans-serif";
+  const pill = (k) => `<span style="display:inline-block;padding:6px 14px;border-radius:999px;background:${k.bg};color:${k.fg};font-weight:800;font-size:14px">${k.icon} ${escHtml(k.label)}</span>`;
   const html = `<!doctype html><html lang="fr"><body style="margin:0;padding:0;background:${C.bg}">
 <div style="background:${C.bg};padding:32px 12px;font-family:'Pretendard',system-ui,-apple-system,'Segoe UI',sans-serif;color:${C.ink};line-height:1.6">
  <div style="max-width:560px;margin:0 auto">
   <div style="text-align:center;margin-bottom:16px">${MOCHI_SVG}
    <div style="font-family:${font};font-size:26px;font-weight:700;color:${C.sakura};letter-spacing:.3px">Mochi</div>
-   <div style="font-size:13px;color:${C.muted}">Un nouveau retour de testeur</div></div>
+   <div style="font-size:13px;color:${C.muted}">Un nouveau retour de testeur${parts.length > 1 ? ` · ${parts.length} sujets` : ""}</div></div>
   <div style="background:${C.surface};border:1px solid ${C.border};border-radius:20px;padding:24px;box-shadow:0 4px 0 ${C.border}">
-   <div style="margin-bottom:14px">
-    <span style="display:inline-block;padding:6px 14px;border-radius:999px;background:${k.bg};color:${k.fg};font-weight:800;font-size:14px">${k.icon} ${escHtml(k.label)}</span>
-    ${stars ? `<span style="display:inline-block;margin-left:8px;padding:6px 14px;border-radius:999px;background:${C.yuzu100};color:#8F5A0B;font-weight:800;font-size:14px;letter-spacing:2px">${stars}</span>` : ""}
-   </div>
-   <div style="font-family:${font};font-size:20px;font-weight:700;margin:4px 0 12px">${escHtml(who)} a écrit :</div>
-   <div style="background:${C.sakura50};border-left:4px solid ${C.sakura};border-radius:12px;padding:16px 18px;font-size:16px;white-space:pre-wrap">${escHtml(f.message)}</div>
-   <table role="presentation" style="width:100%;margin-top:18px;border-collapse:collapse;font-size:14px">
+   <div style="font-family:${font};font-size:20px;font-weight:700;margin:0 0 6px">${escHtml(who)} a écrit :</div>
+   ${stars ? `<div style="margin-bottom:14px"><span style="display:inline-block;padding:6px 14px;border-radius:999px;background:${C.yuzu100};color:#8F5A0B;font-weight:800;font-size:14px;letter-spacing:2px">${stars}</span></div>` : ""}
+   ${parts.map((p) => `<div style="margin:16px 0 0">${pill(p.k)}
+    <div style="margin-top:10px;background:${p.k.bg};border-left:4px solid ${p.k.fg};border-radius:12px;padding:16px 18px;font-size:16px;white-space:pre-wrap">${escHtml(p.message)}</div></div>`).join("")}
+   <table role="presentation" style="width:100%;margin-top:22px;border-collapse:collapse;font-size:14px;border-top:1px solid ${C.border}">
     ${meta.map(([a, b]) => `<tr><td style="padding:6px 12px 6px 0;color:${C.muted};font-weight:700;white-space:nowrap;vertical-align:top">${escHtml(a)}</td><td style="padding:6px 0;word-break:break-word">${escHtml(b)}</td></tr>`).join("")}
    </table>
    ${f.contact ? `<p style="margin:20px 0 0"><a href="mailto:${escHtml(f.contact)}" style="display:inline-block;background:${C.sakura};color:#fff;padding:12px 22px;border-radius:14px;text-decoration:none;font-weight:800">Répondre</a></p>` : ""}

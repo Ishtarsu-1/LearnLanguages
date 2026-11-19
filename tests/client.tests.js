@@ -640,14 +640,20 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
   Object.assign(state, saved);
   location.hash = "";
 }
-{ // « Donner mon avis »
+{ // « Donner mon avis » : plusieurs sujets dans le même formulaire
   ui.avis = null; ui.avisFrom = "#/lang/ko/lire";
-  const v = viewFeedback();
-  ok(v.includes('form class="card avis-form" data-avis="1" data-lang="ko"') && (v.match(/data-act="avis-kind"/g) || []).length === 4 && (v.match(/data-act="avis-star"/g) || []).length === 5 && v.includes("#/lang/ko/lire"), "avis : formulaire (types, étoiles, page jointe)");
+  let v = viewFeedback();
+  ok(v.includes('data-avis="1" data-lang="ko"') && (v.match(/type="checkbox" name="kind"/g) || []).length === 4 && (v.match(/<textarea data-kind=/g) || []).length === 1 && v.includes("#/lang/ko/lire"), "avis : 4 sujets à cocher, un champ ouvert par défaut, page jointe");
+  actions["avis-kind"]({ value: "bug" }); actions["avis-kind"]({ value: "idee" });
+  v = viewFeedback();
+  ok(JSON.stringify(ui.avis.kinds) === '["avis","bug","idee"]' && (v.match(/<textarea data-kind=/g) || []).length === 3 && v.includes("Envoyer mes 3 retours"), "avis : plusieurs sujets, un champ chacun, dans l'ordre");
+  actions["avis-kind"]({ value: "avis" }); ok(JSON.stringify(ui.avis.kinds) === '["bug","idee"]', "avis : décocher un sujet");
+  actions["avis-kind"]({ value: "bug" }); actions["avis-kind"]({ value: "idee" });
+  ok(/<button class="btn" disabled>/.test(viewFeedback()) && viewFeedback().includes("Choisis au moins un sujet"), "avis : aucun sujet → envoi impossible");
   actions["avis-star"]({ dataset: { n: "4" } }); ok(ui.avis.rating === 4 && viewFeedback().includes('aria-pressed="true"'), "avis : note");
   ui.avis.sent = true; ok(viewFeedback().includes("Merci, c'est envoyé"), "avis : remerciement");
   ok(legalFooter().includes("#/avis"), "avis : lien dans le pied de page");
-  ok(!/ style="/.test(viewFeedback()), "avis : aucun style inline");
+  ui.avis = null; ok(!/ style="/.test(viewFeedback()), "avis : aucun style inline");
   ui.avis = null; ui.avisFrom = null;
 }
 { // Admin › Contenu (CONTENU-PIPELINE, lots C6 et C8) : rendu de la file, d'un brouillon, de la couverture
