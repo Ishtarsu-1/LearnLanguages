@@ -121,7 +121,17 @@ function spokenSentences(lang) {
 const MEDIA_ERR = { 1: "lecture annulée", 2: "erreur réseau", 3: "décodage impossible", 4: "format non pris en charge" };
 const audioError = (e) => (e?.mediaCode ? `${MEDIA_ERR[e.mediaCode] || "erreur média"} ${e.mediaCode}${e.message ? ` : ${e.message}` : ""}` : `${e?.name || "Erreur"} : ${e?.message || e}`);
 const defaultServerVoice = (lang) => { const sv = serverVoices(lang), pref = state.settings.voices?.[lang]; return sv.includes(pref) ? pref : sv[0]; };
-const ttsUrl = (text, lang, voice) => `/api/tts?lang=${lang}&voice=${encodeURIComponent(voice)}&text=${encodeURIComponent(text.slice(0, 300))}`;
+// Version mobile : audio pré-généré en fichiers statiques, nommés par audioKey (même calcul dans
+// tools/portable.js). null : phrase non pré-générée → voix de l'appareil.
+function audioKey(s) { // cyrb53 : empreinte rapide sur 53 bits, sans crypto (synchrone)
+  let h1 = 0xdeadbeef, h2 = 0x41c6ce57;
+  for (let i = 0; i < s.length; i++) { const c = s.charCodeAt(i); h1 = Math.imul(h1 ^ c, 2654435761); h2 = Math.imul(h2 ^ c, 1597334677); }
+  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+  return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(36);
+}
+const staticAudioUrl = (text, lang, voice) => { const k = audioKey(`${lang}\n${voice}\n${text.slice(0, 300).trim()}`), ext = features.audio?.[k]; return ext ? `audio/${k}.${ext}` : null; };
+const ttsUrl = (text, lang, voice) => features.static ? staticAudioUrl(text, lang, voice) : `/api/tts?lang=${lang}&voice=${encodeURIComponent(voice)}&text=${encodeURIComponent(text.slice(0, 300))}`;
 // Délai avant de passer à la voix de l'appareil quand l'audio du serveur tarde (lot 7.4).
 // Plus court si le serveur annonce des voix lentes (features.ttsSlow, lot 8.4).
 const ttsFallbackMs = () => (features.ttsSlow ? 3000 : 5000);
@@ -136,7 +146,9 @@ async function serverSpeak(text, lang, voice, rate, shiftPitch, token = playToke
   setBusy(btn, true);
   let blob;
   try {
-    const r = await fetch(ttsUrl(text, lang, voice), { credentials: "same-origin", signal: ctl?.signal });
+    const u = ttsUrl(text, lang, voice);
+    if (!u) throw new Error("Pas d'audio pour cette phrase");
+    const r = await fetch(u, { credentials: "same-origin", signal: ctl?.signal });
     if (!r.ok) { const d = await r.json().catch(() => ({})); throw Object.assign(new Error(d.error || `HTTP ${r.status}`), { name: "Serveur" }); }
     blob = await r.blob();
   } catch (e) {

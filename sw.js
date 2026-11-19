@@ -6,7 +6,7 @@
 //  - Le reste de l'API n'est jamais mis en cache : la synchro gère le hors-ligne
 //    (les changements attendent le retour du réseau, voir syncNow dans sync.js).
 // ============================================================
-const VERSION = "mochi-v19";
+const VERSION = "mochi-v20";
 const SHELL = `${VERSION}-shell`, STATIC = `${VERSION}-static`, AUDIO = "mochi-audio"; // l'audio survit aux mises à jour
 const SHELL_FILES = [
   "/", "/state.js", "/sync.js", "/ui.js", "/audio.js", "/reader.js", "/fsrs-cards.js", "/today.js", "/lessons.js", "/profile.js", "/router.js", "/actions.js", "/app.js", "/content.data.js", "/content.js", "/zh.js", "/ru.js", "/exercises.js", "/placement.js", "/library.js", "/missions.js", "/story.js", "/keyboard.js", "/hangul.js", "/pinyin.js", "/cyrillic.js", "/cosmetics.js", "/tour.js", "/legal.js", "/admin-content.js", "/feedback.js", "/friends.js", "/duel.js", "/ctf.js", "/styles.css", "/tokens.css",
@@ -55,6 +55,7 @@ self.addEventListener("fetch", (e) => {
     const key = new URL(url); key.searchParams.delete("p");
     return e.respondWith(cacheFirst(req, AUDIO, AUDIO_MAX, key.href));
   }
+  if (url.pathname.startsWith("/audio/")) return e.respondWith(cacheFirst(req, AUDIO, AUDIO_MAX)); // version mobile : audio statique
   if (url.pathname.startsWith("/api/")) return; // jamais en cache
   if (url.pathname.startsWith("/fonts/") && url.pathname.endsWith(".woff2")) return e.respondWith(cacheFirst(req, STATIC));
   if (url.pathname.startsWith("/avatars/") || url.pathname.startsWith("/icons/")) return e.respondWith(cacheFirst(req, STATIC));

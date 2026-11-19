@@ -69,7 +69,8 @@ let state = loadState();
 // ---------- Compte (nécessite server.js ; sinon mode invité) ----------
 let account = null;   // utilisateur connecté, ou null (invité : tout reste dans ce navigateur)
 let serverOn = false; // l'API répond-elle ?
-let features = { llm: false }; // fonctionnalités activées côté serveur
+// Version mobile (tools/portable.js --os mobile) : pas de serveur, mobile.js fixe les fonctionnalités
+let features = typeof MOCHI_STATIC !== "undefined" ? MOCHI_STATIC : { llm: false }; // fonctionnalités activées côté serveur
 const storeKey = () => (account ? `mochi-user-${account.id}` : STORE_KEY);
 
 async function api(method, url, body, raw) {

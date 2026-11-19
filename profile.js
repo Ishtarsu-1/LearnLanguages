@@ -23,6 +23,9 @@ function viewProfile() {
           <div class="wp-actions mt-8">${syncBadge()}
             ${account.avatar_url ? `<button class="mini" data-act="remove-photo">Retirer la photo</button>` : ""}
             <button class="mini" data-act="logout">Se déconnecter</button></div>`
+        : features.static ? `
+          <div class="guest-cta"><p><b>📱 Version mobile de Mochi.</b> Ta progression est enregistrée dans ce navigateur, sur ce téléphone. Ajoute Mochi à l'écran d'accueil pour l'utiliser comme une appli, même hors ligne (sur iPhone, c'est aussi ce qui la garde en sécurité). Pas de compte ni d'amis dans cette version.</p>
+            <a class="btn small" href="#/avis">💬 Donner mon avis</a></div>`
         : features.portable ? `
           <div class="guest-cta"><p><b>💼 Version portable de Mochi.</b> Ta progression est enregistrée sur cet ordinateur (dossier « donnees » à côté du lanceur) : garde ce dossier pour la retrouver. Pas de compte ni d'amis dans cette version.</p>
             <a class="btn small" href="#/avis">💬 Donner mon avis</a></div>`

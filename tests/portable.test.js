@@ -34,6 +34,16 @@ let fails = 0; const ok = (c, m) => { if (!c) { fails++; console.log("FAIL", m);
   // Constructeur : cibles connues, fichiers inutiles exclus
   const { TARGETS } = require("../tools/portable.js");
   ok(["win", "linux", "mac"].every((k) => TARGETS[k]) && TARGETS.win.out === "node.exe", "cibles Windows, Linux, macOS");
+  // Version mobile : site sans serveur, audio statique nommé par la même empreinte des deux côtés
+  const { audioKey, siteFiles } = require("../tools/portable.js");
+  const s2 = loadSite();
+  ok(["en\nvoix\nHello!", "ko\nv\n안녕하세요", "zh\nzm_yunxi\n你好"].every((t) => s2.run(`audioKey(${JSON.stringify(t)})`) === audioKey(t)), "même empreinte audio côté site et côté constructeur");
+  const k = audioKey("en\naf_heart\nHello there.");
+  s2.run(`features = { static: true, portable: true, tts: { en: ["af_heart"] }, audio: { ${JSON.stringify(k)}: "mp3" } }`);
+  ok(s2.run(`ttsUrl("  Hello there. ", "en", "af_heart")`) === `audio/${k}.mp3` && s2.run(`ttsUrl("Pas là.", "en", "af_heart")`) === null, "audio statique : fichier connu, sinon voix de l'appareil");
+  ok(s2.run(`viewProfile()`).includes("Version mobile de Mochi"), "profil : version mobile");
+  const sf = siteFiles();
+  ok(sf.includes("index.html") && sf.includes("sw.js") && sf.includes("icons/apple-touch-icon.png") && sf.some((f) => f.endsWith(".woff2")) && !sf.some((f) => /server|\.env|^tools\//.test(f)), "fichiers du site mobile : ceux du navigateur, rien du serveur");
   console.log(fails ? `${fails} échec(s)` : "OK : version portable");
   process.exit(fails ? 1 : 0);
 })().catch((e) => { console.log("ERREUR", e); process.exit(1); });

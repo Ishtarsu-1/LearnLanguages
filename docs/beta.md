@@ -72,6 +72,23 @@ npm run portable -- --with-feedback       # les avis t'arrivent par e-mail (sino
 - **Windows** affiche « Windows a protégé votre ordinateur » (lanceur non signé) : « Informations complémentaires » › « Exécuter quand même ». **macOS** : clic droit › Ouvrir la première fois.
 - **Nouvelle version** : renvoie le zip ; ton ami recopie son dossier `donnees` dans le nouveau.
 
+### Sur téléphone (iPhone, Samsung, Android)
+
+Un téléphone ne fait pas tourner Node : impossible d'avoir un « double-clic sur Lancer Mochi ». La version mobile est donc le **site sans serveur** (mêmes fonctionnalités que la version portable), à mettre en ligne **une fois** puis à installer comme une appli.
+
+```bash
+npm run portable -- --os mobile           # → dist/Mochi-mobile/ (+ zip)
+```
+
+1. Glisse le dossier `dist/Mochi-mobile` sur <https://app.netlify.com/drop> (gratuit ; ou Cloudflare Pages › « Upload assets »). Le site doit être à la **racine** de l'adresse.
+2. Envoie l'adresse. **iPhone** : Safari › Partager › « Sur l'écran d'accueil ». **Samsung/Android** : Chrome ou Samsung Internet › ⋮ › « Ajouter à l'écran d'accueil ».
+3. Mochi s'ouvre en plein écran et marche **hors ligne** après la première visite.
+
+- **Progression** : dans le téléphone (pas de compte). Sur iPhone, utiliser l'icône de l'écran d'accueil : Safari efface les données d'un site ouvert en onglet et inutilisé 7 jours.
+- **Avis** : le bouton 💬 ouvre le menu de partage du téléphone (message, WhatsApp…). `--with-feedback` met ton adresse `FEEDBACK_TO` dans le site (elle devient **publique**), et l'avis part en e-mail ; la clé Resend n'y est jamais mise.
+- **Mise à jour** : remets le dossier au même endroit (Netlify › Deploys › glisser le dossier) ; la progression est gardée.
+- Pas de `--ctf` en mobile (le défi a besoin du serveur).
+
 ## 3. Le message à envoyer
 
 > Salut ! Je développe **Mochi**, un site pour apprendre l'anglais, le coréen ou le chinois (fait pour les francophones). Tu veux bien le tester une semaine ? 🍡

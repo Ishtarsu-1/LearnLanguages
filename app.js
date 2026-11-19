@@ -9,7 +9,9 @@
 const LAST_ACCOUNT = "mochi-last-account";
 const rememberAccount = (d) => { try { if (d) localStorage.setItem(LAST_ACCOUNT, JSON.stringify(d)); else localStorage.removeItem(LAST_ACCOUNT); } catch {} };
 (async function boot() {
-  try {
+  // Version mobile : pas de serveur. On demande au navigateur de garder la progression.
+  if (features.static) { try { navigator.storage?.persist?.(); } catch {} }
+  else try {
     const r = await fetch("/api/me", { credentials: "same-origin" });
     if (r.ok && (r.headers.get("content-type") || "").includes("json")) {
       serverOn = true;
@@ -41,12 +43,12 @@ async function prefetchAudio() {
   const plays = audioPlays;
   const soon = Date.now() + 2 * 864e5, seen = new Set();
   const list = state.cards.filter((c) => c.context && new Date(c.due) <= soon && audioSource(c.lang) === "server")
-    .map((c) => ttsUrl(c.context, c.lang, defaultServerVoice(c.lang))).filter((u) => !seen.has(u) && seen.add(u));
+    .map((c) => ttsUrl(c.context, c.lang, defaultServerVoice(c.lang))).filter((u) => u && !seen.has(u) && seen.add(u));
   const cache = await caches.open("mochi-audio");
   for (const u of list.slice(0, 15)) {
     if (!navigator.onLine || audioPlays !== plays) return;
     if (await cache.match(u)) continue;
-    try { const r = await fetch(`${u}&p=low`); if (!r.ok) return; } catch { return; } // le service worker range la réponse (même clé que le clic)
+    try { const r = await fetch(features.static ? u : `${u}&p=low`); if (!r.ok) return; } catch { return; } // le service worker range la réponse (même clé que le clic)
     await new Promise((r) => setTimeout(r, 3000));
   }
 }

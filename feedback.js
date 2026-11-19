@@ -21,7 +21,7 @@ window.addEventListener("hashchange", (e) => {
 function viewFeedback() {
   const F = (ui.avis ||= { kinds: ["avis"], msgs: {}, rating: 0, sent: false, busy: false });
   if (F.sent) return `<section class="view lesson-shell"><div class="card empty">${mochi("small", "proud")}
-    <h2>Merci, c'est envoyé ! 🍡</h2><p class="muted">Ton retour aide vraiment à améliorer Mochi.</p>
+    <h2>${F.offline === "copy" ? "Merci ! Ton avis est copié 🍡" : F.offline ? "Merci ! 🍡" : "Merci, c'est envoyé ! 🍡"}</h2><p class="muted">${F.offline === "copy" ? "Colle-le dans un message à la personne qui t'a envoyé Mochi. " : ""}Ton retour aide vraiment à améliorer Mochi.</p>
     <div class="wp-actions avis-done"><a class="btn" href="${esc(ui.avisFrom || "#/")}">Revenir où j'étais</a><button class="btn ghost" data-act="avis-again">Envoyer un autre retour</button></div></div></section>`;
   const lang = (ui.avisFrom || "").match(/#\/lang\/(en|ko|zh|ru)/)?.[1] || state.lastLang || "";
   const chosen = AVIS_KINDS.filter(([k]) => F.kinds.includes(k));
@@ -60,6 +60,16 @@ Object.assign(actions, {
   "avis-star": (el) => { avisKeep(); const n = +el.dataset.n; ui.avis.rating = ui.avis.rating === n ? 0 : n; render(); },
   "avis-again": () => { ui.avis = null; render(); },
 });
+// Version mobile (pas de serveur) : l'avis part par e-mail (si l'adresse est dans le paquet),
+// par le menu de partage du téléphone, ou à défaut est copié.
+async function avisOffline(parts, F) {
+  const label = (k) => AVIS_KINDS.find(([x]) => x === k)?.[2] || k;
+  const text = `Mochi (version mobile) : mon avis\n\n${parts.map((p) => `${label(p.kind)} :\n${p.message}`).join("\n\n")}${F.rating ? `\n\nNote : ${F.rating}/5` : ""}${ui.avisFrom ? `\nPage : ${ui.avisFrom}` : ""}`;
+  F.offline = "share";
+  if (features.feedbackTo) { location.href = `mailto:${features.feedbackTo}?subject=${encodeURIComponent("Avis sur Mochi")}&body=${encodeURIComponent(text)}`; return; }
+  if (navigator.share) { try { await navigator.share({ text }); return; } catch (e) { if (e?.name === "AbortError") throw new Error("Envoi annulé : réessaie quand tu veux."); } }
+  await navigator.clipboard.writeText(text); F.offline = "copy";
+}
 // Garde ce qui est déjà tapé avant un nouveau rendu
 function avisKeep() {
   const f = document.querySelector?.("form[data-avis]");
@@ -78,6 +88,7 @@ $app.addEventListener("submit", async (e) => {
     const parts = F.kinds.map((kind) => ({ kind, message: (F.msgs[kind] || "").trim() }));
     const empty = parts.find((p) => p.message.length < 3);
     if (empty) throw new Error(`Écris quelques mots pour « ${AVIS_KINDS.find(([k]) => k === empty.kind)[2]} », ou décoche ce sujet.`);
+    if (features.static) { await avisOffline(parts, F); F.sent = true; F.busy = false; render(); return; }
     await api("POST", "/api/feedback-site", { parts, rating: F.rating || null, contact: (F.contact || "").trim() || null, page: ui.avisFrom || null, lang: form.dataset.lang || null });
     F.sent = true; F.busy = false; render();
   } catch (er) {
