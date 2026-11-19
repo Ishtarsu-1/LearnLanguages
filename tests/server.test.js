@@ -68,6 +68,22 @@ server.listen(0, "127.0.0.1", async () => {
     ok((await call("POST", "/api/signup", { email: "sans@cgu.fr", password: "motdepasse1" })).status === 400, "conditions non acceptées → refus");
     let r = await call("POST", "/api/signup", { email: "Lea@Test.fr", password: "motdepasse1", accept: true, name: "Léa" });
     ok(r.status === 201 && r.data.user.name === "Léa" && cookie.startsWith("mochi_sid="), "signup " + JSON.stringify(r.data));
+    { // « Donner mon avis » : invités acceptés, validation, e-mail à FEEDBACK_TO (jamais une adresse de la requête), limite par IP
+      const { mail } = require(path.join((process.argv[2] || path.join(__dirname, "..")), "server.js"));
+      process.env.FEEDBACK_TO = "editeur@test.fr";
+      ok((await call("POST", "/api/feedback-site", { kind: "pirate", message: "salut" })).status === 400, "avis : type inconnu refusé");
+      ok((await call("POST", "/api/feedback-site", { kind: "bug", message: "" })).status === 400, "avis : message vide refusé");
+      ok((await call("POST", "/api/feedback-site", { kind: "bug", message: "ok ok", contact: "pas-un-mail" })).status === 400, "avis : contact invalide refusé");
+      const r = await call("POST", "/api/feedback-site", { kind: "bug", rating: 4, message: "Le bouton <b>Lire</b> ne marche pas", page: "#/lang/ko/lire", lang: "ko", contact: "ami@test.fr", to: "pirate@evil.fr" }, { ck: "" });
+      ok(r.status === 201 && r.data.id > 0, "avis : envoyé par un invité");
+      await new Promise((ok2) => setTimeout(ok2, 20));
+      const m = mail.outbox.at(-1);
+      ok(m.to === "editeur@test.fr" && m.replyTo === "ami@test.fr" && /🐞 Bug/.test(m.subject) && m.html.includes("&lt;b&gt;Lire&lt;/b&gt;") && !m.html.includes("<b>Lire"), "avis : e-mail à FEEDBACK_TO, réponse à l'ami, HTML échappé");
+      ok(db.prepare("SELECT count(*) n FROM site_feedback").get().n === 1 && db.prepare("SELECT mailed_at FROM site_feedback").get().mailed_at, "avis : enregistré en base, envoi noté");
+      for (let i = 0; i < 4; i++) await call("POST", "/api/feedback-site", { kind: "avis", message: "encore un" }, { ck: "" });
+      ok((await call("POST", "/api/feedback-site", { kind: "avis", message: "de trop" }, { ck: "" })).status === 429, "avis : 5 par heure et par IP");
+      delete process.env.FEEDBACK_TO;
+    }
     { // Relecture du contenu (CONTENU-PIPELINE, lot C6) : admins uniquement, identifiants stricts
       ok((await call("GET", "/api/admin/content/drafts")).status === 403, "contenu : refusé aux non-admins");
       ok((await call("POST", "/api/admin/content/draft/en-x/publish", {})).status === 403, "publication : refusée aux non-admins");

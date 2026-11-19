@@ -299,6 +299,14 @@ MAIL_FROM=Mochi <bonjour@ton-domaine.fr>
 PUBLIC_URL=https://ton-domaine.fr
 ```
 
+**Sans nom de domaine** (tests entre amis) : si tu crées le compte Resend avec **ta propre adresse**, l'expéditeur de test `onboarding@resend.dev` (utilisé par défaut, sans `MAIL_FROM`) marche tout de suite, mais **uniquement vers cette adresse**. Parfait pour recevoir les retours des testeurs ; les e-mails de mot de passe oublié et de confirmation des autres comptes, eux, ne partiront qu'une fois un domaine vérifié.
+
+**Retours des testeurs** (« 💬 Donner mon avis », page `#/avis`, lien dans le pied de page et le profil) : ouvert aussi aux invités, 5 envois par heure et par IP. Chaque retour est enregistré dans la base (table `site_feedback`, visible dans le tableau de bord admin) et envoyé, aux couleurs de Mochi, à l'adresse de `FEEDBACK_TO` ; « Répondre » répond directement au testeur s'il a laissé son e-mail.
+
+```
+FEEDBACK_TO=ton.adresse@exemple.fr
+```
+
 `PUBLIC_URL` sert à construire les liens des e-mails. Elle n'est jamais déduite de la requête : sinon, un attaquant pourrait faire pointer le lien de réinitialisation vers son propre site.
 
 ## 6 quinquies. Comptes administrateurs
@@ -483,6 +491,7 @@ Le chemin côté serveur est `DATA_DIR/tts` (`./data/tts` par défaut). Ensuite,
 | `TTS_TIMEOUT_MS` | `15000` | Délai maximum d'une génération (une fois lancée) |
 | `RESEND_API_KEY` | — | Envoi réel des e-mails (section 6 quater) ; sans clé, ils s'affichent dans le terminal |
 | `MAIL_FROM` | `Mochi <onboarding@resend.dev>` | Expéditeur des e-mails |
+| `FEEDBACK_TO` | — | Adresse qui reçoit les retours du formulaire « Donner mon avis » ; sans valeur, ils sont seulement enregistrés |
 | `PUBLIC_URL` | `http://localhost:PORT` | Adresse du site, pour les liens envoyés par e-mail |
 | `PORT` | `8000` | Port du serveur |
 | `DATA_DIR` | `./data` | Base de données et photos de profil |

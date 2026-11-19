@@ -640,6 +640,16 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
   Object.assign(state, saved);
   location.hash = "";
 }
+{ // « Donner mon avis »
+  ui.avis = null; ui.avisFrom = "#/lang/ko/lire";
+  const v = viewFeedback();
+  ok(v.includes('form class="card avis-form" data-avis="1" data-lang="ko"') && (v.match(/data-act="avis-kind"/g) || []).length === 4 && (v.match(/data-act="avis-star"/g) || []).length === 5 && v.includes("#/lang/ko/lire"), "avis : formulaire (types, étoiles, page jointe)");
+  actions["avis-star"]({ dataset: { n: "4" } }); ok(ui.avis.rating === 4 && viewFeedback().includes('aria-pressed="true"'), "avis : note");
+  ui.avis.sent = true; ok(viewFeedback().includes("Merci, c'est envoyé"), "avis : remerciement");
+  ok(legalFooter().includes("#/avis"), "avis : lien dans le pied de page");
+  ok(!/ style="/.test(viewFeedback()), "avis : aucun style inline");
+  ui.avis = null; ui.avisFrom = null;
+}
 { // Admin › Contenu (CONTENU-PIPELINE, lots C6 et C8) : rendu de la file, d'un brouillon, de la couverture
   const a = account; account = { id: 1, email: "a@b.co", is_admin: true, created_at: new Date().toISOString() };
   const draft = { id: "ko-a1-01-1", lang: "ko", level: "A1", unit: "ko-A1-01", title: "Au café", icon: "☕", kind: "Dialogue", status: "draft",

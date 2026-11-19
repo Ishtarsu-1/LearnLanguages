@@ -106,6 +106,7 @@ function legalPrivacy() {
       ${row("Sécurité", "Adresse IP et adresse e-mail en cas de tentatives répétées (connexion, inscription, mot de passe oublié, voix)", "Freiner les attaques et les abus", "Intérêt légitime (sécurité du service)", "24 heures au plus")}
       ${row("Liens par e-mail", "Jetons de réinitialisation du mot de passe et de confirmation d'adresse (empreintes)", "Te permettre de changer ton mot de passe, confirmer ton adresse", "Exécution du service", "30 minutes (mot de passe) ou 7 jours (confirmation), usage unique")}
       ${row("Corrections par l'IA", "Le nombre d'utilisations par jour. Les phrases envoyées ne sont <b>pas conservées</b> par Mochi", "Limiter l'usage quotidien", "Exécution du service", "90 jours (compteurs)")}
+      ${row("Tes retours (« Donner mon avis »)", "Ton message, sa note et son type, la page où tu étais, ton navigateur, ton compte si tu es connecté·e, et une adresse de contact si tu en donnes une", "Améliorer Mochi pendant la phase de test, te répondre si tu le demandes", "Intérêt légitime (améliorer le service) ; ton choix d'écrire", "Le temps de la phase de test")}
       ${row("Journal technique", "Messages d'erreur du serveur (sans contenu de tes exercices)", "Corriger les pannes", "Intérêt légitime", "Le temps de la phase de test")}
     </tbody>
   </table></div>
@@ -115,7 +116,7 @@ function legalPrivacy() {
   <ul>
     <li><b>Hébergement</b> : ${L_.host}.</li>
     ${claude ? `<li><b>Correcteur et conversations IA : Anthropic (États-Unis)</b>. Quand tu fais corriger une phrase, traduis avec correction ou parles dans une mission, <b>ta phrase</b> et le contexte de l'exercice lui sont envoyés pour produire la correction. Ni ton e-mail ni ton nom ne sont transmis.</li>` : ollama ? `<li><b>Correcteur et conversations IA</b> : le modèle tourne <b>sur le serveur de Mochi</b> (Ollama) ; tes phrases ne sont envoyées à aucun service extérieur.</li>` : `<li><b>Correcteur IA</b> : désactivé pour l'instant.</li>`}
-    ${resend ? `<li><b>E-mails (mot de passe oublié, confirmation d'adresse) : Resend (États-Unis)</b>, qui reçoit ton adresse e-mail et le contenu du message.</li>` : `<li><b>E-mails</b> : aucun service d'envoi n'est utilisé pour l'instant.</li>`}
+    ${resend ? `<li><b>E-mails (mot de passe oublié, confirmation d'adresse, tes retours transmis à l'éditeur) : Resend (États-Unis)</b>, qui reçoit l'adresse et le contenu du message.</li>` : `<li><b>E-mails</b> : aucun service d'envoi n'est utilisé pour l'instant.</li>`}
     ${serverVoices ? `<li><b>Voix</b> : générées <b>sur le serveur de Mochi</b> (Kokoro, MeloTTS), uniquement à partir des textes du site.</li>` : ""}
     <li><b>Voix du navigateur</b> : quand Mochi utilise les voix installées sur ton appareil, certains navigateurs (Chrome, Edge…) envoient le texte lu à leurs propres serveurs pour le prononcer. Il s'agit des textes de Mochi, pas de tes données.</li>
   </ul>
@@ -204,6 +205,7 @@ function viewLegal(page) {
 // ni bouton (à revoir si un outil de mesure d'audience est ajouté un jour).
 function legalFooter() {
   return `<footer class="site-footer">
+    <p class="avis-line"><a class="lnk" href="#/avis">💬 Donner mon avis sur Mochi</a></p>
     <p class="cookie-line">🍪 Mochi n'utilise que des cookies nécessaires · <a class="lnk" href="#/legal/cookies">En savoir plus</a></p>
     <nav aria-label="Informations légales">${Object.entries(LEGAL_PAGES).map(([k, t]) => `<a href="#/legal/${k}">${t}</a>`).join("")}</nav><small class="muted">Mochi · version de test</small></footer>`;
 }

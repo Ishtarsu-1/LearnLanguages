@@ -113,6 +113,11 @@ db.exec(`
   CREATE TABLE IF NOT EXISTS login_attempts (
     key TEXT PRIMARY KEY, count INTEGER NOT NULL, window_start INTEGER NOT NULL, blocked_until INTEGER NOT NULL DEFAULT 0
   );
+  -- Retours des testeurs (formulaire « Donner mon avis ») : copie en base, en plus de l'e-mail
+  CREATE TABLE IF NOT EXISTS site_feedback (
+    id INTEGER PRIMARY KEY AUTOINCREMENT, created_at TEXT NOT NULL, user_id INTEGER, kind TEXT NOT NULL, rating INTEGER,
+    message TEXT NOT NULL, page TEXT, lang TEXT, contact TEXT, user_agent TEXT, mailed_at TEXT, mail_error TEXT
+  );
   CREATE INDEX IF NOT EXISTS sync_kv_rev ON sync_kv (user_id, rev);
   CREATE INDEX IF NOT EXISTS sync_cards_rev ON sync_cards (user_id, rev);
   CREATE INDEX IF NOT EXISTS review_logs_rev ON review_logs (user_id, rev);
@@ -314,6 +319,7 @@ const RATE_LIMITS = {
   "login-email": { free: 5, max: 60e3, window: 3600e3 },
   signup: { free: 10, max: 15 * 60e3, window: 3600e3 },
   feedback: { free: 10, max: 60e3, window: 60e3, flat: true }, // 10 corrections par minute, pas de rafales
+  avis: { free: 4, max: 3600e3, window: 3600e3, flat: true },   // formulaire « Donner mon avis » : 5 par heure et par IP
   doctor: { free: 1, max: 60e3, window: 60e3, flat: true },    // diagnostic de la machine (admin) : 1 par minute
   forgot: { free: 5, max: 15 * 60e3, window: 3600e3 },        // demandes de réinitialisation (par IP et par adresse)
   verify: { free: 3, max: 15 * 60e3, window: 3600e3 },        // renvois de l'e-mail de vérification
@@ -551,6 +557,36 @@ async function api(req, res, url) {
     return send(res, 200, { ok: true });
   }
 
+  // Retour d'un testeur (« Donner mon avis ») : ouvert aux invités, enregistré, puis envoyé par e-mail
+  // à FEEDBACK_TO. Limité par IP. L'adresse de destination ne vient jamais de la requête.
+  if (route === "POST /api/feedback-site") {
+    const b = await readJson(req, 16 * 1024);
+    const kind = mailer.FEEDBACK_KINDS.includes(b.kind) ? b.kind : null;
+    const message = typeof b.message === "string" ? b.message.trim() : "";
+    const rating = Number.isInteger(b.rating) && b.rating >= 1 && b.rating <= 5 ? b.rating : null;
+    const contact = typeof b.contact === "string" && b.contact.trim() ? b.contact.trim() : null;
+    if (!kind) return fail(res, 400, "Choisis le type de retour.");
+    if (message.length < 3 || message.length > 3000) return fail(res, 400, "Ton message doit faire entre 3 et 3 000 caractères.");
+    if (contact && (contact.length > 254 || !EMAIL_RE.test(contact))) return fail(res, 400, "Adresse e-mail de contact invalide.");
+    const wait = waitFor(`avis:${ip}`);
+    if (wait) return tooMany(res, wait);
+    recordAttempt(`avis:${ip}`);
+    const who = currentSession(req)?.user || null;
+    const page = typeof b.page === "string" ? b.page.slice(0, 200) : null, lang = ["en", "ko"].includes(b.lang) ? b.lang : null;
+    const ua = String(req.headers["user-agent"] || "").slice(0, 300), at = now();
+    const id = Number(db.prepare("INSERT INTO site_feedback (created_at, user_id, kind, rating, message, page, lang, contact, user_agent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)")
+      .run(at, who?.id ?? null, kind, rating, message, page, lang, contact, ua).lastInsertRowid);
+    const to = process.env.FEEDBACK_TO;
+    if (to) {
+      const m = mailer.feedbackMail({ id, kind, rating, message, page, lang: lang && { en: "anglais", ko: "coréen" }[lang], contact, userAgent: ua, name: who?.name, email: who?.email,
+        date: new Date(at).toLocaleString("fr-FR", { dateStyle: "full", timeStyle: "short", timeZone: "Europe/Paris" }) });
+      mail.send({ to, ...m, replyTo: contact || who?.email || undefined })
+        .then(() => db.prepare("UPDATE site_feedback SET mailed_at = ? WHERE id = ?").run(now(), id))
+        .catch((e) => { console.error("Retour testeur, e-mail :", e.message); db.prepare("UPDATE site_feedback SET mail_error = ? WHERE id = ?").run(e.message.slice(0, 300), id); });
+    }
+    return send(res, 201, { ok: true, id });
+  }
+
   // Voix serveur : ouvertes aux invités aussi. Le cache est servi librement,
   // seule la génération (qui coûte du calcul) est limitée par IP.
   if (route === "GET /api/tts") {
@@ -740,6 +776,8 @@ async function api(req, res, url) {
       tts: { voices: tts.info(), files: ttsFiles, bytes: ttsBytes },
       machine: machineInfo(),
       mail: mail.mode,
+      feedback: { total: one("SELECT count(*) n FROM site_feedback").n, to: !!process.env.FEEDBACK_TO,
+        last: db.prepare("SELECT id, created_at, kind, rating, message, page, mailed_at IS NOT NULL mailed, mail_error FROM site_feedback ORDER BY id DESC LIMIT 20").all() },
       list: db.prepare(`SELECT u.id, u.email, u.name, u.created_at, u.last_login_at, u.email_verified_at IS NOT NULL verified, u.is_admin admin,
           (SELECT count(*) FROM sync_cards c WHERE c.user_id = u.id) cards, (SELECT count(*) FROM review_logs r WHERE r.user_id = u.id) reviews
         FROM users u ORDER BY u.created_at DESC LIMIT 100`).all(),
@@ -802,6 +840,7 @@ const STATIC = {
   "/tour.js": ["tour.js", "text/javascript; charset=utf-8"],
   "/legal.js": ["legal.js", "text/javascript; charset=utf-8"],
   "/admin-content.js": ["admin-content.js", "text/javascript; charset=utf-8"],
+  "/feedback.js": ["feedback.js", "text/javascript; charset=utf-8"],
   "/styles.css": ["styles.css", "text/css; charset=utf-8"],
   "/tokens.css": ["tokens.css", "text/css; charset=utf-8"],
   "/fonts/pretendard.css": ["fonts/pretendard.css", "text/css; charset=utf-8"],

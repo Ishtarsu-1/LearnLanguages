@@ -109,6 +109,7 @@ function viewProfile() {
       <a class="btn ghost small" href="#/pourquoi">🔬 Pourquoi ça marche ?</a>
       <button class="btn ghost small" data-tour="open">🧭 Revoir la visite guidée</button>
       <a class="btn ghost small" href="#/legal/confidentialite">🔒 Mes données et confidentialité</a>
+      <a class="btn ghost small" href="#/avis">💬 Donner mon avis</a>
       ${isAdmin() ? `<a class="btn small" href="#/admin">🛠️ Tableau de bord admin</a>` : ""}
     </div>
 
@@ -303,7 +304,12 @@ function viewAdmin() {
 
     <h2 class="section-title">Fonctionnalités</h2>
     <div class="card"><table class="admin-table"><tbody>${features.map(([n, st, info]) => `<tr><th scope="row">${n}</th><td>${st}</td><td class="muted">${info}</td></tr>`).join("")}</tbody></table></div>
-    ${machineCard(d.machine)}`}
+    ${machineCard(d.machine)}
+    ${d.feedback ? `<h2 class="section-title">Retours des testeurs (${d.feedback.total})</h2>
+    <div class="card">${d.feedback.to ? "" : `<p class="muted"><small>FEEDBACK_TO absent de .env : les retours sont seulement enregistrés, pas envoyés par e-mail.</small></p>`}
+      ${d.feedback.last.length ? `<table class="admin-table"><tbody>${d.feedback.last.map((f) => `<tr><th scope="row">${{ avis: "💬", bug: "🐞", idee: "💡", contenu: "📖" }[f.kind] || "💬"} ${fmtDate(f.created_at)}${f.rating ? ` · ${"★".repeat(f.rating)}` : ""}</th>
+        <td>${esc(f.message.length > 160 ? `${f.message.slice(0, 160)}…` : f.message)}${f.page ? `<br/><small class="muted">${esc(f.page)}</small>` : ""}</td>
+        <td class="muted">${f.mailed ? "✉️ envoyé" : f.mail_error ? `⚠️ ${esc(f.mail_error)}` : "—"}</td></tr>`).join("")}</tbody></table>` : `<p class="muted m-0">Aucun retour pour l'instant.</p>`}</div>` : ""}`}
 
     <h2 class="section-title">Contenu</h2>
     <p><a class="btn small" href="#/admin/contenu">📝 Relire et publier le contenu</a> <a class="btn ghost small" href="#/admin/contenu/couverture">📊 Couverture</a></p>
