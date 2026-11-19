@@ -43,8 +43,8 @@
 | **P2** | Mode histoire (🟢 moteur + 5 chapitres par langue ; reste : la suite de l'histoire) | 🔴 | 🆓 | bibliothèque |
 | ~~**P2**~~ | ~~Application installable (PWA) + hors ligne~~ ✅ fait | 🟡 | 🆓 | — |
 | **P2** | Rappels et notifications | 🟡 | 🆓 | PWA |
-| **P2** | Liste d'amis | 🟡 | 🆓 | comptes |
-| **P2** | Défis entre amis | 🟡 | 🆓 | liste d'amis |
+| ~~**P2**~~ | ~~Liste d'amis~~ ✅ fait (pseudo, demande ou lien d'invitation, blocage, stats masquables) | 🟡 | 🆓 | comptes |
+| ~~**P2**~~ | ~~Défis entre amis~~ ✅ fait (semaine régulière, temps, révisions, mots solides, même chapitre ; calculés côté serveur ; reste : défis d'écoute et de production) | 🟡 | 🆓 | liste d'amis |
 | **P2** | Reconnaissance vocale (exercices oraux) | 🔴 | 🆓 | backend |
 | **P2** | Optimisation FSRS par utilisateur | 🟡 | 🆓 | historique de révisions |
 | **P3** | Classements entre amis, badges | 🟢 | 🆓 | amis |
@@ -258,12 +258,14 @@ Fait : manifeste et icônes Mochi (dont « maskable »), service worker (`sw.js`
 - E-mail hebdomadaire facultatif : heures, mots solides gagnés, saveurs débloquées, défis en cours.
 
 ### Liste d'amis 🟡 🆓
+✅ Fait (`social.js`, `friends.js`, page `#/amis`) : pseudo unique, demande par pseudo à accepter, lien d'invitation (amis directement, lien renouvelable), retirer, bloquer (silencieux), profil visible des seuls amis (prénom, avatar, heures, mots solides par langue, masquables). Reste : profil avec Mochi habillée.
 - Ajouter un ami par pseudo unique ou par lien d'invitation, avec une demande à accepter.
 - Profil public minimal : Mochi (avec ses accessoires), prénom, langues apprises, heures cumulées, mots solides. Ce qui est visible se règle dans les paramètres.
 - Bloquer ou retirer un ami. Rien n'est public par défaut.
 - Côté serveur : tables `friendships (user_id, friend_id, status, created_at)` et `usernames`.
 
 ### Défis entre amis 🟡 🆓
+✅ Fait : semaine régulière (chacun), temps ensemble et révisions ensemble (coopératif), mots solides (coopératif ou duel, progression depuis le début du défi), même chapitre ; 3, 7 ou 14 jours, 1 à 5 amis, invitation à accepter, carte dans Aujourd'hui. Progression calculée par le serveur à partir des données synchronisées, jamais d'XP à gagner. Reste : zéro retard, défis d'écoute et de production, notification de fin.
 **Règle d'or (§8, §16) : un défi ne doit jamais pousser à mal apprendre.** On ne fait pas de course à l'XP, qu'on pourrait gonfler en relisant ou en bâclant les cartes. On privilégie le **coopératif**.
 
 Défis qui récompensent les **bonnes pratiques** :

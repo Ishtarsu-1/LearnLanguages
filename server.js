@@ -15,6 +15,7 @@ const hw = require("./hardware.js");
 const mailer = require("./mailer.js");
 const { MISSIONS } = require("./missions.js");
 const contentAdminMod = require("./content-admin.js");
+const socialMod = require("./social.js");
 
 const PORT = Number(process.env.PORT) || 8000;
 const ROOT = __dirname;
@@ -187,6 +188,8 @@ const sha256 = (s) => crypto.createHash("sha256").update(s).digest("hex");
 const tts = ttsMod.create({ dir: path.join(DATA, "tts") });
 // Jetons envoyés par e-mail : aléatoires, stockés hachés, à usage unique
 const mail = mailer.create();
+// Amis et défis (social.js) : tables créées au démarrage
+const social = socialMod.create(db);
 const TOKEN_TTL = { reset: 30 * 60e3, verify: 7 * 864e5 };
 function issueToken(userId, kind) {
   const token = crypto.randomBytes(32).toString("base64url");
@@ -289,6 +292,7 @@ function publicUser(u) {
     id: u.id, email: u.email, name: u.name, avatar_emoji: u.avatar_emoji,
     avatar_url: u.avatar_file ? `/avatars/${u.avatar_file}` : null,
     created_at: u.created_at, last_login_at: u.last_login_at, email_verified: !!u.email_verified_at, is_admin: !!u.is_admin,
+    username: u.username || null, social_pending: social.pendingCount(u.id),
   };
 }
 
@@ -322,6 +326,7 @@ const RATE_LIMITS = {
   signup: { free: 10, max: 15 * 60e3, window: 3600e3 },
   feedback: { free: 10, max: 60e3, window: 60e3, flat: true }, // 10 corrections par minute, pas de rafales
   avis: { free: 4, max: 3600e3, window: 3600e3, flat: true },   // formulaire « Donner mon avis » : 5 par heure et par IP
+  friend: { free: 30, max: 3600e3, window: 3600e3, flat: true }, // demandes d'ami, liens d'invitation, défis créés : 30 par heure
   doctor: { free: 1, max: 60e3, window: 60e3, flat: true },    // diagnostic de la machine (admin) : 1 par minute
   forgot: { free: 5, max: 15 * 60e3, window: 3600e3 },        // demandes de réinitialisation (par IP et par adresse)
   verify: { free: 3, max: 15 * 60e3, window: 3600e3 },        // renvois de l'e-mail de vérification
@@ -753,6 +758,16 @@ async function api(req, res, url) {
     sendMail(auth.user, "verify");
     return send(res, 200, { ok: true });
   }
+  // Amis et défis (social.js) : la progression des défis est calculée côté serveur
+  if (route === "GET /api/friends" || /^POST \/api\/(friends|challenges)\//.test(route)) {
+    if (/^POST \/api\/(friends\/(request|invite)|challenges\/new)$/.test(route)) {
+      const wait = waitFor(`friend:${uid}`);
+      if (wait) return tooMany(res, wait);
+      recordAttempt(`friend:${uid}`);
+    }
+    try { return send(res, 200, await social.handle(route, uid, (r) => readJson(r, 16 * 1024), req)); }
+    catch (e) { if (e.expose) return fail(res, e.status, e.message); throw e; }
+  }
   // Relecture et publication du contenu (CONTENU-PIPELINE, lots C6 et C8) : admins uniquement
   if (url.pathname.startsWith("/api/admin/content/")) {
     if (!auth.user.is_admin) return fail(res, 403, "Réservé aux administrateurs.");
@@ -851,6 +866,7 @@ const STATIC = {
   "/legal.js": ["legal.js", "text/javascript; charset=utf-8"],
   "/admin-content.js": ["admin-content.js", "text/javascript; charset=utf-8"],
   "/feedback.js": ["feedback.js", "text/javascript; charset=utf-8"],
+  "/friends.js": ["friends.js", "text/javascript; charset=utf-8"],
   "/styles.css": ["styles.css", "text/css; charset=utf-8"],
   "/tokens.css": ["tokens.css", "text/css; charset=utf-8"],
   "/fonts/pretendard.css": ["fonts/pretendard.css", "text/css; charset=utf-8"],
@@ -939,4 +955,4 @@ if (require.main === module) {
   warmEngines().catch((e) => console.error("Préchauffage :", e.message));
   hw.detectBasic().then((b) => { machine.basic = b; }).catch(() => {}); // léger : système, mémoire, nvidia-smi
 }
-module.exports = { server, contentAdmin, db, mail, clientIp, warmEngines, engines, tts, limiter: { waitFor, recordAttempt, clearAttempts } };
+module.exports = { server, contentAdmin, social, db, mail, clientIp, warmEngines, engines, tts, limiter: { waitFor, recordAttempt, clearAttempts } };

@@ -640,6 +640,36 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
   Object.assign(state, saved);
   location.hash = "";
 }
+{ // Amis et défis (friends.js)
+  const a = account;
+  account = null; ok(viewFriends().includes("Créer mon compte"), "amis : invité → invitation à créer un compte");
+  account = { id: 1, email: "a@b.co", name: "Léa", created_at: new Date().toISOString(), social_pending: 1 };
+  const types = { regular: { title: "Semaine régulière", icon: "📅", modes: ["each"], unit: "séances complètes", perPerson: { 3: 3, 7: 5, 14: 10 }, targets: null, needLang: false, needRef: false },
+    solid: { title: "Mots solides", icon: "🌱", modes: ["coop", "duel"], unit: "mots solides gagnés", targets: [10, 30, 60, 100], perPerson: null, needLang: true, needRef: false },
+    chapter: { title: "Même chapitre", icon: "📖", modes: ["each"], unit: "chapitre lu et compris", targets: null, perPerson: null, needLang: true, needRef: true } };
+  const coop = { id: 5, type: "solid", icon: "🌱", title: "Mots solides", unit: "mots solides gagnés", mode: "coop", lang: "en", target: 30, days: 7, start: "2026-11-19", end: "2026-11-25", daysLeft: 7, state: "active",
+    progress: { value: 12, target: 30 }, people: [{ id: 1, name: "Léa", me: true, value: 7 }, { id: 2, name: "Tom", value: 5 }], invited: [], myStatus: "joined" };
+  const fin = { ...coop, id: 6, state: "finished" };
+  ui.social = { at: Date.now(), d: { me: { username: "lea", shareStats: true, invite: "abcdefghij" }, types, pending: 2,
+    friends: [{ id: 2, name: "Tom", username: "tom", avatar: "🦊", stats: { hours: 3.5, langs: ["ko"], solid: { ko: 42 } } }, { id: 3, name: "Minji", username: "minji", avatar: "mochi" }],
+    incoming: [{ id: 4, name: "Sam", username: "sam" }], outgoing: [], blocked: [], challenges: [coop, fin], challengeInvites: [{ ...coop, id: 7, myStatus: "invited" }] } };
+  const v = viewFriends();
+  ok(v.includes("@lea") && v.includes("/#/ami/abcdefghij") && v.includes('data-act="fr-respond"') && v.includes('data-act="ch-answer"'), "amis : pseudo, lien d'invitation, demandes, invitations");
+  ok(v.includes("12 / 30") && v.includes("42 mots solides") && v.includes("Préfère garder ses stats") && v.includes('href="#/amis/defi/2"'), "amis : défi coopératif, stats d'un ami (ou masquées), bouton Défier");
+  ok(/on en relance un/i.test(v) && !/échec|raté|perdu|honte/i.test(v), "défi terminé : message bienveillant, jamais culpabilisant");
+  ok(!/ style="/.test(v), "amis : aucun style inline");
+  ui.newCh = null;
+  let n = viewFriends("defi", "2");
+  ok(n.includes('data-act="nc-type"') && ui.newCh.friends[0] === 2 && /data-act="nc-create" >/.test(n), "nouveau défi : ami présélectionné, prêt à lancer");
+  actions["nc-type"]({ dataset: { v: "solid" } }); actions["nc-mode"]({ dataset: { v: "duel" } }); actions["nc-friend"]({ dataset: { v: "3" } });
+  n = viewFriends("defi");
+  ok(n.includes("Un duel se joue à deux") && /data-act="nc-create" disabled/.test(n) && !n.includes("🌍 Toutes"), "duel à trois impossible ; mots solides : une langue précise");
+  actions["nc-type"]({ dataset: { v: "chapter" } }); n = viewFriends("defi");
+  ok(n.includes('id="nc-ref"') && n.includes("en-lost-cat:1"), "même chapitre : liste des chapitres");
+  ok(socialCard().includes("count-badge") && socialCard().includes("12 / 30"), "carte Défis dans Aujourd'hui");
+  ui.social.d.me.username = null; ok(viewFriends().includes("Choisis ton pseudo"), "amis : choisir son pseudo d'abord");
+  account = a; ui.social = { at: 9e15 }; ui.newCh = null; // pas de chargement réseau pendant les tests suivants
+}
 { // « Donner mon avis » : plusieurs sujets dans le même formulaire
   ui.avis = null; ui.avisFrom = "#/lang/ko/lire";
   let v = viewFeedback();

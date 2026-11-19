@@ -302,6 +302,7 @@ function viewLanguage(lang, tab) {
         </div>
         ${weekCard(L)}
         ${questsCard(lang)}
+        ${socialCard()}
         <div class="card">
           <h3>Vers le ${lvl[0]}</h3>
           <div class="bar mt-10 mb-6 mx-0"><span data-bar-w="${Math.min(100, (hours / lvl[1]) * 100)}"></span></div>
