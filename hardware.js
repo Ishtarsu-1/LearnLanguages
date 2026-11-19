@@ -99,6 +99,11 @@ async function detect({ execFileImpl, fetchImpl = fetch, env = process.env, ...b
     })();
     r.voices[lang] = { configured: true, base, up: g.ok, ms: g.ok ? Date.now() - t0 : null, error: g.error || null };
   }
+  // Analyseur coréen pour la chaîne de contenu (CONTENU-PIPELINE, lot C2) : Kiwi
+  const kiwiUrl = (env.KIWI_URL || "http://127.0.0.1:8882").replace(/\/+$/, "");
+  const kh = await getJson(fetchImpl, `${kiwiUrl}/health`);
+  const nlpVenv = env.NLP_VENV || path.join(os.homedir(), "mochi-nlp");
+  r.nlp = { kiwiUrl, kiwiUp: !!(kh.ok && kh.data?.ok), venv: fs.existsSync(path.join(nlpVenv, platform === "win32" ? "Scripts" : "bin")) ? nlpVenv : null };
   r.anthropicKey = !!env.ANTHROPIC_API_KEY; // jamais la valeur
   r.urls = Object.fromEntries(["TTS_URL", "TTS_URL_EN", "TTS_URL_KO", "OLLAMA_URL"].filter((k) => env[k]).map((k) => [k, env[k]]));
   return r;
@@ -166,6 +171,11 @@ function recommend(r, profile = chooseProfile(r)) {
   } else {
     notes.push("Voix : celles du navigateur. Ou pré-génère l'audio sur une machine plus puissante (npm run tts:pregen) puis copie son dossier data/tts/ ici.");
   }
+  // Chaîne de contenu (facultatif : seulement pour produire des textes coréens)
+  if (r.nlp && !r.nlp.kiwiUp) commands.push({ title: `Analyseur coréen Kiwi (production de contenu, facultatif)${r.nlp.venv ? ` : déjà installé dans ${r.nlp.venv}, le lancer` : ""}`, lines: r.nlp.venv
+    ? [win ? "& $HOME\\mochi-nlp\\Scripts\\python.exe tools\\kiwi_server.py" : "~/mochi-nlp/bin/python tools/kiwi_server.py"]
+    : win ? ["uv venv --python 3.12 $HOME\\mochi-nlp", "& $HOME\\mochi-nlp\\Scripts\\Activate.ps1", "uv pip install kiwipiepy", "python tools\\kiwi_server.py"]
+      : ["uv venv --python 3.12 ~/mochi-nlp && source ~/mochi-nlp/bin/activate", "uv pip install kiwipiepy", "python tools/kiwi_server.py"] });
   if (env.MOCHI_LLM_PROVIDER === "ollama" && !r.ollama?.models?.includes(model)) commands.push({ title: `Correcteur IA : Ollama (${model})`, lines: [...(r.ollama?.up ? [] : [win ? "# Installe Ollama pour Windows : https://ollama.com/download" : "curl -fsSL https://ollama.com/install.sh | sh"]), `ollama pull ${model}`] });
 
   // Incohérences et mémoire

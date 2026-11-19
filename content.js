@@ -13,9 +13,9 @@
 //  En coréen, un morceau placé après « | » dont le lemme est une particule
 //  est surligné comme particule (§6).
 //
-//  Le coréen est annoté à la main (lemme + particules) : c'est ce que ferait
-//  un analyseur morphologique (Kiwi, Mecab-ko). Pour du contenu généré
-//  automatiquement, il faudra brancher un vrai analyseur côté serveur.
+//  Les textes d'origine sont annotés à la main. Le nouveau contenu est annoté par
+//  tools/annotate.js (coréen : analyseur Kiwi ; anglais : lemmatiseur), puis relu
+//  (CONTENU-PIPELINE.md). Les données vivent dans content/, pas ici.
 
 const KO_PARTICLES = new Set(["은", "는", "이", "가", "을", "를", "에", "에서", "도", "의", "와", "과", "하고", "로", "으로", "랑", "이랑", "한테", "께"]);
 

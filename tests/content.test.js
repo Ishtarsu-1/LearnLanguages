@@ -65,5 +65,32 @@ const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
   fs.rmSync(tmp, { recursive: true });
 }
 
-if (fails) { console.log(`✗ ${fails} échec(s)`); process.exitCode = 1; } else console.log("✓ contenu");
+// ---------- C2 : annotation automatique ≥ 95 % des lemmes, 100 % des particules ----------
+(async () => {
+  const A = require("../tools/annotate.js");
+  const en = await A.evaluate("en");
+  ok(en.lemmaRate >= 0.95, `annotation anglaise : ${(en.lemmaRate * 100).toFixed(1)} % des lemmes (≥ 95 %)`);
+  if (en.gaps.length) console.log(A.evalReport("en", en));
+  // Coréen : réponses de Kiwi enregistrées (tests/fixtures/kiwi-ko-texts.json), rejouées sans serveur
+  const rec = L.readJSON(path.join(__dirname, "fixtures", "kiwi-ko-texts.json"));
+  const analyze = async (text) => { if (!rec[text]) throw new Error(`phrase non enregistrée : ${text}`); return rec[text]; };
+  const ko = await A.evaluate("ko", { analyze });
+  ok(ko.lemmaRate >= 0.95, `annotation coréenne (Kiwi enregistré) : ${(ko.lemmaRate * 100).toFixed(1)} % des lemmes (≥ 95 %)`);
+  ok(ko.particleRate === 1, `annotation coréenne : ${(ko.particleRate * 100).toFixed(1)} % des particules (100 %)`);
+  if (ko.gaps.length) console.log(A.evalReport("ko", ko));
+  // Kiwi en direct, s'il tourne (sinon : ignoré, voir SETUP.md « Produire du contenu »)
+  if (await A.kiwiHealth()) {
+    const live = await A.evaluate("ko");
+    ok(live.lemmaRate >= 0.95 && live.particleRate === 1, `annotation coréenne (Kiwi en direct) : ${(live.lemmaRate * 100).toFixed(1)} % / particules ${(live.particleRate * 100).toFixed(1)} %`);
+    if (live.gaps.length) console.log(A.evalReport("ko", live));
+  } else console.log("  (Kiwi non joignable : test en direct ignoré)");
+  // Cas particuliers
+  const ctx = { lexicon: { "go": { fr: "" }, "cat": { fr: "" } }, freq: [] };
+  const [s1] = await A.annotate(["Let's go! I don't know, it's Tom's cat."], "en", ctx);
+  ok(s1 === "Let's=let+us go! I don't=do+not know, it's=it+be @Tom's cat.", "contractions et possessif : " + s1);
+  ok((await A.annotate(["Where's Pepper?"], "en", ctx))[0] === "Where's=where+be @Pepper?", "nom propre listé (contenu existant)");
+  ok(await A.kiwiAnalyze("x", { url: "http://127.0.0.1:9" }).then(() => false, (e) => e.code === "KIWI_DOWN"), "Kiwi injoignable : erreur claire");
+})().then(() => {
+  if (fails) { console.log(`✗ ${fails} échec(s)`); process.exitCode = 1; } else console.log("✓ contenu");
+});
 module.exports = { ok };
