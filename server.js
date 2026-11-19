@@ -243,7 +243,9 @@ const LLM_PAUSE = "Le correcteur IA fait une pause pour aujourd'hui, voici la co
 const normText = (t) => String(t ?? "").normalize("NFC").trim().replace(/\s+/g, " ");
 const cacheKey = (b) => sha256(JSON.stringify([normText(b.text), normText(b.prompt), normText(b.who), normText(b.register), normText(b.reference), b.lang, llm.PROMPT_VERSION, llm.ENGINE, llm.MODEL]));
 // ttsSlow / llmSlow : mesurés au préchauffage (lot 8.4). Rien d'autre sur la machine n'est exposé ici.
-const featuresJson = (loggedIn = true) => JSON.stringify({ llm: loggedIn && LLM_ON, engine: llm.ENGINE, tts: tts.info(), mail: mail.mode, ttsSlow: !!engines.ttsSlow, llmSlow: !!engines.llmSlow });
+// Langues stables (accueil : en haut) ; les autres sont « Expérimentales » (section « En test »)
+const STABLE_LANGS = String(process.env.MOCHI_LANGS_STABLE || "en,ko").split(",").map((l) => l.trim()).filter(Boolean);
+const featuresJson = (loggedIn = true) => JSON.stringify({ stable: STABLE_LANGS, llm: loggedIn && LLM_ON, engine: llm.ENGINE, tts: tts.info(), mail: mail.mode, ttsSlow: !!engines.ttsSlow, llmSlow: !!engines.llmSlow });
 
 function hashPassword(pw) {
   const salt = crypto.randomBytes(16);

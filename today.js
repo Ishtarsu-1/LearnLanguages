@@ -169,6 +169,20 @@ function greeting() {
 }
 const fsrsWarning = () => (HAS_FSRS ? "" : `<div class="card warn">⚠️ L'algorithme FSRS n'a pas pu être chargé. Les révisions sont désactivées.</div>`);
 
+function langCard(id, exp = false) {
+  const l = LANGUAGES[id], L = state.langs[id];
+  return `
+        <a class="lang-card ${id} ${exp ? "exp" : ""}" href="#/lang/${id}">
+          <span class="deco">${l.deco}</span>
+          <span class="flag">${l.flag}</span>
+          <div><h2>${l.name}</h2><div class="hello ${koCls(id)}">${l.hello}</div></div>
+          <p class="muted m-0">${l.tagline}</p>
+          <div class="meta">
+            ${exp ? `<span class="tag exp-tag">🧪 Expérimental · peu de contenu</span>` : `<span class="tag c">${num0(knownCount(id))} mots connus</span>`}
+            <span class="tag">${L.started ? `⏱️ ${num1(L.seconds / 3600)} h` : "Débutant"}</span>
+          </div>
+        </a>`;
+}
 function viewHome() {
   const cont = state.lastLang && LANGUAGES[state.lastLang];
   return `
@@ -184,29 +198,11 @@ function viewHome() {
     </div>
 
     <h2 class="section-title">Choisis ta langue</h2>
-    <div class="lang-grid">
-      ${Object.entries(LANGUAGES).map(([id, l]) => {
-        const L = state.langs[id];
-        return `
-        <a class="lang-card ${id}" href="#/lang/${id}">
-          <span class="deco">${l.deco}</span>
-          <span class="flag">${l.flag}</span>
-          <div><h2>${l.name}</h2><div class="hello ${koCls(id)}">${l.hello}</div></div>
-          <p class="muted m-0">${l.tagline}</p>
-          <div class="meta">
-            <span class="tag c">${num0(knownCount(id))} mots connus</span>
-            <span class="tag">${L.started ? `⏱️ ${num1(L.seconds / 3600)} h` : "Débutant"}</span>
-          </div>
-        </a>`;
-      }).join("")}
-      ${COMING_SOON.map((l) => `
-        <button type="button" class="lang-card soon" data-act="lang-soon" data-name="${l.name}" aria-disabled="true" aria-label="${l.name} : bientôt disponible">
-          <span class="soon-badge">🔒 Bientôt</span>
-          <span class="flag">${l.flag}</span>
-          <div><h2>${l.name}</h2><div class="hello" lang="${l.lang}">${l.hello}</div></div>
-          <p class="muted m-0">En préparation</p>
-        </button>`).join("")}
-    </div>
+    <div class="lang-grid">${Object.keys(LANGUAGES).filter(isStable).map((id) => langCard(id)).join("")}</div>
+    ${Object.keys(LANGUAGES).some((id) => !isStable(id)) ? `<h2 class="section-title">🧪 En test</h2>
+    <p class="muted mt-0">Ces langues sont toutes neuves : l'essentiel marche, mais il y a encore peu de textes.</p>
+    <div class="lang-grid">${Object.keys(LANGUAGES).filter((id) => !isStable(id)).map((id) => langCard(id, true)).join("")}</div>` : ""}
+    <p class="muted center more-langs"><small>D'autres langues arrivent. Une envie ? <a class="lnk" href="#/avis">Dis-le-nous</a>.</small></p>
 
     <h2 class="section-title">La boucle de chaque jour</h2>
     <div class="features">

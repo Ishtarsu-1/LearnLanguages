@@ -594,15 +594,18 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
   ok(viewHangul(1).includes("Comment lire les repères"), "explication des repères");
   state.langs.ko.hangulDone = hd; account = acc;
 }
-{ // Langues en préparation : montrées, pas accessibles
-  const h = viewHome();
-  for (const n of ["Français", "Japonais", "Italien"]) ok(h.includes(`data-name="${n}"`) && h.includes(`${n} : bientôt disponible`), `${n} affiché, verrouillé`);
-  ok(!h.includes('href="#/lang/ja') && !LANGUAGES.ja, "aucun lien, pas une vraie langue");
-  ok(LANGUAGES.zh && !h.includes('data-name="Chinois"') && !h.includes("Chinois : bientôt"), "le chinois n'est plus « bientôt » : c'est une vraie langue");
-  let msg = ""; const t0 = toast; toast = (m) => (msg = m);
-  actions["lang-soon"]({ dataset: { name: "Japonais" } }); ok(/Japonais.*préparation/.test(msg), "clic : message « bientôt »");
-  toast = t0;
-  location.hash = "#/lang/ja"; route(); ok(!location.hash.startsWith("#/lang/ja/") , "URL directe : pas de page");
+{ // Accueil : langues stables en haut, langues expérimentales à part, plus de cartes « Bientôt »
+  const f0 = features;
+  let h = viewHome();
+  const top = h.slice(0, h.indexOf("🧪 En test"));
+  ok(top.includes('href="#/lang/en"') && top.includes('href="#/lang/ko"') && !top.includes('href="#/lang/zh"') && !top.includes('href="#/lang/ru"'), "anglais et coréen en haut");
+  ok(h.includes("🧪 En test") && h.includes('href="#/lang/zh"') && h.includes('href="#/lang/ru"') && (h.match(/Expérimental · peu de contenu/g) || []).length === 2, "chinois et russe dans « En test »");
+  ok(!h.includes("Bientôt") && !h.includes("Japonais") && h.includes('href="#/avis"') && h.includes("D'autres langues arrivent"), "pas de cartes « Bientôt », une ligne vers le formulaire");
+  features = { ...f0, stable: ["en", "ko", "zh"] }; h = viewHome();
+  ok(h.slice(0, h.indexOf("🧪 En test")).includes('href="#/lang/zh"') && (h.match(/Expérimental/g) || []).length === 1, "MOCHI_LANGS_STABLE choisit les langues stables");
+  features = { ...f0, stable: ["en", "ko", "zh", "ru"] }; ok(!viewHome().includes("🧪 En test"), "toutes stables : pas de section « En test »");
+  features = f0;
+  location.hash = "#/lang/ja"; route(); ok(!location.hash.startsWith("#/lang/ja/"), "URL directe d'une langue inexistante : pas de page");
   location.hash = "";
 }
 { // Mes mots en révision : liste, statuts, tri, pause, langues

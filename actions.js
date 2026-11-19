@@ -246,7 +246,6 @@ const actions = {
     save(); render();
     toast(pause ? `« ${el.dataset.l} » retiré des révisions (tu peux le remettre)` : `« ${el.dataset.l} » remis en révision ✓`);
   },
-  "lang-soon": (el) => toast(`${el.dataset.name} : en cours de préparation, bientôt sur Mochi 🍡`),
   theme: (el) => { state.settings.theme = el.dataset.v; save(); render(); },
   goal: (el) => { state.goal = +el.dataset.v; save(); render(); toast("Objectif mis à jour 🎯"); },
   export: () => {

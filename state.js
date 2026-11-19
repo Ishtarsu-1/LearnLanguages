@@ -12,13 +12,11 @@ const LANGUAGES = {
   zh: { name: "Chinois", native: "中文", flag: "🇨🇳", hello: "你好！", deco: "中", speechLang: "zh-CN", tagline: "Les tons et le pinyin d'abord, puis des phrases du quotidien" },
 };
 
-// Langues en préparation : montrées sur l'accueil, mais verrouillées (pas dans LANGUAGES,
-// pour qu'aucune autre partie du site ne les traite comme des langues actives)
-const COMING_SOON = [
-  { id: "fr", name: "Français", native: "Français", flag: "🇫🇷", hello: "Bonjour !", lang: "fr" },
-  { id: "ja", name: "Japonais", native: "日本語", flag: "🇯🇵", hello: "こんにちは！", lang: "ja" },
-  { id: "it", name: "Italien", native: "Italiano", flag: "🇮🇹", hello: "Ciao!", lang: "it" },
-];
+// Langues « stables » (beaucoup de contenu) et « expérimentales » (en test, peu de contenu).
+// Le serveur choisit (MOCHI_LANGS_STABLE=en,ko par défaut) ; sans serveur : anglais et coréen.
+// Aucune nouvelle langue tant que les langues stables n'ont pas atteint l'étape 2 des objectifs.
+const stableLangs = () => (features.stable?.length ? features.stable : ["en", "ko"]).filter((l) => LANGUAGES[l]);
+const isStable = (l) => stableLangs().includes(l);
 
 const GOALS = [{ min: 5, label: "Tranquille" }, { min: 10, label: "Régulier" }, { min: 15, label: "Sérieux" }, { min: 20, label: "Intense" }];
 // "mochi" : la mascotte elle-même (avec ses accessoires), avatar par défaut

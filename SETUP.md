@@ -518,6 +518,7 @@ Le chemin côté serveur est `DATA_DIR/tts` (`./data/tts` par défaut). Ensuite,
 | `COOKIE_SECURE` | — | Mettre `1` quand le site est servi en HTTPS (active aussi HSTS) |
 | `TRUST_PROXY` | — | Adresses des proxys de confiance, ex. `127.0.0.1,::1` (section 6 septies) |
 | `HOST` | toutes les interfaces ; `127.0.0.1` si `NODE_ENV=production` | Adresse d'écoute du serveur |
+| `MOCHI_LANGS_STABLE` | `en,ko` | Langues « stables » (en haut de l'accueil) ; les autres sont affichées à part, « 🧪 En test » |
 | `KIWI_URL` | `http://127.0.0.1:8882` | Analyseur coréen pour la production de contenu (section 6 octies) |
 
 ## 8. Données et sauvegarde
