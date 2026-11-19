@@ -17,7 +17,8 @@
     "content:release": "node --env-file-if-exists=.env tools/content-release.js",
     "backup": "node --env-file-if-exists=.env tools/backup.js",
     "restore": "node --env-file-if-exists=.env tools/backup.js restore",
-    "content:lexicon": "node --env-file-if-exists=.env tools/content-lexicon.js"
+    "content:lexicon": "node --env-file-if-exists=.env tools/content-lexicon.js",
+    "test:e2e": "playwright test"
   },
   "engines": {
     "node": ">=22.5"
@@ -25,5 +26,8 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^1.9.0",
     "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.65.1"
   }
 }

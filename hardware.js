@@ -47,7 +47,10 @@ function parseNvidia(stdout) {
 }
 
 // Détection légère : système, processeur, mémoire, carte graphique (une commande rapide)
-async function detectBasic({ execFileImpl, platform = os.platform(), arch = os.arch(), totalmem = os.totalmem(), freemem = os.freemem(), cpus = os.cpus(), release = os.release() } = {}) {
+// Mochi exige node:sqlite (Node ≥ 22.5) : vérifié par doctor (v0.5, lot 5.4)
+const NODE_MIN = [22, 5];
+const nodeOk = (v) => { const [a, b] = String(v).replace(/^v/, "").split(".").map(Number); return a > NODE_MIN[0] || (a === NODE_MIN[0] && b >= NODE_MIN[1]); };
+async function detectBasic({ execFileImpl, platform = os.platform(), arch = os.arch(), totalmem = os.totalmem(), freemem = os.freemem(), cpus = os.cpus(), release = os.release(), nodeVersion = process.version } = {}) {
   const nv = await run("nvidia-smi", ["--query-gpu=name,memory.total,memory.used,driver_version", "--format=csv,noheader,nounits"], { execFileImpl });
   return {
     system: { platform, arch, release },
@@ -56,6 +59,7 @@ async function detectBasic({ execFileImpl, platform = os.platform(), arch = os.a
     gpus: nv.ok ? parseNvidia(nv.stdout) : [],
     nvidiaSmi: nv.ok ? "ok" : nv.missing ? "absent" : "erreur",
     apple: platform === "darwin" && arch === "arm64",
+    node: { version: nodeVersion, ok: nodeOk(nodeVersion) },
   };
 }
 
@@ -179,6 +183,7 @@ function recommend(r, profile = chooseProfile(r)) {
       : ["uv venv --python 3.12 ~/mochi-nlp && source ~/mochi-nlp/bin/activate", "uv pip install kiwipiepy", "python tools/kiwi_server.py"] });
   if (env.MOCHI_LLM_PROVIDER === "ollama" && !r.ollama?.models?.includes(model)) commands.push({ title: `Correcteur IA : Ollama (${model})`, lines: [...(r.ollama?.up ? [] : [win ? "# Installe Ollama pour Windows : https://ollama.com/download" : "curl -fsSL https://ollama.com/install.sh | sh"]), `ollama pull ${model}`] });
 
+  if (r.node && !r.node.ok) warnings.push(`Node ${r.node.version} est trop ancien : Mochi a besoin de Node 22.5 ou plus (base SQLite intégrée). ${win ? "Installe la version LTS sur nodejs.org." : "nvm install 22 (le fichier .nvmrc l'indique)."}`);
   // Incohérences et mémoire
   const loaded = r.ollama?.loaded || [];
   if (gpu && r.docker?.kokoroImage && /-cpu/.test(r.docker.kokoroImage)) warnings.push("Carte graphique présente, mais Kokoro tourne dans l'image CPU : remplace-la par l'image GPU (commande ci-dessous, après docker rm -f kokoro).");
@@ -230,4 +235,4 @@ function writeEnv(file, wanted, { now = new Date() } = {}) {
 }
 
 const fmtGB = (b) => `${(b / GB).toLocaleString("fr-FR", { maximumFractionDigits: 1 })} Go`;
-module.exports = { run, parseNvidia, detectBasic, detect, chooseProfile, recommend, writeEnv, PROFILES, WRITABLE, fmtGB, GB };
+module.exports = { nodeOk, run, parseNvidia, detectBasic, detect, chooseProfile, recommend, writeEnv, PROFILES, WRITABLE, fmtGB, GB };

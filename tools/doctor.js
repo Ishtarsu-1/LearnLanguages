@@ -29,6 +29,7 @@ const OS = { win32: "Windows", linux: "Linux", darwin: "macOS" };
   const gpu = r.gpus[0];
   const lines = [
     ["Système", `${OS[r.system.platform] || r.system.platform} ${r.system.release} (${r.system.arch})`],
+    ["Node.js", `${r.node.ok ? "✅" : "❌"} ${r.node.version}${r.node.ok ? "" : " (il faut 22.5 ou plus)"}`],
     ["Processeur", `${r.cpu.model} · ${r.cpu.cores} cœurs`],
     ["Mémoire vive", `${hw.fmtGB(r.ram.total)} (${hw.fmtGB(r.ram.free)} libres)`],
     ["Carte graphique", gpu ? r.gpus.map((g) => `${g.name} · ${(g.memTotalMB / 1024).toLocaleString("fr-FR", { maximumFractionDigits: 1 })} Go (${g.memUsedMB} Mo utilisés) · pilote ${g.driver}`).join(" | ") : r.apple ? "Apple Silicon (Metal)" : r.nvidiaSmi === "absent" ? "aucune carte NVIDIA détectée" : "nvidia-smi ne répond pas"],
