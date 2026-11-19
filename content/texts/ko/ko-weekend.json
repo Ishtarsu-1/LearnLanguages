@@ -1,0 +1,23 @@
+{
+  "id": "ko-weekend",
+  "lang": "ko",
+  "level": "A1",
+  "order": 40,
+  "themes": ["cuisine", "series"],
+  "grammar": [],
+  "title": "Le week-end",
+  "icon": "🌶️",
+  "kind": "Récit",
+  "status": "published",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "sentences": [
+    ["토요일|에 친구|를 만났어요=만나다.", "Samedi, j'ai vu une amie."],
+    ["우리|는 시장|에서 떡볶이|를 먹었어요=먹다.", "On a mangé des tteokbokki au marché."],
+    ["떡볶이|가 조금 매웠어요=맵다.", "Les tteokbokki étaient un peu piquants."],
+    ["그리고 영화|를 봤어요=보다.", "Et puis on a regardé un film."],
+    ["영화|가 정말 재미있었어요=재미있다.", "Le film était vraiment bien."],
+    ["다음 주|에|도 만나요=만나다.", "On se revoit la semaine prochaine aussi."]
+  ],
+  "speakers": null,
+  "review": { "by": "nathan", "at": "2026-11-19" }
+}

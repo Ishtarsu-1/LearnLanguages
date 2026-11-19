@@ -1,0 +1,24 @@
+{
+  "id": "en-bus",
+  "lang": "en",
+  "level": "A1",
+  "order": 50,
+  "themes": ["transports"],
+  "grammar": [],
+  "title": "Dans le bus",
+  "icon": "🚌",
+  "kind": "Dialogue",
+  "status": "published",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "sentences": [
+    ["Excuse me, does=do this bus go to the station?", "Excusez-moi, ce bus va à la gare ?"],
+    ["No, you need the number twelve.", "Non, il vous faut le 12."],
+    ["Where can I take it?", "Où est-ce que je peux le prendre ?"],
+    ["The stop is=be across the street.", "L'arrêt est de l'autre côté de la rue."],
+    ["How long does=do it take?", "Ça prend combien de temps ?"],
+    ["About ten minutes=minute. You can buy a ticket on the bus.", "Environ dix minutes. Vous pouvez acheter un ticket dans le bus."],
+    ["Great, thanks a lot!", "Super, merci beaucoup !"]
+  ],
+  "speakers": null,
+  "review": { "by": "nathan", "at": "2026-11-19" }
+}

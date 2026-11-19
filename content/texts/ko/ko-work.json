@@ -1,0 +1,23 @@
+{
+  "id": "ko-work",
+  "lang": "ko",
+  "level": "A1",
+  "order": 90,
+  "themes": ["travail"],
+  "grammar": [],
+  "title": "Au bureau",
+  "icon": "💼",
+  "kind": "Monologue",
+  "status": "published",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "sentences": [
+    ["저|는 회사|에서 일해요=일하다.", "Je travaille dans une entreprise."],
+    ["아홉 시|에 출근해요=출근하다.", "J'arrive au travail à neuf heures."],
+    ["오전|에|는 회의|가 많아요=많다.", "Le matin, il y a beaucoup de réunions."],
+    ["점심|은 동료|들|하고 같이 먹어요=먹다.", "Le midi, je mange avec mes collègues."],
+    ["일|이 바빠요=바쁘다. 그래도 회사|가 좋아요=좋다.", "Le travail est chargé. Mais j'aime bien mon entreprise."],
+    ["여섯 시|에 퇴근해요=퇴근하다.", "Je quitte le travail à six heures."]
+  ],
+  "speakers": null,
+  "review": { "by": "nathan", "at": "2026-11-19" }
+}

@@ -1,0 +1,102 @@
+{
+  "id": "en-story-london",
+  "story": true,
+  "title": "Mochi in London",
+  "fr": "Mochi à Londres",
+  "icon": "🇬🇧",
+  "level": "A1",
+  "themes": ["transports", "rencontre", "cafe"],
+  "summary": "Mochi part étudier un an à Londres : l'arrivée, la colocation, le café du coin… À chaque chapitre, une mission où tu parles pour de vrai.",
+  "chapters": [
+    {
+      "title": "Arrival",
+      "mission": "en-ticket",
+      "keywords": ["train", "ticket", "city"],
+      "sentences": [
+        ["@Mochi arrives=arrive in @London today.", "Mochi arrive à Londres aujourd'hui."],
+        ["The airport is=be very big.", "L'aéroport est très grand."],
+        ["@Mochi is=be tired but happy.", "Mochi est fatiguée mais contente."],
+        ["She needs=need a train ticket to the city center.", "Elle a besoin d'un billet de train pour le centre-ville."],
+        ["There is=be a long line at the ticket office.", "Il y a une longue file au guichet."],
+        ["Finally, @Mochi is=be on the train. Hello, @London!", "Enfin, Mochi est dans le train. Bonjour, Londres !"]
+      ],
+      "questions": [
+        { "q": "Qu'est-ce que Mochi doit acheter ?", "options": ["Un billet de train", "Un café", "Un plan de la ville"] },
+        { "q": "Comment est l'aéroport ?", "options": ["Très grand", "Petit", "Fermé"] }
+      ]
+    },
+    {
+      "title": "The flat",
+      "mission": "en-flatmate",
+      "keywords": ["flat", "share", "evening"],
+      "sentences": [
+        ["@Mochi's new flat is=be small but cozy.", "Le nouvel appartement de Mochi est petit mais douillet."],
+        ["She shares=share it with a girl called=call @Priya.", "Elle le partage avec une fille qui s'appelle Priya."],
+        ["@Priya studies=study music.", "Priya étudie la musique."],
+        ["In the evening, they cook together.", "Le soir, elles cuisinent ensemble."],
+        ["@Priya teaches=teach @Mochi an Indian recipe.", "Priya apprend une recette indienne à Mochi."],
+        ["@Mochi thinks=think: \"I like it here!\"", "Mochi pense : « Je me plais ici ! »"]
+      ],
+      "questions": [
+        { "q": "Avec qui Mochi partage-t-elle l'appartement ?", "options": ["Priya", "Tom", "Léa"] },
+        { "q": "Que font-elles le soir ?", "options": ["Elles cuisinent", "Elles courent", "Elles dorment"] }
+      ]
+    },
+    {
+      "title": "The coffee shop",
+      "mission": "en-cafe",
+      "keywords": ["hot", "iced", "order"],
+      "sentences": [
+        ["There is=be a small coffee shop on @Mochi's street.", "Il y a un petit café dans la rue de Mochi."],
+        ["Every morning, @Mochi goes=go there before class.", "Tous les matins, Mochi y va avant les cours."],
+        ["Today it's=it+be hot.", "Aujourd'hui, il fait chaud."],
+        ["So she wants=want an iced coffee.", "Alors elle veut un café glacé."],
+        ["The barista smiles=smile and says=say hello.", "La barista sourit et dit bonjour."],
+        ["@Mochi takes=take a deep breath. Her first order in English!", "Mochi prend une grande inspiration. Sa première commande en anglais !"]
+      ],
+      "questions": [
+        { "q": "Quel temps fait-il ?", "options": ["Chaud", "Froid", "Il pleut"] },
+        { "q": "Qu'est-ce que Mochi veut ?", "options": ["Un café glacé", "Un thé", "Un chocolat chaud"] }
+      ]
+    },
+    {
+      "title": "Lost in London",
+      "mission": "en-directions",
+      "keywords": ["map", "turn", "museum"],
+      "sentences": [
+        ["On Saturday, @Mochi wants=want to visit the @British @Museum.", "Samedi, Mochi veut visiter le British Museum."],
+        ["But her phone is=be dead!", "Mais son téléphone est déchargé !"],
+        ["She has=have no map.", "Elle n'a pas de plan."],
+        ["She stops=stop a man in the street.", "Elle arrête un homme dans la rue."],
+        ["\"Go straight, then turn left at the bank.\"", "« Va tout droit, puis tourne à gauche à la banque. »"],
+        ["Ten minutes=minute later, @Mochi is=be in front of the museum.", "Dix minutes plus tard, Mochi est devant le musée."]
+      ],
+      "questions": [
+        { "q": "Pourquoi Mochi est-elle perdue ?", "options": ["Son téléphone est déchargé", "Elle a perdu son sac", "Il pleut"] },
+        { "q": "Où faut-il tourner à gauche ?", "options": ["À la banque", "À l'école", "Au parc"] }
+      ]
+    },
+    {
+      "title": "Karaoke night",
+      "mission": "en-karaoke",
+      "keywords": ["sing", "song", "shy"],
+      "sentences": [
+        ["On Friday evening, @Priya invites=invite @Mochi to a karaoke bar.", "Vendredi soir, Priya invite Mochi dans un bar karaoké."],
+        ["@Mochi is=be a bit shy.", "Mochi est un peu timide."],
+        ["Her friends=friend sing pop songs=song.", "Ses amis chantent des chansons pop."],
+        ["Then @Mochi chooses=choose a song in Korean!", "Puis Mochi choisit une chanson en coréen !"],
+        ["Everybody claps=clap and dances=dance.", "Tout le monde applaudit et danse."],
+        ["What a fun night!", "Quelle soirée géniale !"]
+      ],
+      "questions": [
+        { "q": "Où va Mochi vendredi soir ?", "options": ["Au karaoké", "Au musée", "À la bibliothèque"] },
+        { "q": "Dans quelle langue chante Mochi ?", "options": ["En coréen", "En français", "En anglais"] }
+      ]
+    }
+  ],
+  "lang": "en",
+  "order": 10,
+  "status": "published",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "review": { "by": "nathan", "at": "2026-11-19" }
+}

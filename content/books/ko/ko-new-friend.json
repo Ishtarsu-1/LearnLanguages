@@ -1,0 +1,62 @@
+{
+  "id": "ko-new-friend",
+  "title": "새 친구",
+  "fr": "Un nouvel ami",
+  "icon": "🎒",
+  "level": "A1",
+  "themes": ["rencontre"],
+  "summary": "Léa, une Française, commence l'école à Séoul. Son voisin de table s'appelle Taeo.",
+  "chapters": [
+    {
+      "title": "첫날",
+      "sentences": [
+        ["오늘|은 학교 첫날|이에요=이다.", "Aujourd'hui, c'est le premier jour d'école."],
+        ["@레아|는 조금 긴장했어요=긴장하다.", "Léa est un peu stressée."],
+        ["교실|에 사람|이 많았어요=많다.", "Il y a beaucoup de monde dans la classe."],
+        ["옆자리|에 남자|가 앉았어요=앉다.", "Un garçon s'assoit à la place d'à côté."],
+        ["남자|가 웃었어요=웃다.", "Le garçon sourit."],
+        ["\"안녕하세요! 저|는 @태오|예요=이다.\"", "« Bonjour ! Je suis Taeo. »"]
+      ],
+      "questions": [
+        { "q": "Où est Léa ?", "options": ["À l'école", "Au café", "À la maison"] },
+        { "q": "Comment s'appelle le garçon ?", "options": ["Taeo", "Minji", "Jimin"] }
+      ]
+    },
+    {
+      "title": "점심시간",
+      "sentences": [
+        ["점심시간|에 @태오|가 물어봤어요=물어보다.", "À la pause déjeuner, Taeo demande :"],
+        ["\"같이 점심 먹어요=먹다?\"", "« On déjeune ensemble ? »"],
+        ["우리|는 식당|에 갔어요=가다.", "Nous allons à la cantine."],
+        ["@레아|는 비빔밥|을 먹었어요=먹다. @태오|는 라면|을 먹었어요=먹다.", "Léa mange un bibimbap. Taeo mange des ramyeon."],
+        ["@태오|는 @프랑스|를 정말 좋아해요=좋아하다. @레아|는 한국어|를 배워요=배우다.", "Taeo adore la France. Léa apprend le coréen."],
+        ["그래서 우리|는 한국어|와 프랑스어|로 이야기했어요=이야기하다.", "Alors nous parlons en coréen et en français."]
+      ],
+      "questions": [
+        { "q": "Où déjeunent-ils ?", "options": ["À la cantine", "Au parc", "Au café"] },
+        { "q": "Qu'est-ce que Léa mange ?", "options": ["Un bibimbap", "Des ramyeon", "Un kimchi-jjigae"] },
+        { "q": "Qu'est-ce que Taeo aime ?", "options": ["La France", "Le foot", "Les jeux vidéo"] }
+      ]
+    },
+    {
+      "title": "주말",
+      "sentences": [
+        ["금요일|에 @태오|가 말했어요=말하다.", "Vendredi, Taeo dit :"],
+        ["\"토요일|에 @한강|에 가요=가다!\"", "« Samedi, on va au fleuve Han ! »"],
+        ["토요일|에 날씨|가 아주 좋았어요=좋다.", "Samedi, il fait très beau."],
+        ["우리|는 자전거|를 탔어요=타다.", "Nous faisons du vélo."],
+        ["그리고 편의점|에서 라면|을 먹었어요=먹다.", "Puis nous mangeons des ramyeon à la supérette."],
+        ["@레아|는 정말 행복했어요=행복하다.", "Léa est vraiment heureuse."]
+      ],
+      "questions": [
+        { "q": "Où vont-ils samedi ?", "options": ["Au fleuve Han", "À la montagne", "Au cinéma"] },
+        { "q": "Qu'est-ce qu'ils font ?", "options": ["Du vélo", "Du foot", "Du karaoké"] }
+      ]
+    }
+  ],
+  "lang": "ko",
+  "order": 10,
+  "status": "published",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "review": { "by": "nathan", "at": "2026-11-19" }
+}

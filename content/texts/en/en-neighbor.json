@@ -1,0 +1,23 @@
+{
+  "id": "en-neighbor",
+  "lang": "en",
+  "level": "A1",
+  "order": 20,
+  "themes": ["rencontre", "travail"],
+  "grammar": [],
+  "title": "La nouvelle voisine",
+  "icon": "🏠",
+  "kind": "Dialogue",
+  "status": "published",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "sentences": [
+    ["Hello, I'm=i+be @Sam. I live next door.", "Bonjour, je suis Sam. J'habite à côté."],
+    ["Oh, nice to meet you! I'm=i+be @Léa.", "Oh, enchantée ! Je suis Léa."],
+    ["Are=be you a student?", "Tu es étudiant ?"],
+    ["No, I work in a hospital. I'm=i+be a nurse.", "Non, je travaille dans un hôpital. Je suis infirmier."],
+    ["That's=that+be interesting! I'm=i+be a student at the university.", "C'est intéressant ! Moi, je suis étudiante à l'université."],
+    ["Cool. See you later!", "Cool. À plus tard !"]
+  ],
+  "speakers": null,
+  "review": { "by": "nathan", "at": "2026-11-19" }
+}

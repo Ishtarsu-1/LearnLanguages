@@ -1,0 +1,23 @@
+{
+  "id": "ko-jjigae",
+  "lang": "ko",
+  "level": "A1",
+  "order": 60,
+  "themes": ["cuisine"],
+  "grammar": [],
+  "title": "Le kimchi-jjigae",
+  "icon": "🍲",
+  "kind": "Récit",
+  "status": "published",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "sentences": [
+    ["오늘|은 김치찌개|를 만들어요=만들다.", "Aujourd'hui, je fais un kimchi-jjigae."],
+    ["먼저 김치|를 잘라요=자르다.", "D'abord, je coupe le kimchi."],
+    ["그리고 돼지고기|와 두부|를 넣어요=넣다.", "Ensuite, je mets le porc et le tofu."],
+    ["물|을 붓고=붓다 이십 분 끓여요=끓이다.", "Je verse de l'eau et je fais cuire vingt minutes."],
+    ["조금 매워요=맵다. 하지만 정말 맛있어요=맛있다!", "C'est un peu piquant. Mais c'est vraiment bon !"],
+    ["밥|이랑 같이 먹어요=먹다.", "On le mange avec du riz."]
+  ],
+  "speakers": null,
+  "review": { "by": "nathan", "at": "2026-11-19" }
+}

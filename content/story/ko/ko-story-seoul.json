@@ -1,0 +1,107 @@
+{
+  "id": "ko-story-seoul",
+  "story": true,
+  "title": "모찌의 서울 일 년",
+  "fr": "Un an à Séoul",
+  "icon": "🇰🇷",
+  "level": "A1",
+  "themes": ["transports", "rencontre", "cafe"],
+  "summary": "Mochi part vivre un an à Séoul : l'arrivée à l'aéroport, le nouveau logement, le café du coin… À chaque chapitre, une mission où tu parles pour de vrai.",
+  "chapters": [
+    {
+      "title": "공항",
+      "grammar": "haeyo",
+      "mission": "ko-airport",
+      "keywords": ["공항", "타다", "버스"],
+      "sentences": [
+        ["@모찌|는 오늘 @서울|에 왔어요=오다.", "Aujourd'hui, Mochi est arrivée à Séoul."],
+        ["@인천 공항|은 정말 커요=크다.", "L'aéroport d'Incheon est vraiment grand."],
+        ["@모찌|는 조금 피곤해요=피곤하다.", "Mochi est un peu fatiguée."],
+        ["\"실례합니다=실례하다. @서울|에 어떻게 가요=가다?\"", "« Excusez-moi. Comment on va à Séoul ? »"],
+        ["\"공항버스|를 타세요=타다. 저기|에 있어요=있다.\"", "« Prenez le bus de l'aéroport. Il est là-bas. »"],
+        ["@모찌|는 버스|를 탔어요=타다. 이제 @서울 생활|이 시작돼요=시작되다!", "Mochi prend le bus. Sa vie à Séoul commence !"]
+      ],
+      "questions": [
+        { "q": "Où arrive Mochi ?", "options": ["À l'aéroport d'Incheon", "À la gare de Séoul", "Au port de Busan"] },
+        { "q": "Comment va-t-elle à Séoul ?", "options": ["En bus", "En taxi", "À pied"] }
+      ]
+    },
+    {
+      "title": "새 집",
+      "grammar": "eun-neun",
+      "mission": "ko-neighbor",
+      "keywords": ["작다", "크다", "할머니"],
+      "sentences": [
+        ["@모찌|의 새 집|은 작아요=작다.", "Le nouveau logement de Mochi est petit."],
+        ["하지만 창문|이 커요=크다.", "Mais la fenêtre est grande."],
+        ["옆집|에 할머니|가 살아요=살다.", "Une vieille dame habite à côté."],
+        ["할머니|는 아주 친절해요=친절하다.", "La vieille dame est très gentille."],
+        ["할머니|가 김치|를 주셨어요=주다.", "Elle lui a donné du kimchi."],
+        ["@모찌|는 정말 기뻤어요=기쁘다.", "Mochi est vraiment contente."]
+      ],
+      "questions": [
+        { "q": "Comment est le nouveau logement ?", "options": ["Petit, avec une grande fenêtre", "Grand et sombre", "Petit, sans fenêtre"] },
+        { "q": "Que donne la voisine ?", "options": ["Du kimchi", "Du café", "Un livre"] }
+      ]
+    },
+    {
+      "title": "동네 카페",
+      "grammar": "eul-reul",
+      "mission": "ko-cafe",
+      "keywords": ["덥다", "아이스", "직원"],
+      "sentences": [
+        ["@모찌|의 집 앞|에 작은=작다 카페|가 있어요=있다.", "Devant chez Mochi, il y a un petit café."],
+        ["@모찌|는 매일 아침 카페|에 가요=가다.", "Mochi va au café tous les matins."],
+        ["오늘|은 날씨|가 더워요=덥다.", "Aujourd'hui, il fait chaud."],
+        ["그래서 아이스 아메리카노|를 마시고=마시다 싶어요=싶다.", "Alors elle a envie d'un americano glacé."],
+        ["@모찌|는 카페|에 들어갔어요=들어가다.", "Mochi entre dans le café."],
+        ["직원|이 웃으면서=웃다 인사했어요=인사하다.", "L'employée la salue en souriant."]
+      ],
+      "questions": [
+        { "q": "Quel temps fait-il ?", "options": ["Chaud", "Froid", "Il pleut"] },
+        { "q": "Qu'est-ce que Mochi veut boire ?", "options": ["Un americano glacé", "Un thé chaud", "Un jus d'orange"] }
+      ]
+    },
+    {
+      "title": "한국어 수업",
+      "grammar": "i-ga",
+      "mission": "ko-class",
+      "keywords": ["학원", "수업", "끝나다"],
+      "sentences": [
+        ["@모찌|는 월요일|에 한국어 학원|에 가요=가다.", "Le lundi, Mochi va à l'académie de coréen."],
+        ["선생님|이 아주 재미있어요=재미있다.", "La professeure est très drôle."],
+        ["반|에 학생|이 열 명 있어요=있다.", "Il y a dix élèves dans la classe."],
+        ["@일본 사람|도 있고=있다 @미국 사람|도 있어요=있다.", "Il y a des Japonais et aussi des Américains."],
+        ["오늘|은 숫자|를 배웠어요=배우다.", "Aujourd'hui, ils ont appris les nombres."],
+        ["수업|이 끝나고=끝나다 친구|들|하고 떡볶이|를 먹었어요=먹다.", "Après le cours, Mochi a mangé des tteokbokki avec ses amis."]
+      ],
+      "questions": [
+        { "q": "Où va Mochi le lundi ?", "options": ["À l'académie de coréen", "À la banque", "Au marché"] },
+        { "q": "Qu'ont-ils appris aujourd'hui ?", "options": ["Les nombres", "Les couleurs", "Les jours de la semaine"] }
+      ]
+    },
+    {
+      "title": "노래방",
+      "grammar": "e",
+      "mission": "ko-noraebang",
+      "keywords": ["노래방", "부르다", "근처"],
+      "sentences": [
+        ["금요일 저녁|에 친구|들|이 @모찌|를 불렀어요=부르다.", "Vendredi soir, ses amis ont appelé Mochi."],
+        ["\"우리 노래방|에 가요=가다!\"", "« Allons au karaoké ! »"],
+        ["노래방|은 집 근처|에 있어요=있다.", "Le karaoké est près de chez elle."],
+        ["@모찌|는 처음|에 부끄러웠어요=부끄럽다.", "Au début, Mochi était intimidée."],
+        ["하지만 케이팝|을 같이 불렀어요=부르다.", "Mais ils ont chanté de la K-pop ensemble."],
+        ["정말 재미있는=재미있다 밤|이었어요=이다.", "C'était une soirée vraiment géniale."]
+      ],
+      "questions": [
+        { "q": "Où vont-ils vendredi soir ?", "options": ["Au karaoké", "Au cinéma", "Au restaurant"] },
+        { "q": "Que chantent-ils ?", "options": ["De la K-pop", "Du rock français", "Des chansons de Noël"] }
+      ]
+    }
+  ],
+  "lang": "ko",
+  "order": 10,
+  "status": "published",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "review": { "by": "nathan", "at": "2026-11-19" }
+}

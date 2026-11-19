@@ -1,0 +1,23 @@
+{
+  "id": "ko-cafe",
+  "lang": "ko",
+  "level": "A1",
+  "order": 10,
+  "themes": ["cafe"],
+  "grammar": [],
+  "title": "Au café",
+  "icon": "🧋",
+  "kind": "Dialogue",
+  "status": "published",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "sentences": [
+    ["안녕하세요!", "Bonjour !"],
+    ["아메리카노 한=하나 잔 주세요=주다.", "Un americano, s'il vous plaît."],
+    ["네, 사천 원|이에요=이다.", "Oui, c'est 4 000 wons."],
+    ["여기 있어요=있다.", "Voilà."],
+    ["감사해요=감사하다!", "Merci !"],
+    ["커피|가 정말 맛있어요=맛있다.", "Le café est vraiment bon."]
+  ],
+  "speakers": null,
+  "review": { "by": "nathan", "at": "2026-11-19" }
+}

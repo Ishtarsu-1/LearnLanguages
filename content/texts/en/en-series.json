@@ -1,0 +1,23 @@
+{
+  "id": "en-series",
+  "lang": "en",
+  "level": "A1",
+  "order": 100,
+  "themes": ["series"],
+  "grammar": [],
+  "title": "Une série à voir",
+  "icon": "📺",
+  "kind": "Dialogue",
+  "status": "published",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "sentences": [
+    ["Have you seen=see this new series?", "Tu as vu cette nouvelle série ?"],
+    ["Not yet. Is=be it good?", "Pas encore. Elle est bien ?"],
+    ["It's=it+be amazing! The story is=be a bit sad, but beautiful.", "Elle est géniale ! L'histoire est un peu triste, mais belle."],
+    ["How many episodes=episode are=be there?", "Il y a combien d'épisodes ?"],
+    ["Sixteen. I watched=watch four last night.", "Seize. J'en ai regardé quatre hier soir."],
+    ["Four? You need to sleep more!", "Quatre ? Tu as besoin de dormir plus !"]
+  ],
+  "speakers": null,
+  "review": { "by": "nathan", "at": "2026-11-19" }
+}

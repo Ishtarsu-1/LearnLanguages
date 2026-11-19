@@ -1,0 +1,23 @@
+{
+  "id": "ko-intro",
+  "lang": "ko",
+  "level": "A1",
+  "order": 20,
+  "themes": ["rencontre"],
+  "grammar": [],
+  "title": "Se présenter",
+  "icon": "🙋",
+  "kind": "Monologue",
+  "status": "published",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "sentences": [
+    ["안녕하세요. 저|는 @민지|예요=이다.", "Bonjour. Je suis Minji."],
+    ["저|는 한국 사람|이에요=이다.", "Je suis coréenne."],
+    ["저|는 학생|이에요=이다.", "Je suis étudiante."],
+    ["@서울|에 살아요=살다.", "J'habite à Séoul."],
+    ["저|는 커피|를 좋아해요=좋아하다.", "J'aime le café."],
+    ["만나서=만나다 반가워요=반갑다!", "Enchantée !"]
+  ],
+  "speakers": null,
+  "review": { "by": "nathan", "at": "2026-11-19" }
+}

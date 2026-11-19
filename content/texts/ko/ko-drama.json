@@ -1,0 +1,23 @@
+{
+  "id": "ko-drama",
+  "lang": "ko",
+  "level": "A1",
+  "order": 100,
+  "themes": ["series"],
+  "grammar": [],
+  "title": "Un K-drama",
+  "icon": "📺",
+  "kind": "Monologue",
+  "status": "published",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "sentences": [
+    ["요즘 한국 드라마|를 봐요=보다.", "En ce moment, je regarde un drama coréen."],
+    ["주인공|이 정말 멋있어요=멋있다.", "Le personnage principal est vraiment classe."],
+    ["이야기|가 조금 슬퍼요=슬프다.", "L'histoire est un peu triste."],
+    ["그래서 많이 울었어요=울다.", "Alors j'ai beaucoup pleuré."],
+    ["한국어 자막|으로 봐요=보다.", "Je le regarde avec les sous-titres coréens."],
+    ["드라마|로 한국어|를 공부해요=공부하다!", "J'apprends le coréen avec les dramas !"]
+  ],
+  "speakers": null,
+  "review": { "by": "nathan", "at": "2026-11-19" }
+}

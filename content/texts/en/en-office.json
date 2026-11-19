@@ -1,0 +1,23 @@
+{
+  "id": "en-office",
+  "lang": "en",
+  "level": "A1",
+  "order": 90,
+  "themes": ["travail"],
+  "grammar": [],
+  "title": "Premier jour au bureau",
+  "icon": "💼",
+  "kind": "Dialogue",
+  "status": "published",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "sentences": [
+    ["Good morning! You must be the new designer.", "Bonjour ! Tu dois être la nouvelle graphiste."],
+    ["Yes, I started=start today. I'm=i+be a bit nervous.", "Oui, j'ai commencé aujourd'hui. Je suis un peu stressée."],
+    ["Don't=do+not worry, the team is=be very friendly.", "Ne t'inquiète pas, l'équipe est très sympa."],
+    ["Your desk is=be here, by the window.", "Ton bureau est ici, près de la fenêtre."],
+    ["We have a meeting at eleven.", "On a une réunion à onze heures."],
+    ["After that, we usually eat lunch together.", "Après ça, on déjeune souvent ensemble."]
+  ],
+  "speakers": null,
+  "review": { "by": "nathan", "at": "2026-11-19" }
+}

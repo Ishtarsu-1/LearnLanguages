@@ -1,0 +1,23 @@
+{
+  "id": "en-weekend",
+  "lang": "en",
+  "level": "A1",
+  "order": 30,
+  "themes": ["series"],
+  "grammar": [],
+  "title": "Le week-end",
+  "icon": "🎬",
+  "kind": "Dialogue",
+  "status": "published",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "sentences": [
+    ["What did=do you do last weekend?", "Qu'est-ce que tu as fait le week-end dernier ?"],
+    ["I went=go to the cinema with my sister.", "Je suis allé au cinéma avec ma sœur."],
+    ["We watched=watch a really funny movie.", "On a regardé un film vraiment drôle."],
+    ["Actually, I wanted=want to stay home, but she insisted=insist.", "En fait, je voulais rester à la maison, mais elle a insisté."],
+    ["Eventually, I had=have a great time!", "Finalement, j'ai passé un super moment !"],
+    ["Next time, I'm=i+be going=go to choose the movie.", "La prochaine fois, c'est moi qui choisis le film."]
+  ],
+  "speakers": null,
+  "review": { "by": "nathan", "at": "2026-11-19" }
+}

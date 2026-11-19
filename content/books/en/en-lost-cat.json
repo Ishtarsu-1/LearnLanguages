@@ -1,0 +1,62 @@
+{
+  "id": "en-lost-cat",
+  "title": "The Lost Cat",
+  "fr": "Le chat perdu",
+  "icon": "🐈‍⬛",
+  "level": "A1",
+  "themes": [],
+  "summary": "Un matin, Pepper, la petite chatte de Tom, a disparu.",
+  "chapters": [
+    {
+      "title": "Where is Pepper?",
+      "sentences": [
+        ["@Tom has=have a small black cat.", "Tom a une petite chatte noire."],
+        ["Her name is=be @Pepper.", "Elle s'appelle Pepper."],
+        ["Every morning, @Pepper sleeps=sleep near the window.", "Tous les matins, Pepper dort près de la fenêtre."],
+        ["But today, she is=be not there.", "Mais aujourd'hui, elle n'est pas là."],
+        ["@Tom looks=look in the kitchen.", "Tom regarde dans la cuisine."],
+        ["He looks=look under the bed.", "Il regarde sous le lit."],
+        ["No cat! Where is=be @Pepper?", "Pas de chat ! Où est Pepper ?"]
+      ],
+      "questions": [
+        { "q": "Quel animal a Tom ?", "options": ["Une chatte", "Un chien", "Un oiseau"] },
+        { "q": "Où dort Pepper le matin ?", "options": ["Près de la fenêtre", "Sous le lit", "Dans la cuisine"] }
+      ]
+    },
+    {
+      "title": "The neighbors",
+      "sentences": [
+        ["@Tom goes=go outside and asks=ask the neighbors=neighbor.", "Tom sort et demande aux voisins."],
+        ["Excuse me, have you seen=see a black cat?", "Excusez-moi, vous avez vu une chatte noire ?"],
+        ["Sorry, I haven't=have+not.", "Désolé, non."],
+        ["The woman at number five says=say: \"Yes, this morning, in the park!\"", "La femme du numéro cinq dit : « Oui, ce matin, dans le parc ! »"],
+        ["@Tom runs=run to the park.", "Tom court au parc."],
+        ["He calls=call: \"@Pepper! @Pepper!\"", "Il appelle : « Pepper ! Pepper ! »"]
+      ],
+      "questions": [
+        { "q": "Qui a vu Pepper ?", "options": ["Une voisine", "Un enfant", "Le facteur"] },
+        { "q": "Où va Tom ?", "options": ["Au parc", "À l'école", "À la gare"] }
+      ]
+    },
+    {
+      "title": "Up the tree",
+      "sentences": [
+        ["In the park, @Tom hears=hear a small sound.", "Dans le parc, Tom entend un petit bruit."],
+        ["He looks=look up.", "Il lève les yeux."],
+        ["@Pepper is=be in a tree!", "Pepper est dans un arbre !"],
+        ["She is=be scared. She can't=can+not come down.", "Elle a peur. Elle ne peut pas descendre."],
+        ["@Tom climbs=climb the tree and takes=take her in his arms=arm.", "Tom grimpe à l'arbre et la prend dans ses bras."],
+        ["At home, @Pepper eats=eat and sleeps=sleep. What a day!", "À la maison, Pepper mange et dort. Quelle journée !"]
+      ],
+      "questions": [
+        { "q": "Où est Pepper ?", "options": ["Dans un arbre", "Dans le bus", "Sous une voiture"] },
+        { "q": "Pourquoi ne descend-elle pas ?", "options": ["Elle a peur", "Elle mange", "Elle dort"] }
+      ]
+    }
+  ],
+  "lang": "en",
+  "order": 10,
+  "status": "published",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "review": { "by": "nathan", "at": "2026-11-19" }
+}

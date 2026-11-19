@@ -1,0 +1,23 @@
+{
+  "id": "en-cafe",
+  "lang": "en",
+  "level": "A1",
+  "order": 10,
+  "themes": ["cafe"],
+  "grammar": [],
+  "title": "Au café",
+  "icon": "☕",
+  "kind": "Dialogue",
+  "status": "published",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "sentences": [
+    ["Hi! Can I have a coffee, please?", "Salut ! Je peux avoir un café, s'il vous plaît ?"],
+    ["Sure. Do you want milk?", "Bien sûr. Vous voulez du lait ?"],
+    ["Yes, just a little milk. Thanks!", "Oui, juste un peu de lait. Merci !"],
+    ["Anything else?", "Autre chose ?"],
+    ["No, that's=that+be all. How much is=be it?", "Non, c'est tout. C'est combien ?"],
+    ["It's=it+be three dollars=dollar.", "C'est trois dollars."]
+  ],
+  "speakers": null,
+  "review": { "by": "nathan", "at": "2026-11-19" }
+}

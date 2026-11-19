@@ -1,0 +1,23 @@
+{
+  "id": "en-football",
+  "lang": "en",
+  "level": "A1",
+  "order": 70,
+  "themes": ["sport"],
+  "grammar": [],
+  "title": "Un match de foot",
+  "icon": "⚽",
+  "kind": "Dialogue",
+  "status": "published",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "sentences": [
+    ["Do you want to play football on Saturday?", "Tu veux jouer au foot samedi ?"],
+    ["I'd=i+would love to, but I'm=i+be not very good.", "J'adorerais, mais je ne suis pas très bon."],
+    ["It doesn't=do+not matter. We just play for fun.", "Ce n'est pas grave. On joue juste pour s'amuser."],
+    ["OK! What time does=do the game start?", "D'accord ! Le match commence à quelle heure ?"],
+    ["At ten, in the park near the school.", "À dix heures, dans le parc près de l'école."],
+    ["Don't=do+not forget your shoes=shoe and some water!", "N'oublie pas tes chaussures et de l'eau !"]
+  ],
+  "speakers": null,
+  "review": { "by": "nathan", "at": "2026-11-19" }
+}

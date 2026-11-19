@@ -1,0 +1,23 @@
+{
+  "id": "ko-game",
+  "lang": "ko",
+  "level": "A1",
+  "order": 80,
+  "themes": ["gaming"],
+  "grammar": [],
+  "title": "On joue ?",
+  "icon": "🎮",
+  "kind": "Dialogue",
+  "status": "published",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "sentences": [
+    ["지금 게임해요=게임하다?", "Tu joues en ce moment ?"],
+    ["네, 같이 해요=하다!", "Oui, jouons ensemble !"],
+    ["잠깐만요=잠깐만. 밥|을 먹고=먹다 있어요=있다.", "Une seconde. Je suis en train de manger."],
+    ["괜찮아요=괜찮다. 기다릴게요=기다리다.", "Pas de souci. Je t'attends."],
+    ["인터넷|이 너무 느려요=느리다.", "Internet est trop lent."],
+    ["이번|에|는 꼭 이겨요=이기다!", "Cette fois, on gagne, c'est sûr !"]
+  ],
+  "speakers": null,
+  "review": { "by": "nathan", "at": "2026-11-19" }
+}

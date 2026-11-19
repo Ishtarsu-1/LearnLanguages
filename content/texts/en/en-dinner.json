@@ -1,0 +1,24 @@
+{
+  "id": "en-dinner",
+  "lang": "en",
+  "level": "A1",
+  "order": 60,
+  "themes": ["cuisine"],
+  "grammar": [],
+  "title": "On cuisine ce soir",
+  "icon": "🍝",
+  "kind": "Dialogue",
+  "status": "published",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "sentences": [
+    ["What are=be we cooking=cook tonight?", "Qu'est-ce qu'on cuisine ce soir ?"],
+    ["Let's=let+us make pasta with tomatoes=tomato.", "Faisons des pâtes à la tomate."],
+    ["Good idea. Can you cut the onions=onion?", "Bonne idée. Tu peux couper les oignons ?"],
+    ["Sure. Is=be there any garlic?", "Bien sûr. Il y a de l'ail ?"],
+    ["Yes, in the kitchen, next to the bread.", "Oui, dans la cuisine, à côté du pain."],
+    ["Oh, it smells=smell delicious!", "Oh, ça sent super bon !"],
+    ["Dinner is=be ready in five minutes=minute.", "Le dîner est prêt dans cinq minutes."]
+  ],
+  "speakers": null,
+  "review": { "by": "nathan", "at": "2026-11-19" }
+}

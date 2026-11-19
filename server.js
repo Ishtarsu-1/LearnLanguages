@@ -770,6 +770,7 @@ const STATIC = {
   "/router.js": ["router.js", "text/javascript; charset=utf-8"],
   "/actions.js": ["actions.js", "text/javascript; charset=utf-8"],
   "/app.js": ["app.js", "text/javascript; charset=utf-8"],
+  "/content.data.js": ["content.data.js", "text/javascript; charset=utf-8"],
   "/content.js": ["content.js", "text/javascript; charset=utf-8"],
   "/exercises.js": ["exercises.js", "text/javascript; charset=utf-8"],
   "/placement.js": ["placement.js", "text/javascript; charset=utf-8"],

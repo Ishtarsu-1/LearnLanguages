@@ -1,0 +1,23 @@
+{
+  "id": "ko-sport",
+  "lang": "ko",
+  "level": "A1",
+  "order": 70,
+  "themes": ["sport"],
+  "grammar": [],
+  "title": "Le sport",
+  "icon": "🏃",
+  "kind": "Monologue",
+  "status": "published",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "sentences": [
+    ["저|는 매일 아침 운동해요=운동하다.", "Je fais du sport tous les matins."],
+    ["보통 공원|에서 달려요=달리다.", "D'habitude, je cours au parc."],
+    ["주말|에|는 친구|하고 축구|를 해요=하다.", "Le week-end, je joue au foot avec des amis."],
+    ["축구|는 힘들어요=힘들다. 그래도 재미있어요=재미있다.", "Le foot, c'est dur. Mais c'est amusant."],
+    ["운동 후|에 물|을 많이 마셔요=마시다.", "Après le sport, je bois beaucoup d'eau."],
+    ["건강|이 제일 중요해요=중요하다!", "La santé, c'est le plus important !"]
+  ],
+  "speakers": null,
+  "review": { "by": "nathan", "at": "2026-11-19" }
+}

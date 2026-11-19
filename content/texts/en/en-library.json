@@ -1,0 +1,23 @@
+{
+  "id": "en-library",
+  "lang": "en",
+  "level": "A1",
+  "order": 40,
+  "themes": [],
+  "grammar": [],
+  "title": "À la bibliothèque",
+  "icon": "📚",
+  "kind": "Dialogue",
+  "status": "published",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "sentences": [
+    ["Excuse me, where is=be the library?", "Excusez-moi, où est la bibliothèque ?"],
+    ["It's=it+be on the second floor, next to the elevator.", "Elle est au deuxième étage, à côté de l'ascenseur."],
+    ["Thank you. Is=be it open on Sundays=sunday?", "Merci. Elle est ouverte le dimanche ?"],
+    ["Yes, but it closes=close early, at four.", "Oui, mais elle ferme tôt, à quatre heures."],
+    ["That's=that+be sensible. People need rest on Sunday too.", "C'est raisonnable. Les gens ont besoin de repos le dimanche aussi."],
+    ["Have a nice day!", "Bonne journée !"]
+  ],
+  "speakers": null,
+  "review": { "by": "nathan", "at": "2026-11-19" }
+}

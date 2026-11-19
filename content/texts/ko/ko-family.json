@@ -1,0 +1,23 @@
+{
+  "id": "ko-family",
+  "lang": "ko",
+  "level": "A1",
+  "order": 30,
+  "themes": ["rencontre"],
+  "grammar": [],
+  "title": "Ma famille",
+  "icon": "👨‍👩‍👧",
+  "kind": "Monologue",
+  "status": "published",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "sentences": [
+    ["우리 가족|은 네=넷 명|이에요=이다.", "Dans ma famille, nous sommes quatre."],
+    ["아버지|는 회사원|이에요=이다.", "Mon père est employé de bureau."],
+    ["어머니|는 선생님|이에요=이다.", "Ma mère est professeure."],
+    ["언니|도 있어요=있다.", "J'ai aussi une grande sœur."],
+    ["언니|는 스물다섯=스물+다섯 살|이에요=이다.", "Ma grande sœur a vingt-cinq ans."],
+    ["주말|에 같이 밥|을 먹어요=먹다.", "Le week-end, on mange ensemble."]
+  ],
+  "speakers": null,
+  "review": { "by": "nathan", "at": "2026-11-19" }
+}

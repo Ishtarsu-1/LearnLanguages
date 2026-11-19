@@ -1,0 +1,24 @@
+{
+  "id": "ko-subway",
+  "lang": "ko",
+  "level": "A1",
+  "order": 50,
+  "themes": ["transports"],
+  "grammar": [],
+  "title": "Dans le métro",
+  "icon": "🚇",
+  "kind": "Dialogue",
+  "status": "published",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "sentences": [
+    ["실례합니다=실례하다.", "Excusez-moi."],
+    ["@강남역|에 어떻게 가요=가다?", "Comment on va à la station Gangnam ?"],
+    ["이호선|을 타세요=타다.", "Prenez la ligne 2."],
+    ["몇 정거장|이에요=이다?", "C'est à combien d'arrêts ?"],
+    ["다섯 정거장|이에요=이다. 십 분 걸려요=걸리다.", "Cinq arrêts. Ça prend dix minutes."],
+    ["교통 카드|가 있어요=있다?", "Vous avez une carte de transport ?"],
+    ["네, 있어요=있다. 감사합니다=감사하다!", "Oui, j'en ai une. Merci !"]
+  ],
+  "speakers": null,
+  "review": { "by": "nathan", "at": "2026-11-19" }
+}

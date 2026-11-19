@@ -1,0 +1,23 @@
+{
+  "id": "en-online",
+  "lang": "en",
+  "level": "A1",
+  "order": 80,
+  "themes": ["gaming"],
+  "grammar": [],
+  "title": "Une partie en ligne",
+  "icon": "🎮",
+  "kind": "Dialogue",
+  "status": "published",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "sentences": [
+    ["Are=be you online? Let's=let+us play together.", "Tu es en ligne ? On joue ensemble ?"],
+    ["Give me five minutes=minute. I'm=i+be eating=eat.", "Donne-moi cinq minutes. Je mange."],
+    ["OK. I'll=i+will create the team.", "D'accord. Je crée l'équipe."],
+    ["Wait, my connection is=be really slow today.", "Attends, ma connexion est vraiment lente aujourd'hui."],
+    ["No problem. We can start later.", "Pas de problème. On peut commencer plus tard."],
+    ["Ready? Let's=let+us win this time!", "Prêt ? Cette fois, on gagne !"]
+  ],
+  "speakers": null,
+  "review": { "by": "nathan", "at": "2026-11-19" }
+}
