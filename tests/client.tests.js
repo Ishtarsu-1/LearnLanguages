@@ -875,3 +875,22 @@ ok(num1(1.5) === "1,5" && num1(0) === "0,0" && num0(1234).replace(/\s/g, " ") ==
   ok(!/ style="/.test(html), "aucun style inline dans les vues");
   ok(/data-bar-w="[0-9.]+"/.test(viewLanguage("ko", "parcours")), "barres de progression : data-bar-w");
 }
+// Mochi animable (MOCHI.md M1) : groupes nommés pour chaque humeur, yeux séparés, option live
+{
+  const groups = ["mo-shadow", "mo-rig", "mo-tilt", "mo-squash", "mo-body", "mo-cheeks", "mo-face", "mo-eyes", "mo-mouth", "mo-acc", "mo-marks", "mo-fx"];
+  for (const m of MOCHI_MOODS) {
+    const s = mochi("small", m);
+    ok(groups.every((g) => s.includes(`class="${g}"`)) && s.includes(`data-mood="${m}"`) && !s.includes("data-live"), `mochi ${m} : groupes nommés, statique par défaut`);
+    ok((s.match(/<g\b/g) || []).length === (s.match(/<\/g>/g) || []).length && (s.match(/<svg\b/g) || []).length === 1, `mochi ${m} : balises équilibrées`);
+    ok(/<g class="mo-eyes">\S/.test(s) && /<g class="mo-mouth">\S/.test(s), `mochi ${m} : yeux et bouche séparés`);
+  }
+  ok(mochi("", "inconnue").includes('data-mood="happy"'), "humeur inconnue → contente");
+  ok(mochi("", "happy", true, { live: true, intro: "done" }).includes('data-live="1" data-intro="done"') && mochi("", "happy", true, { live: true }).includes('class="mochi mochi-happy live '), "option live");
+  const look0 = state.settings.look, rt0 = state.langs.en.readTexts, bk0 = state.langs.en.books;
+  state.settings.look = { face: "glasses", head: "bow" };
+  state.langs.en.readTexts = Object.fromEntries([...Array(10)].map((_, i) => [`t${i}`, true])); state.langs.en.books = { "b:1:mission": true };
+  const dressed = mochi("", "happy");
+  ok(/mo-face-acc">[^<]*<g class="acc acc-glasses/.test(dressed) && /mo-acc">[^<]*<g class="acc acc-bow/.test(dressed), "lunettes avec le visage, nœud avec la tête");
+  ok(!mochi("", "happy", false).includes("acc-"), "dressed=false : sans accessoires");
+  state.settings.look = look0; state.langs.en.readTexts = rt0; state.langs.en.books = bk0;
+}

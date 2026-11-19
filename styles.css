@@ -619,6 +619,10 @@ code { background: var(--surface-2); padding: 2px 6px; border-radius: var(--radi
 .mo-star { fill: var(--yuzu-400); }
 .mo-mark { font: 700 22px var(--font-sans); fill: var(--ink-muted); }
 .mo-mark.small { font-size: 15px; }
+/* Groupes animables (MOCHI.md M1) : écrasement depuis le bas du corps, clignement au centre des yeux */
+.mo-rig, .mo-squash, .mo-acc { transform-box: view-box; transform-origin: 70px 106px; }
+.mo-face, .mo-marks, .mo-fx { transform-box: view-box; }
+.mo-eyes, .mo-shadow, .mo-cheek, .mo-dot { transform-box: fill-box; transform-origin: center; }
 .mochi-sleepy { animation: none; }
 .mochi-proud { animation: hop 1.2s var(--ease-squish) infinite; }
 @keyframes hop { 0%, 100% { transform: translateY(0) scale(1, 1); } 40% { transform: translateY(-10px) scale(.96, 1.04); } 60% { transform: translateY(0) scale(1.04, .96); } }

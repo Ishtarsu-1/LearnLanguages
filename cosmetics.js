@@ -48,11 +48,11 @@ const myLook = () => state.settings.look || {};
 
 // Calque d'accessoires ajouté par mochi() (ui.js). La tête suit la forme de Mochi selon l'humeur.
 const HEAD_DY = { proud: -6, sleepy: 15 };
-function mochiAccessories(mood) {
+function mochiAccessories(mood, slots = null) {
   const look = myLook(), st = lookStats();
   return Object.entries(look).map(([slot, id]) => {
     const a = accessoryById(id);
-    if (!a || a.slot !== slot || !accUnlocked(a, st)) return "";
+    if (!a || a.slot !== slot || (slots && !slots.includes(slot)) || !accUnlocked(a, st)) return "";
     const dy = slot === "head" ? HEAD_DY[mood] || 0 : mood === "sleepy" ? 4 : 0;
     return `<g class="acc acc-${a.id}" transform="translate(0 ${dy})">${a.svg}</g>`;
   }).join("");
