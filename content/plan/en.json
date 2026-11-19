@@ -224,6 +224,266 @@
       "review_words": ["may", "right", "then", "could", "who"],
       "texts": 2,
       "kinds": ["Dialogue", "Message"]
+    },
+    {
+      "unit": "en-A1-14",
+      "level": "A1",
+      "grammar": ["will"],
+      "themes": ["gaming"],
+      "new_words": ["down", "through", "s", "while", "such", "man", "look", "something", "use", "same"],
+      "review_words": ["why", "still", "say", "way", "which"],
+      "texts": 2,
+      "kinds": ["Monologue", "Dialogue"]
+    },
+    {
+      "unit": "en-A1-15",
+      "level": "A1",
+      "grammar": ["will"],
+      "themes": ["cafe"],
+      "new_words": ["both", "every", "come", "state", "around", "between", "always", "find", "help", "high"],
+      "review_words": ["down", "through", "may", "right", "our"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Récit"]
+    },
+    {
+      "unit": "en-A1-16",
+      "level": "A1",
+      "grammar": ["would-like"],
+      "themes": ["rencontre"],
+      "new_words": ["old", "since", "another", "own", "thing", "under", "during", "house", "again", "each"],
+      "review_words": ["both", "every", "why", "still", "then"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Message"]
+    },
+    {
+      "unit": "en-A1-17",
+      "level": "A1",
+      "grammar": ["would-like"],
+      "themes": ["transports"],
+      "new_words": ["mr", "without", "against", "end", "show", "big", "feel", "ever", "family", "keep"],
+      "review_words": ["old", "since", "down", "through", "say"],
+      "texts": 2,
+      "kinds": ["Monologue", "Dialogue"]
+    },
+    {
+      "unit": "en-A1-18",
+      "level": "A1",
+      "grammar": ["comparative"],
+      "themes": ["series"],
+      "new_words": ["might", "put", "money", "free", "someone", "away", "left", "name", "until", "company"],
+      "review_words": ["mr", "without", "both", "every", "may"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Récit"]
+    },
+    {
+      "unit": "en-A1-19",
+      "level": "A1",
+      "grammar": ["comparative"],
+      "themes": ["travail"],
+      "new_words": ["few", "real", "call", "different", "set", "thought", "however", "government", "group", "top"],
+      "review_words": ["might", "put", "old", "since", "why"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Message"]
+    },
+    {
+      "unit": "en-A1-20",
+      "level": "A1",
+      "grammar": ["present-perfect"],
+      "themes": ["cuisine"],
+      "new_words": ["woman", "business", "care", "system", "week", "already", "case", "nothing", "person", "enough"],
+      "review_words": ["few", "real", "mr", "without", "down"],
+      "texts": 2,
+      "kinds": ["Monologue", "Dialogue"]
+    },
+    {
+      "unit": "en-A1-21",
+      "level": "A1",
+      "grammar": ["present-perfect"],
+      "themes": ["sport"],
+      "new_words": ["everything", "full", "read", "tell", "bad", "hard", "mean", "once", "support", "include"],
+      "review_words": ["woman", "business", "might", "put", "both"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Récit"]
+    },
+    {
+      "unit": "en-A1-22",
+      "level": "A1",
+      "grammar": [],
+      "themes": ["gaming"],
+      "new_words": ["power", "believe", "head", "small", "white", "far", "job", "side", "though", "try"],
+      "review_words": ["everything", "full", "few", "real", "old"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Message"]
+    },
+    {
+      "unit": "en-A1-23",
+      "level": "A1",
+      "grammar": [],
+      "themes": ["cafe"],
+      "new_words": ["american", "late", "less", "line", "run", "country", "season", "child", "everyone", "general"],
+      "review_words": ["power", "believe", "woman", "business", "mr"],
+      "texts": 2,
+      "kinds": ["Monologue", "Dialogue"]
+    },
+    {
+      "unit": "en-A1-24",
+      "level": "A1",
+      "grammar": [],
+      "themes": ["rencontre"],
+      "new_words": ["unite", "area", "black", "d", "following", "law", "war", "whole", "car", "kind"],
+      "review_words": ["american", "late", "everything", "full", "might"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Récit"]
+    },
+    {
+      "unit": "en-A1-25",
+      "level": "A1",
+      "grammar": [],
+      "themes": ["transports"],
+      "new_words": ["maybe", "per", "president", "health", "hope", "means", "news", "within", "able", "book"],
+      "review_words": ["unite", "area", "power", "believe", "few"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Message"]
+    },
+    {
+      "unit": "en-A1-26",
+      "level": "A1",
+      "grammar": [],
+      "themes": ["series"],
+      "new_words": ["friend", "local", "post", "t", "video", "young", "ago", "talk", "fact", "guy"],
+      "review_words": ["maybe", "per", "american", "late", "woman"],
+      "texts": 2,
+      "kinds": ["Monologue", "Dialogue"]
+    },
+    {
+      "unit": "en-A1-27",
+      "level": "A1",
+      "grammar": [],
+      "themes": ["travail"],
+      "new_words": ["half", "hand", "level", "mind", "often", "single", "become", "body", "control", "death"],
+      "review_words": ["friend", "local", "unite", "area", "everything"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Récit"]
+    },
+    {
+      "unit": "en-A1-28",
+      "level": "A1",
+      "grammar": [],
+      "themes": ["cuisine"],
+      "new_words": ["food", "hour", "office", "pay", "south", "true", "almost", "lose", "research", "room"],
+      "review_words": ["half", "hand", "maybe", "per", "power"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Message"]
+    },
+    {
+      "unit": "en-A1-29",
+      "level": "A1",
+      "grammar": [],
+      "themes": ["sport"],
+      "new_words": ["several", "wrong", "along", "anyone", "girl", "pretty", "remember", "air", "hit", "playe"],
+      "review_words": ["food", "hour", "friend", "local", "american"],
+      "texts": 2,
+      "kinds": ["Monologue", "Dialogue"]
+    },
+    {
+      "unit": "en-A1-30",
+      "level": "A1",
+      "grammar": [],
+      "themes": ["gaming"],
+      "new_words": ["probably", "understand", "yeah", "past", "b", "due", "happy", "human", "month", "move"],
+      "review_words": ["several", "wrong", "half", "hand", "unite"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Récit"]
+    },
+    {
+      "unit": "en-A1-31",
+      "level": "A1",
+      "grammar": [],
+      "themes": ["cafe"],
+      "new_words": ["r", "ask", "community", "data", "leave", "north", "special", "c", "either", "future"],
+      "review_words": ["probably", "understand", "food", "hour", "maybe"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Message"]
+    },
+    {
+      "unit": "en-A1-32",
+      "level": "A1",
+      "grammar": [],
+      "themes": ["rencontre"],
+      "new_words": ["light", "low", "million", "short", "age", "deal", "rather", "reason", "red", "report"],
+      "review_words": ["r", "ask", "several", "wrong", "friend"],
+      "texts": 2,
+      "kinds": ["Monologue", "Dialogue"]
+    },
+    {
+      "unit": "en-A1-33",
+      "level": "A1",
+      "grammar": [],
+      "themes": ["transports"],
+      "new_words": ["soon", "third", "turn", "whether", "among", "check", "development", "form", "further", "heart"],
+      "review_words": ["light", "low", "probably", "understand", "half"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Récit"]
+    },
+    {
+      "unit": "en-A1-34",
+      "level": "A1",
+      "grammar": [],
+      "themes": ["series"],
+      "new_words": ["myself", "yourself", "act", "although", "fire", "living", "medium", "player", "art", "behind"],
+      "review_words": ["soon", "third", "r", "ask", "food"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Message"]
+    },
+    {
+      "unit": "en-A1-35",
+      "level": "A1",
+      "grammar": [],
+      "themes": ["travail"],
+      "new_words": ["building", "easy", "market", "non", "quite", "six", "west", "available", "e", "education"],
+      "review_words": ["myself", "yourself", "light", "low", "several"],
+      "texts": 2,
+      "kinds": ["Monologue", "Dialogue"]
+    },
+    {
+      "unit": "en-A1-36",
+      "level": "A1",
+      "grammar": [],
+      "themes": ["cuisine"],
+      "new_words": ["former", "kid", "sometimes", "son", "bring", "college", "current", "example", "experience", "hear"],
+      "review_words": ["building", "easy", "soon", "third", "probably"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Récit"]
+    },
+    {
+      "unit": "en-A1-37",
+      "level": "A1",
+      "grammar": [],
+      "themes": ["sport"],
+      "new_words": ["program", "baby", "march", "process", "song", "study", "word", "clear", "himself", "outside"],
+      "review_words": ["former", "kid", "myself", "yourself", "r"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Message"]
+    },
+    {
+      "unit": "en-A1-38",
+      "level": "A1",
+      "grammar": [],
+      "themes": ["gaming"],
+      "new_words": ["father", "self", "board", "cost", "dr", "field", "hold", "instead", "road", "seem"],
+      "review_words": ["program", "baby", "building", "easy", "light"],
+      "texts": 2,
+      "kinds": ["Monologue", "Dialogue"]
+    },
+    {
+      "unit": "en-A1-39",
+      "level": "A1",
+      "grammar": [],
+      "themes": ["cafe"],
+      "new_words": ["mother", "thinke", "town", "de", "department", "energy", "fight", "fine", "price", "re"],
+      "review_words": ["father", "self", "former", "kid", "soon"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Récit"]
     }
   ]
 }

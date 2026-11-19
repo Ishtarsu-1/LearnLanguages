@@ -254,6 +254,296 @@
       "review_words": ["어떤", "잘", "문제", "그런", "위하다"],
       "texts": 2,
       "kinds": ["Dialogue", "Message"]
+    },
+    {
+      "unit": "ko-A1-11",
+      "level": "A1",
+      "grammar": ["neg"],
+      "themes": ["sport"],
+      "new_words": ["다시", "다른", "이런", "여자", "개", "정도", "뒤", "듣다", "다", "좀"],
+      "review_words": ["생각", "어떻다", "속", "데", "크다"],
+      "texts": 2,
+      "kinds": ["Monologue", "Dialogue"]
+    },
+    {
+      "unit": "ko-A1-12",
+      "level": "A1",
+      "grammar": ["neg"],
+      "themes": ["gaming"],
+      "new_words": ["들다", "싶다", "보이다", "가지다", "함께", "아이", "지나다", "시간", "너", "인간"],
+      "review_words": ["다시", "다른", "어떤", "잘", "받다"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Récit"]
+    },
+    {
+      "unit": "ko-A1-13",
+      "level": "A1",
+      "grammar": ["go-sipda"],
+      "themes": ["travail"],
+      "new_words": ["사실", "나다", "이렇다", "눈", "점", "의하다", "시대", "이러하다", "누구", "전"],
+      "review_words": ["들다", "싶다", "생각", "어떻다", "문제"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Message"]
+    },
+    {
+      "unit": "ko-A1-14",
+      "level": "A1",
+      "grammar": ["go-sipda"],
+      "themes": ["rencontre"],
+      "new_words": ["곳", "여러", "세계", "버리다", "위", "퍼센트", "학교", "자기", "가장", "대통령"],
+      "review_words": ["사실", "나다", "다시", "다른", "속"],
+      "texts": 2,
+      "kinds": ["Monologue", "Dialogue"]
+    },
+    {
+      "unit": "ko-A1-15",
+      "level": "A1",
+      "grammar": ["go"],
+      "themes": ["cuisine"],
+      "new_words": ["가지", "시작하다", "바로", "어느", "무엇", "정부", "모든", "번", "그거", "돈"],
+      "review_words": ["곳", "여러", "들다", "싶다", "어떤"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Récit"]
+    },
+    {
+      "unit": "ko-A2-16",
+      "level": "A2",
+      "grammar": ["seyo"],
+      "themes": ["series"],
+      "new_words": ["국가", "그런데", "날", "모두", "여성", "마음", "놓다", "관계", "남자", "어디"],
+      "review_words": ["가지", "시작하다", "사실", "나다", "생각"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Message"]
+    },
+    {
+      "unit": "ko-A2-17",
+      "level": "A2",
+      "grammar": ["mot"],
+      "themes": ["cafe"],
+      "new_words": ["몸", "얼굴", "들어가다", "왜", "나타나다", "말다", "지역", "다르다", "모습", "내다"],
+      "review_words": ["국가", "그런데", "곳", "여러", "다시"],
+      "texts": 2,
+      "kinds": ["Monologue", "Dialogue"]
+    },
+    {
+      "unit": "ko-A2-18",
+      "level": "A2",
+      "grammar": ["mot"],
+      "themes": ["transports"],
+      "new_words": ["쓰다", "이것", "없이", "길", "생활", "뿐", "사이", "방법", "새롭다", "우리나라"],
+      "review_words": ["몸", "얼굴", "가지", "시작하다", "들다"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Récit"]
+    },
+    {
+      "unit": "ko-A2-19",
+      "level": "A2",
+      "grammar": ["aseo"],
+      "themes": ["sport"],
+      "new_words": ["앉다", "처음", "손", "그때", "과정", "삶", "갖다", "찾다", "특히", "이상"],
+      "review_words": ["쓰다", "이것", "국가", "그런데", "사실"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Message"]
+    },
+    {
+      "unit": "ko-A2-20",
+      "level": "A2",
+      "grammar": ["aseo"],
+      "themes": ["gaming"],
+      "new_words": ["나가다", "교육", "사다", "경제", "아직", "잡다", "예술", "서다", "못", "역사"],
+      "review_words": ["앉다", "처음", "몸", "얼굴", "곳"],
+      "texts": 2,
+      "kinds": ["Monologue", "Dialogue"]
+    },
+    {
+      "unit": "ko-A2-21",
+      "level": "A2",
+      "grammar": ["jiman"],
+      "themes": ["travail"],
+      "new_words": ["읽다", "이제", "결과", "내용", "물론", "동안", "책", "일어나다", "당신", "무슨"],
+      "review_words": ["나가다", "교육", "쓰다", "이것", "가지"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Récit"]
+    },
+    {
+      "unit": "ko-A2-22",
+      "level": "A2",
+      "grammar": ["jiman"],
+      "themes": ["rencontre"],
+      "new_words": ["느끼다", "어렵다", "힘", "나라", "부르다", "의미", "자리", "밝히다", "죽다", "이미"],
+      "review_words": ["읽다", "이제", "앉다", "처음", "국가"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Message"]
+    },
+    {
+      "unit": "ko-A2-23",
+      "level": "A2",
+      "grammar": ["reo"],
+      "themes": ["cuisine"],
+      "new_words": ["쪽", "정치", "국민", "생명", "얘기", "연구", "엄마", "이름", "내리다", "사건"],
+      "review_words": ["느끼다", "어렵다", "나가다", "교육", "몸"],
+      "texts": 2,
+      "kinds": ["Monologue", "Dialogue"]
+    },
+    {
+      "unit": "ko-A2-24",
+      "level": "A2",
+      "grammar": ["reo"],
+      "themes": ["series"],
+      "new_words": ["및", "쉽다", "짓다", "또한", "이유", "또는", "필요하다", "글", "생기다", "사용하다"],
+      "review_words": ["쪽", "정치", "읽다", "이제", "쓰다"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Récit"]
+    },
+    {
+      "unit": "ko-A2-25",
+      "level": "A2",
+      "grammar": ["myeon"],
+      "themes": ["cafe"],
+      "new_words": ["남편", "들어오다", "밖", "세상", "작다", "대학", "작품", "상황", "가운데", "보내다"],
+      "review_words": ["및", "쉽다", "느끼다", "어렵다", "앉다"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Message"]
+    },
+    {
+      "unit": "ko-A2-26",
+      "level": "A2",
+      "grammar": ["myeon"],
+      "themes": ["transports"],
+      "new_words": ["두다", "즉", "따라서", "상태", "이후", "당시", "문학", "더욱", "아주", "지방"],
+      "review_words": ["남편", "들어오다", "쪽", "정치", "나가다"],
+      "texts": 2,
+      "kinds": ["Monologue", "Dialogue"]
+    },
+    {
+      "unit": "ko-A2-27",
+      "level": "A2",
+      "grammar": ["banmal"],
+      "themes": ["sport"],
+      "new_words": ["밤", "높다", "최근", "채", "현실", "환경", "컴퓨터", "다니다", "얼마나", "자체"],
+      "review_words": ["두다", "즉", "및", "쉽다", "읽다"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Récit"]
+    },
+    {
+      "unit": "ko-A2-28",
+      "level": "A2",
+      "grammar": ["banmal"],
+      "themes": ["gaming"],
+      "new_words": ["열다", "머리", "묻다", "남다", "부분", "기업", "거기", "변화", "아들", "뜻"],
+      "review_words": ["밤", "높다", "남편", "들어오다", "느끼다"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Message"]
+    },
+    {
+      "unit": "ko-A2-29",
+      "level": "A2",
+      "grammar": ["hamnida"],
+      "themes": ["travail"],
+      "new_words": ["떨어지다", "선거", "관하다", "그냥", "나누다", "이용하다", "거의", "곧", "중심", "활동"],
+      "review_words": ["열다", "머리", "두다", "즉", "쪽"],
+      "texts": 2,
+      "kinds": ["Monologue", "Dialogue"]
+    },
+    {
+      "unit": "ko-A2-30",
+      "level": "A2",
+      "grammar": ["honorific"],
+      "themes": ["rencontre"],
+      "new_words": ["서로", "관심", "역시", "이거", "애", "광고", "방", "정신", "이르다", "땅"],
+      "review_words": ["떨어지다", "선거", "밤", "높다", "및"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Récit"]
+    },
+    {
+      "unit": "ko-A2-31",
+      "level": "A2",
+      "grammar": ["honorific"],
+      "themes": ["cuisine"],
+      "new_words": ["이루다", "웃다", "현상", "떠나다", "기술", "전체", "그래", "얻다", "아름답다", "끝"],
+      "review_words": ["서로", "관심", "열다", "머리", "남편"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Message"]
+    },
+    {
+      "unit": "ko-A2-32",
+      "level": "A2",
+      "grammar": [],
+      "themes": ["series"],
+      "new_words": ["민족", "간", "조사", "듯", "입", "그대로", "필요", "줄", "하늘", "년대"],
+      "review_words": ["이루다", "웃다", "떨어지다", "선거", "두다"],
+      "texts": 2,
+      "kinds": ["Monologue", "Dialogue"]
+    },
+    {
+      "unit": "ko-A2-33",
+      "level": "A2",
+      "grammar": [],
+      "themes": ["cafe"],
+      "new_words": ["과학", "듯하다", "자연", "구조", "결국", "입다", "오히려", "프로그램", "이루어지다", "남"],
+      "review_words": ["민족", "간", "서로", "관심", "밤"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Récit"]
+    },
+    {
+      "unit": "ko-A2-34",
+      "level": "A2",
+      "grammar": [],
+      "themes": ["transports"],
+      "new_words": ["하루", "그림", "적", "터", "치다", "혼자", "교수", "술", "사랑", "의식"],
+      "review_words": ["과학", "듯하다", "이루다", "웃다", "열다"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Message"]
+    },
+    {
+      "unit": "ko-A2-35",
+      "level": "A2",
+      "grammar": [],
+      "themes": ["sport"],
+      "new_words": ["전화", "끝나다", "돌아오다", "맞다", "아빠", "지키다", "한번", "가슴", "길다", "바라보다"],
+      "review_words": ["하루", "그림", "민족", "간", "떨어지다"],
+      "texts": 2,
+      "kinds": ["Monologue", "Dialogue"]
+    },
+    {
+      "unit": "ko-A2-36",
+      "level": "A2",
+      "grammar": [],
+      "themes": ["gaming"],
+      "new_words": ["알아보다", "맛", "대부분", "산업", "매우", "오르다", "음식", "표정", "일부", "계획"],
+      "review_words": ["전화", "끝나다", "과학", "듯하다", "서로"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Récit"]
+    },
+    {
+      "unit": "ko-A2-37",
+      "level": "A2",
+      "grammar": [],
+      "themes": ["travail"],
+      "new_words": ["느낌", "얼마", "고개", "성격", "계속", "세기", "세우다", "아내", "현재", "발전"],
+      "review_words": ["알아보다", "맛", "하루", "그림", "이루다"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Message"]
+    },
+    {
+      "unit": "ko-A2-38",
+      "level": "A2",
+      "grammar": [],
+      "themes": ["rencontre"],
+      "new_words": ["차", "놀다", "향하다", "관련", "형태", "각", "도시", "작업", "분위기", "그러하다"],
+      "review_words": ["느낌", "얼마", "전화", "끝나다", "민족"],
+      "texts": 2,
+      "kinds": ["Monologue", "Dialogue"]
+    },
+    {
+      "unit": "ko-A2-39",
+      "level": "A2",
+      "grammar": [],
+      "themes": ["cuisine"],
+      "new_words": ["나이", "우선", "믿다", "바꾸다", "낳다", "바", "정보", "열리다", "그리다", "만큼"],
+      "review_words": ["차", "놀다", "알아보다", "맛", "과학"],
+      "texts": 2,
+      "kinds": ["Dialogue", "Récit"]
     }
   ]
 }
