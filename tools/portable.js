@@ -6,7 +6,7 @@
 //    npm run portable -- --os linux            Linux (x64)       --os mac   macOS (Apple Silicon)
 //    npm run portable -- --with-feedback       les avis des testeurs t'arrivent par e-mail (voir plus bas)
 //    npm run portable -- --no-audio            sans l'audio pré-généré (paquet beaucoup plus léger)
-//    npm run portable -- --os mobile           iPhone et Android : un site sans serveur à héberger
+//    npm run portable -- --os mobile           iPhone et Android (audio réencodé en MP3 --kbps 40, 0 = tel quel) : un site sans serveur à héberger
 //      (Netlify Drop, Cloudflare Pages…), puis « Ajouter à l'écran d'accueil » : appli hors ligne.
 //      Un téléphone ne fait pas tourner Node : pas de lanceur, la progression reste dans le
 //      navigateur du téléphone. --with-feedback n'y met QUE l'adresse FEEDBACK_TO (jamais la clé
@@ -21,7 +21,7 @@
 //  révocable après la bêta.
 // ============================================================
 const fs = require("node:fs"), path = require("node:path"), os = require("node:os");
-const { execFileSync } = require("node:child_process");
+const { execFileSync, execFile } = require("node:child_process");
 
 const ROOT = path.join(__dirname, "..");
 // Mini-CTF (--ctf) : les deux drapeaux viennent du .env (MOCHI_CTF_FLAG1, MOCHI_CTF_FLAG2), JAMAIS
@@ -42,7 +42,7 @@ const EXCLUDE = [/^tools\/portable\.js$/, /^tests\//, /^docs\//, /^deploy\//, /^
 
 function args(argv) {
   const get = (k, d) => { const i = argv.indexOf(k); return i >= 0 ? argv[i + 1] : d; };
-  const o = { ctf: argv.includes("--ctf"), os: get("--os", "win"), out: path.resolve(get("--out", path.join(ROOT, "dist"))), feedback: argv.includes("--with-feedback"), audio: !argv.includes("--no-audio"), zip: !argv.includes("--no-zip") };
+  const o = { ctf: argv.includes("--ctf"), os: get("--os", "win"), out: path.resolve(get("--out", path.join(ROOT, "dist"))), feedback: argv.includes("--with-feedback"), audio: !argv.includes("--no-audio"), kbps: Number(get("--kbps", 40)), zip: !argv.includes("--no-zip") };
   if (!TARGETS[o.os] && o.os !== "mobile") throw new Error("--os win | linux | mac | mobile");
   if (o.os === "mobile" && o.ctf) throw new Error("--ctf : seulement pour la version ordinateur (le défi a besoin du serveur)");
   return o;
@@ -99,7 +99,7 @@ function audioKey(s) {
 function siteFiles() {
   const src = fs.readFileSync(path.join(ROOT, "server.js"), "utf8"), block = src.slice(src.indexOf("const STATIC = {"), src.indexOf("};", src.indexOf("const STATIC = {")));
   const list = new Set([...block.matchAll(/\[\s*"([^"]+)",\s*"[a-z]+\//g)].map((m) => m[1]));
-  for (const f of execFileSync("git", ["ls-files", "fonts", "icons"], { cwd: ROOT, encoding: "utf8" }).split("\n")) if (/\.(woff2|png)$|OFL\.txt$/.test(f)) list.add(f);
+  for (const f of execFileSync("git", ["ls-files", "fonts", "icons"], { cwd: ROOT, encoding: "utf8" }).split("\n")) if (/\.(woff2|png)$|OFL\.txt$|LICENSE\.md$/.test(f)) list.add(f);
   return [...list];
 }
 // En-têtes pour Netlify et Cloudflare Pages (fichier _headers) : mêmes protections que server.js
@@ -145,6 +145,24 @@ Un avis ? Bouton « Bêta · ton avis 💬 » : ${feedback ? "il ouvre un e-mail
 (Contenus de Mochi : CC BY 4.0. Crédits complets dans le site.)
 `;
 
+// ffmpeg en parallèle ; cache par fichier source (immuable : nommé par son empreinte)
+async function encodeAll(jobs, kbps, cacheDir = path.join(os.homedir(), ".cache", "mochi-portable", `audio-${kbps}k`)) {
+  try { execFileSync("ffmpeg", ["-version"], { stdio: "ignore" }); } catch { throw new Error("ffmpeg introuvable (sudo pacman -S ffmpeg), ou --kbps 0 pour copier l'audio tel quel"); }
+  fs.mkdirSync(cacheDir, { recursive: true });
+  let i = 0, done = 0;
+  const one = (j) => new Promise((ok, ko) => {
+    const c = path.join(cacheDir, `${path.basename(j.src, path.extname(j.src))}.mp3`);
+    if (fs.existsSync(c)) { fs.copyFileSync(c, j.dest); return ok(); }
+    const tmp = `${c}.${process.pid}.tmp.mp3`;
+    execFile("ffmpeg", ["-v", "error", "-y", "-i", j.src, "-ac", "1", "-ar", "24000", "-b:a", `${kbps}k`, tmp], (e) => {
+      if (e) return ko(new Error(`ffmpeg : ${path.basename(j.src)} : ${e.message}`));
+      fs.renameSync(tmp, c); fs.copyFileSync(c, j.dest); ok();
+    });
+  });
+  const worker = async () => { while (i < jobs.length) { await one(jobs[i++]); if (++done % 500 === 0) log(`  … ${done}/${jobs.length} fichiers audio`); } };
+  await Promise.all(Array.from({ length: Math.max(1, os.cpus().length) }, worker));
+}
+
 async function buildMobile(o) {
   const name = "Mochi-mobile", dir = path.join(o.out, name);
   log(`📦 ${name}`);
@@ -157,11 +175,16 @@ async function buildMobile(o) {
   const audio = {}, voices = {};
   if (o.audio) {
     const a = audioFiles(); fs.mkdirSync(path.join(dir, "audio"));
+    // Réencodage en MP3 mono léger (--kbps, 40 par défaut ; 0 = tel quel) : la voix coréenne est en
+    // WAV non compressé, et un site plus léger se met en ligne bien plus vite. Mis en cache.
+    const jobs = [];
     for (const x of a.entries) {
-      const k = audioKey(`${x.lang}\n${x.voice}\n${x.text.slice(0, 300).trim()}`), ext = path.extname(x.file).slice(1);
-      if (!audio[k]) fs.copyFileSync(x.file, path.join(dir, "audio", `${k}.${ext}`));
-      audio[k] = ext;
+      const k = audioKey(`${x.lang}\n${x.voice}\n${x.text.slice(0, 300).trim()}`);
+      if (audio[k]) continue;
+      const ext = o.kbps ? "mp3" : path.extname(x.file).slice(1);
+      audio[k] = ext; jobs.push({ src: x.file, dest: path.join(dir, "audio", `${k}.${ext}`) });
     }
+    if (o.kbps) await encodeAll(jobs, o.kbps); else for (const j of jobs) fs.copyFileSync(j.src, j.dest);
     for (const [k, v] of Object.entries(a.env)) if (k.startsWith("TTS_VOICES_")) voices[k.slice(11).toLowerCase()] = v.split(",");
     log(`  ${Object.keys(audio).length} fichiers audio`);
   }

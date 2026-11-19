@@ -984,6 +984,7 @@ const STATIC = {
   "/fonts/pretendard.css": ["fonts/pretendard.css", "text/css; charset=utf-8"],
   "/fonts/jua.css": ["fonts/jua.css", "text/css; charset=utf-8"],
   "/fonts/fredoka.css": ["fonts/fredoka.css", "text/css; charset=utf-8"],
+  "/fonts/flags.css": ["fonts/flags.css", "text/css; charset=utf-8"],
   "/favicon.svg": ["favicon.svg", "image/svg+xml"],
   "/sw.js": ["sw.js", "text/javascript; charset=utf-8"],
   "/manifest.webmanifest": ["manifest.webmanifest", "application/manifest+json"],
@@ -1023,7 +1024,7 @@ const server = http.createServer(async (req, res) => {
     const m = url.pathname.match(/^\/avatars\/([a-z0-9-]+\.(jpg|png|webp))$/);
     if (m) return serveFile(res, path.join(AVATAR_DIR, m[1]), IMG_TYPES[m[2]], "public, max-age=31536000, immutable");
     // Polices auto-hébergées (charte §6) : noms de fichiers stricts, pas de traversée possible
-    const f = url.pathname.match(/^\/fonts\/(pretendard|jua|fredoka)\/([A-Za-z0-9.-]+\.woff2)$/);
+    const f = url.pathname.match(/^\/fonts\/(pretendard|jua|fredoka|flags)\/([A-Za-z0-9.-]+\.woff2)$/);
     if (f) return serveFile(res, path.join(ROOT, "fonts", f[1], f[2]), "font/woff2", "public, max-age=31536000, immutable");
     const ic = url.pathname.match(/^\/icons\/(mochi-(?:maskable-)?(?:192|512)|apple-touch-icon)\.png$/);
     if (ic) return serveFile(res, path.join(ROOT, "icons", `${ic[1]}.png`), "image/png", "public, max-age=86400");

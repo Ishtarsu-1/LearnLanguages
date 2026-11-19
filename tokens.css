@@ -60,10 +60,10 @@
   --particle-other: var(--ink-muted);
 
   /* Typographie */
-  --font-sans: "Pretendard Variable", Pretendard, -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif;
+  --font-sans: "Twemoji Country Flags", "Pretendard Variable", Pretendard, -apple-system, "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif;
   /* Titres : Fredoka pour le latin (accents compris), Jua prend le relais pour le Hangul */
-  --font-display: "Fredoka Variable", "Jua", "Pretendard Variable", Pretendard, sans-serif;
-  --font-logo: "Jua", "Fredoka Variable", sans-serif;
+  --font-display: "Twemoji Country Flags", "Fredoka Variable", "Jua", "Pretendard Variable", Pretendard, sans-serif;
+  --font-logo: "Twemoji Country Flags", "Jua", "Fredoka Variable", sans-serif;
   --text-scale: 1;
   --text-xs: calc(0.75rem * var(--text-scale));
   --text-sm: calc(0.875rem * var(--text-scale));

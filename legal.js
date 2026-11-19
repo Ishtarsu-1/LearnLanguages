@@ -35,7 +35,7 @@ function legalMentions() {
   <p>Mochi est en cours de développement. Le site est ouvert temporairement à un petit nombre de personnes pour le tester. Il peut être interrompu, modifié ou remis à zéro à tout moment (voir les <a class="lnk" href="#/legal/cgu">conditions d'utilisation</a>).</p>
   <h2>Propriété intellectuelle</h2>
   <p>Les textes pédagogiques, exercices, illustrations (dont la mascotte Mochi) et le code du site appartiennent à l'éditeur, sauf mention contraire. Toute reproduction sans autorisation est interdite.</p>
-  <p>Mochi utilise des éléments libres, chacun sous sa licence : les polices Pretendard, Jua et Fredoka (SIL Open Font License 1.1), la bibliothèque de révision espacée ts-fsrs (licence MIT) et, quand elles sont activées, les voix de synthèse Kokoro (Apache 2.0) et MeloTTS (MIT).</p>
+  <p>Mochi utilise des éléments libres, chacun sous sa licence : les polices Pretendard, Jua et Fredoka (SIL Open Font License 1.1), les drapeaux Twemoji (CC BY 4.0, police Twemoji Country Flags de TalkJS sous licence MIT), la bibliothèque de révision espacée ts-fsrs (licence MIT) et, quand elles sont activées, les voix de synthèse Kokoro (Apache 2.0) et MeloTTS (MIT).</p>
   <h2>Signaler un contenu</h2>
   <p>Pour signaler un contenu illicite (par exemple une photo de profil), écris à ${L_.contact}.</p>`;
 }
@@ -186,7 +186,7 @@ function legalCredits() {
     ${li("Voix russe « dmitri » : modèle de base", "Hi-Fi TTS, lecteur 92 (Cori Samuel)", "CC BY 4.0")}</ul>
   <h2>Polices et bibliothèques</h2>
   <ul>
-    ${li("Pretendard", "Kil Hyung-jin", "SIL Open Font License 1.1")}${li("Jua", "Woowahan Brothers", "SIL Open Font License 1.1")}${li("Fredoka", "Milena Brandão", "SIL Open Font License 1.1")}
+    ${li("Pretendard", "Kil Hyung-jin", "SIL Open Font License 1.1")}${li("Jua", "Woowahan Brothers", "SIL Open Font License 1.1")}${li("Fredoka", "Milena Brandão", "SIL Open Font License 1.1")}${li("Twemoji (drapeaux)", "Twitter, police Twemoji Country Flags par TalkJS", "CC BY 4.0 · MIT")}
     ${li("Répétition espacée", "ts-fsrs (open-spaced-repetition)", "MIT")}
   </ul>`;
 }
