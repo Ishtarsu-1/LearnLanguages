@@ -81,6 +81,8 @@ function viewPinyin(n) {
   </section>`;
 }
 
+// Les tons dans de vrais mots (séance 1)
+const PINYIN_TONE_WORDS = [["好", "hǎo"], ["去", "qù"], ["人", "rén"], ["他", "tā"], ["是", "shì"], ["茶", "chá"]];
 // Quiz d'écoute : reconnaître le ton (séance 1), la syllabe (initiales, finales), la bonne lecture (changements de ton)
 function pinyinQuestions(n) {
   const d = PINYIN_DAYS[n - 1], qs = [];
@@ -95,7 +97,7 @@ function pinyinQuestions(n) {
     }
   }
   // Séance des tons : aussi des syllabes déjà vues ailleurs (les tons dans de vrais mots)
-  if (d.kind === "tones") for (const [zh, py] of [["好", "hǎo"], ["去", "qù"], ["人", "rén"], ["他", "tā"], ["是", "shì"], ["茶", "chá"]]) qs.push({ ask: "Écoute : quel ton ?", prompt: audio(zh), options: TONE_NAMES.slice(0, 4), answer: TONE_NAMES[toneOf(py) - 1], audio: zh, audioLang: "zh", after: `${zh} = ${py}` });
+  if (d.kind === "tones") for (const [zh, py] of PINYIN_TONE_WORDS) qs.push({ ask: "Écoute : quel ton ?", prompt: audio(zh), options: TONE_NAMES.slice(0, 4), answer: TONE_NAMES[toneOf(py) - 1], audio: zh, audioLang: "zh", after: `${zh} = ${py}` });
   return shuffle(qs);
 }
 

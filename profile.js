@@ -145,7 +145,7 @@ function audioCard() {
       <div class="audio-head"><b>${l.flag} ${l.name}</b> ${status}</div>
       ${opts.length ? `<div class="audio-ctl">
         <select class="input" data-voice="${id}" aria-label="Voix ${l.name}"><option value="">Automatique (la meilleure trouvée)</option>${opts.map(([v, t]) => `<option value="${esc(v)}" ${v === pref ? "selected" : ""}>${esc(t)}</option>`).join("")}</select>
-        <button class="btn ghost small" data-act="say" data-lang="${id}" data-text="${esc({ ko: "안녕하세요! 저는 모찌예요.", zh: "你好！我是麻糬。", ru: "Привет! Я Мочи. Очень приятно!" }[id] || "Hi! I'm Mochi. Nice to meet you.")}">▶ Tester</button>
+        <button class="btn ghost small" data-act="say" data-lang="${id}" data-text="${esc(VOICE_SAMPLE[id] || VOICE_SAMPLE.en)}">▶ Tester</button>
       </div>` : ""}
     </div>`;
   }).join("");

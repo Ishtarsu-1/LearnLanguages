@@ -69,7 +69,11 @@ function speak(text, lang, speed = state.settings.speed, who = null) {
         return browserSpeak(text, lang, speed, null);
       }
       // Version portable : la phrase n'a pas été pré-générée → voix de l'appareil, sans bruit
-      if (/Pas d'audio/.test(e?.message || "") && voicesFor(lang).length) return browserSpeak(text, lang, speed, null);
+      if (/Pas d'audio/.test(e?.message || "")) {
+        if (voicesFor(lang).length) return browserSpeak(text, lang, speed, null);
+        if (!warnedMute[lang]) { warnedMute[lang] = true; toast("Pas d'audio pour cette phrase dans la version portable, et aucune voix sur cet appareil : voir Profil › Audio"); }
+        return;
+      }
       const why = audioError(e);
       console.warn("Voix du serveur illisible :", why, e);
       // Repli sur les voix du navigateur s'il y en a ; sinon on dit la vraie raison
@@ -79,9 +83,11 @@ function speak(text, lang, speed = state.settings.speed, who = null) {
   }
   return browserSpeak(text, lang, speed, who);
 }
+// Phrase du bouton « Tester » (Profil › Audio)
+const VOICE_SAMPLE = { en: "Hi! I'm Mochi. Nice to meet you.", ko: "안녕하세요! 저는 모찌예요.", zh: "你好！我是麻糬。", ru: "Привет! Я Мочи. Очень приятно!" };
 // Toutes les phrases FIXES que le site lit à voix haute, exactement comme elles sont passées à
 // speak() (même texte, même coupe à 300 caractères que ttsUrl) : textes, livres, histoire,
-// missions, mots, oreille, faux amis, registres, grammaire, Hangul, réponses types.
+// missions, mots, oreille, faux amis, registres, grammaire, alphabets, test du profil, réponses types.
 // tools/pregen-tts.js charge ce fichier et appelle cette fonction : l'audio pré-généré et les
 // clics ne peuvent pas diverger. (Restent générées au clic : les répliques de l'IA, la phrase
 // corrigée de l'apprenant, les syllabes composées dans l'atelier.)
@@ -107,6 +113,9 @@ function spokenSentences(lang) {
     for (const d of HANGUL_DAYS) for (const it of d.items || []) add(d.kind === "jamo" ? it[2] : it[0]);
     for (const d of HANGUL_DAYS) for (const [w] of d.type || []) add(w);
   }
+  if (lang === "ru" && typeof CYR_DAYS !== "undefined") { for (const d of CYR_DAYS) for (const it of d.items || []) add(it[2]); for (const [w] of CYR_STRESS_QUIZ) add(w); }
+  if (lang === "zh" && typeof PINYIN_DAYS !== "undefined") { for (const d of PINYIN_DAYS) for (const [zh] of d.items || []) add(zh); for (const [zh] of PINYIN_TONE_WORDS) add(zh); }
+  add(VOICE_SAMPLE[lang]);
   return [...out.values()];
 }
 const MEDIA_ERR = { 1: "lecture annulée", 2: "erreur réseau", 3: "décodage impossible", 4: "format non pris en charge" };
