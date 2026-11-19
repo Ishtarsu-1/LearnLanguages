@@ -156,7 +156,8 @@ function tabExercises(lang) {
       ${E.picked ? `<p class="muted mt-12"><b>${esc(q.g.title)}</b> · ${esc(q.g.explain)}</p>${next}` : ""}`;
   }
   const mixInfo = q.mix ? `<p class="muted center"><small>🔀 ${EX_KINDS[kind]?.label || "Grammaire"} · les exercices et les points de grammaire déjà vus sont mélangés : c'est plus dur, et c'est pour ça que ça marche.</small></p>` : "";
-  return `${menu}<div class="card review-card ex-card">${body}</div>${mixInfo}`;
+  const nMist = typeof mistakesOpen === "function" ? mistakesOpen(lang) : 0;
+  return `${menu}${nMist ? `<p class="mt-0"><a class="lnk" href="#/lang/${lang}/erreurs">📒 Mon carnet d'erreurs · ${plural(nMist, "type à travailler", "types à travailler")}</a></p>` : ""}<div class="card review-card ex-card">${body}</div>${mixInfo}`;
 }
 
 function choices(options, answer, picked, cls) {
@@ -168,6 +169,7 @@ function choices(options, answer, picked, cls) {
 
 function exDone(lang, ok) {
   const L = state.langs[lang];
+  if (typeof noteExercise === "function") noteExercise(lang, ui.ex?.q, ok, ui.ex?.picked); // carnet d'erreurs (mistakes.js)
   if (ok) L.xp += 1;
   track(lang, "ex");
   save();

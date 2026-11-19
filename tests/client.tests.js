@@ -431,6 +431,31 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
     ok(html.includes('data-act="rem-toggle"') && html.includes("Activer les rappels") && html.includes('id="rem-hour"') && (html.match(/data-act="rem-day"/g) || []).length === 7, "rappels : bouton, heure, 7 jours");
     features = f0; account = a0;
   }
+  // Carnet d'erreurs (F3) : classement, réussites sur 3 jours, cartes ciblées, page
+  {
+    const Le = state.langs.en, Lk = state.langs.ko; Le.mistakes = {}; Lk.mistakes = {};
+    ok(classifyError("en", { type: "grammaire", original: "I like the coffee", correction: "I like coffee" }) === "article", "carnet : article repéré");
+    ok(classifyError("en", { type: "grammaire", original: "at Monday", correction: "on Monday" }) === "preposition", "carnet : préposition repérée");
+    ok(classifyError("en", { type: "grammaire", original: "she work", correction: "she works" }) === "verbe", "carnet : forme du verbe");
+    ok(classifyError("ko", { type: "grammaire", particle: "에서", original: "카페에", correction: "카페에서" }) === "particule:lieu" && classifyError("ko", { type: "registre" }) === "registre", "carnet : particules et registre (coréen)");
+    const cards0 = state.cards.length;
+    noteProduction("en", [{ type: "grammaire", original: "I like the coffee", correction: "I like coffee", explanation: "Sens général : pas d'article." }], "I like the coffee.", "I like coffee.", "Dis que tu aimes le café.", null);
+    ok(Le.mistakes.article.n === 1 && Le.mistakes.article.ex[0][1] === "I like coffee" && state.cards.length === cards0, "1re erreur : notée, pas encore de carte");
+    noteProduction("en", [{ type: "grammaire", original: "I love the music", correction: "I love music" }], "I love the music.", "I love music.", "", null);
+    ok(Le.mistakes.article.n === 2 && state.cards.length === cards0 + 1 && state.cards.at(-1).type === "cloze", "erreur répétée : carte « phrase à trou » créée");
+    noteExercise("ko", { kind: "particule", answer: "에서", s: { text: "카페에서 공부해요." } }, false, "에");
+    ok(Lk.mistakes["particule:lieu"].n === 1 && Lk.mistakes["particule:lieu"].ex[0][0] === "카페에 공부해요.", "exercice raté : noté avec la phrase");
+    Lk.mistakes["particule:lieu"].wins = ["2026-01-01", "2026-01-02"];
+    noteExercise("ko", { kind: "particule", answer: "에" }, true);
+    ok(Lk.mistakes["particule:lieu"].done && mistakesOpen("ko") === 0, "3 réussites sur 3 jours différents : vaincue");
+    noteExercise("ko", { kind: "particule", answer: "에서", s: { text: "카페에서 공부해요." } }, false, "에");
+    ok(!Lk.mistakes["particule:lieu"].done && Lk.mistakes["particule:lieu"].wins.length === 0, "nouvelle erreur : à retravailler");
+    noteExercise("ko", { kind: "dictee" }, false); ok(Object.keys(Lk.mistakes).length === 1, "exercice trop général : rien de noté");
+    const v = viewMistakes("ko");
+    ok(v.includes("에 ou 에서") && v.includes('data-act="mistake-train" data-k="particule"') && v.includes("<del>카페에 공부해요.</del>"), "page : type, explication, exemple, M'entraîner");
+    ok(flatten(state).kv["langs.en.mistakes.article"]?.n === 2, "carnet synchronisé");
+    Le.mistakes = {}; Lk.mistakes = {};
+  }
   // Lire à voix haute : comparaison tolérante de la transcription
   {
     const m = speechMatch("Hi! Is this the menu?", ["hi is this the menu"], "en");

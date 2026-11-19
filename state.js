@@ -29,7 +29,7 @@ const STORE_KEY = "mochi-state-v2";
 const langDefaults = () => ({
   xp: 0, streak: 0, lastStreakDay: null, seconds: 0, todayDate: null, todaySec: 0, started: false,
   known: {}, unknown: {}, readTexts: {}, fullDays: {}, catchUp: false, session: {}, introduced: { date: null, count: 0 },
-  hangulDone: false, hangulDays: {}, pinyinDays: {}, alphabetDays: {}, grammarDone: {}, grammarMiss: {}, earStats: {}, errors: {}, prodDone: {}, quests: {}, books: {},
+  hangulDone: false, hangulDays: {}, pinyinDays: {}, alphabetDays: {}, grammarDone: {}, grammarMiss: {}, earStats: {}, errors: {}, prodDone: {}, quests: {}, books: {}, mistakes: {},
 });
 const defaultState = () => ({
   name: "", avatar: "mochi", goal: 10, lastLang: null,

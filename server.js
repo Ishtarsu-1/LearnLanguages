@@ -1071,6 +1071,7 @@ const STATIC = {
   "/admin-content.js": ["admin-content.js", "text/javascript; charset=utf-8"],
   "/feedback.js": ["feedback.js", "text/javascript; charset=utf-8"],
   "/reminders.js": ["reminders.js", "text/javascript; charset=utf-8"],
+  "/mistakes.js": ["mistakes.js", "text/javascript; charset=utf-8"],
   "/friends.js": ["friends.js", "text/javascript; charset=utf-8"],
   "/duel.js": ["duel.js", "text/javascript; charset=utf-8"],
   "/ctf.js": ["ctf.js", "text/javascript; charset=utf-8"],

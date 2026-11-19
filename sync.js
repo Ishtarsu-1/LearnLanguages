@@ -12,7 +12,7 @@
 //   - compteurs: XP, temps, activité → on envoie des deltas, le serveur additionne
 //  « snap » = ce que le serveur connaît déjà ; on n'envoie que la différence.
 // ============================================================
-const MAP_KEYS = ["known", "unknown", "readTexts", "fullDays", "hangulDays", "pinyinDays", "alphabetDays", "grammarDone", "grammarMiss", "earStats", "errors", "prodDone", "quests", "books"];
+const MAP_KEYS = ["known", "unknown", "readTexts", "fullDays", "hangulDays", "pinyinDays", "alphabetDays", "grammarDone", "grammarMiss", "earStats", "errors", "prodDone", "quests", "books", "mistakes"];
 const CTR_KEYS = ["xp", "seconds"];
 const sync = { status: "idle", timer: null, running: false, again: false, meta: null };
 

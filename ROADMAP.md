@@ -54,6 +54,13 @@ Fait (`AMELIORATIONS-v0.5.md`) : recentrage sur l'anglais et le coréen (chinois
 | ~~**P2**~~ | ~~Défis entre amis~~ ✅ fait (semaine régulière, temps, révisions, mots solides, même chapitre ; calculés côté serveur ; reste : défis d'écoute et de production) | 🟡 | 🆓 | liste d'amis |
 | **P2** | Reconnaissance vocale (exercices oraux) (🟢 étape 1 : « 🗣️ À voix haute » dans le lecteur, API Web Speech ; reste : exercices oraux dédiés, Whisper) | 🔴 | 🆓 | backend |
 | **P2** | Optimisation FSRS par utilisateur | 🟡 | 🆓 | historique de révisions |
+| **P2** | « Adapte ce texte à mon niveau » (v0.6 F1 : texte collé → réécrit à ~95 % de couverture par Ollama, privé, quota) | 🔴 | 🆓 | LLM + analyseur |
+| **P2** | « Mochi Café » : mini-conversations jouées (v0.6 F2 : scénarios à objectifs, écrit ou oral, récapitulatif avec recasts) | 🔴 | 🆓 | LLM, reconnaissance vocale |
+| ~~**P2**~~ | ~~Carnet d'erreurs~~ ✅ (v0.6 F3 : par type, explications relues, exemples tirés de ses phrases, « M'entraîner », vaincue après 3 réussites sur 3 jours, cartes ciblées) | 🟡 | 🆓 | correcteur |
+| **P3** | « Ce que je sais faire » + carte de progression à partager (v0.6 F4 : capacités CECRL débloquées par des preuves, image PNG sans donnée personnelle) | 🟡 | 🆓 | thèmes, Mochi Café |
+| **P3** | Tracé du Hangul au doigt (v0.6 F5 : ordre et sens des traits des 24 jamo ; chinois : Hanzi Writer, vérifier la licence des données) | 🟡 | 🆓 | — |
+| **P3** | Révision mains libres, « mode métro » (v0.6 F6 : audio seul, Media Session, hors ligne) | 🟡 | 🆓 | vraies voix, PWA |
+| **P3** | Duel asynchrone (v0.6 F7 : mêmes 10 mots, 48 h, arbitré par le serveur, sans XP) | 🟢 | 🆓 | duel |
 | **P3** | Classements entre amis, badges | 🟢 | 🆓 | amis |
 | **P3** | Import de contenus perso (articles, sous-titres) | 🔴 | 🆓 | analyseur |
 | **P3** | Tandem FR ↔ KO / FR ↔ EN | 🔴 | 🆓 | amis, modération |

@@ -478,6 +478,7 @@ async function checkProduction(lang, text) {
         return { particle: e.particle, before: ok ? f.recast.slice(0, end - e.particle.length) : null, after: ok ? f.recast.slice(end) : null, contextFr: ex.prompt };
       }) : [];
       recordProduction(lang, P.mode === "free" ? null : ex.id, pes);
+      noteProduction(lang, f.errors, text, f.recast, ex.prompt, P.mode === "free" ? null : ex.id); // carnet d'erreurs
       P.loading = false;
       return;
     } catch (e) {
@@ -511,6 +512,7 @@ function checkProductionLocal(lang, text) {
     return { particle: i.want, ...splitAround(tWords, wi, gi), contextFr: ex.prompt };
   });
   recordProduction(lang, ex.id, pes);
+  if (typeof noteLocalIssues === "function") noteLocalIssues(lang, issues); // carnet d'erreurs
 }
 
 // ---------- Mots (§3 : modèle du vocabulaire, fréquence) ----------

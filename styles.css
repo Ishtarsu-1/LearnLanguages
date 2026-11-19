@@ -349,6 +349,11 @@ h1 { font-size: var(--text-3xl); }
 .legend { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 18px; font-size: var(--text-sm); font-weight: 700; }
 .rec-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
 .said { margin-top: 8px; display: grid; gap: 2px; }
+.card.mistake { margin-bottom: 14px; }
+.card.mistake.won { opacity: 0.75; }
+.mistake-ex { margin: 8px 0; padding-left: 18px; }
+.mistake-ex del { color: var(--error); }
+.mistake-ex ins { color: var(--success); text-decoration: none; font-weight: 700; }
 .w.speaking { background: var(--reward); color: #2A2230; box-shadow: 0 0 0 2px var(--reward); } /* charte §4 : surlignage Yuzu 400, texte encre (lisible aussi en mode sombre) */
 .said-ok { color: var(--success); font-weight: 700; }
 .said-miss { color: var(--ink-muted); text-decoration: underline dotted; text-underline-offset: 3px; }

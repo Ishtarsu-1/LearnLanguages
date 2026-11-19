@@ -51,6 +51,7 @@ function route() {
     else if (tab === "pinyin" && isZh(lang) && a) html = viewPinyin(a);
     else if (tab === "alphabet" && lang === "ru" && a) html = viewCyrillic(a);
     else if (tab === "grammaire" && isKo(lang)) html = viewGrammar(a);
+    else if (tab === "erreurs") html = viewMistakes(lang);
     else html = viewLanguage(lang, tab === "pratique" || TABS[lang].some(([k]) => k === tab) ? tab : "aujourdhui");
   } else html = viewNotFound();
 
