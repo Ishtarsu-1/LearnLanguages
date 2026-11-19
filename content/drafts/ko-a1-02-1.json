@@ -9,7 +9,7 @@
   "icon": "🚇",
   "kind": "Monologue",
   "status": "draft",
-  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY-NC 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
   "sentences": [
     ["저|는 회사원|이에요=이다. 학생|이 아니에요=아니다.", "Je suis employée de bureau. Je ne suis pas étudiante."],
     ["매일 아침 지하철|로 출근해요=출근하다.", "Tous les matins, je vais au travail en métro."],

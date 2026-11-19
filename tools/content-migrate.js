@@ -14,7 +14,7 @@ const ROOT = path.join(__dirname, ".."), C = path.join(ROOT, "content");
 const site = loadSite();
 const r = site.run("({ LEXICON, SEMANTIC_GROUPS, CONFUSABLE, TEXTS, BOOKS, STORIES })");
 const plain = (x) => JSON.parse(JSON.stringify(x)); // sort les objets du bac à sable vm
-const SOURCE = { type: "original", author: "Mochi", license: "CC BY 4.0" };
+const SOURCE = { type: "original", author: "Mochi", license: "CC BY-NC 4.0" };
 const REVIEW = { by: "nathan", at: "2026-11-19" };
 
 if (fs.existsSync(path.join(C, "texts"))) { console.error("content/texts existe déjà : migration déjà faite."); process.exit(1); }

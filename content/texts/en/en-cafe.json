@@ -9,7 +9,7 @@
   "icon": "☕",
   "kind": "Dialogue",
   "status": "published",
-  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY-NC 4.0" },
   "sentences": [
     ["Hi! Can I have a coffee, please?", "Salut ! Je peux avoir un café, s'il vous plaît ?"],
     ["Sure. Do you want milk?", "Bien sûr. Vous voulez du lait ?"],

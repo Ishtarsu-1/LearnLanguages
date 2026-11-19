@@ -9,7 +9,7 @@
   "icon": "🚉",
   "kind": "Dialogue",
   "status": "draft",
-  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY-NC 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
   "sentences": [
     ["실례합니다=실례하다. 이 지하철 이호선|이에요=이다?", "Excusez-moi. Ce métro, c'est la ligne 2 ?"],
     ["네, 이호선|이에요=이다. @강남역|에 가요=가다?", "Oui, c'est la ligne 2. Vous allez à Gangnam ?"],

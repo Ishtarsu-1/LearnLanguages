@@ -137,7 +137,7 @@ const c6 = (async () => {
   const published = [];
   const CA = require("../content-admin.js").create({ dir: tmp, out, onPublished: (l, t) => published.push(t.id), spawnGen: () => {} });
   const draft = { id: "en-a1-test-1", lang: "en", level: "A1", unit: "en-A1-01", themes: ["rencontre"], grammar: ["be-present"], title: "Essai", icon: "👋", kind: "Monologue", status: "draft",
-    source: { type: "generated", engine: "test", author: "Mochi", license: "CC BY 4.0" },
+    source: { type: "generated", engine: "test", author: "Mochi", license: "CC BY-NC 4.0" },
     sentences: [["I am=be a student.", "Je suis étudiant."], ["I like=like music.", "J'aime la musique."], ["The music is=be important.", "La musique est importante."], ["I like=like the zorblax.", "J'aime le zorblax."], ["And I am=be happy.", "Et je suis content."], ["A student and a=a idea.", "Un étudiant et une idée."]],
     review_notes: [{ id: "n1", sentence: 6, type: "naturel", issue_fr: "Bizarre", suggestion: "I have an idea.", suggestion_fr: "J'ai une idée.", status: "open" }] };
   L.writeJSON(path.join(tmp, "drafts", `${draft.id}.json`), draft);

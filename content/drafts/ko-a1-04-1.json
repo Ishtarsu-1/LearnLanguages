@@ -9,7 +9,7 @@
   "icon": "🎮",
   "kind": "Dialogue",
   "status": "draft",
-  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY-NC 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
   "sentences": [
     ["오늘 같이 게임해요=게임하다? 몇 시|에 와요=오다?", "On joue ensemble aujourd'hui ? Tu viens à quelle heure ?"],
     ["아홉 시|에 와요=오다. 늦지=늦다 않아요=않다!", "Je viens à neuf heures. Je ne serai pas en retard !"],

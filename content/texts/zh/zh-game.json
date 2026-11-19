@@ -9,7 +9,7 @@
   "icon": "🎮",
   "kind": "Dialogue",
   "status": "published",
-  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY-NC 4.0" },
   "sentences": [
     ["你 在 玩 游戏 吗？", "Tu es en train de jouer ?"],
     ["对， 我们 一起 玩 吧！", "Oui, jouons ensemble !"],

@@ -9,7 +9,7 @@
   "icon": "🚇",
   "kind": "Dialogue",
   "status": "published",
-  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY-NC 4.0" },
   "sentences": [
     ["请问， 去 @天安门 怎么 走？", "Excusez-moi, comment va-t-on à Tian'anmen ?"],
     ["你 可以 坐 地铁 一 号 线。", "Tu peux prendre la ligne 1 du métro."],

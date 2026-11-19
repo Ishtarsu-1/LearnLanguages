@@ -9,7 +9,7 @@
   "icon": "☕",
   "kind": "Dialogue",
   "status": "published",
-  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY-NC 4.0" },
   "sentences": [
     ["你好！ 我 要 一 杯 咖啡。", "Bonjour ! Je voudrais un café."],
     ["好的。 要 大 杯 还是 小 杯？", "D'accord. Un grand ou un petit ?"],

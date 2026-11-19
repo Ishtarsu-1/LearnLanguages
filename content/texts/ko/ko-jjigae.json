@@ -9,7 +9,7 @@
   "icon": "🍲",
   "kind": "Récit",
   "status": "published",
-  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY-NC 4.0" },
   "sentences": [
     ["오늘|은 김치찌개|를 만들어요=만들다.", "Aujourd'hui, je fais un kimchi-jjigae."],
     ["먼저 김치|를 잘라요=자르다.", "D'abord, je coupe le kimchi."],

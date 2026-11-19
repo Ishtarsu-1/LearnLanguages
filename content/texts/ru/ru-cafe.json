@@ -9,7 +9,7 @@
   "icon": "☕",
   "kind": "Dialogue",
   "status": "published",
-  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY-NC 4.0" },
   "sentences": [
     ["Здравствуйте! Можно один кофе, пожалуйста?", "Bonjour ! Je peux avoir un café, s'il vous plaît ?"],
     ["Конечно. С молоком=молоко?", "Bien sûr. Avec du lait ?"],

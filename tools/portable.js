@@ -142,7 +142,7 @@ avec ${voices ? "les vraies voix (audio pré-généré)" : "la voix du télépho
 Ce qui ne marche pas : les comptes, les amis, les défis et les duels.
 Un avis ? Bouton « Bêta · ton avis 💬 » : ${feedback ? "il ouvre un e-mail tout prêt." : "il ouvre le menu de partage du téléphone (message, WhatsApp…)."}
 
-(Contenus de Mochi : CC BY 4.0. Crédits complets dans le site.)
+(Contenus de Mochi : CC BY-NC 4.0 (pas d'usage commercial). Crédits complets dans le site.)
 `;
 
 // ffmpeg en parallèle ; cache par fichier source (immuable : nommé par son empreinte)
@@ -244,7 +244,7 @@ dans Mochi ? Envoie-la avec le bouton 💬 (type « Un bug »).
 ` : ""}Un avis, un bug, une idée ? Bouton « ${o.ctf ? "💬" : "Bêta · ton avis 💬"} » en haut du site.${o.feedback ? "" : "\n(Dans cette version, les avis restent sur ton ordinateur : envoie-les aussi par message.)"}
 Merci de tester Mochi ! 🍡
 
-(Node.js ${nodeV}, licence MIT. Contenus de Mochi : CC BY 4.0. Crédits complets dans le site.)
+(Node.js ${nodeV}, licence MIT. Contenus de Mochi : CC BY-NC 4.0 (pas d'usage commercial). Crédits complets dans le site.)
 `;
 
 async function build(o) {

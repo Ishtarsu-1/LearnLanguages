@@ -9,7 +9,7 @@
   "icon": "📱",
   "kind": "Message",
   "status": "draft",
-  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY-NC 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
   "sentences": [
     ["Hi! This is=be the secret of my tomato sauce, as promised=promise.", "Salut ! Voici le secret de ma sauce tomate, comme promis."],
     ["Buy four tomatoes=tomato from the market.", "Achète quatre tomates au marché."],

@@ -9,7 +9,7 @@
   "icon": "🏫",
   "kind": "Dialogue",
   "status": "draft",
-  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY-NC 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
   "sentences": [
     ["Hi! Is=be this your first day here?", "Salut ! C'est ton premier jour ici ?"],
     ["Yes, it is=be my first day. Which class is=be this?", "Oui, c'est mon premier jour. C'est quelle classe ?"],

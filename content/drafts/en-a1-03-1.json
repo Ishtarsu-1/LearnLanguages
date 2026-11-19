@@ -9,7 +9,7 @@
   "icon": "🚕",
   "kind": "Dialogue",
   "status": "draft",
-  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY-NC 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
   "sentences": [
     ["What is=be this station?", "C'est quelle gare, ici ?"],
     ["This is=be the central station.", "C'est la gare centrale."],

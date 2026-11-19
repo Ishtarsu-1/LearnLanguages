@@ -9,7 +9,7 @@
   "icon": "⚽",
   "kind": "Dialogue",
   "status": "draft",
-  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY-NC 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
   "sentences": [
     ["이번 주말|에 축구 경기|가 있어요=있다.", "Ce week-end, il y a un match de foot."],
     ["정말요=정말? 저|도 축구|를 좋아해요=좋아하다!", "C'est vrai ? Moi aussi, j'aime le foot !"],

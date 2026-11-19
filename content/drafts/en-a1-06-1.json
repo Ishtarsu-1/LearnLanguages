@@ -9,7 +9,7 @@
   "icon": "🎮",
   "kind": "Dialogue",
   "status": "draft",
-  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY-NC 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
   "sentences": [
     ["Is=be there a new game online?", "Il y a un nouveau jeu en ligne ?"],
     ["Yes, there is=be a new game. It is=be out today!", "Oui, il y a un nouveau jeu. Il est sorti aujourd'hui !"],

@@ -9,7 +9,7 @@
   "icon": "🏢",
   "kind": "Monologue",
   "status": "draft",
-  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY-NC 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
   "sentences": [
     ["저|는 큰=크다 회사|에서 일해요=일하다.", "Je travaille dans une grande entreprise."],
     ["우리 팀|에|는 사람|이 다섯 명 있어요=있다.", "Dans mon équipe, nous sommes cinq."],

@@ -9,7 +9,7 @@
   "icon": "🍲",
   "kind": "Dialogue",
   "status": "draft",
-  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY-NC 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
   "sentences": [
     ["오늘 점심|에 팀|이랑 같이 먹어요=먹다?", "Tu manges avec l'équipe ce midi ?"],
     ["네, 좋아요=좋다. 몇 명 와요=오다?", "Oui, avec plaisir. Vous serez combien ?"],

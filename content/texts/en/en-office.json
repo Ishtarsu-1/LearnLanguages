@@ -9,7 +9,7 @@
   "icon": "💼",
   "kind": "Dialogue",
   "status": "published",
-  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY-NC 4.0" },
   "sentences": [
     ["Good morning! You must be the new designer.", "Bonjour ! Tu dois être la nouvelle graphiste."],
     ["Yes, I started=start today. I'm=i+be a bit nervous.", "Oui, j'ai commencé aujourd'hui. Je suis un peu stressée."],

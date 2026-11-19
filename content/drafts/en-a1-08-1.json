@@ -9,7 +9,7 @@
   "icon": "🎉",
   "kind": "Monologue",
   "status": "draft",
-  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY-NC 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
   "sentences": [
     ["Your first party in a new city? Don't=do+not worry!", "Ta première soirée dans une nouvelle ville ? Pas de panique !"],
     ["First, go into the kitchen.", "D'abord, va dans la cuisine."],

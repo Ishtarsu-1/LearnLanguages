@@ -9,7 +9,7 @@
   "icon": "🎲",
   "kind": "Récit",
   "status": "draft",
-  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY-NC 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
   "sentences": [
     ["On Saturday night, there is=be a game night at the library.", "Samedi soir, il y a une soirée jeux à la bibliothèque."],
     ["When I get there, there are=be a lot of people.", "Quand j'arrive, il y a beaucoup de monde."],

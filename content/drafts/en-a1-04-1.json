@@ -9,7 +9,7 @@
   "icon": "🍝",
   "kind": "Dialogue",
   "status": "draft",
-  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY-NC 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
   "sentences": [
     ["What do you cook tonight?", "Qu'est-ce que tu cuisines ce soir ?"],
     ["I cook pasta. My cousin @Marco is=be from @Italy.", "Je fais des pâtes. Mon cousin Marco vient d'Italie."],

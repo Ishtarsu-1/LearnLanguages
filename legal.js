@@ -34,7 +34,8 @@ function legalMentions() {
   <h2>Version de test</h2>
   <p>Mochi est en cours de développement. Le site est ouvert temporairement à un petit nombre de personnes pour le tester. Il peut être interrompu, modifié ou remis à zéro à tout moment (voir les <a class="lnk" href="#/legal/cgu">conditions d'utilisation</a>).</p>
   <h2>Propriété intellectuelle</h2>
-  <p>Les textes pédagogiques, exercices, illustrations (dont la mascotte Mochi) et le code du site appartiennent à l'éditeur, sauf mention contraire. Toute reproduction sans autorisation est interdite.</p>
+  <p>Le code du site, les exercices, les illustrations (dont la mascotte Mochi) et le nom « Mochi » appartiennent à l'éditeur, sauf mention contraire. Toute reproduction sans autorisation est interdite.</p>
+  <p>Les textes, livres, histoires et le lexique de Mochi sont sous licence <a class="lnk" href="https://creativecommons.org/licenses/by-nc/4.0/deed.fr" rel="noopener" target="_blank">CC BY-NC 4.0</a> : partage et adaptation permis en citant Mochi, sans usage commercial (voir les <a class="lnk" href="#/legal/credits">crédits</a>).</p>
   <p>Mochi utilise des éléments libres, chacun sous sa licence : les polices Pretendard, Jua et Fredoka (SIL Open Font License 1.1), les drapeaux Twemoji (CC BY 4.0, police Twemoji Country Flags de TalkJS sous licence MIT), la bibliothèque de révision espacée ts-fsrs (licence MIT) et, quand elles sont activées, les voix de synthèse Kokoro (Apache 2.0) et MeloTTS (MIT).</p>
   <h2>Signaler un contenu</h2>
   <p>Pour signaler un contenu illicite (par exemple une photo de profil), écris à ${L_.contact}.</p>`;
@@ -172,7 +173,7 @@ function legalCookies() {
 function legalCredits() {
   const li = (what, src, lic) => `<li><b>${what}</b> : ${src} — <i>${lic}</i></li>`;
   return `
-  <p>Les textes, livres et histoires de Mochi sont écrits pour Mochi (une partie avec l'aide d'une IA, puis relue par un humain) et publiés sous licence CC BY 4.0. Mochi s'appuie aussi sur ces ressources :</p>
+  <p>Les textes, livres et histoires de Mochi sont écrits pour Mochi (une partie avec l'aide d'une IA, puis relue par un humain) et publiés sous licence <a class="lnk" href="https://creativecommons.org/licenses/by-nc/4.0/deed.fr" rel="noopener" target="_blank">CC BY-NC 4.0</a> : tu peux les partager et les adapter en citant Mochi, mais pas dans un but commercial sans l'accord de l'éditeur. Mochi s'appuie aussi sur ces ressources :</p>
   <h2>Listes de vocabulaire</h2>
   <ul>
     ${li("Coréen : « 한국어 학습용 어휘 목록 » (vocabulaire d'apprentissage du coréen, 2003)", "국립국어원 (Institut national de la langue coréenne), ordre de fréquence repris du Wiktionnaire coréen", "공공누리 type 1 (KOGL, mention de la source) ; Wiktionnaire : CC BY-SA")}

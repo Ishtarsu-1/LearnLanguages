@@ -77,7 +77,7 @@ Une faille ? Écris-moi plutôt que d'ouvrir une issue publique (adresse dans le
 ## Licences et crédits
 
 - **Code** : pas encore de licence libre (tous droits réservés par l'auteur).
-- **Contenu** (textes, livres, histoires de Mochi) : CC BY 4.0.
+- **Contenu** (textes, livres, histoires et lexique de Mochi) : [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/deed.fr) depuis le 20 novembre 2026 (pas d'usage commercial sans accord ; les versions diffusées avant restent en CC BY 4.0). La liste de fréquences anglaise `content/freq/en.tsv`, dérivée de wordfreq, reste en CC BY-SA 4.0.
 - **Voix** : Kokoro (Apache 2.0), MeloTTS (MIT), Piper (moteur MIT ; voix russes « denis » et « dmitri » en CC0, base Hi-Fi TTS en CC BY 4.0 ; voir `SETUP.md`).
 - **Polices** : Pretendard, Jua, Fredoka (SIL Open Font License 1.1). **FSRS** : ts-fsrs (MIT).
 - **Listes de vocabulaire** : 국립국어원 (공공누리 type 1), wordfreq (CC BY-SA 4.0), simplemma (MIT). **Analyseur coréen** : Kiwi (LGPL-3.0).

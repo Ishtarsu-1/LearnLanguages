@@ -9,7 +9,7 @@
   "icon": "🚇",
   "kind": "Dialogue",
   "status": "published",
-  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY-NC 4.0" },
   "sentences": [
     ["실례합니다=실례하다.", "Excusez-moi."],
     ["@강남역|에 어떻게 가요=가다?", "Comment on va à la station Gangnam ?"],

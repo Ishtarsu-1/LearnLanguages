@@ -9,7 +9,7 @@
   "icon": "🥅",
   "kind": "Récit",
   "status": "draft",
-  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY-NC 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
   "sentences": [
     ["우리 언니|는 축구|를 정말 좋아해요=좋아하다.", "Ma grande sœur adore le foot."],
     ["언니|는 매일 아침 공원|에서 연습해요=연습하다.", "Elle s'entraîne au parc tous les matins."],

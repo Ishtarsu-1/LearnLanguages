@@ -9,7 +9,7 @@
   "icon": "🚇",
   "kind": "Dialogue",
   "status": "published",
-  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY-NC 4.0" },
   "sentences": [
     ["Извините, как доехать до @Красной @площади?", "Excusez-moi, comment aller jusqu'à la place Rouge ?"],
     ["Садитесь=садиться на красную=красный линию=линия метро.", "Prenez la ligne rouge du métro."],

@@ -139,7 +139,7 @@ async function generateText(lang, unit, n, opts = {}) {
     const draft = {
       id, lang, level: unit.level, unit: unit.unit, themes: unit.themes, grammar: unit.grammar,
       title: out.title_fr.trim().slice(0, 80), icon: [...(out.icon || "")].slice(0, 2).join("") || ICONS[unit.themes[0]] || "📖", kind,
-      status: "draft", source: { type: "generated", engine: meta.engine, author: "Mochi", license: "CC BY 4.0" },
+      status: "draft", source: { type: "generated", engine: meta.engine, author: "Mochi", license: "CC BY-NC 4.0" },
       sentences: annotated.map((s, i) => [s, raw[i].fr.trim()]),
       speakers: kind === "Dialogue" && raw.some((s) => s.speaker) ? raw.map((s) => s.speaker || "") : null,
     };
