@@ -209,6 +209,10 @@ const c6 = (async () => {
   ok(ko.lemmaRate >= 0.95, `annotation coréenne (Kiwi enregistré) : ${(ko.lemmaRate * 100).toFixed(1)} % des lemmes (≥ 95 %)`);
   ok(ko.particleRate === 1, `annotation coréenne : ${(ko.particleRate * 100).toFixed(1)} % des particules (100 %)`);
   if (ko.gaps.length) console.log(A.evalReport("ko", ko));
+  // Contraction dont la 1re partie n'a pas de surface propre : 제 = 저 + 의 (réponse de Kiwi enregistrée)
+  const je = [{ surface: "저", lemma: "저", pos: "NP", is_particle: false, start: 0, len: 1 }, { surface: "의", lemma: "의", pos: "JKG", is_particle: true, start: 0, len: 1 }, { surface: "이름", lemma: "이름", pos: "NNG", is_particle: false, start: 2, len: 2 }, { surface: "은", lemma: "은", pos: "JX", is_particle: true, start: 4, len: 1 }];
+  const [jeOut] = await A.annotate(["제 이름은"], "ko", { analyze: async () => je });
+  ok(jeOut === "제=저+의 이름|은" && L.plainText(jeOut, "ko") === "제 이름은", "contraction 제 = 저+의 : une seule syllabe affichée (" + jeOut + ")");
   // Kiwi en direct, s'il tourne (sinon : ignoré, voir SETUP.md « Produire du contenu »)
   if (await A.kiwiHealth()) {
     const live = await A.evaluate("ko");

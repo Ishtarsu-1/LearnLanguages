@@ -165,11 +165,14 @@ function annotateKoWord(word, wordStart, tokens, ctx) {
   // Surfaces : découpe du mot entre les débuts de morceaux (positions croissantes, jamais vides)
   for (let i = 0; i < segs.length; i++) segs[i].start = Math.max(0, Math.min(core.length, segs[i].start), i ? segs[i - 1].start : 0);
   const merged = [];
+  let pending = []; // contraction dont la 1re partie n'a pas de surface propre (제 = 저+의)
   segs.forEach((s, i) => {
     s.surface = core.slice(s.start, i + 1 < segs.length ? segs[i + 1].start : core.length);
     if (!s.surface && merged.length) merged.at(-1).parts.push(...s.parts); // contraction (전 = 저+는) : un seul morceau
-    else merged.push(s);
+    else if (!s.surface) pending.push(s);
+    else { if (pending.length) { s.parts.unshift(...pending.flatMap((p) => p.parts)); if (pending[0].proper) s.proper = true; s.kind = pending[0].kind; pending = []; } merged.push(s); }
   });
+  if (pending.length) merged.push(...pending);
   if (merged.length && !merged[0].surface) merged[0].surface = core;
   const lemmaOf = (s) => {
     const ps = s.parts.map((p) => p.lemma).filter(Boolean);
