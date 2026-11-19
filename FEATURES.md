@@ -77,6 +77,7 @@ Les 4 étapes de la boucle, avec leur état :
   - écouter une seule phrase, à la vitesse 0,75×, 1× ou 1,25× ;
   - masquer le texte pour une écoute pure ;
   - traduction de chaque phrase sur demande (🇫🇷).
+- **Lire à voix haute 🗣️** : tu lis une phrase, la reconnaissance vocale du navigateur la transcrit, les mots reconnus passent en vert (comparaison tolérante : une transcription parmi plusieurs suffit, particule coréenne mal transcrite tolérée). Un repère, jamais une note ; rien n'est gardé.
 - **Mode shadowing 🎙️** : tu t'enregistres en répétant **en même temps** que la voix, puis tu réécoutes le modèle, ta voix, ou les deux à la suite.
 - **Contenu** : 10 textes par langue, surtout des dialogues, rangés par thème de situation :
   - 🇬🇧 Au café, La nouvelle voisine, Le week-end, À la bibliothèque, Dans le bus, On cuisine ce soir, Un match de foot, Une partie en ligne, Premier jour au bureau, Une série à voir ;

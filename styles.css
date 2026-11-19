@@ -345,6 +345,12 @@ h1 { font-size: var(--text-3xl); }
 .w.proper { cursor: default; }
 .legend { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 18px; font-size: var(--text-sm); font-weight: 700; }
 .rec-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.said { margin-top: 8px; display: grid; gap: 2px; }
+.said-ok { color: var(--success); font-weight: 700; }
+.said-miss { color: var(--ink-muted); text-decoration: underline dotted; text-underline-offset: 3px; }
+.s-tools button.listening { border-color: var(--primary); animation: mic-pulse 1s ease-in-out infinite; }
+@keyframes mic-pulse { 50% { opacity: 0.5; } }
+@media (prefers-reduced-motion: reduce) { .s-tools button.listening { animation: none; } }
 .wordpanel { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); width: min(520px, calc(100% - 32px)); z-index: 20; animation: pop .2s ease; box-shadow: var(--shadow-3); }
 .wp-word { font-size: var(--text-2xl); font-weight: 800; }
 .wp-fr { font-size: var(--text-lg); font-weight: 700; margin: 4px 0; }

@@ -76,6 +76,8 @@ const actions = {
   speed: (el) => { state.settings.speed = +el.dataset.v; save(); render(); },
   "toggle-hide": () => { ui.reader.hide = !ui.reader.hide; render(); },
   "toggle-shadow": () => { ui.reader.shadow = !ui.reader.shadow; render(); },
+  "toggle-aloud": () => { if (!SpeechRec()) return toast("Ton navigateur ne reconnaît pas la voix : essaie Chrome, Edge ou Safari."); ui.reader.aloud = !ui.reader.aloud; render(); },
+  "speak-check": (el) => listenSentence(currentLang(), +el.dataset.s),
   "toggle-particles": () => { state.settings.particleColors = !state.settings.particleColors; save(); render(); },
   "toggle-pinyin": () => { state.settings.pinyin = !state.settings.pinyin; save(); render(); },
   shadow: (el) => recordShadow(currentLang(), +el.dataset.s),

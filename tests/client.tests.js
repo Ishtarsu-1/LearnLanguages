@@ -408,6 +408,17 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
   ok(state.cards.length > before, "mots inconnus du chapitre en cartes");
   account = { id: 1, is_admin: true }; ok(chapterOpen("en", b, 2), "admin : tout ouvert"); account = acc;
   location.hash = ""; ui.quiz = null;
+  // Lire à voix haute : comparaison tolérante de la transcription
+  {
+    const m = speechMatch("Hi! Is this the menu?", ["hi is this the menu"], "en");
+    ok(m.score === 1 && m.words.length === 5, "voix haute : phrase reconnue en entier");
+    const m2 = speechMatch("I like coffee and chocolate.", ["i like copy and chocolate", "i like coffee and chocolate"], "en");
+    ok(m2.score === 1, "voix haute : une des transcriptions proposées suffit");
+    const m3 = speechMatch("I like coffee and chocolate.", ["i like copy"], "en");
+    ok(m3.hits.join() === "true,true,false,false,false", "voix haute : mots manquants signalés");
+    ok(speechMatch("서울에서 커피를 마셔요.", ["서울에 커피 마셔요"], "ko").score === 1, "voix haute (coréen) : particule mal transcrite tolérée");
+    ok(speechMatch("It's my friend's car.", ["its my friends car"], "en").score === 1, "voix haute : apostrophes ignorées");
+  }
   // Questions de compréhension d'un texte : après « J'ai fini », puis la suite de la séance
   {
     const t = TEXTS.en.find((x) => x.questions?.length);

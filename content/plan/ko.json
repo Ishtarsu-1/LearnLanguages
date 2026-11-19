@@ -180,7 +180,7 @@
       "level": "A1",
       "grammar": ["do"],
       "themes": ["sport"],
-      "new_words": ["대하다", "년", "말", "때문", "말하다"],
+      "new_words": ["년", "말", "때문", "말하다", "경기", "연습하다"],
       "review_words": ["않다", "아니다"],
       "texts": 2,
       "kinds": ["Dialogue", "Récit"]
@@ -190,8 +190,8 @@
       "level": "A1",
       "grammar": ["do"],
       "themes": ["gaming"],
-      "new_words": ["위하다", "그러나", "오다", "알다", "그렇다"],
-      "review_words": ["대하다", "년", "것", "되다"],
+      "new_words": ["팀", "늦다", "오다", "알다", "그렇다", "게임"],
+      "review_words": ["경기", "년", "것", "되다"],
       "texts": 2,
       "kinds": ["Dialogue", "Message"]
     },
@@ -200,8 +200,8 @@
       "level": "A1",
       "grammar": ["natifs"],
       "themes": ["travail"],
-      "new_words": ["크다", "또", "사회", "안", "더"],
-      "review_words": ["위하다", "그러나", "않다", "아니다"],
+      "new_words": ["크다", "또", "일찍", "안", "더"],
+      "review_words": ["팀", "늦다", "않다", "아니다"],
       "texts": 2,
       "kinds": ["Monologue", "Dialogue"]
     },
@@ -210,8 +210,8 @@
       "level": "A1",
       "grammar": ["sino"],
       "themes": ["rencontre"],
-      "new_words": ["받다", "그것", "집", "나오다", "따르다"],
-      "review_words": ["크다", "또", "대하다", "년"],
+      "new_words": ["받다", "그것", "집", "나오다", "이름", "삼", "오", "칠", "천", "층"],
+      "review_words": ["크다", "또", "경기", "년"],
       "texts": 2,
       "kinds": ["Dialogue", "Récit"]
     },
@@ -221,7 +221,7 @@
       "grammar": ["sino"],
       "themes": ["cuisine"],
       "new_words": ["문제", "그런", "못하다", "생각하다", "모르다"],
-      "review_words": ["받다", "그것", "위하다", "그러나", "것"],
+      "review_words": ["받다", "그것", "팀", "늦다", "것"],
       "texts": 2,
       "kinds": ["Dialogue", "Message"]
     },
@@ -340,7 +340,7 @@
       "level": "A2",
       "grammar": ["aseo"],
       "themes": ["sport"],
-      "new_words": ["앉다", "처음", "손", "그때", "과정", "삶", "갖다", "찾다", "특히", "이상"],
+      "new_words": ["앉다", "처음", "손", "그때", "과정", "삶", "갖다", "찾다", "특히", "이상", "대하다", "위하다", "그러나", "사회", "따르다"],
       "review_words": ["쓰다", "이것", "국가", "그런데", "사실"],
       "texts": 2,
       "kinds": ["Dialogue", "Message"]
@@ -380,7 +380,7 @@
       "level": "A2",
       "grammar": ["reo"],
       "themes": ["cuisine"],
-      "new_words": ["쪽", "정치", "국민", "생명", "얘기", "연구", "엄마", "이름", "내리다", "사건"],
+      "new_words": ["쪽", "정치", "국민", "생명", "얘기", "연구", "엄마", "내리다", "사건"],
       "review_words": ["느끼다", "어렵다", "나가다", "교육", "몸"],
       "texts": 2,
       "kinds": ["Monologue", "Dialogue"]

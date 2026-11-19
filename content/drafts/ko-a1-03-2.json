@@ -1,0 +1,50 @@
+{
+  "id": "ko-a1-03-2",
+  "lang": "ko",
+  "level": "A1",
+  "unit": "ko-A1-03",
+  "themes": ["sport"],
+  "grammar": ["do"],
+  "title": "Ma grande sœur, la footballeuse",
+  "icon": "🥅",
+  "kind": "Récit",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["우리 언니|는 축구|를 정말 좋아해요=좋아하다.", "Ma grande sœur adore le foot."],
+    ["언니|는 매일 아침 공원|에서 연습해요=연습하다.", "Elle s'entraîne au parc tous les matins."],
+    ["저|도 같이 연습해요=연습하다. 하지만 저|는 조금 느려요=느리다.", "Je m'entraîne avec elle. Mais moi, je suis un peu lente."],
+    ["언니|는 말|이 많지=많다 않아요=않다.", "Ma sœur ne parle pas beaucoup."],
+    ["하지만 경기 때 정말 멋있어요=멋있다.", "Mais pendant les matchs, elle est vraiment impressionnante."],
+    ["토요일|에 중요한=중요하다 경기|가 있어요=있다.", "Samedi, il y a un match important."],
+    ["그래서 언니|는 요즘 정말 바빠요=바쁘다.", "Alors en ce moment, ma sœur est très occupée."],
+    ["언니|는 경기 때문|에 매일 연습해요=연습하다.", "Elle s'entraîne tous les jours à cause du match."],
+    ["저|도 언니 때문|에 축구|를 좋아해요=좋아하다.", "Moi aussi, j'aime le foot grâce à ma sœur."],
+    ["언니|는 말해요=말하다. 매일 연습해요=연습하다!", "Ma sœur me dit : entraîne-toi tous les jours !"]
+  ],
+  "speakers": null,
+  "questions": [
+    { "q": "Où la grande sœur s'entraîne-t-elle ?", "options": ["Au parc, tous les matins", "À l'école, le soir", "Au club, le week-end"] },
+    { "q": "Comment est-elle pendant les matchs ?", "options": ["Vraiment impressionnante", "Très stressée", "Silencieuse"] },
+    {
+      "q": "Pourquoi la narratrice aime-t-elle le foot ?",
+      "options": ["À cause de sa grande sœur", "Parce qu'elle gagne souvent", "Pour sa santé"]
+    }
+  ],
+  "checks": {
+    "blocking": [],
+    "warnings": ["Répétition : vu une seule fois (말, 말하다) — chaque mot nouveau au moins 2 fois"],
+    "stats": {
+      "sentences": 10,
+      "wordsPerSentence": 4.9,
+      "lexiconMissing": [],
+      "coverage": 92.4,
+      "tokens": 66,
+      "newWords": ["연습하다", "말", "경기", "때문", "말하다"],
+      "outside": [],
+      "grammar:do": 2
+    },
+    "status": "orange",
+    "at": "2026-11-19T19:58:48.391Z"
+  }
+}

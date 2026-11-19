@@ -121,6 +121,7 @@ function legalPrivacy() {
     ${resend ? `<li><b>E-mails (mot de passe oublié, confirmation d'adresse, tes retours transmis à l'éditeur) : Resend (États-Unis)</b>, qui reçoit l'adresse et le contenu du message.</li>` : `<li><b>E-mails</b> : aucun service d'envoi n'est utilisé pour l'instant.</li>`}
     ${serverVoices ? `<li><b>Voix</b> : générées <b>sur le serveur de Mochi</b> (Kokoro, MeloTTS), uniquement à partir des textes du site.</li>` : ""}
     <li><b>Voix du navigateur</b> : quand Mochi utilise les voix installées sur ton appareil, certains navigateurs (Chrome, Edge…) envoient le texte lu à leurs propres serveurs pour le prononcer. Il s'agit des textes de Mochi, pas de tes données.</li>
+    <li><b>Lire à voix haute (🗣️)</b> : seulement quand tu appuies sur 🗣️, ta voix est transcrite par le service de reconnaissance de ton navigateur (Google pour Chrome et Edge, Apple pour Safari), selon ses propres règles. Mochi ne garde ni l'enregistrement ni la transcription : seul le résultat s'affiche, puis disparaît.</li>
   </ul>
   ${claude || resend ? `<p><b>Transferts hors de l'Union européenne.</b> Les services situés aux États-Unis indiqués ci-dessus reçoivent des données dans le cadre des garanties prévues par le RGPD (adhésion au Data Privacy Framework UE–États-Unis ou clauses contractuelles types, selon le prestataire).</p>` : ""}
 

@@ -1,0 +1,47 @@
+{
+  "id": "ko-a1-06-1",
+  "lang": "ko",
+  "level": "A1",
+  "unit": "ko-A1-06",
+  "themes": ["rencontre"],
+  "grammar": ["sino"],
+  "title": "La nouvelle voisine",
+  "icon": "🏠",
+  "kind": "Dialogue",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["안녕하세요! 이름|이 어떻게 돼요=되다?", "Bonjour ! Comment vous appelez-vous ?"],
+    ["제=저|제=의 이름|은 @민지|예요=이다. 저|는 삼 층|에 살아요=살다.", "Je m'appelle Minji. J'habite au troisième étage."],
+    ["반가워요=반갑다! 저|는 오 층|에 살아요=살다.", "Enchantée ! Moi, j'habite au cinquième."],
+    ["그것|은 김치|예요=이다?", "C'est du kimchi, ça ?"],
+    ["네, 그것|은 우리 어머니 김치|예요=이다. 이 김치 받아요=받다!", "Oui, c'est le kimchi de ma mère. Prenez-en un peu !"],
+    ["정말요=정말? 네, 받아요=받다! 집|에 김치|가 없어요=없다.", "C'est vrai ? Oui, je prends ! Je n'ai pas de kimchi à la maison."],
+    ["저|는 아침 아홉 시|에 집|에서 나와요=나오다.", "Moi, je sors de chez moi à neuf heures."],
+    ["저|도 아홉 시|에 나와요=나오다! 같이 지하철 타요=타다?", "Moi aussi, je sors à neuf heures ! On prend le métro ensemble ?"],
+    ["좋아요=좋다! 아홉 시|에 일 층|에서 만나요=만나다.", "D'accord ! On se retrouve au rez-de-chaussée à neuf heures."],
+    ["저|는 그것|을 집|에서 먹어요=먹다. 정말 감사합니다=감사하다!", "Je vais le manger à la maison. Merci beaucoup !"]
+  ],
+  "speakers": null,
+  "questions": [
+    { "q": "À quel étage habite Minji ?", "options": ["Au troisième", "Au cinquième", "Au premier"] },
+    { "q": "Que lui offre la voisine ?", "options": ["Du kimchi", "Un café", "Des fleurs"] },
+    { "q": "Où se retrouvent-elles le matin ?", "options": ["Au rez-de-chaussée, à neuf heures", "À la station de métro", "Au café"] }
+  ],
+  "checks": {
+    "blocking": [],
+    "warnings": ["Couverture : 90 % (idéal 92-98 %)", "Répétition : vu une seule fois (삼, 오) — chaque mot nouveau au moins 2 fois"],
+    "stats": {
+      "sentences": 10,
+      "wordsPerSentence": 5.7,
+      "lexiconMissing": [],
+      "coverage": 90,
+      "tokens": 80,
+      "newWords": ["이름", "삼", "층", "오", "그것", "받다", "집", "나오다"],
+      "outside": [],
+      "grammar:sino": 3
+    },
+    "status": "orange",
+    "at": "2026-11-19T19:59:11.435Z"
+  }
+}

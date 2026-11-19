@@ -1,0 +1,47 @@
+{
+  "id": "en-a1-07-1",
+  "lang": "en",
+  "level": "A1",
+  "unit": "en-A1-07",
+  "themes": ["cafe"],
+  "grammar": ["there-is"],
+  "title": "La nouvelle barista",
+  "icon": "☕",
+  "kind": "Dialogue",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["Who is=be the new barista?", "C'est qui, la nouvelle barista ?"],
+    ["That is=be @Léa. She is=be a student, and she works=work here now.", "C'est Léa. Elle est étudiante, et elle travaille ici maintenant."],
+    ["Is=be there a cappuccino on the menu now?", "Il y a un cappuccino à la carte, maintenant ?"],
+    ["Yes, and there are=be other coffees=coffee too.", "Oui, et il y a d'autres cafés aussi."],
+    ["This cafe is=be nicer=nice than the other cafe.", "Ce café est plus sympa que l'autre café."],
+    ["Their coffee is=be more delicious than the coffee at home.", "Leur café est plus délicieux que le café à la maison."],
+    ["There are=be cookies=cookie, and their cookies=cookie are=be amazing!", "Il y a des cookies, et leurs cookies sont incroyables !"],
+    ["Who are=be the people at the other table?", "Qui sont les gens à l'autre table ?"],
+    ["They are=be students=student. Their university is=be near here.", "Ce sont des étudiants. Leur université est près d'ici."],
+    ["Now it is=be my favorite cafe!", "Maintenant, c'est mon café préféré !"]
+  ],
+  "speakers": null,
+  "questions": [
+    { "q": "Qui est la nouvelle barista ?", "options": ["Léa", "Sam", "Une inconnue"] },
+    { "q": "Pourquoi préfèrent-ils ce café ?", "options": ["Leur café est meilleur", "Il est moins cher", "Il est plus près"] },
+    { "q": "Qui sont les gens à la table ?", "options": ["Des étudiants", "Des collègues", "La famille de Léa"] }
+  ],
+  "checks": {
+    "blocking": [],
+    "warnings": [],
+    "stats": {
+      "sentences": 10,
+      "wordsPerSentence": 8,
+      "lexiconMissing": [],
+      "coverage": 93.7,
+      "tokens": 79,
+      "newWords": ["who", "now", "other", "than", "their"],
+      "outside": [],
+      "grammar:there-is": 2
+    },
+    "status": "green",
+    "at": "2026-11-19T19:55:48.705Z"
+  }
+}

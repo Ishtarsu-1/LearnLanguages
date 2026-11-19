@@ -22,6 +22,7 @@
 ## v0.5 (19 novembre 2026) : avant et pendant la bêta entre amis
 
 Fait (`AMELIORATIONS-v0.5.md`) : recentrage sur l'anglais et le coréen (chinois et russe « En test »), outillage de la chaîne de contenu pour produire en volume (plans de 40 unités, lexique relu dans l'admin, leçons des rejets, qualité par moteur), finitions vues à l'écran (mobile, pluriels, bibliothèque d'un débutant), bêta via Cloudflare (IP réelle, récapitulatif des avis, entonnoir et rétention), README et CI, tests Playwright, licences des voix.
+**Vague 2 (20 novembre 2026)** : 16 brouillons de plus (anglais unités 5 à 8, coréen unités 3 à 6), avec questions. Plan coréen : 대하다, 위하다, 그러나, 사회, 따르다 (écrit soutenu) déplacés en A2-19 et remplacés par 경기, 연습하다, 팀, 늦다, 일찍, 이름 ; 게임 (A1-04) et les chiffres 삼 오 칠 천 층 (A1-06, nombres sino-coréens) ajoutés. A2-19 a maintenant 15 mots nouveaux : à répartir.
 **Vague 1 (20 novembre 2026)** : 9 brouillons écrits à la main avec Claude et vérifiés (anglais : unités 1 à 4, coréen : unités 1 et 2), avec questions de compréhension, à relire dans `#/admin/contenu`. Les brouillons d'Ollama (qwen2.5 7B) répétaient chaque phrase : remplacés.
 **En cours** : la production du contenu elle-même (vagues de 10 textes : génération, puis relecture humaine dans l'admin). Sans clé Anthropic, la génération passe par Ollama : lente sur processeur et souvent rejetée ; si le taux de rejet dépasse 40 %, passer sur Anthropic. Objectifs : 30 puis 50 textes par langue (étapes 2 et 3), puis 2 livres et 5 chapitres d'histoire de plus par langue. Aucune nouvelle langue avant l'étape 2.
 
@@ -51,7 +52,7 @@ Fait (`AMELIORATIONS-v0.5.md`) : recentrage sur l'anglais et le coréen (chinois
 | **P2** | Rappels et notifications | 🟡 | 🆓 | PWA |
 | ~~**P2**~~ | ~~Liste d'amis~~ ✅ fait (pseudo, demande ou lien d'invitation, blocage, stats masquables) | 🟡 | 🆓 | comptes |
 | ~~**P2**~~ | ~~Défis entre amis~~ ✅ fait (semaine régulière, temps, révisions, mots solides, même chapitre ; calculés côté serveur ; reste : défis d'écoute et de production) | 🟡 | 🆓 | liste d'amis |
-| **P2** | Reconnaissance vocale (exercices oraux) | 🔴 | 🆓 | backend |
+| **P2** | Reconnaissance vocale (exercices oraux) (🟢 étape 1 : « 🗣️ À voix haute » dans le lecteur, API Web Speech ; reste : exercices oraux dédiés, Whisper) | 🔴 | 🆓 | backend |
 | **P2** | Optimisation FSRS par utilisateur | 🟡 | 🆓 | historique de révisions |
 | **P3** | Classements entre amis, badges | 🟢 | 🆓 | amis |
 | **P3** | Import de contenus perso (articles, sous-titres) | 🔴 | 🆓 | analyseur |

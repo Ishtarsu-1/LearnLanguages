@@ -197,3 +197,45 @@ function stopSound() {
   if (hasSynth()) speechSynthesis.cancel();
 }
 function stopAudio() { stopSound(); if (ui.reader) ui.reader.playing = false; }
+
+// ---------- Lire à voix haute (reconnaissance vocale du navigateur, ROADMAP P2 étape 1) ----------
+// L'API Web Speech transcrit, Mochi compare avec la phrase : tolérant (la transcription se trompe
+// aussi), jamais compté comme une erreur dans les révisions.
+const SpeechRec = () => (typeof window !== "undefined" && (window.SpeechRecognition || window.webkitSpeechRecognition)) || null;
+const speechNorm = (s) => s.toLowerCase().normalize("NFC").replace(/[’']/g, "").replace(/[^\p{L}\p{N}\s]/gu, " ").replace(/\s+/g, " ").trim();
+// Mots de la phrase reconnus dans ce qui a été entendu (plusieurs transcriptions possibles)
+function speechMatch(target, heard, lang) {
+  const alts = [].concat(heard).map(speechNorm), flat = alts.map((h) => h.replace(/ /g, ""));
+  const words = lang === "zh" ? [...speechNorm(target).replace(/ /g, "")] : speechNorm(target).split(" ").filter(Boolean);
+  const hit = (w) => lang === "ko" || lang === "zh"
+    // coréen : une terminaison ou une particule mal transcrite ne compte pas (서울에서 ≈ 서울에)
+    ? flat.some((h) => h.includes(w) || (lang === "ko" && w.length > 1 && h.includes(w.slice(0, -1))))
+    : alts.some((h) => ` ${h} `.includes(` ${w} `));
+  const hits = words.map(hit);
+  return { words, hits, score: words.length ? hits.filter(Boolean).length / words.length : 0 };
+}
+let speechBusy = null;
+function listenSentence(lang, si) {
+  const Rec = SpeechRec(), R = ui.reader;
+  if (!Rec) return toast("Ton navigateur ne reconnaît pas la voix : essaie Chrome, Edge ou Safari.");
+  if (speechBusy) { speechBusy.stop(); return; }
+  const target = textById(lang, R.id).parsed[si].text, rec = new Rec();
+  rec.lang = LANGUAGES[lang].speechLang; rec.interimResults = false; rec.maxAlternatives = 3;
+  stopSound();
+  R.listening = si; render();
+  rec.onresult = (e) => {
+    const heard = [...e.results[0]].map((a) => a.transcript);
+    R.said = { ...(R.said || {}), [si]: { heard: heard[0], ...speechMatch(target, heard, lang) } };
+  };
+  rec.onerror = (e) => { if (e.error === "not-allowed") toast("Micro refusé 🎙️"); else if (e.error === "no-speech") toast("Je n'ai rien entendu : réessaie, un peu plus fort."); else if (e.error !== "aborted") toast(`Reconnaissance vocale indisponible (${e.error})`); };
+  rec.onend = () => { speechBusy = null; R.listening = null; render(); };
+  speechBusy = rec;
+  try { rec.start(); } catch { speechBusy = null; R.listening = null; render(); }
+}
+// Résultat sous la phrase : mots reconnus en vert, les autres soulignés, et un mot gentil
+function speechResult(s, said) {
+  if (!said) return "";
+  const msg = said.score >= 0.85 ? "Très bien ! 🎉" : said.score >= 0.5 ? "Presque ! Réécoute le modèle, puis réessaie." : "Réessaie plus lentement, mot par mot.";
+  return `<div class="said"><p class="m-0">${said.words.map((w, i) => `<span class="${said.hits[i] ? "said-ok" : "said-miss"}">${esc(w)}</span>`).join(" ")}</p>
+    <p class="muted m-0"><small>Entendu : « ${esc(said.heard || "…")} » · ${msg}</small></p></div>`;
+}

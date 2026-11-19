@@ -1,0 +1,47 @@
+{
+  "id": "en-a1-06-1",
+  "lang": "en",
+  "level": "A1",
+  "unit": "en-A1-06",
+  "themes": ["gaming"],
+  "grammar": ["there-is"],
+  "title": "Le nouveau jeu",
+  "icon": "🎮",
+  "kind": "Dialogue",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["Is=be there a new game online?", "Il y a un nouveau jeu en ligne ?"],
+    ["Yes, there is=be a new game. It is=be out today!", "Oui, il y a un nouveau jeu. Il est sorti aujourd'hui !"],
+    ["When can we play?", "On peut jouer quand ?"],
+    ["We can play tonight. @Sam and @Léa also play.", "On peut jouer ce soir. Sam et Léa jouent aussi."],
+    ["Do they have the game?", "Ils ont le jeu ?"],
+    ["They get the game today. They also play tonight.", "Ils ont le jeu aujourd'hui. Ils jouent aussi ce soir."],
+    ["There are=be four teams=team in the game.", "Il y a quatre équipes dans le jeu."],
+    ["When we win, we get a lot of points=point.", "Quand on gagne, on a plein de points."],
+    ["There is=be a problem: my connection is=be slow.", "Il y a un problème : ma connexion est lente."],
+    ["When it is=be slow, we can play later. Or we go out!", "Quand elle est lente, on peut jouer plus tard. Ou on sort !"]
+  ],
+  "speakers": null,
+  "questions": [
+    { "q": "Quand le jeu est-il sorti ?", "options": ["Aujourd'hui", "La semaine dernière", "Il n'est pas encore sorti"] },
+    { "q": "Combien d'équipes y a-t-il dans le jeu ?", "options": ["Quatre", "Deux", "Dix"] },
+    { "q": "Quel est le problème à la fin ?", "options": ["La connexion est lente", "Le jeu est trop cher", "Sam ne peut pas jouer"] }
+  ],
+  "checks": {
+    "blocking": [],
+    "warnings": [],
+    "stats": {
+      "sentences": 10,
+      "wordsPerSentence": 7.9,
+      "lexiconMissing": [],
+      "coverage": 93.5,
+      "tokens": 77,
+      "newWords": ["out", "when", "also", "they", "get"],
+      "outside": [],
+      "grammar:there-is": 3
+    },
+    "status": "green",
+    "at": "2026-11-19T19:55:25.456Z"
+  }
+}

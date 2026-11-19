@@ -1,0 +1,45 @@
+{
+  "id": "ko-a1-04-2",
+  "lang": "ko",
+  "level": "A1",
+  "unit": "ko-A1-04",
+  "themes": ["gaming"],
+  "grammar": ["do"],
+  "title": "Un peu en retard",
+  "icon": "💬",
+  "kind": "Message",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["@준호, 오늘 조금 늦어요=늦다.", "Junho, aujourd'hui je serai un peu en retard."],
+    ["회사|에서 회의|가 있어요=있다.", "J'ai une réunion au bureau."],
+    ["팀 경기|는 여섯 시|에 있어요=있다. 하지만 저|는 아홉 시|에 와요=오다.", "Le match de l'équipe est à six heures. Mais moi, je viens à neuf heures."],
+    ["우리 팀|은 괜찮아요=괜찮다? @민지|도 와요=오다?", "L'équipe, ça va ? Minji vient aussi ?"],
+    ["@민지|는 이 게임|을 정말 많이 알아요=알다.", "Minji connaît vraiment très bien ce jeu."],
+    ["그래서 @민지|랑 같이 먼저 해요=하다.", "Alors commencez avec Minji."],
+    ["저|는 늦어요=늦다. 그래도 꼭 와요=오다!", "Je serai en retard. Mais je viens, c'est sûr !"],
+    ["@준호|도 알아요=알다. 저|는 이 게임|을 정말 좋아해요=좋아하다.", "Tu le sais, Junho : j'adore ce jeu."],
+    ["이번 경기|는 우리 팀|이 꼭 이겨요=이기다!", "Ce match, notre équipe va le gagner !"]
+  ],
+  "speakers": null,
+  "questions": [
+    { "q": "Pourquoi sera-t-il en retard ?", "options": ["Il a une réunion au bureau", "Il est malade", "Son internet est lent"] },
+    { "q": "Qui commence le match avec l'équipe ?", "options": ["Minji", "Le narrateur", "Personne"] }
+  ],
+  "checks": {
+    "blocking": [],
+    "warnings": [],
+    "stats": {
+      "sentences": 9,
+      "wordsPerSentence": 5.7,
+      "lexiconMissing": [],
+      "coverage": 92.1,
+      "tokens": 63,
+      "newWords": ["늦다", "팀", "오다", "게임", "알다"],
+      "outside": [],
+      "grammar:do": 2
+    },
+    "status": "green",
+    "at": "2026-11-19T19:58:48.440Z"
+  }
+}

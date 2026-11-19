@@ -203,9 +203,11 @@ function viewReader(lang, textId) {
       <div class="seg-ctl">${[0.75, 1, 1.25].map((v) => `<button class="${v === sp ? "on" : ""}" data-act="speed" data-v="${v}">${v}×</button>`).join("")}</div>
       <button class="choice small-choice ${R.hide ? "active" : ""}" data-act="toggle-hide">${R.hide ? "🙈 Texte masqué" : "👀 Texte affiché"}</button>
       <button class="choice small-choice ${R.shadow ? "active" : ""}" data-act="toggle-shadow">🎙️ Shadowing</button>
+      <button class="choice small-choice ${R.aloud ? "active" : ""}" data-act="toggle-aloud" aria-pressed="${!!R.aloud}">🗣️ À voix haute</button>
       ${isKo(lang) ? `<button class="choice small-choice ${state.settings.particleColors ? "active" : ""}" data-act="toggle-particles">🎨 Particules</button>` : ""}
       ${isZh(lang) ? `<button class="choice small-choice ${state.settings.pinyin ? "active" : ""}" data-act="toggle-pinyin" aria-pressed="${!!state.settings.pinyin}">拼 Pinyin</button>` : ""}
     </div>
+    ${R.aloud ? `<div class="card tip">🗣️ <b>À voix haute</b> : appuie sur 🗣️ et lis la phrase. Les mots reconnus passent en vert. La reconnaissance se trompe parfois : c'est un repère, pas une note. <small class="muted">Elle passe par le service de ton navigateur (Google pour Chrome, Apple pour Safari).</small></div>` : ""}
     ${R.shadow ? `<div class="card tip">🎙️ <b>Shadowing</b> : appuie sur 🎙️, répète <b>en même temps</b> que la voix, puis réécoute les deux. Vise le <b>rythme et l'intonation</b>, pas la perfection de chaque son.</div>` : ""}
 
     <div class="sentences">
@@ -215,10 +217,12 @@ function viewReader(lang, textId) {
             <button data-act="play-s" data-s="${si}" title="Écouter cette phrase">🔊</button>
             <button data-act="fr" data-s="${si}" title="Traduction">🇫🇷</button>
             ${R.shadow ? `<button data-act="shadow" data-s="${si}" title="S'enregistrer">🎙️</button>` : ""}
+            ${R.aloud ? `<button data-act="speak-check" data-s="${si}" title="Lire à voix haute" class="${R.listening === si ? "listening" : ""}" aria-pressed="${R.listening === si}">${R.listening === si ? "⏹" : "🗣️"}</button>` : ""}
           </div>
           <div class="s-body">
             <p class="s-text ${koCls(lang)}">${s.words.map((w, wi) => esc(w.pre) + w.segs.map((g, gi) => segHtml(g, si, wi, gi)).join("") + esc(w.post)).join(s.words.sep ?? " ")}</p>
             ${R.fr[si] ? `<p class="s-fr">${esc(s.fr)}</p>` : ""}
+            ${R.aloud ? speechResult(s, R.said?.[si]) : ""}
             ${ui.recordings[`${textId}:${si}`] ? `<div class="rec-row"><button class="choice small-choice" data-act="play-s" data-s="${si}">▶ Modèle</button><button class="choice small-choice" data-act="play-rec" data-s="${si}">▶ Moi</button><button class="choice small-choice" data-act="play-both" data-s="${si}">▶ Les deux</button></div>` : ""}
           </div>
         </div>`).join("")}

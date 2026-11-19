@@ -1,0 +1,47 @@
+{
+  "id": "en-a1-08-2",
+  "lang": "en",
+  "level": "A1",
+  "unit": "en-A1-08",
+  "themes": ["rencontre"],
+  "grammar": ["imperative"],
+  "title": "Premier jour en classe",
+  "icon": "🏫",
+  "kind": "Dialogue",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["Hi! Is=be this your first day here?", "Salut ! C'est ton premier jour ici ?"],
+    ["Yes, it is=be my first day. Which class is=be this?", "Oui, c'est mon premier jour. C'est quelle classe ?"],
+    ["This is=be the art class. Go into the class!", "C'est le cours d'art. Entre dans la classe !"],
+    ["Which desk can I take?", "Je peux prendre quel bureau ?"],
+    ["Take this desk, near the window. Its chair is=be new.", "Prends ce bureau, près de la fenêtre. Sa chaise est neuve."],
+    ["Thanks! Only one question: who is=be the professor?", "Merci ! Juste une question : qui est le professeur ?"],
+    ["The professor is=be @Sam. The class is=be great: its professor is=be very nice.", "Le professeur, c'est Sam. Le cours est super : son professeur est très sympa."],
+    ["Is=be it only art in this class?", "Dans ce cours, on fait seulement de l'art ?"],
+    ["Yes, only art. First day, so don't=do+not worry!", "Oui, seulement de l'art. C'est le premier jour, alors ne t'inquiète pas !"],
+    ["Now go into the class and have fun!", "Maintenant, entre dans la classe et amuse-toi bien !"]
+  ],
+  "speakers": null,
+  "questions": [
+    { "q": "C'est quel jour pour la nouvelle élève ?", "options": ["Son premier jour", "Son dernier jour", "Un jour de vacances"] },
+    { "q": "Quel bureau lui propose-t-on ?", "options": ["Celui près de la fenêtre", "Celui près de la porte", "Celui de Sam"] },
+    { "q": "Qui est le professeur ?", "options": ["Sam", "Léa", "On ne sait pas"] }
+  ],
+  "checks": {
+    "blocking": [],
+    "warnings": [],
+    "stats": {
+      "sentences": 10,
+      "wordsPerSentence": 8.5,
+      "lexiconMissing": [],
+      "coverage": 94.1,
+      "tokens": 85,
+      "newWords": ["first", "which", "into", "its", "only"],
+      "outside": [],
+      "grammar:imperative": 2
+    },
+    "status": "green",
+    "at": "2026-11-19T19:55:48.734Z"
+  }
+}

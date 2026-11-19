@@ -1,0 +1,47 @@
+{
+  "id": "en-a1-07-2",
+  "lang": "en",
+  "level": "A1",
+  "unit": "en-A1-07",
+  "themes": ["cafe"],
+  "grammar": ["there-is"],
+  "title": "Viens au café !",
+  "icon": "💬",
+  "kind": "Message",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["Hi! I am=be at the new cafe now.", "Salut ! Je suis au nouveau café, là."],
+    ["The other cafe is=be closed=close today.", "L'autre café est fermé aujourd'hui."],
+    ["@Sam and @Léa are=be here now. Their table is=be near the window.", "Sam et Léa sont là. Leur table est près de la fenêtre."],
+    ["There is=be a table for you with their table.", "Il y a une table pour toi avec la leur."],
+    ["This cafe is=be nicer=nice than the other cafe.", "Ce café est plus sympa que l'autre."],
+    ["There are=be cookies=cookie now, and other desserts=dessert.", "Il y a des cookies maintenant, et d'autres desserts."],
+    ["Their cookies=cookie are=be more delicious than the other cookies=cookie.", "Leurs cookies sont plus délicieux que les autres cookies."],
+    ["Who wants=want a coffee? I can buy one!", "Qui veut un café ? Je peux en payer un !"],
+    ["Who is=be with us now? @Sam, @Léa and me!", "Qui est avec nous maintenant ? Sam, Léa et moi !"],
+    ["Please be here at four!", "Sois là à quatre heures, s'il te plaît !"]
+  ],
+  "speakers": null,
+  "questions": [
+    { "q": "Pourquoi ne vont-ils pas à l'autre café ?", "options": ["Il est fermé aujourd'hui", "Il est trop cher", "Il est trop loin"] },
+    { "q": "Qui est déjà au café ?", "options": ["Sam et Léa", "Personne", "Le frère du narrateur"] },
+    { "q": "Que propose le narrateur ?", "options": ["De payer un café", "De partir plus tôt", "D'aller au parc"] }
+  ],
+  "checks": {
+    "blocking": [],
+    "warnings": [],
+    "stats": {
+      "sentences": 10,
+      "wordsPerSentence": 8.1,
+      "lexiconMissing": [],
+      "coverage": 93.5,
+      "tokens": 77,
+      "newWords": ["now", "other", "their", "than", "who"],
+      "outside": [],
+      "grammar:there-is": 2
+    },
+    "status": "green",
+    "at": "2026-11-19T19:55:48.714Z"
+  }
+}

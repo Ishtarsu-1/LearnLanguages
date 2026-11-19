@@ -1,0 +1,47 @@
+{
+  "id": "ko-a1-03-1",
+  "lang": "ko",
+  "level": "A1",
+  "unit": "ko-A1-03",
+  "themes": ["sport"],
+  "grammar": ["do"],
+  "title": "Le match de samedi",
+  "icon": "⚽",
+  "kind": "Dialogue",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["이번 주말|에 축구 경기|가 있어요=있다.", "Ce week-end, il y a un match de foot."],
+    ["정말요=정말? 저|도 축구|를 좋아해요=좋아하다!", "C'est vrai ? Moi aussi, j'aime le foot !"],
+    ["저|는 매일 연습해요=연습하다. 오늘|도 연습해요=연습하다.", "Je m'entraîne tous les jours. Aujourd'hui aussi."],
+    ["매일 연습해요=연습하다? 힘들지=힘들다 않아요=않다?", "Tous les jours ? Ce n'est pas dur ?"],
+    ["힘들어요=힘들다. 하지만 경기 때문|에 연습해요=연습하다.", "Si, c'est dur. Mais je m'entraîne à cause du match."],
+    ["일 년|에 경기|가 많아요=많다?", "Il y a beaucoup de matchs dans l'année ?"],
+    ["네, 일 년|에 경기|가 정말 많아요=많다.", "Oui, il y a vraiment beaucoup de matchs par an."],
+    ["선생님|이 말해요=말하다. 물|도 많이 마셔요=마시다!", "Le prof le dit : bois aussi beaucoup d'eau !"],
+    ["선생님 말|이 중요해요=중요하다. 저|도 경기|에 같이 가요=가다!", "Ce que dit le prof, c'est important. Moi aussi, je viens au match avec toi !"],
+    ["좋아요=좋다! 토요일 아침 아홉 시|에 공원|에서 만나요=만나다.", "Super ! On se retrouve samedi à neuf heures au parc."]
+  ],
+  "speakers": null,
+  "questions": [
+    { "q": "Quand a lieu le match ?", "options": ["Ce week-end", "Ce soir", "La semaine prochaine"] },
+    { "q": "Pourquoi s'entraîne-t-il tous les jours ?", "options": ["À cause du match", "Pour le plaisir", "Son professeur l'oblige"] },
+    { "q": "Où se retrouvent-ils ?", "options": ["Au parc à neuf heures", "Au café à midi", "Au stade le soir"] }
+  ],
+  "checks": {
+    "blocking": [],
+    "warnings": ["Couverture : 91.4 % (idéal 92-98 %)", "Répétition : vu une seule fois (때문, 말하다, 말) — chaque mot nouveau au moins 2 fois"],
+    "stats": {
+      "sentences": 10,
+      "wordsPerSentence": 5.2,
+      "lexiconMissing": [],
+      "coverage": 91.4,
+      "tokens": 70,
+      "newWords": ["경기", "연습하다", "때문", "년", "말하다", "말"],
+      "outside": [],
+      "grammar:do": 4
+    },
+    "status": "orange",
+    "at": "2026-11-19T19:58:48.364Z"
+  }
+}

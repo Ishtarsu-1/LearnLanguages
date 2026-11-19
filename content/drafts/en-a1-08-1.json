@@ -1,0 +1,47 @@
+{
+  "id": "en-a1-08-1",
+  "lang": "en",
+  "level": "A1",
+  "unit": "en-A1-08",
+  "themes": ["rencontre"],
+  "grammar": ["imperative"],
+  "title": "Ta première soirée",
+  "icon": "🎉",
+  "kind": "Monologue",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["Your first party in a new city? Don't=do+not worry!", "Ta première soirée dans une nouvelle ville ? Pas de panique !"],
+    ["First, go into the kitchen.", "D'abord, va dans la cuisine."],
+    ["There are=be a lot of people in the kitchen.", "Il y a beaucoup de monde dans la cuisine."],
+    ["Have a question ready: which music do you like?", "Prépare une question : quelle musique tu aimes ?"],
+    ["Which music? Which movie? Which game? Choose only one.", "Quelle musique ? Quel film ? Quel jeu ? Choisis-en une seule."],
+    ["A party has=have its music and its people: be nice and be curious.", "Une soirée a sa musique et ses gens : sois sympa et curieux."],
+    ["Don't=do+not stay near the door. Go into the party!", "Ne reste pas près de la porte. Entre dans la soirée !"],
+    ["Stay only ten minutes=minute if you want.", "Reste seulement dix minutes si tu veux."],
+    ["But the first ten minutes=minute are=be the only difficult minutes=minute.", "Mais les dix premières minutes sont les seules difficiles."],
+    ["Have fun!", "Amuse-toi bien !"]
+  ],
+  "speakers": null,
+  "questions": [
+    { "q": "Où aller d'abord ?", "options": ["Dans la cuisine", "Dans le jardin", "Près de la porte"] },
+    { "q": "Quelle question préparer ?", "options": ["Quelle musique tu aimes ?", "Tu fais quoi dans la vie ?", "Tu as quel âge ?"] },
+    { "q": "Combien de temps rester si on veut ?", "options": ["Seulement dix minutes", "Toute la nuit", "Une heure au moins"] }
+  ],
+  "checks": {
+    "blocking": [],
+    "warnings": [],
+    "stats": {
+      "sentences": 10,
+      "wordsPerSentence": 8.2,
+      "lexiconMissing": [],
+      "coverage": 94,
+      "tokens": 84,
+      "newWords": ["first", "into", "which", "only", "its"],
+      "outside": [],
+      "grammar:imperative": 2
+    },
+    "status": "green",
+    "at": "2026-11-19T19:55:48.726Z"
+  }
+}

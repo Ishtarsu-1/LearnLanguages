@@ -1,0 +1,50 @@
+{
+  "id": "en-a1-05-1",
+  "lang": "en",
+  "level": "A1",
+  "unit": "en-A1-05",
+  "themes": ["sport"],
+  "grammar": ["can"],
+  "title": "Le samedi, c'est foot",
+  "icon": "⚽",
+  "kind": "Monologue",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["On Saturday, I am=be up early.", "Le samedi, je suis debout tôt."],
+    ["I play football in the park.", "Je joue au foot au parc."],
+    ["@Sam is=be up early too. His team is=be my team!", "Sam est debout tôt aussi. Son équipe, c'est mon équipe !"],
+    ["If it is=be nice, we start at ten.", "S'il fait beau, on commence à dix heures."],
+    ["If it is=be not nice, we can play at the school.", "S'il ne fait pas beau, on peut jouer à l'école."],
+    ["@Sam is=be very good, so his team wins=win a lot.", "Sam est très bon, alors son équipe gagne souvent."],
+    ["I am=be not very good, so I play for fun.", "Moi, je ne suis pas très bon, alors je joue pour le plaisir."],
+    ["We have one game on Saturday and one on Sunday.", "On a un match le samedi et un le dimanche."],
+    ["After the game, we have a lot of water.", "Après le match, on boit beaucoup d'eau."],
+    ["If you can play, you can play with us!", "Si tu sais jouer, tu peux jouer avec nous !"]
+  ],
+  "speakers": null,
+  "questions": [
+    {
+      "q": "Pourquoi l'équipe de Sam gagne-t-elle souvent ?",
+      "options": ["Sam est très bon", "Ils s'entraînent tous les jours", "L'autre équipe est faible"]
+    },
+    { "q": "Où jouent-ils s'il ne fait pas beau ?", "options": ["À l'école", "Au parc", "Ils ne jouent pas"] },
+    { "q": "Combien de matchs ont-ils le week-end ?", "options": ["Deux : un samedi, un dimanche", "Un seul", "Aucun"] }
+  ],
+  "checks": {
+    "blocking": [],
+    "warnings": [],
+    "stats": {
+      "sentences": 10,
+      "wordsPerSentence": 8.9,
+      "lexiconMissing": [],
+      "coverage": 94.3,
+      "tokens": 87,
+      "newWords": ["up", "his", "if", "so", "one"],
+      "outside": [],
+      "grammar:can": 2
+    },
+    "status": "green",
+    "at": "2026-11-19T19:55:25.436Z"
+  }
+}

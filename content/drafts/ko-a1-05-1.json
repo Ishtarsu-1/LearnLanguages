@@ -1,0 +1,47 @@
+{
+  "id": "ko-a1-05-1",
+  "lang": "ko",
+  "level": "A1",
+  "unit": "ko-A1-05",
+  "themes": ["travail"],
+  "grammar": ["natifs"],
+  "title": "Mon entreprise",
+  "icon": "🏢",
+  "kind": "Monologue",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["저|는 큰=크다 회사|에서 일해요=일하다.", "Je travaille dans une grande entreprise."],
+    ["우리 팀|에|는 사람|이 다섯 명 있어요=있다.", "Dans mon équipe, nous sommes cinq."],
+    ["저|는 매일 일찍 출근해요=출근하다.", "Je vais au travail tôt tous les jours."],
+    ["회사 안|에 카페|가 있어요=있다. 카페|가 정말 커요=크다.", "Il y a un café dans l'entreprise. Il est vraiment grand."],
+    ["아침|에 커피|를 한=하나 잔 마셔요=마시다. 점심|에 또 마셔요=마시다.", "Le matin, je bois un café. Le midi, j'en bois encore un."],
+    ["동료|는 커피|를 더 많이 마셔요=마시다. 네=넷 잔 마셔요=마시다!", "Ma collègue boit encore plus de café. Elle en boit quatre !"],
+    ["오전|에|는 회의|가 많아요=많다.", "Le matin, il y a beaucoup de réunions."],
+    ["일|이 많아요=많다. 하지만 우리 팀|은 안 늦어요=늦다.", "Il y a beaucoup de travail. Mais notre équipe n'est jamais en retard."],
+    ["동료|들|이 정말 좋아요=좋다. 회사|도 좋아요=좋다.", "Mes collègues sont super. L'entreprise aussi."],
+    ["그래서 저|는 또 일찍 출근해요=출근하다!", "Alors je vais encore au travail tôt !"]
+  ],
+  "speakers": null,
+  "questions": [
+    { "q": "Combien sont-ils dans l'équipe ?", "options": ["Cinq", "Trois", "Dix"] },
+    { "q": "Où est le café ?", "options": ["Dans l'entreprise", "En face du métro", "Au premier étage d'un autre immeuble"] },
+    { "q": "Combien de cafés boit sa collègue ?", "options": ["Quatre", "Un", "Deux"] }
+  ],
+  "checks": {
+    "blocking": [],
+    "warnings": ["Répétition : vu une seule fois (더) — chaque mot nouveau au moins 2 fois"],
+    "stats": {
+      "sentences": 10,
+      "wordsPerSentence": 5.7,
+      "lexiconMissing": [],
+      "coverage": 93.8,
+      "tokens": 80,
+      "newWords": ["크다", "일찍", "안", "또", "더"],
+      "outside": [],
+      "grammar:natifs": 3
+    },
+    "status": "orange",
+    "at": "2026-11-19T19:59:11.383Z"
+  }
+}
