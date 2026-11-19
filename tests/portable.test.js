@@ -23,6 +23,14 @@ let fails = 0; const ok = (c, m) => { if (!c) { fails++; console.log("FAIL", m);
   site.run(`features = { ...features, portable: true }`);
   ok(site.run(`viewFriends()`).includes("version portable") && site.run(`socialCard()`) === "", "amis et défis : expliqués, pas proposés");
   ok(site.run(`viewProfile()`).includes("Version portable de Mochi") && !site.run(`viewProfile()`).includes('href="#/inscription"'), "profil : pas de compte, progression sur cet ordinateur");
+  // Page du mini-CTF : seulement si le serveur l'annonce
+  ok(site.run(`viewCtf()`).includes("Page introuvable") || !site.run(`viewCtf()`).includes("Drapeau 1"), "pas de page CTF hors mode CTF");
+  site.run(`features = { ...features, ctf: true }`);
+  const v = site.run(`viewCtf()`);
+  ok(v.includes("Drapeau 1") && v.includes("Drapeau 2") && v.includes('data-act="ctf-hint"') && v.includes('data-ctf="1"') && !/MOCHI\{[^…]/.test(v), "page du défi : règles, indices, saisie, aucun drapeau en clair");
+  site.run(`actions["ctf-hint"]({ dataset: { i: "0" } })`);
+  ok(site.run(`viewCtf()`).includes("robots des moteurs de recherche"), "indices progressifs");
+  ok(!/MOCHI\{[^…]/.test(require("fs").readFileSync(require("path").join(__dirname, "..", "ctf.js"), "utf8")), "ctf.js ne contient pas de drapeau");
   // Constructeur : cibles connues, fichiers inutiles exclus
   const { TARGETS } = require("../tools/portable.js");
   ok(["win", "linux", "mac"].every((k) => TARGETS[k]) && TARGETS.win.out === "node.exe", "cibles Windows, Linux, macOS");

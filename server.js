@@ -17,6 +17,7 @@ const { MISSIONS } = require("./missions.js");
 const contentAdminMod = require("./content-admin.js");
 const socialMod = require("./social.js");
 const liveMod = require("./live.js");
+const ctfMod = require("./ctf-server.js");
 
 const PORT = Number(process.env.PORT) || 8000;
 const ROOT = __dirname;
@@ -253,7 +254,9 @@ const cacheKey = (b) => sha256(JSON.stringify([normText(b.text), normText(b.prom
 const STABLE_LANGS = String(process.env.MOCHI_LANGS_STABLE || "en,ko").split(",").map((l) => l.trim()).filter(Boolean);
 // Version portable (tools/portable.js) : un seul utilisateur sur sa machine, pas d'amis ni de comptes
 const PORTABLE = process.env.MOCHI_PORTABLE === "1";
-const featuresJson = (loggedIn = true) => JSON.stringify({ portable: PORTABLE, stable: STABLE_LANGS, llm: loggedIn && LLM_ON, engine: llm.ENGINE, tts: tts.info(), mail: mail.mode, ttsSlow: !!engines.ttsSlow, llmSlow: !!engines.llmSlow });
+// Mini-CTF pour débutants (version portable --ctf seulement, sur 127.0.0.1 : voir ctf-server.js)
+const ctf = ctfMod.create({ portable: PORTABLE, host: HOST });
+const featuresJson = (loggedIn = true) => JSON.stringify({ ctf: ctf.on, portable: PORTABLE, stable: STABLE_LANGS, llm: loggedIn && LLM_ON, engine: llm.ENGINE, tts: tts.info(), mail: mail.mode, ttsSlow: !!engines.ttsSlow, llmSlow: !!engines.llmSlow });
 
 function hashPassword(pw) {
   const salt = crypto.randomBytes(16);
@@ -575,6 +578,10 @@ async function api(req, res, url) {
   // (un autre site ne peut pas l'ajouter sans pré-vol CORS, que l'on n'autorise pas).
   if (req.method !== "GET" && req.headers["x-mochi"] !== "1") return fail(res, 403, "Requête refusée.");
   const ip = clientIp(req);
+
+  // Mini-CTF : vérifier un drapeau, obtenir la phrase magique (seulement en mode CTF)
+  if (ctf.on && route === "POST /api/ctf/check") return send(res, 200, ctf.checkFlag((await readJson(req, 2048)).flag));
+  if (ctf.on && route === "POST /api/ctf/magic") { const p = ctf.magic((await readJson(req, 2048)).flags); return p ? send(res, 200, { phrase: p }) : fail(res, 403, "Il te manque encore un drapeau."); }
 
   // Santé du service (Uptime Kuma, page de statut) : la base répond-elle ? Aucune donnée personnelle.
   if (route === "GET /api/health" || route === "HEAD /api/health") {
@@ -971,6 +978,7 @@ const STATIC = {
   "/feedback.js": ["feedback.js", "text/javascript; charset=utf-8"],
   "/friends.js": ["friends.js", "text/javascript; charset=utf-8"],
   "/duel.js": ["duel.js", "text/javascript; charset=utf-8"],
+  "/ctf.js": ["ctf.js", "text/javascript; charset=utf-8"],
   "/styles.css": ["styles.css", "text/css; charset=utf-8"],
   "/tokens.css": ["tokens.css", "text/css; charset=utf-8"],
   "/fonts/pretendard.css": ["fonts/pretendard.css", "text/css; charset=utf-8"],
@@ -1009,6 +1017,7 @@ const server = http.createServer(async (req, res) => {
   if (SECURE) res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
   const url = new URL(req.url, "http://localhost");
   try {
+    if (ctf.on && ctf.handle(req, res, url, { send, fail })) return;
     if (url.pathname.startsWith("/api/")) return await api(req, res, url);
     if (req.method !== "GET" && req.method !== "HEAD") return fail(res, 405, "Méthode non autorisée.");
     const m = url.pathname.match(/^\/avatars\/([a-z0-9-]+\.(jpg|png|webp))$/);
@@ -1019,6 +1028,7 @@ const server = http.createServer(async (req, res) => {
     const ic = url.pathname.match(/^\/icons\/(mochi-(?:maskable-)?(?:192|512)|apple-touch-icon)\.png$/);
     if (ic) return serveFile(res, path.join(ROOT, "icons", `${ic[1]}.png`), "image/png", "public, max-age=86400");
     const s = STATIC[url.pathname];
+    if (s && url.pathname === "/" && ctf.on && !/(?:^|;\s*)mochi_role=/.test(req.headers.cookie || "")) res.setHeader("Set-Cookie", ctf.roleCookie());
     if (s) return serveFile(res, path.join(ROOT, s[0]), s[1], "no-cache");
     res.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
     res.end("Introuvable");
@@ -1082,4 +1092,4 @@ if (require.main === module) {
   warmEngines().catch((e) => console.error("Préchauffage :", e.message));
   hw.detectBasic().then((b) => { machine.basic = b; }).catch(() => {}); // léger : système, mémoire, nvidia-smi
 }
-module.exports = { server, contentAdmin, social, live, db, mail, feedbackDigest, betaMetrics, clientIp, warmEngines, engines, tts, limiter: { waitFor, recordAttempt, clearAttempts } };
+module.exports = { server, ctf, contentAdmin, social, live, db, mail, feedbackDigest, betaMetrics, clientIp, warmEngines, engines, tts, limiter: { waitFor, recordAttempt, clearAttempts } };

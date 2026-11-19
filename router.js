@@ -26,6 +26,7 @@ function route() {
   else if (parts[0] === "connexion" || parts[0] === "inscription") { html = viewAuth(parts[0]); nav = "profil"; }
   else if (parts[0] === "pourquoi") { html = viewWhy(); nav = "pourquoi"; }
   else if (parts[0] === "avis") { html = viewFeedback(); nav = ""; }
+  else if (parts[0] === "ctf") { html = viewCtf(); nav = ""; }
   else if (parts[0] === "amis") { html = viewFriends(parts[1], parts[2]); nav = "amis"; }
   else if (parts[0] === "duel" && parts[1]) { html = viewDuel(parts[1]); nav = "amis"; }
   else if (parts[0] === "ami" && parts[1]) { html = viewInviteLink(decodeURIComponent(parts[1])); nav = "amis"; }
@@ -75,6 +76,7 @@ function route() {
   });
   renderTopStats(lang);
   renderTopUser();
+  if (typeof ctfBadge === "function") ctfBadge(); // mini-CTF (version portable --ctf)
   if (account && parts[0] === "profil") loadSessions();
   if (hashChanged) window.scrollTo({ top: 0 });
   ui.lastHash = location.hash;

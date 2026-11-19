@@ -19,6 +19,13 @@ const fs = require("node:fs"), path = require("node:path"), os = require("node:o
 const { execFileSync } = require("node:child_process");
 
 const ROOT = path.join(__dirname, "..");
+// Mini-CTF (--ctf) : les deux drapeaux viennent du .env (MOCHI_CTF_FLAG1, MOCHI_CTF_FLAG2), JAMAIS
+// du code : le dépôt est public, la phrase magique ne doit pas s'y trouver.
+const ctfFlags = () => {
+  const f = [process.env.MOCHI_CTF_FLAG1, process.env.MOCHI_CTF_FLAG2].map((x) => String(x || "").trim());
+  if (!f.every((x) => /^MOCHI\{.+\}$/.test(x))) throw new Error("--ctf : mets MOCHI_CTF_FLAG1 et MOCHI_CTF_FLAG2 dans ton .env (forme MOCHI{…}), jamais dans le code.");
+  return f;
+};
 const PORT = 47800;
 const TARGETS = {
   win: { node: (v) => `node-${v}-win-x64.zip`, bin: (v) => `node-${v}-win-x64/node.exe`, out: "node.exe" },
@@ -26,11 +33,11 @@ const TARGETS = {
   mac: { node: (v) => `node-${v}-darwin-arm64.tar.gz`, bin: (v) => `node-${v}-darwin-arm64/bin/node`, out: "node" },
 };
 // Fichiers du dépôt qui ne servent pas à faire tourner le site
-const EXCLUDE = [/^tests\//, /^docs\//, /^deploy\//, /^\.github\//, /^content\/drafts\//, /^tools\/.*\.py$/, /^tools\/start-voices/, /^playwright\.config\.js$/, /^\.env/, /\.md$/];
+const EXCLUDE = [/^tools\/portable\.js$/, /^tests\//, /^docs\//, /^deploy\//, /^\.github\//, /^content\/drafts\//, /^tools\/.*\.py$/, /^tools\/start-voices/, /^playwright\.config\.js$/, /^\.env/, /\.md$/];
 
 function args(argv) {
   const get = (k, d) => { const i = argv.indexOf(k); return i >= 0 ? argv[i + 1] : d; };
-  const o = { os: get("--os", "win"), out: path.resolve(get("--out", path.join(ROOT, "dist"))), feedback: argv.includes("--with-feedback"), audio: !argv.includes("--no-audio"), zip: !argv.includes("--no-zip") };
+  const o = { ctf: argv.includes("--ctf"), os: get("--os", "win"), out: path.resolve(get("--out", path.join(ROOT, "dist"))), feedback: argv.includes("--with-feedback"), audio: !argv.includes("--no-audio"), zip: !argv.includes("--no-zip") };
   if (!TARGETS[o.os]) throw new Error("--os win | linux | mac");
   return o;
 }
@@ -107,14 +114,20 @@ Ce qui marche : tout le parcours (lire, réviser, exercices, écrire, Hangul, th
 avec les vraies voix sur tout le contenu${voices ? "" : " (voix de l'ordinateur)"}. Correcteur hors ligne (pas d'IA).
 Ce qui ne marche pas dans cette version : les comptes, les amis, les défis et les duels.
 
-Un avis, un bug, une idée ? Bouton « Bêta · ton avis 💬 » en haut du site.${o.feedback ? "" : "\n(Dans cette version, les avis restent sur ton ordinateur : envoie-les aussi par message.)"}
+${o.ctf ? `🕵️ LE DÉFI : une phrase magique est cachée dans ce site, coupée en deux drapeaux
+MOCHI{…}. Clique sur « 🚩 Défi CTF » en haut du site pour les règles et les indices.
+Tout se passe dans le navigateur (de préférence Chrome ou Firefox) : interdit d'ouvrir
+les fichiers du dossier « app », ce serait trop facile. Bonus : une vraie faille trouvée
+dans Mochi ? Envoie-la avec le bouton 💬 (type « Un bug »).
+
+` : ""}Un avis, un bug, une idée ? Bouton « ${o.ctf ? "💬" : "Bêta · ton avis 💬"} » en haut du site.${o.feedback ? "" : "\n(Dans cette version, les avis restent sur ton ordinateur : envoie-les aussi par message.)"}
 Merci de tester Mochi ! 🍡
 
 (Node.js ${nodeV}, licence MIT. Contenus de Mochi : CC BY 4.0. Crédits complets dans le site.)
 `;
 
 async function build(o) {
-  const name = `Mochi-portable-${o.os}`, dir = path.join(o.out, name), app = path.join(dir, "app");
+  const name = `Mochi-portable-${o.os}${o.ctf ? "-ctf" : ""}`, dir = path.join(o.out, name), app = path.join(dir, "app");
   log(`📦 ${name}`);
   fs.rmSync(dir, { recursive: true, force: true });
   fs.mkdirSync(app, { recursive: true });
@@ -140,6 +153,12 @@ async function build(o) {
   } else fs.mkdirSync(path.join(dir, "donnees"), { recursive: true });
   // 5. Réglages
   const env = { MOCHI_PORTABLE: "1", HOST: "127.0.0.1", PORT: String(PORT), MOCHI_LLM: "off", MAIL_QUIET: "1", MOCHI_LANGS_STABLE: process.env.MOCHI_LANGS_STABLE || "en,ko", ...(audio.files.length ? { TTS_CACHE_ONLY: "1", ...audio.env } : {}) };
+  // Mini-CTF (ctf-server.js) : la phrase magique en deux drapeaux, brouillée dans les réglages
+  if (o.ctf) {
+    const { scramble } = require("../ctf-server.js");
+    Object.assign(env, { MOCHI_CTF: "1", MOCHI_CTF_FLAGS: scramble(JSON.stringify(ctfFlags())) });
+    log("  Mini-CTF activé (2 drapeaux)");
+  }
   if (o.feedback) {
     if (!process.env.FEEDBACK_TO || !process.env.RESEND_API_KEY) throw new Error("--with-feedback : FEEDBACK_TO et RESEND_API_KEY doivent être dans ton .env");
     Object.assign(env, { FEEDBACK_TO: process.env.FEEDBACK_TO, RESEND_API_KEY: process.env.RESEND_API_KEY, FEEDBACK_MAIL: "each" });
