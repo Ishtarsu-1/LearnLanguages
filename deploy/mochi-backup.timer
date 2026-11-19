@@ -1,0 +1,13 @@
+# Déclenche mochi-backup.service chaque nuit.
+#   sudo cp deploy/mochi-backup.* /etc/systemd/system/ && sudo systemctl daemon-reload
+#   sudo systemctl enable --now mochi-backup.timer      vérifier : systemctl list-timers
+[Unit]
+Description=Sauvegarde quotidienne de Mochi (3 h 30)
+
+[Timer]
+OnCalendar=*-*-* 03:30:00
+Persistent=true
+RandomizedDelaySec=10min
+
+[Install]
+WantedBy=timers.target

@@ -23,7 +23,7 @@
 
 | Priorité | Feature | Effort | Coût | Dépend de |
 |---|---|---|---|---|
-| **P0** | Mise en ligne sécurisée (HTTPS, sauvegardes continues) (🟢 CSP + en-têtes, `TRUST_PROXY`, doc Caddy faits ; reste : héberger, Litestream, test de restauration) | 🟡 | 🆓 | — |
+| **P0** | Mise en ligne sécurisée (HTTPS, sauvegardes continues) (🟢 CSP + en-têtes, `TRUST_PROXY`, kit `deploy/` (Caddy, systemd, Litestream, timer), `npm run backup/restore`, test de restauration automatisé, `/api/health`, `docs/mise-en-ligne.md` ; reste : héberger, brancher R2, test de restauration en production) | 🟡 | 🆓 | — |
 | ~~**P0**~~ | ~~Limitation des tentatives de connexion persistante~~ ✅ fait | 🟢 | 🆓 | — |
 | ~~**P0**~~ | ~~Mot de passe oublié + vérification de l'e-mail~~ ✅ fait (reste : clé Resend à la mise en ligne) | 🟡 | 🆓 | service d'e-mail |
 | ~~**P0**~~ | ~~Synchro sans perte entre appareils~~ ✅ fait | 🟡 | — | — |
@@ -59,6 +59,7 @@
 ## P0 : indispensable avant d'ouvrir le site au public
 
 ### Mise en ligne sécurisée 🟡 🆓
+🟢 Fait : `npm run backup` (copie cohérente à chaud par `VACUUM INTO`, vérifiée, photos incluses, rotation) et `npm run restore` (vérification, ancienne base mise de côté) ; test de restauration automatisé sur de vrais processus serveur (`tests/backup.test.js`) ; `GET /api/health` ; erreurs datées dans le journal ; kit `deploy/` (Caddyfile avec flux temps réel, service systemd durci, timer de sauvegarde quotidienne, `litestream.yml` vers R2) ; guides `docs/mise-en-ligne.md` (tunnel Cloudflare pour tester entre amis, ou serveur dédié) et `docs/restauration.md`. Reste : choisir l'hébergeur, brancher R2, faire le test de restauration sur la vraie production.
 - Hébergement derrière un reverse proxy HTTPS. **Caddy** est le plus simple : il gère les certificats Let's Encrypt tout seul. Activer `COOKIE_SECURE=1`.
 - Où héberger gratuitement : voir la section « Stack 100 % gratuite » (Oracle Cloud Always Free, avec ses limites).
 - **Sauvegardes continues de la base SQLite avec Litestream** vers un stockage objet (Cloudflare R2, voir la stack gratuite). On peut restaurer la base à la seconde près au lieu de perdre jusqu'à une journée. Les photos et fichiers audio vont directement sur R2.

@@ -502,7 +502,17 @@ Le chemin côté serveur est `DATA_DIR/tts` (`./data/tts` par défaut). Ensuite,
 
 ## 8. Données et sauvegarde
 
-Tout est dans **`data/`** : `mochi.db` (comptes, progression, révisions), `avatars/` (photos de profil) et `tts/` (cache audio, peut être supprimé). Pour sauvegarder, arrête le serveur et copie le dossier `data/`. Ne commite jamais ce dossier (il est dans le `.gitignore`).
+Tout est dans **`data/`** : `mochi.db` (comptes, progression, révisions, amis, défis), `avatars/` (photos de profil) et `tts/` (cache audio, peut être supprimé). Ne commite jamais ce dossier (il est dans le `.gitignore`).
+
+```bash
+npm run backup                         # copie vérifiée de la base + photos, même serveur allumé (data/backups, 14 gardées)
+npm run backup -- --list               # les sauvegardes disponibles
+npm run restore -- mochi-20261119-033012 --yes   # serveur arrêté ; l'ancienne base est mise de côté
+```
+
+En production : copie **continue** vers Cloudflare R2 avec Litestream et sauvegarde quotidienne par un timer systemd (`deploy/`, `docs/mise-en-ligne.md`). Procédures de restauration et test : `docs/restauration.md`. Santé du service (pour Uptime Kuma) : `GET /api/health`.
+
+**Mettre en ligne** (tunnel pour un test entre amis, ou serveur dédié avec Caddy, systemd, Litestream) : **`docs/mise-en-ligne.md`**.
 
 ## 9. Tests
 

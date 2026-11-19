@@ -1,0 +1,9 @@
+# Caddy : HTTPS automatique (Let's Encrypt) devant Mochi. Remplace le domaine.
+#   sudo cp deploy/Caddyfile /etc/caddy/Caddyfile && sudo systemctl reload caddy
+mochi.example.fr {
+	encode zstd gzip
+	# Le duel en direct utilise des Server-Sent Events : pas de mise en tampon
+	reverse_proxy 127.0.0.1:8000 {
+		flush_interval -1
+	}
+}

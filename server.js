@@ -45,6 +45,7 @@ const db = new DatabaseSync(path.join(DATA, "mochi.db"));
 db.exec(`
   PRAGMA journal_mode = WAL;
   PRAGMA foreign_keys = ON;
+  PRAGMA busy_timeout = 5000;
   CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY,
     email TEXT NOT NULL UNIQUE COLLATE NOCASE,
@@ -459,6 +460,7 @@ function syncUser(uid, b) {
 // ---------- Contenu : relecture et publication (CONTENU-PIPELINE, lot C6) ----------
 // Après une publication : content.data.js est reconstruit (le site le prend au prochain chargement),
 // et l'audio des nouvelles phrases est pré-généré en arrière-plan si des voix serveur sont configurées.
+const STARTED_AT = new Date().toISOString();
 const contentAdmin = contentAdminMod.create({
   onPublished: (lang) => {
     spokenCache = null;
@@ -501,6 +503,13 @@ async function api(req, res, url) {
   // (un autre site ne peut pas l'ajouter sans pré-vol CORS, que l'on n'autorise pas).
   if (req.method !== "GET" && req.headers["x-mochi"] !== "1") return fail(res, 403, "Requête refusée.");
   const ip = clientIp(req);
+
+  // Santé du service (Uptime Kuma, page de statut) : la base répond-elle ? Aucune donnée personnelle.
+  if (route === "GET /api/health" || route === "HEAD /api/health") {
+    let dbOk = false;
+    try { dbOk = db.prepare("SELECT 1 AS x").get().x === 1; } catch {}
+    return send(res, dbOk ? 200 : 503, { ok: dbOk, db: dbOk ? "ok" : "erreur", uptime: Math.round(process.uptime()), started: STARTED_AT });
+  }
 
   if (route === "POST /api/signup") {
     const { email, password, name, accept } = await readJson(req);
@@ -935,7 +944,7 @@ const server = http.createServer(async (req, res) => {
   } catch (e) {
     if (e.status === 413) res.setHeader("Connection", "close");
     if (!res.headersSent) fail(res, e.status || 500, e.status === 413 ? "Fichier trop volumineux." : e.status === 400 ? "Requête invalide." : "Erreur serveur.");
-    if (!e.status) console.error(e);
+    if (!e.status) console.error(`[${new Date().toISOString()}] ${req.method} ${url.pathname} :`, e); // journal : sans corps de requête ni données personnelles
   }
 });
 
@@ -965,6 +974,12 @@ async function warmEngines(log = console.log) {
 }
 
 if (require.main === module) server.listen(PORT, HOST, () => console.log(`Mochi → http://${HOST && HOST !== "0.0.0.0" && HOST !== "::" ? HOST : "localhost"}:${PORT} · correcteur : ${LLM_ON ? llm.ENGINE : "désactivé"} · e-mails : ${mail.mode} · voix : ${tts.enabled ? Object.entries(tts.info()).map(([l, v]) => `${l} ×${v.length}`).join(", ") : "navigateur"}`));
+// Erreurs inattendues : écrites avec la date (journal de systemd : journalctl -u mochi).
+// Une exception non rattrapée laisse le processus dans un état incertain : on sort, systemd relance.
+if (require.main === module) {
+  process.on("unhandledRejection", (e) => console.error(`[${new Date().toISOString()}] Promesse rejetée non gérée :`, e));
+  process.on("uncaughtException", (e) => { console.error(`[${new Date().toISOString()}] Erreur fatale :`, e); process.exit(1); });
+}
 if (require.main === module) {
   warmEngines().catch((e) => console.error("Préchauffage :", e.message));
   hw.detectBasic().then((b) => { machine.basic = b; }).catch(() => {}); // léger : système, mémoire, nvidia-smi

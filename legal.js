@@ -108,6 +108,7 @@ function legalPrivacy() {
       ${row("Corrections par l'IA", "Le nombre d'utilisations par jour. Les phrases envoyées ne sont <b>pas conservées</b> par Mochi", "Limiter l'usage quotidien", "Exécution du service", "90 jours (compteurs)")}
       ${row("Amis et défis", "Ton pseudo, ta liste d'amis, les demandes et les blocages, tes défis. Tes amis voient ton prénom, ton pseudo, ton avatar et, si tu le laisses activé, tes heures et tes mots solides", "Ajouter des amis, vous lancer des défis et suivre leur progression", "Exécution du service que tu demandes", "Jusqu'à ce que tu retires l'ami, quittes le défi ou supprimes ton compte")}
       ${row("Tes retours (« Donner mon avis »)", "Ton message, sa note et son type, la page où tu étais, ton navigateur, ton compte si tu es connecté·e, et une adresse de contact si tu en donnes une", "Améliorer Mochi pendant la phase de test, te répondre si tu le demandes", "Intérêt légitime (améliorer le service) ; ton choix d'écrire", "Le temps de la phase de test")}
+      ${row("Sauvegardes", "Une copie de la base (comptes, progression, amis, défis, retours) et des photos de profil", "Ne rien perdre en cas de panne", "Intérêt légitime (continuité du service)", "14 jours (copies quotidiennes), 7 jours (copie continue) ; une donnée supprimée disparaît des sauvegardes après ce délai")}
       ${row("Journal technique", "Messages d'erreur du serveur (sans contenu de tes exercices)", "Corriger les pannes", "Intérêt légitime", "Le temps de la phase de test")}
     </tbody>
   </table></div>

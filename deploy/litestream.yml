@@ -1,0 +1,20 @@
+# Litestream : copie CONTINUE de la base SQLite vers Cloudflare R2 (restauration à la seconde près).
+#   sudo cp deploy/litestream.yml /etc/litestream.yml
+#   Clés R2 dans /etc/default/litestream (jamais dans ce fichier) :
+#     LITESTREAM_ACCESS_KEY_ID=...
+#     LITESTREAM_SECRET_ACCESS_KEY=...
+#     R2_ACCOUNT_ID=...
+#   sudo systemctl enable --now litestream
+#   Voir docs/mise-en-ligne.md (étape 6) et docs/restauration.md.
+dbs:
+  - path: /opt/mochi/data/mochi.db
+    replicas:
+      - type: s3
+        bucket: mochi-sauvegardes
+        path: mochi.db
+        endpoint: https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com
+        region: auto
+        force-path-style: true
+        # Un instantané complet par jour, historique gardé 7 jours
+        snapshot-interval: 24h
+        retention: 168h

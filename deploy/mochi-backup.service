@@ -1,0 +1,9 @@
+# Sauvegarde quotidienne (en plus de Litestream) : base vérifiée + photos de profil, 14 jours gardés.
+[Unit]
+Description=Sauvegarde quotidienne de Mochi
+
+[Service]
+Type=oneshot
+User=mochi
+WorkingDirectory=/opt/mochi
+ExecStart=/usr/bin/node --env-file=/opt/mochi/.env tools/backup.js --keep 14
