@@ -62,13 +62,14 @@ npm run tts:pregen                        # d'abord : l'audio de toutes les phra
 npm run portable                          # Windows → dist/Mochi-portable-win.zip
 npm run portable -- --os mac              # macOS (Apple Silicon)
 npm run portable -- --os linux            # Linux
-npm run portable -- --with-feedback       # les avis t'arrivent par e-mail (sinon ils restent sur son PC)
+npm run portable -- --with-feedback       # les avis sont relayés à ton site de bêta (FEEDBACK_ENDPOINT), qui t'écrit
 ```
 
 - **Dedans** : Node.js, le site, l'**audio pré-généré** des voix configurées (licence libre, au moins la moitié des phrases faites ; sinon voix de l'ordinateur), un lanceur et une notice (`LISEZMOI.txt`). Environ 90 Mo zippé avec l'audio chinois et russe, davantage avec l'anglais et le coréen.
 - **Ce qui marche** : tout le parcours (lire, réviser, exercices, écrire avec le correcteur hors ligne, Hangul, pinyin, alphabet cyrillique, thèmes, livres, histoire). La progression est dans le dossier `donnees`.
 - **Ce qui ne marche pas** : comptes, amis, défis, duels, correcteur IA ; et **tu ne vois pas leurs chiffres** dans ton admin (entonnoir, rétention). Pour ces retours-là, le tunnel reste mieux.
-- **`--with-feedback`** met ta clé Resend dans le paquet. Avec l'expéditeur de test (`onboarding@resend.dev`), elle ne peut écrire **qu'à ton adresse** : au pire, quelqu'un t'enverrait des e-mails. Crée quand même une clé dédiée (« Sending access ») et supprime-la après la bêta.
+- **`--with-feedback`** met seulement l'**adresse** de ton site de bêta dans le paquet (`FEEDBACK_ENDPOINT=https://…` dans `.env`) : les avis y sont envoyés, et c'est ce site qui t'écrit avec **sa** clé. **Aucune clé n'est jamais mise dans un paquet** : le build échoue si un réglage ressemble à un secret (`*_KEY`, `*_TOKEN`, `*_SECRET`, `WEBHOOK_URL`). Site éteint ou ami hors ligne : l'avis est gardé et repart tout seul (au démarrage, puis toutes les 10 minutes). Sans `--with-feedback`, les avis restent sur son ordinateur : bouton « 📤 Exporter mes avis » (fichier à t'envoyer).
+- ⚠️ **Ancien paquet `--with-feedback`** (avant le 20 novembre 2026) : il contenait ta clé Resend. Si tu en as envoyé un, **révoque la clé** sur resend.com et crée-en une nouvelle.
 - **Windows** affiche « Windows a protégé votre ordinateur » (lanceur non signé) : « Informations complémentaires » › « Exécuter quand même ». **macOS** : clic droit › Ouvrir la première fois.
 - **Nouvelle version** : renvoie le zip ; ton ami recopie son dossier `donnees` dans le nouveau.
 
@@ -85,7 +86,7 @@ npm run portable -- --os mobile           # → dist/Mochi-mobile/ (+ zip)
 3. Mochi s'ouvre en plein écran et marche **hors ligne** après la première visite.
 
 - **Progression** : dans le téléphone (pas de compte). Sur iPhone, utiliser l'icône de l'écran d'accueil : Safari efface les données d'un site ouvert en onglet et inutilisé 7 jours.
-- **Avis** : le bouton 💬 ouvre le menu de partage du téléphone (message, WhatsApp…). `--with-feedback` met ton adresse `FEEDBACK_TO` dans le site (elle devient **publique**), et l'avis part en e-mail ; la clé Resend n'y est jamais mise.
+- **Avis** : avec `--with-feedback`, ils partent directement à ton site de bêta (`FEEDBACK_ENDPOINT` ; CORS ouvert sur cette seule route, sans cookies) ; sans réseau, ils attendent dans le téléphone. Sans, le bouton 💬 ouvre le menu de partage du téléphone. « 📤 Exporter mes avis » en dernier recours.
 - **Mise à jour** : remets le dossier au même endroit (Netlify › Deploys › glisser le dossier) ; la progression est gardée.
 - Pas de `--ctf` en mobile (le défi a besoin du serveur).
 

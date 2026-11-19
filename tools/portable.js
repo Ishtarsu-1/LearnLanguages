@@ -4,21 +4,20 @@
 //  « Lancer Mochi » : le site s'ouvre dans son navigateur, sans rien installer.
 //    npm run portable                          Windows (x64)
 //    npm run portable -- --os linux            Linux (x64)       --os mac   macOS (Apple Silicon)
-//    npm run portable -- --with-feedback       les avis des testeurs t'arrivent par e-mail (voir plus bas)
+//    npm run portable -- --with-feedback       les avis des testeurs sont relayés à ton site de bêta (FEEDBACK_ENDPOINT)
 //    npm run portable -- --no-audio            sans l'audio pré-généré (paquet beaucoup plus léger)
 //    npm run portable -- --os mobile           iPhone et Android (audio réencodé en MP3 --kbps 40, 0 = tel quel) : un site sans serveur à héberger
 //      (Netlify Drop, Cloudflare Pages…), puis « Ajouter à l'écran d'accueil » : appli hors ligne.
 //      Un téléphone ne fait pas tourner Node : pas de lanceur, la progression reste dans le
-//      navigateur du téléphone. --with-feedback n'y met QUE l'adresse FEEDBACK_TO (jamais la clé
-//      Resend : le site est public) ; les avis partent alors par e-mail depuis le téléphone.
+//      navigateur du téléphone.
 //  Contenu : Node.js officiel pour le système visé (téléchargé une fois, mis en cache), le site et
 //  ses dépendances de production, l'audio déjà pré-généré sur CE PC pour les voix configurées
 //  (licence libre uniquement), un lanceur, une notice. Pas de moteur de voix ni d'IA : voix
 //  pré-générées (sinon celle de l'ordinateur) et correcteur hors ligne. Pas d'amis ni de comptes.
-//  --with-feedback : copie FEEDBACK_TO et RESEND_API_KEY dans le paquet. Avec l'expéditeur de test
-//  de Resend (onboarding@resend.dev), cette clé ne peut écrire QU'À l'adresse du compte Resend :
-//  au pire, quelqu'un pourrait t'envoyer des e-mails. Crée une clé dédiée (« Sending access »),
-//  révocable après la bêta.
+//  --with-feedback : met FEEDBACK_ENDPOINT (l'adresse de ton site de bêta, par ex. https://….trycloudflare.com)
+//  dans le paquet. Les avis y sont envoyés (route /api/feedback-site, limitée par IP), et c'est ce site
+//  qui t'écrit avec SA clé. JAMAIS de clé, jeton ou secret dans un paquet distribué : n'importe qui
+//  ayant le zip pourrait la lire (assertNoSecrets fait échouer le build).
 // ============================================================
 const fs = require("node:fs"), path = require("node:path"), os = require("node:os");
 const { execFileSync, execFile } = require("node:child_process");
@@ -48,6 +47,19 @@ function args(argv) {
   return o;
 }
 const log = (s) => console.log(s);
+// Aucun secret dans un paquet distribué : le programme doit pouvoir lire ses réglages, donc la
+// personne qui a le zip aussi. Le build échoue si un nom ou une valeur ressemble à un secret.
+const SECRET_NAME = /(_KEY|_TOKEN|_SECRET|WEBHOOK_URL|PASSWORD)$/i, SECRET_VALUE = /^(re_|sk-|sk_|ghp_|xox[bp]-)|discord(app)?\.com\/api\/webhooks/i;
+function assertNoSecrets(obj) {
+  const bad = Object.entries(obj).filter(([k, v]) => SECRET_NAME.test(k) || (typeof v === "string" && SECRET_VALUE.test(v))).map(([k]) => k);
+  if (bad.length) throw new Error(`Secret refusé dans le paquet : ${bad.join(", ")}. Un paquet distribué ne doit contenir aucune clé.`);
+}
+// Adresse du site de bêta qui reçoit les avis (une URL, pas un secret)
+function feedbackEndpoint() {
+  const u = String(process.env.FEEDBACK_ENDPOINT || "").trim().replace(/\/+$/, "");
+  if (!/^https?:\/\/[^/\s]+$/.test(u)) throw new Error("--with-feedback : mets FEEDBACK_ENDPOINT=https://ton-site-de-beta dans ton .env (l'adresse du site, sans chemin)");
+  return u;
+}
 
 async function nodeBinary(target, cacheDir = path.join(os.homedir(), ".cache", "mochi-portable")) {
   // Dernière version 22 LTS (node:sqlite sans option depuis 22.13)
@@ -140,7 +152,7 @@ glisser le dossier) ; la progression des téléphones est gardée.
 Ce qui marche : tout le parcours (lire, réviser, exercices, écrire, Hangul, thèmes…),
 avec ${voices ? "les vraies voix (audio pré-généré)" : "la voix du téléphone"}. Correcteur hors ligne (pas d'IA).
 Ce qui ne marche pas : les comptes, les amis, les défis et les duels.
-Un avis ? Bouton « Bêta · ton avis 💬 » : ${feedback ? "il ouvre un e-mail tout prêt." : "il ouvre le menu de partage du téléphone (message, WhatsApp…)."}
+Un avis ? Bouton « Bêta · ton avis 💬 » : ${feedback ? "il m'arrive directement (sans réseau, il part plus tard tout seul)." : "il ouvre le menu de partage du téléphone (message, WhatsApp…)."}
 
 (Contenus de Mochi : CC BY-NC 4.0 (pas d'usage commercial). Crédits complets dans le site.)
 `;
@@ -188,13 +200,14 @@ async function buildMobile(o) {
     for (const [k, v] of Object.entries(a.env)) if (k.startsWith("TTS_VOICES_")) voices[k.slice(11).toLowerCase()] = v.split(",");
     log(`  ${Object.keys(audio).length} fichiers audio`);
   }
-  if (o.feedback && !process.env.FEEDBACK_TO) throw new Error("--with-feedback : FEEDBACK_TO doit être dans ton .env");
-  const features = { static: true, portable: true, llm: false, stable: (process.env.MOCHI_LANGS_STABLE || "en,ko").split(","), tts: voices, audio, ...(o.feedback ? { feedbackTo: process.env.FEEDBACK_TO } : {}) };
+  const features = { static: true, portable: true, llm: false, stable: (process.env.MOCHI_LANGS_STABLE || "en,ko").split(","), tts: voices, audio, ...(o.feedback ? { feedbackEndpoint: feedbackEndpoint() } : {}) };
+  assertNoSecrets(features);
   fs.writeFileSync(path.join(dir, "mobile.js"), `// Version mobile de Mochi (générée par tools/portable.js) : pas de serveur\nvar MOCHI_STATIC = ${JSON.stringify(features)};\n`);
   const index = path.join(dir, "index.html"), html = fs.readFileSync(index, "utf8");
   if (!html.includes('<script src="state.js">')) throw new Error("index.html : <script src=\"state.js\"> introuvable");
   fs.writeFileSync(index, html.replace('<script src="state.js">', '<script src="mobile.js"></script>\n  <script src="state.js">'));
-  fs.writeFileSync(path.join(dir, "_headers"), HEADERS);
+  // connect-src : le site de bêta, seule adresse extérieure appelée (envoi des avis)
+  fs.writeFileSync(path.join(dir, "_headers"), features.feedbackEndpoint ? HEADERS.replace("connect-src 'self'", `connect-src 'self' ${new URL(features.feedbackEndpoint).origin}`) : HEADERS);
   fs.writeFileSync(path.join(dir, "LISEZMOI.txt"), README_MOBILE(Object.keys(audio).length > 0, o.feedback));
   let zip = null;
   if (o.zip) { zip = path.join(o.out, `${name}.zip`); fs.rmSync(zip, { force: true }); execFileSync("zip", ["-qr", "-X", zip, name], { cwd: o.out }); }
@@ -241,7 +254,7 @@ Tout se passe dans le navigateur (de préférence Chrome ou Firefox) : interdit 
 les fichiers du dossier « app », ce serait trop facile. Bonus : une vraie faille trouvée
 dans Mochi ? Envoie-la avec le bouton 💬 (type « Un bug »).
 
-` : ""}Un avis, un bug, une idée ? Bouton « ${o.ctf ? "💬" : "Bêta · ton avis 💬"} » en haut du site.${o.feedback ? "" : "\n(Dans cette version, les avis restent sur ton ordinateur : envoie-les aussi par message.)"}
+` : ""}Un avis, un bug, une idée ? Bouton « ${o.ctf ? "💬" : "Bêta · ton avis 💬"} » en haut du site.${o.feedback ? "\n(Sans internet, ton avis est gardé sur ton ordinateur et part tout seul plus tard.)" : "\n(Dans cette version, les avis restent sur ton ordinateur : bouton « Exporter mes avis » pour me les envoyer.)"}
 Merci de tester Mochi ! 🍡
 
 (Node.js ${nodeV}, licence MIT. Contenus de Mochi : CC BY-NC 4.0 (pas d'usage commercial). Crédits complets dans le site.)
@@ -282,10 +295,10 @@ async function build(o) {
     log("  Mini-CTF activé (2 drapeaux)");
   }
   if (o.feedback) {
-    if (!process.env.FEEDBACK_TO || !process.env.RESEND_API_KEY) throw new Error("--with-feedback : FEEDBACK_TO et RESEND_API_KEY doivent être dans ton .env");
-    Object.assign(env, { FEEDBACK_TO: process.env.FEEDBACK_TO, RESEND_API_KEY: process.env.RESEND_API_KEY, FEEDBACK_MAIL: "each" });
-    log("  Avis envoyés par e-mail à FEEDBACK_TO (clé Resend incluse : voir l'en-tête de tools/portable.js)");
+    env.FEEDBACK_ENDPOINT = feedbackEndpoint();
+    log(`  Avis relayés à ${env.FEEDBACK_ENDPOINT} (aucune clé dans le paquet)`);
   }
+  assertNoSecrets(env);
   fs.writeFileSync(path.join(app, "portable.env"), `# Réglages de la version portable (générés par tools/portable.js)\n${Object.entries(env).map(([k, v]) => `${k}=${v}`).join("\n")}\n`);
   // 6. Lanceur et notice
   if (o.os === "win") fs.writeFileSync(path.join(dir, "Lancer Mochi.bat"), BAT);
@@ -304,4 +317,4 @@ async function build(o) {
 }
 
 if (require.main === module) build(args(process.argv.slice(2))).catch((e) => { console.error(`✗ ${e.message}`); process.exit(1); });
-module.exports = { build, TARGETS, audioKey, siteFiles };
+module.exports = { build, TARGETS, audioKey, siteFiles, assertNoSecrets, feedbackEndpoint };

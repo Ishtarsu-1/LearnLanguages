@@ -44,6 +44,17 @@ let fails = 0; const ok = (c, m) => { if (!c) { fails++; console.log("FAIL", m);
   ok(s2.run(`viewProfile()`).includes("Version mobile de Mochi"), "profil : version mobile");
   const sf = siteFiles();
   ok(sf.includes("index.html") && sf.includes("sw.js") && sf.includes("icons/apple-touch-icon.png") && sf.some((f) => f.endsWith(".woff2")) && !sf.some((f) => /server|\.env|^tools\//.test(f)), "fichiers du site mobile : ceux du navigateur, rien du serveur");
+  // Version mobile : avis envoyé au site de bêta ; sans réseau, gardé puis renvoyé
+  {
+    const s3 = loadSite();
+    s3.run(`features = { static: true, portable: true, feedbackEndpoint: "https://beta.example" }; globalThis.__calls = []; globalThis.fetch = async (u, o) => { __calls.push([u, o]); throw new TypeError("offline"); }`);
+    await s3.run(`(async () => { const F = { rating: 4 }; await avisOffline([{ kind: "bug", message: "Le son coupe." }], F); globalThis.__F = F; })()`);
+    ok(s3.run(`__F.offline`) === "queued" && s3.run(`avisRead(AVIS_QUEUE).length`) === 1 && s3.run(`__calls[0][0]`) === "https://beta.example/api/feedback-site" && s3.run(`__calls[0][1].credentials`) === "omit", "sans réseau : avis gardé sur le téléphone, envoyé sans cookies");
+    s3.run(`globalThis.fetch = async (u, o) => { __calls.push([u, o]); return { ok: true, status: 201 }; }`);
+    await s3.run(`avisFlush()`);
+    ok(s3.run(`avisRead(AVIS_QUEUE).length`) === 0 && s3.run(`JSON.parse(__calls.at(-1)[1].body).source`) === "mobile", "réseau revenu : avis renvoyé, file vidée");
+    ok(s3.run(`avisRead(AVIS_LOG).length`) === 1, "historique gardé pour « Exporter mes avis »");
+  }
   console.log(fails ? `${fails} échec(s)` : "OK : version portable");
   process.exit(fails ? 1 : 0);
 })().catch((e) => { console.log("ERREUR", e); process.exit(1); });

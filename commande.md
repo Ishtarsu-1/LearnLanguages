@@ -23,7 +23,7 @@ Toutes les commandes se lancent depuis le dossier du projet. Celles qui commence
 | `npm run backup -- --list` | Liste les sauvegardes. |
 | `npm run restore -- mochi-20261119-033012 --yes` | Restaure une sauvegarde (site **arrêté**) ; l'ancienne base est mise de côté. |
 | `curl http://127.0.0.1:8000/api/health` | Le site et sa base répondent-ils ? (pour Uptime Kuma) |
-| `npm run portable` | Version portable pour un ami (Windows) : un dossier + un zip dans `dist/`, il double-clique sur « Lancer Mochi ». `-- --os mac` / `-- --os linux`, `-- --with-feedback` (avis par e-mail). `-- --os mobile` : iPhone et Android (site sans serveur à glisser sur Netlify Drop, puis « Ajouter à l'écran d'accueil »). Voir `docs/beta.md`. |
+| `npm run portable` | Version portable pour un ami (Windows) : un dossier + un zip dans `dist/`, il double-clique sur « Lancer Mochi ». `-- --os mac` / `-- --os linux`, `-- --with-feedback` (avis relayés à ton site de bêta, `FEEDBACK_ENDPOINT` ; jamais de clé dans un paquet). `-- --os mobile` : iPhone et Android (site sans serveur à glisser sur Netlify Drop, puis « Ajouter à l'écran d'accueil »). Voir `docs/beta.md`. |
 | `cloudflared tunnel --url http://localhost:8000` | Adresse https publique temporaire pour faire tester tes amis (voir `docs/mise-en-ligne.md`). |
 
 ## 👤 Comptes administrateurs

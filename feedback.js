@@ -21,7 +21,7 @@ window.addEventListener("hashchange", (e) => {
 function viewFeedback() {
   const F = (ui.avis ||= { kinds: ["avis"], msgs: {}, rating: 0, sent: false, busy: false });
   if (F.sent) return `<section class="view lesson-shell"><div class="card empty">${mochi("small", "proud")}
-    <h2>${F.offline === "copy" ? "Merci ! Ton avis est copié 🍡" : F.offline ? "Merci ! 🍡" : "Merci, c'est envoyé ! 🍡"}</h2><p class="muted">${F.offline === "copy" ? "Colle-le dans un message à la personne qui t'a envoyé Mochi. " : ""}Ton retour aide vraiment à améliorer Mochi.</p>
+    <h2>${{ copy: "Merci ! Ton avis est copié 🍡", share: "Merci ! 🍡", queued: "Merci ! Ton avis partira tout seul 🍡" }[F.offline] || "Merci, c'est envoyé ! 🍡"}</h2><p class="muted">${F.offline === "copy" ? "Colle-le dans un message à la personne qui t'a envoyé Mochi. " : F.offline === "queued" ? "Pas de réseau pour l'instant : il est gardé sur ce téléphone et sera envoyé dès que possible. " : ""}Ton retour aide vraiment à améliorer Mochi.</p>
     <div class="wp-actions avis-done"><a class="btn" href="${esc(ui.avisFrom || "#/")}">Revenir où j'étais</a><button class="btn ghost" data-act="avis-again">Envoyer un autre retour</button></div></div></section>`;
   const lang = (ui.avisFrom || "").match(/#\/lang\/(en|ko|zh|ru)/)?.[1] || state.lastLang || "";
   const chosen = AVIS_KINDS.filter(([k]) => F.kinds.includes(k));
@@ -43,7 +43,8 @@ function viewFeedback() {
       ${ui.avisFrom ? `<p class="muted m-0"><small>Page jointe au message : ${esc(ui.avisFrom)}</small></p>` : ""}
       <p class="form-err" hidden></p>
       <button class="btn" ${F.busy || !chosen.length ? "disabled" : ""}>${F.busy ? "Envoi…" : chosen.length > 1 ? `Envoyer mes ${chosen.length} retours` : "Envoyer mon avis"}</button>
-      <p class="muted m-0"><small>Ton message est enregistré et transmis par e-mail à l'éditeur de Mochi (voir la <a class="lnk" href="#/legal/confidentialite">confidentialité</a>).</small></p>
+      <p class="muted m-0"><small>${features.portable && !features.feedbackEndpoint && !features.relay ? "Dans cette version, ton message reste sur cet appareil : « Exporter mes avis » pour l'envoyer à la main." : "Ton message est enregistré et transmis par e-mail à l'éditeur de Mochi"} (voir la <a class="lnk" href="#/legal/confidentialite">confidentialité</a>).</small></p>
+      ${features.portable ? (features.static ? `<p class="m-0"><button type="button" class="btn ghost small" data-act="avis-export">📤 Exporter mes avis</button></p>` : `<p class="m-0"><a class="btn ghost small" href="/api/feedback-export" download="mochi-avis.json">📤 Exporter mes avis</a></p>`) : ""}
     </form>
   </section>`;
 }
@@ -59,17 +60,48 @@ Object.assign(actions, {
   },
   "avis-star": (el) => { avisKeep(); const n = +el.dataset.n; ui.avis.rating = ui.avis.rating === n ? 0 : n; render(); },
   "avis-again": () => { ui.avis = null; render(); },
+  "avis-export": () => avisExport(),
 });
-// Version mobile (pas de serveur) : l'avis part par e-mail (si l'adresse est dans le paquet),
-// par le menu de partage du téléphone, ou à défaut est copié.
+// Version mobile (pas de serveur) : l'avis part directement au site de bêta (features.feedbackEndpoint,
+// une adresse, jamais une clé) ; sans réseau, il attend dans le téléphone et repart tout seul.
+// Sans site de bêta : menu de partage du téléphone, ou à défaut copié.
+const AVIS_QUEUE = "mochi-avis-attente", AVIS_LOG = "mochi-avis-historique";
+const avisRead = (k) => { try { return JSON.parse(localStorage.getItem(k)) || []; } catch { return []; } };
+const avisWrite = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v.slice(-50))); } catch {} };
+async function avisPost(body) {
+  const r = await fetch(`${features.feedbackEndpoint}/api/feedback-site`, { method: "POST", credentials: "omit", headers: { "Content-Type": "application/json", "X-Mochi": "1" }, body: JSON.stringify(body) });
+  if (r.ok) return true;
+  if (r.status === 429 || r.status >= 500) return false; // réessayer plus tard
+  throw new Error((await r.json().catch(() => ({}))).error || `Erreur ${r.status}`); // avis refusé : le dire
+}
+async function avisFlush() {
+  if (!features.feedbackEndpoint) return;
+  const q = avisRead(AVIS_QUEUE), left = [];
+  for (const b of q) { try { if (!(await avisPost(b))) left.push(b); } catch (e) { if (e instanceof TypeError) left.push(b); } }
+  if (left.length !== q.length) avisWrite(AVIS_QUEUE, left);
+}
 async function avisOffline(parts, F) {
+  const body = { parts, rating: F.rating || null, contact: (F.contact || "").trim() || null, page: ui.avisFrom || null, lang: state.lastLang || null, source: "mobile", at: new Date().toISOString() };
+  avisWrite(AVIS_LOG, [...avisRead(AVIS_LOG), body]);
+  if (features.feedbackEndpoint) {
+    let ok = false;
+    try { ok = await avisPost(body); } catch (e) { if (!(e instanceof TypeError)) throw e; } // TypeError : pas de réseau
+    if (!ok) avisWrite(AVIS_QUEUE, [...avisRead(AVIS_QUEUE), body]);
+    F.offline = ok ? "sent" : "queued"; return;
+  }
   const label = (k) => AVIS_KINDS.find(([x]) => x === k)?.[2] || k;
   const text = `Mochi (version mobile) : mon avis\n\n${parts.map((p) => `${label(p.kind)} :\n${p.message}`).join("\n\n")}${F.rating ? `\n\nNote : ${F.rating}/5` : ""}${ui.avisFrom ? `\nPage : ${ui.avisFrom}` : ""}`;
   F.offline = "share";
-  if (features.feedbackTo) { location.href = `mailto:${features.feedbackTo}?subject=${encodeURIComponent("Avis sur Mochi")}&body=${encodeURIComponent(text)}`; return; }
   if (navigator.share) { try { await navigator.share({ text }); return; } catch (e) { if (e?.name === "AbortError") throw new Error("Envoi annulé : réessaie quand tu veux."); } }
   await navigator.clipboard.writeText(text); F.offline = "copy";
 }
+// Dernier recours : tous mes avis dans un fichier à envoyer à la main
+function avisExport() {
+  const blob = new Blob([JSON.stringify({ mochi: "avis", exported_at: new Date().toISOString(), avis: avisRead(AVIS_LOG) }, null, 2)], { type: "application/json" });
+  const a = Object.assign(document.createElement("a"), { href: URL.createObjectURL(blob), download: "mochi-avis.json" });
+  a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+if (typeof window !== "undefined" && features.static) { window.addEventListener("online", () => avisFlush()); setTimeout(() => avisFlush(), 4000); }
 // Garde ce qui est déjà tapé avant un nouveau rendu
 function avisKeep() {
   const f = document.querySelector?.("form[data-avis]");

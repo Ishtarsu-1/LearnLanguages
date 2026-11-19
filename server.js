@@ -259,9 +259,28 @@ const cacheKey = (b) => sha256(JSON.stringify([normText(b.text), normText(b.prom
 const STABLE_LANGS = String(process.env.MOCHI_LANGS_STABLE || "en,ko").split(",").map((l) => l.trim()).filter(Boolean);
 // Version portable (tools/portable.js) : un seul utilisateur sur sa machine, pas d'amis ni de comptes
 const PORTABLE = process.env.MOCHI_PORTABLE === "1";
+// Version portable avec --with-feedback : les avis sont relayés au site de bêta (qui envoie l'e-mail
+// avec SA clé : aucun secret dans le paquet). Échec (site éteint, hors ligne) : on réessaie plus tard.
+const RELAY = PORTABLE && /^https?:\/\/[^/\s]+$/.test(process.env.FEEDBACK_ENDPOINT || "") ? process.env.FEEDBACK_ENDPOINT : null;
+let relaying = false;
+async function relayFeedback(fetchImpl = fetch) {
+  if (!RELAY || relaying) return;
+  relaying = true;
+  try {
+    for (const r of db.prepare("SELECT * FROM site_feedback WHERE mailed_at IS NULL ORDER BY id LIMIT 20").all()) {
+      const body = { parts: r.parts ? JSON.parse(r.parts) : [{ kind: r.kind.split(",")[0], message: r.message }], rating: r.rating, contact: r.contact, page: r.page, lang: r.lang, source: "portable" };
+      try {
+        const res = await fetchImpl(`${RELAY}/api/feedback-site`, { method: "POST", headers: { "Content-Type": "application/json", "X-Mochi": "1" }, body: JSON.stringify(body), signal: AbortSignal.timeout(10000) });
+        if (res.status === 429 || res.status >= 500) throw new Error(`HTTP ${res.status}`);
+        // 4xx (avis refusé par le site) : inutile de réessayer, on garde la raison
+        db.prepare("UPDATE site_feedback SET mailed_at = ?, mail_error = ? WHERE id = ?").run(now(), res.ok ? null : `refusé par le site (HTTP ${res.status})`, r.id);
+      } catch (e) { db.prepare("UPDATE site_feedback SET mail_error = ? WHERE id = ?").run(`en attente : ${e.message}`.slice(0, 300), r.id); break; }
+    }
+  } finally { relaying = false; }
+}
 // Mini-CTF pour débutants (version portable --ctf seulement, sur 127.0.0.1 : voir ctf-server.js)
 const ctf = ctfMod.create({ portable: PORTABLE, host: HOST });
-const featuresJson = (loggedIn = true) => JSON.stringify({ ctf: ctf.on, portable: PORTABLE, stable: STABLE_LANGS, llm: loggedIn && llmOn(), engine: llm.ENGINE, tts: tts.info(), mail: mail.mode, ttsSlow: !!engines.ttsSlow, llmSlow: !!engines.llmSlow });
+const featuresJson = (loggedIn = true) => JSON.stringify({ ctf: ctf.on, portable: PORTABLE, relay: !!RELAY, stable: STABLE_LANGS, llm: loggedIn && llmOn(), engine: llm.ENGINE, tts: tts.info(), mail: mail.mode, ttsSlow: !!engines.ttsSlow, llmSlow: !!engines.llmSlow });
 
 function hashPassword(pw) {
   const salt = crypto.randomBytes(16);
@@ -684,7 +703,8 @@ async function api(req, res, url) {
     if (wait) return tooMany(res, wait);
     recordAttempt(`avis:${ip}`);
     const who = currentSession(req)?.user || null;
-    const page = typeof b.page === "string" ? b.page.slice(0, 200) : null, lang = ["en", "ko", "zh", "ru"].includes(b.lang) ? b.lang : null;
+    const source = ["portable", "mobile"].includes(b.source) ? b.source : null;
+    const page = typeof b.page === "string" || source ? `${source ? `[${source}] ` : ""}${typeof b.page === "string" ? b.page : ""}`.slice(0, 200) : null, lang = ["en", "ko", "zh", "ru"].includes(b.lang) ? b.lang : null;
     const ua = String(req.headers["user-agent"] || "").slice(0, 300), at = now();
     const id = Number(db.prepare("INSERT INTO site_feedback (created_at, user_id, kind, rating, message, page, lang, contact, user_agent, parts) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
       .run(at, who?.id ?? null, kind, rating, message, page, lang, contact, ua, JSON.stringify(parts)).lastInsertRowid);
@@ -696,7 +716,14 @@ async function api(req, res, url) {
         .then(() => db.prepare("UPDATE site_feedback SET mailed_at = ? WHERE id = ?").run(now(), id))
         .catch((e) => { console.error("Retour testeur, e-mail :", e.message); db.prepare("UPDATE site_feedback SET mail_error = ? WHERE id = ?").run(e.message.slice(0, 300), id); });
     }
+    if (RELAY) relayFeedback(); // version portable : transmis au site de bêta (ou plus tard)
     return send(res, 201, { ok: true, id });
+  }
+  // Version portable : tous les avis enregistrés sur cet ordinateur, en fichier à envoyer à la main
+  if (route === "GET /api/feedback-export" && PORTABLE) {
+    const rows = db.prepare("SELECT created_at, kind, rating, parts, message, page, lang, contact, mailed_at sent_at FROM site_feedback ORDER BY id").all()
+      .map(({ parts, ...r }) => ({ ...r, parts: parts ? JSON.parse(parts) : null }));
+    return send(res, 200, { mochi: "avis", exported_at: now(), count: rows.length, avis: rows }, { "Content-Disposition": 'attachment; filename="mochi-avis.json"' });
   }
 
   // Voix serveur : ouvertes aux invités aussi. Le cache est servi librement,
@@ -1035,6 +1062,15 @@ const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, "http://localhost");
   try {
     if (ctf.on && ctf.handle(req, res, url, { send, fail })) return;
+    // Avis envoyés depuis la version mobile (autre origine) : CORS sur CETTE route seulement, sans
+    // cookies (pas d'Allow-Credentials) ; la limite par IP et la taille maximale s'appliquent.
+    if (url.pathname === "/api/feedback-site") {
+      res.setHeader("Access-Control-Allow-Origin", "*");
+      res.setHeader("Access-Control-Allow-Methods", "POST");
+      res.setHeader("Access-Control-Allow-Headers", "Content-Type, X-Mochi");
+      res.setHeader("Access-Control-Max-Age", "600");
+      if (req.method === "OPTIONS") { res.writeHead(204); return res.end(); }
+    }
     if (url.pathname.startsWith("/api/")) return await api(req, res, url);
     if (req.method !== "GET" && req.method !== "HEAD") return fail(res, 405, "Méthode non autorisée.");
     const m = url.pathname.match(/^\/avatars\/([a-z0-9-]+\.(jpg|png|webp))$/);
@@ -1104,9 +1140,11 @@ if (require.main === module) {
   process.on("unhandledRejection", (e) => console.error(`[${new Date().toISOString()}] Promesse rejetée non gérée :`, e));
   process.on("uncaughtException", (e) => { console.error(`[${new Date().toISOString()}] Erreur fatale :`, e); process.exit(1); });
 }
+// Version portable : avis en attente renvoyés au démarrage, puis toutes les 10 minutes
+if (require.main === module && RELAY) { setTimeout(() => relayFeedback().catch(() => {}), 5000).unref(); setInterval(() => relayFeedback().catch(() => {}), 10 * 60e3).unref(); }
 if (require.main === module && FEEDBACK_MAIL === "daily") setInterval(() => feedbackDigest().catch(() => {}), 30 * 60e3).unref();
 if (require.main === module) {
   warmEngines().catch((e) => console.error("Préchauffage :", e.message));
   hw.detectBasic().then((b) => { machine.basic = b; }).catch(() => {}); // léger : système, mémoire, nvidia-smi
 }
-module.exports = { server, ctf, contentAdmin, social, live, db, mail, feedbackDigest, betaMetrics, clientIp, warmEngines, engines, tts, limiter: { waitFor, recordAttempt, clearAttempts } };
+module.exports = { relayFeedback, server, ctf, contentAdmin, social, live, db, mail, feedbackDigest, betaMetrics, clientIp, warmEngines, engines, tts, limiter: { waitFor, recordAttempt, clearAttempts } };

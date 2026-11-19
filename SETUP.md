@@ -522,6 +522,7 @@ Le chemin côté serveur est `DATA_DIR/tts` (`./data/tts` par défaut). Ensuite,
 | `RESEND_API_KEY` | — | Envoi réel des e-mails (section 6 quater) ; sans clé, ils s'affichent dans le terminal |
 | `MAIL_FROM` | `Mochi <onboarding@resend.dev>` | Expéditeur des e-mails |
 | `FEEDBACK_TO` | — | Adresse qui reçoit les retours du formulaire « Donner mon avis » ; sans valeur, ils sont seulement enregistrés |
+| `FEEDBACK_ENDPOINT` | — | Versions portables (`--with-feedback`) : adresse de ton site de bêta (`https://…`, sans chemin), qui reçoit les avis des paquets. Une URL, pas un secret : aucune clé n'est jamais mise dans un paquet |
 | `PUBLIC_URL` | `http://localhost:PORT` | Adresse du site, pour les liens envoyés par e-mail |
 | `PORT` | `8000` | Port du serveur |
 | `DATA_DIR` | `./data` | Base de données et photos de profil |
