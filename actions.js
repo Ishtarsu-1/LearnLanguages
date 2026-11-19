@@ -77,6 +77,7 @@ const actions = {
   "toggle-hide": () => { ui.reader.hide = !ui.reader.hide; render(); },
   "toggle-shadow": () => { ui.reader.shadow = !ui.reader.shadow; render(); },
   "toggle-particles": () => { state.settings.particleColors = !state.settings.particleColors; save(); render(); },
+  "toggle-pinyin": () => { state.settings.pinyin = !state.settings.pinyin; save(); render(); },
   shadow: (el) => recordShadow(currentLang(), +el.dataset.s),
   "play-rec": (el) => playRec(`${ui.reader.id}:${el.dataset.s}`),
   "play-both": async (el) => { const lang = currentLang(); await speak(textById(lang, ui.reader.id).parsed[+el.dataset.s].text, lang); await playRec(`${ui.reader.id}:${el.dataset.s}`); },

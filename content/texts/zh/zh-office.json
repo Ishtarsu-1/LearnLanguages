@@ -1,0 +1,23 @@
+{
+  "id": "zh-office",
+  "lang": "zh",
+  "level": "A1",
+  "order": 80,
+  "themes": ["travail"],
+  "grammar": [],
+  "title": "Au bureau",
+  "icon": "💼",
+  "kind": "Monologue",
+  "status": "published",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "sentences": [
+    ["我 在 一 家 公司 工作。", "Je travaille dans une entreprise."],
+    ["我 每天 九 点 上班。", "Tous les jours, je commence le travail à neuf heures."],
+    ["上午 开会， 下午 写 邮件。", "Le matin, j'ai des réunions ; l'après-midi, j'écris des e-mails."],
+    ["中午 和 同事 一起 吃饭。", "À midi, je déjeune avec mes collègues."],
+    ["工作 很 忙， 但是 我 很 喜欢。", "Le travail est chargé, mais j'aime beaucoup ça."],
+    ["我 六 点 下班。", "Je finis le travail à six heures."]
+  ],
+  "speakers": null,
+  "review": { "by": "nathan", "at": "2026-11-19" }
+}

@@ -1,0 +1,23 @@
+{
+  "id": "zh-intro",
+  "lang": "zh",
+  "level": "A1",
+  "order": 20,
+  "themes": ["rencontre"],
+  "grammar": [],
+  "title": "Se présenter",
+  "icon": "🙋",
+  "kind": "Monologue",
+  "status": "published",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "sentences": [
+    ["大家 好， 我 叫 @小明。", "Bonjour à tous, je m'appelle Xiaoming."],
+    ["我 是 中国人=中国+人。", "Je suis chinois."],
+    ["我 住 在 @北京。", "J'habite à Pékin."],
+    ["我 是 学生， 我 学 法语。", "Je suis étudiant, j'apprends le français."],
+    ["我 很 喜欢 看 电影。", "J'aime beaucoup regarder des films."],
+    ["认识 你 很 高兴！", "Ravi de te connaître !"]
+  ],
+  "speakers": null,
+  "review": { "by": "nathan", "at": "2026-11-19" }
+}

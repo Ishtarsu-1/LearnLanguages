@@ -4,9 +4,10 @@
 //  les déclarations de haut niveau sont partagées entre les fichiers.
 // ============================================================
 // ---------- Phrases annotées (voir content.js) ----------
-const PUNCT_RE = /^([«"“(¿¡]*)(.*?)([.,!?…:;»"”)]*)$/;
+const PUNCT_RE = /^([«"“(¿¡「『（]*)(.*?)([.,!?…:;»"”)。，！？、：；」』）]*)$/u; // ponctuation latine et chinoise
+// Chinois : la source sépare les mots par des espaces (pour les annoter), l'affichage non (words.sep).
 function parseSentence(src, lang) {
-  return src.split(" ").map((word) => {
+  const words = src.split(" ").map((word) => {
     const [, pre, core, post] = word.match(PUNCT_RE);
     const segs = core.split("|").map((raw, i) => {
       const proper = raw.startsWith("@");
@@ -17,16 +18,19 @@ function parseSentence(src, lang) {
     });
     return { pre, segs, post };
   });
+  words.sep = isZh(lang) ? "" : " ";
+  return words;
 }
 const wordText = (w) => w.pre + w.segs.map((s) => s.surface).join("") + w.post;
-const plain = (words) => words.map(wordText).join(" ");
+const plain = (words) => words.map(wordText).join(words.sep ?? " ");
 const toSentence = (src, lang, fr = "") => { const words = parseSentence(src, lang); return { words, text: plain(words), fr }; };
 
 // Texte avant / après un morceau donné (pour les cartes en contexte, §2)
 function splitAround(words, w, g) {
   const word = words[w];
-  const before = [...words.slice(0, w).map(wordText), word.pre + word.segs.slice(0, g).map((s) => s.surface).join("")].join(" ");
-  const after = [word.segs.slice(g + 1).map((s) => s.surface).join("") + word.post, ...words.slice(w + 1).map(wordText)].join(" ");
+  const sep = words.sep ?? " ";
+  const before = [...words.slice(0, w).map(wordText), word.pre + word.segs.slice(0, g).map((s) => s.surface).join("")].join(sep);
+  const after = [word.segs.slice(g + 1).map((s) => s.surface).join("") + word.post, ...words.slice(w + 1).map(wordText)].join(sep);
   return { before: w === 0 ? before.trimStart() : before, after };
 }
 
@@ -90,4 +94,7 @@ function knownCount(lang) {
   const lemmas = new Set([...Object.keys(LEXICON[lang]), ...Object.keys(stab), ...Object.keys(state.langs[lang].known)]);
   return [...lemmas].filter((l) => knownWeight(lang, l, stab) === 1).length;
 }
-const lexFr = (lang, lemma) => lemma.split(" + ").map((l) => LEXICON[lang][l]?.fr || "?").join(" + ");
+const lexFr = (lang, lemma) => {
+  const fr = lemma.split(" + ").map((l) => LEXICON[lang][l]?.fr || "?").join(" + ");
+  return isZh(lang) ? `${zhLemmaPy(lemma.split(" + "))} · ${fr}` : fr;
+};

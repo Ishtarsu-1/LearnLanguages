@@ -15,7 +15,11 @@ const num1 = (n) => Number(n).toLocaleString("fr-FR", { minimumFractionDigits: 1
 const num0 = (n) => Math.round(Number(n)).toLocaleString("fr-FR");
 const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
 const isKo = (lang) => lang === "ko";
-const koCls = (lang) => (isKo(lang) ? "ko" : "en");
+const isZh = (lang) => lang === "zh";
+// Écritures non latines : comparaison caractère par caractère (pas de mots séparés par des espaces)
+const isCjk = (lang) => lang === "ko" || lang === "zh";
+// Classe de langue : police et attribut lang (.ko, .zh, .en)
+const koCls = (lang) => (isKo(lang) ? "ko" : isZh(lang) ? "zh" : "en");
 // Fonction d'une particule coréenne, pour la couleur et le soulignement (charte §5)
 const PARTICLE_FN = { 은: "topic", 는: "topic", 이: "subject", 가: "subject", 을: "object", 를: "object", 에: "place", 에서: "place", 에게: "place", 한테: "place", 께: "place" };
 const PARTICLE_LABEL = { topic: "particule de thème", subject: "particule de sujet", object: "particule d'objet", place: "particule de lieu, de temps ou de destinataire", other: "particule" };

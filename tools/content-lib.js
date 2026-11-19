@@ -7,7 +7,7 @@ const fs = require("node:fs"), path = require("node:path");
 
 const ROOT = path.join(__dirname, "..");
 const CONTENT_DIR = path.join(ROOT, "content");
-const LANGS = ["en", "ko"];
+const LANGS = ["en", "ko", "zh"];
 const LEVELS = ["A1", "A2", "B1", "B2"];
 const KINDS = ["Dialogue", "Récit", "Monologue", "Message"];
 // Identifiant d'un texte ou d'un livre : jamais de chemin fourni par le client (lot C6)
@@ -44,7 +44,7 @@ function writeLexicon(f, lex) {
 const listJSON = (dir) => (fs.existsSync(dir) ? fs.readdirSync(dir).filter((f) => f.endsWith(".json")).sort().map((f) => path.join(dir, f)) : []);
 
 // ---------- Format annoté (même analyse que parseSentence de reader.js, sans le DOM) ----------
-const PUNCT_RE = /^([«"“(¿¡]*)(.*?)([.,!?…:;»"”)]*)$/;
+const PUNCT_RE = /^([«"“(¿¡「『（]*)(.*?)([.,!?…:;»"”)。，！？、：；」』）]*)$/u; // ponctuation latine et chinoise
 const KO_PARTICLES = new Set(["은", "는", "이", "가", "을", "를", "에", "에서", "도", "의", "와", "과", "하고", "로", "으로", "랑", "이랑", "한테", "께"]);
 function parseWords(src, lang) {
   return src.split(" ").map((word) => {
@@ -62,7 +62,7 @@ function parseWords(src, lang) {
 // Morceaux à plat d'une phrase : { surface, lemmas[], proper, particle }
 const segments = (src, lang) => parseWords(src, lang).flatMap((w) => w.segs);
 // Texte affiché (sans annotations)
-const plainText = (src, lang = "en") => parseWords(src, lang).map((w) => w.pre + w.segs.map((s) => s.surface).join("") + w.post).join(" ");
+const plainText = (src, lang = "en") => parseWords(src, lang).map((w) => w.pre + w.segs.map((s) => s.surface).join("") + w.post).join(lang === "zh" ? "" : " ");
 // Lemmes (hors noms propres) d'un texte, avec répétitions
 const textLemmas = (sentences, lang) => sentences.flatMap(([src]) => segments(src, lang).flatMap((g) => g.lemmas));
 

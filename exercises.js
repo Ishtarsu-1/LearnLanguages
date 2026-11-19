@@ -8,17 +8,17 @@
 // group : rangement du menu (Écoute · Écrit · Grammaire · Vocabulaire). Les types qui
 // ne sont pas de l'écoute sont majoritaires : l'écoute a déjà l'onglet « Écouter les sons ».
 const EX_KINDS = {
-  melange: { icon: "🔀", label: "Mélange", langs: ["en", "ko"] },
-  dictee: { icon: "✍️", label: "Dictée", langs: ["en", "ko"], group: "listen" },
-  ecoute: { icon: "🎧", label: "Compréhension orale", langs: ["en", "ko"], group: "listen" },
-  trou: { icon: "✏️", label: "Phrase à trou", langs: ["en", "ko"], group: "write" },
-  traduction: { icon: "🔁", label: "Traduis", langs: ["en", "ko"], group: "write" },
+  melange: { icon: "🔀", label: "Mélange", langs: ["en", "ko", "zh"] },
+  dictee: { icon: "✍️", label: "Dictée", langs: ["en", "ko", "zh"], group: "listen" },
+  ecoute: { icon: "🎧", label: "Compréhension orale", langs: ["en", "ko", "zh"], group: "listen" },
+  trou: { icon: "✏️", label: "Phrase à trou", langs: ["en", "ko", "zh"], group: "write" },
+  traduction: { icon: "🔁", label: "Traduis", langs: ["en", "ko", "zh"], group: "write" },
   forme: { icon: "🔤", label: "La bonne forme", langs: ["en", "ko"], group: "write" },
-  ordre: { icon: "🧩", label: "Remettre dans l'ordre", langs: ["en", "ko"], group: "grammar" },
+  ordre: { icon: "🧩", label: "Remettre dans l'ordre", langs: ["en", "ko", "zh"], group: "grammar" },
   particule: { icon: "🧷", label: "La bonne particule", langs: ["ko"], group: "grammar" },
   registre: { icon: "🙇", label: "Quel registre ?", langs: ["ko"], group: "grammar" },
-  confusion: { icon: "⚖️", label: "Ne pas confondre", langs: ["en", "ko"], group: "vocab" },
-  paires: { icon: "🔗", label: "Associe", langs: ["en", "ko"], group: "vocab" },
+  confusion: { icon: "⚖️", label: "Ne pas confondre", langs: ["en", "ko", "zh"], group: "vocab" },
+  paires: { icon: "🔗", label: "Associe", langs: ["en", "ko", "zh"], group: "vocab" },
   faux: { icon: "🎭", label: "Faux amis", langs: ["en"], group: "vocab" },
 };
 const EX_GROUPS = [["listen", "🎧 Écoute"], ["write", "✍️ Écrit"], ["grammar", "🧩 Grammaire"], ["vocab", "📒 Vocabulaire"]];
@@ -203,8 +203,9 @@ Object.assign(actions, {
       if (EX_MORE[q.kind].check(lang, E) === false) return; // rien à vérifier (champ vide…)
       if (E.result?.async) return; // vérification par l'IA en cours : exDone sera appelé à la réponse
     } else if (q.kind === "ordre") {
-      const built = q.order.map((ti) => q.tiles[ti].t).join(" ");
-      const right = q.s.words.map((w) => w.segs.map((g) => g.surface).join("")).join(" ");
+      const sep = q.s.words.sep ?? " ";
+      const built = q.order.map((ti) => q.tiles[ti].t).join(sep);
+      const right = q.s.words.map((w) => w.segs.map((g) => g.surface).join("")).join(sep);
       E.result = { ok: built === right };
       speak(q.s.text, lang);
     }
@@ -258,7 +259,7 @@ EX_MORE.trou = {
       <p class="q-sentence ${k}">${blankHtml(q.s, q.wi, q.gi, R ? q.answer : null, R ? "right" : "")}</p>
       <p class="muted">« ${esc(q.s.fr)} »</p>
       ${R ? `${R.ok ? `<p class="ok-msg">Bien joué !</p>` : `<p class="ko-msg">Tu as écrit <b class="${k}">${esc(R.typed)}</b> · c'était <b class="${k}">${esc(q.answer)}</b> (${esc(lexFr(lang, q.g.lemmas[0]))})</p>`}${exNext}`
-        : `${E.hint ? `<p class="muted center"><small>💡 Commence par <b class="${k}">${esc([...q.answer][0])}</b> · ${[...q.answer].length} ${isKo(lang) ? "syllabe(s)" : "lettres"}</small></p>` : `<p class="center"><button class="btn ghost small" data-act="ex-hint">💡 Un indice</button></p>`}${typedField(lang, "Le mot qui manque…")}`}`;
+        : `${E.hint ? `<p class="muted center"><small>💡 ${isZh(lang) ? `En pinyin : <b>${esc(zhPinyin(q.answer))}</b>` : `Commence par <b class="${k}">${esc([...q.answer][0])}</b>`} · ${[...q.answer].length} ${{ ko: "syllabe(s)", zh: "caractère(s)" }[lang] || "lettres"}</small></p>` : `<p class="center"><button class="btn ghost small" data-act="ex-hint">💡 Un indice</button></p>`}${typedField(lang, "Le mot qui manque…")}`}`;
   },
   check(lang, E) {
     const t = typedValue(); if (!t) { toast("Écris le mot qui manque ✍️"); return false; }
@@ -304,7 +305,7 @@ EX_MORE.traduction = {
           ${R.explain ? `<p class="ex-note">${esc(R.explain)}</p>` : ""}
           ${R.local && !R.ok ? `<p class="muted"><small>Comparée à une traduction possible : d'autres formulations peuvent être justes.${llmReady() ? "" : " Connecte-toi pour une correction par l'IA."}</small></p>` : ""}
           <div class="center"><button class="btn ghost small" data-act="say" data-text="${esc(q.s.text)}" data-lang="${lang}">🔊 Écouter</button></div>${exNext}`
-        : `<textarea class="input answer ${k}" id="ex-answer" rows="2" maxlength="300" placeholder="${isKo(lang) ? "한국어로…" : "In English…"}"></textarea>
+        : `<textarea class="input answer ${k}" id="ex-answer" rows="2" maxlength="300" placeholder="${{ ko: "한국어로…", zh: "用中文（汉字或拼音）…" }[lang] || "In English…"}"></textarea>
            <div class="wp-actions center"><button class="btn" data-act="ex-check">Vérifier</button></div>`}`;
   },
   check(lang, E) {
@@ -361,7 +362,7 @@ EX_MORE.confusion = {
   },
   view(lang, E) {
     const q = E.q, k = koCls(lang);
-    if (q.empty) return `<p class="q-label">⚖️ Ne pas confondre</p><p>Cet exercice oppose deux mots qui se ressemblent ou s'opposent (${isKo(lang) ? "먹다 / 마시다, 출근하다 / 퇴근하다" : "early / late, open / close"}).</p>
+    if (q.empty) return `<p class="q-label">⚖️ Ne pas confondre</p><p>Cet exercice oppose deux mots qui se ressemblent ou s'opposent (${{ ko: "먹다 / 마시다, 출근하다 / 퇴근하다", zh: "吃 / 喝, 上班 / 下班" }[lang] || "early / late, open / close"}).</p>
       <p class="muted">Il s'ouvre quand tu connais <b>les deux</b> mots d'une paire. C'est voulu : les apprendre en même temps les mélange en mémoire. Une fois les deux bien installés, les opposer aide à les distinguer.</p>`;
     return `<p class="q-label">Quel mot va dans le trou ? <small class="muted">(forme de base)</small></p>
       <p class="q-sentence ${k}">${blankHtml(q.s, q.wi, q.gi, E.picked ? q.g.surface : null, E.picked ? "right" : "")}</p>

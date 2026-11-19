@@ -1,0 +1,23 @@
+{
+  "id": "zh-cooking",
+  "lang": "zh",
+  "level": "A1",
+  "order": 50,
+  "themes": ["cuisine"],
+  "grammar": [],
+  "title": "Ce soir, je cuisine",
+  "icon": "🍳",
+  "kind": "Récit",
+  "status": "published",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "sentences": [
+    ["今天 晚上 我 做饭。", "Ce soir, c'est moi qui cuisine."],
+    ["我 做 西红柿 炒 鸡蛋。", "Je fais des œufs sautés aux tomates."],
+    ["先 切 西红柿。", "D'abord, je coupe les tomates."],
+    ["然后 炒 鸡蛋。", "Ensuite, je fais sauter les œufs."],
+    ["放 一点儿 盐 和 糖。", "J'ajoute un peu de sel et de sucre."],
+    ["很 好吃！ 我们 吃 米饭 吧。", "C'est très bon ! Mangeons-le avec du riz."]
+  ],
+  "speakers": null,
+  "review": { "by": "nathan", "at": "2026-11-19" }
+}

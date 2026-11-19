@@ -33,6 +33,7 @@ TABS.ko.push(["niveau", "🧭 Niveau"]);
 TAB_VIEWS.niveau = (lang) => tabPlacement(lang);
 
 const placementPending = (lang) => {
+  if (!["en", "ko"].includes(lang)) return false; // test de niveau : anglais et coréen seulement (pour l'instant)
   const L = state.langs[lang];
   return !L.placement && !state.cards.some((c) => c.lang === lang) && !Object.keys(L.known).length;
 };

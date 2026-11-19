@@ -983,3 +983,18 @@ img.friend-av { object-fit: cover; }
 @keyframes duel-shake { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
 @media (prefers-reduced-motion: reduce) { .input.shake { animation: none; } .duel-timer span { transition: none; } }
 .duel-actions { justify-content: center; }
+
+/* ---------- Chinois (zh.js, pinyin.js) : polices du système, pinyin au-dessus des mots ---------- */
+.zh { font-family: "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Noto Sans CJK SC", "Source Han Sans SC", "Microsoft YaHei", var(--font-sans); word-break: keep-all; font-style: normal; }
+.s-text.zh { font-size: var(--text-xl); line-height: 2.2; }
+.s-text.zh .w { padding-inline: 1px; }
+.zh ruby { ruby-align: center; }
+.zh rt { font-family: var(--font-sans); font-size: 0.5em; color: var(--ink-muted); font-weight: 600; letter-spacing: 0.01em; }
+.reader.hide-text .zh rt { visibility: hidden; }
+.choice.zh, .ex-choices .choice.zh { font-size: var(--text-xl); min-width: 64px; }
+.wp-word.zh { font-size: var(--text-2xl); }
+.py-grid { display: grid; gap: 10px; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); margin-top: 16px; }
+.py-item { display: grid; justify-items: center; gap: 4px; text-align: center; cursor: pointer; font: inherit; color: inherit; position: relative; margin: 0; }
+.py-zh { font-size: 2.6rem; line-height: 1.1; }
+.py-py { font-size: var(--text-lg); color: var(--primary); }
+.py-ear { position: absolute; top: 8px; right: 10px; font-size: var(--text-sm); }

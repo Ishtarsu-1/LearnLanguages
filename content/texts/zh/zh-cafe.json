@@ -1,0 +1,23 @@
+{
+  "id": "zh-cafe",
+  "lang": "zh",
+  "level": "A1",
+  "order": 10,
+  "themes": ["cafe"],
+  "grammar": [],
+  "title": "Au café",
+  "icon": "☕",
+  "kind": "Dialogue",
+  "status": "published",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "sentences": [
+    ["你好！ 我 要 一 杯 咖啡。", "Bonjour ! Je voudrais un café."],
+    ["好的。 要 大 杯 还是 小 杯？", "D'accord. Un grand ou un petit ?"],
+    ["小 杯， 谢谢。", "Un petit, merci."],
+    ["还 要 别的 吗？", "Vous voulez autre chose ?"],
+    ["不 要 了。 多少 钱？", "Non, ça ira. C'est combien ?"],
+    ["十八=十+八 块。", "Dix-huit yuans."]
+  ],
+  "speakers": null,
+  "review": { "by": "nathan", "at": "2026-11-19" }
+}

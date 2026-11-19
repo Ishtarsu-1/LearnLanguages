@@ -41,7 +41,7 @@ function collect(dir = L.CONTENT_DIR) {
   }
   const strip = (b) => Object.fromEntries(Object.entries(b).filter(([k]) => !BOOK_DROP.has(k)));
   const data = {
-    lexicon: Object.fromEntries(L.LANGS.map((l) => [l, Object.fromEntries(Object.entries(lexicon[l]).map(([k, v]) => [k, pick(v, ["fr", "cog", "faux", "semantic_group", "confusable_with"])]))])),
+    lexicon: Object.fromEntries(L.LANGS.map((l) => [l, Object.fromEntries(Object.entries(lexicon[l]).map(([k, v]) => [k, pick(v, ["fr", "py", "cog", "faux", "semantic_group", "confusable_with"])]))])),
     texts: Object.fromEntries(L.LANGS.map((l) => [l, texts[l].map((t) => pick(t, TEXT_FIELDS))])),
     books: Object.fromEntries(L.LANGS.map((l) => [l, books[l].map(strip)])),
     stories: Object.fromEntries(L.LANGS.map((l) => [l, stories[l].map(strip)])),

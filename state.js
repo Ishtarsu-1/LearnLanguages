@@ -8,12 +8,12 @@
 const LANGUAGES = {
   en: { name: "Anglais", native: "English", flag: "🇬🇧", hello: "Hello!", deco: "Hi", speechLang: "en-GB", tagline: "Des dialogues du quotidien, et beaucoup d'écoute" },
   ko: { name: "Coréen", native: "한국어", flag: "🇰🇷", hello: "안녕하세요!", deco: "한", speechLang: "ko-KR", tagline: "Hangul d'abord, puis les briques de la phrase" },
+  zh: { name: "Chinois", native: "中文", flag: "🇨🇳", hello: "你好！", deco: "中", speechLang: "zh-CN", tagline: "Les tons et le pinyin d'abord, puis des phrases du quotidien" },
 };
 
 // Langues en préparation : montrées sur l'accueil, mais verrouillées (pas dans LANGUAGES,
 // pour qu'aucune autre partie du site ne les traite comme des langues actives)
 const COMING_SOON = [
-  { id: "zh", name: "Chinois", native: "中文", flag: "🇨🇳", hello: "你好！", lang: "zh" },
   { id: "fr", name: "Français", native: "Français", flag: "🇫🇷", hello: "Bonjour !", lang: "fr" },
   { id: "ja", name: "Japonais", native: "日本語", flag: "🇯🇵", hello: "こんにちは！", lang: "ja" },
   { id: "it", name: "Italien", native: "Italiano", flag: "🇮🇹", hello: "Ciao!", lang: "it" },
@@ -30,11 +30,11 @@ const STORE_KEY = "mochi-state-v2";
 const langDefaults = () => ({
   xp: 0, streak: 0, lastStreakDay: null, seconds: 0, todayDate: null, todaySec: 0, started: false,
   known: {}, unknown: {}, readTexts: {}, fullDays: {}, catchUp: false, session: {}, introduced: { date: null, count: 0 },
-  hangulDone: false, hangulDays: {}, grammarDone: {}, grammarMiss: {}, earStats: {}, errors: {}, prodDone: {}, quests: {}, books: {},
+  hangulDone: false, hangulDays: {}, pinyinDays: {}, grammarDone: {}, grammarMiss: {}, earStats: {}, errors: {}, prodDone: {}, quests: {}, books: {},
 });
 const defaultState = () => ({
   name: "", avatar: "mochi", goal: 10, lastLang: null,
-  settings: { retention: 0.9, newPerDay: 12, cognateWeight: 0.8, particleColors: true, speed: 1, textScale: 1, zen: false, theme: "auto", voices: {}, themes: [], look: {}, lookSeen: [], tourDone: false },
+  settings: { retention: 0.9, newPerDay: 12, cognateWeight: 0.8, particleColors: true, pinyin: true, speed: 1, textScale: 1, zen: false, theme: "auto", voices: {}, themes: [], look: {}, lookSeen: [], tourDone: false },
   langs: Object.fromEntries(Object.keys(LANGUAGES).map((k) => [k, langDefaults()])),
   cards: [], logs: [],
   history: {}, // { "AAAA-MM-JJ": { en: { sec, rev, prod, read } } } : suivi d'activité

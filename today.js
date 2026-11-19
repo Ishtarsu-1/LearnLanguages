@@ -88,10 +88,17 @@ function lcs(a, b, key = (x) => x) {
   return { len: dp[0][0], keepA, keepB };
 }
 const normEn = (s) => s.toLowerCase().replace(/[’']/g, "'").replace(/[.,!?;:"«»]/g, "").replace(/\s+/g, " ").trim();
-const normKo = (s) => s.replace(/[.,!?;:"«»~\s]/g, "");
+const normKo = (s) => s.replace(/[.,!?;:"«»~\s。，！？、：；「」]/gu, "");
+// Clé de comparaison d'une réponse : le chinois s'accepte en caractères ou en pinyin (zh.js)
+const normFor = (lang) => (isZh(lang) ? zhKey : isKo(lang) ? normKo : normEn);
 // Renvoie {html de la version correcte, html de la phrase de l'utilisateur, similarité}
 function recast(user, target, lang) {
-  if (isKo(lang)) {
+  // Chinois tapé en pinyin : on compare les pinyins (sans tons) et on montre la phrase avec son pinyin
+  if (isZh(lang) && /[a-zA-Zāáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜü]/.test(user)) {
+    const a = [...zhKey(user)], b = [...zhKey(target)], r = lcs(a, b);
+    return { tHtml: `${esc(target)}<br/><small class="muted">${esc(zhPinyin(target))}</small>`, uHtml: esc(user), sim: r.len / Math.max(a.length, b.length, 1) };
+  }
+  if (isCjk(lang)) {
     const a = [...normKo(user)], b = [...normKo(target)];
     const r = lcs(a, b);
     let j = 0;
@@ -237,13 +244,14 @@ function practiceTools(lang) {
   const K = state.langs.ko, hDone = Object.keys(K.hangulDays).length, gDone = KO_GRAMMAR.filter((g) => K.grammarDone[g.id]).length;
   const tools = [
     isKo(lang) && ["parcours", "🗺️", "Parcours", "L'alphabet puis la grammaire, un pas à la fois.", K.hangulDone ? `Grammaire ${gDone}/${KO_GRAMMAR.length}` : `Hangul ${hDone}/${HANGUL_DAYS.length}`],
+    isZh(lang) && ["pinyin", "🎵", "Pinyin & tons", "Entendre et reconnaître les 4 tons, puis les sons du chinois.", `${Object.keys(L.pinyinDays).length}/${PINYIN_DAYS.length} séances`],
     ["revisions", "🧠", "Réviser", "Les mots à revoir aujourd'hui, au bon moment pour ne pas les oublier.", due ? `${due} à revoir` : "À jour ✓", due > 0],
     ["exercices", "🎯", "Exercices", "Dictée, phrases à remettre dans l'ordre, compréhension… tout mélangé.", ""],
     ["produire", "💬", "Écrire", "Écris une phrase : Mochi te propose une version plus naturelle.", ""],
     ["oreille", "🎧", "Écouter les sons", "Distingue les sons qui se ressemblent, avec plusieurs voix.", ""],
-    !isKo(lang) && ["fauxamis", "🎭", "Faux amis", "Les mots qui ressemblent au français… mais ne veulent pas dire la même chose.", ""],
+    lang === "en" && ["fauxamis", "🎭", "Faux amis", "Les mots qui ressemblent au français… mais ne veulent pas dire la même chose.", ""],
     ["mots", "📒", "Mes mots", "Tous les mots que tu apprends, et ceux que tu connais déjà.", mine ? `${mine} carte${mine > 1 ? "s" : ""}` : ""],
-    ["niveau", "🧭", "Test de niveau", "5 minutes pour savoir où tu en es.", L.placement ? "Fait ✓" : ""],
+    !isZh(lang) && ["niveau", "🧭", "Test de niveau", "5 minutes pour savoir où tu en es.", L.placement ? "Fait ✓" : ""],
   ];
   return tools.filter(Boolean);
 }
@@ -420,6 +428,7 @@ function tabToday(lang) {
         step1Done ? "Tes premiers mots sont dans tes révisions : chacun avec sa phrase et son audio." : "Les mots les plus fréquents d'abord, chacun dans sa phrase et avec son audio. Les textes deviendront lisibles très vite.",
         step1Done ? "" : `<button class="btn small" data-act="learn-first" data-l="${lang}">Apprendre</button>`);
   return `
+    ${isZh(lang) && typeof pinyinTodayCard === "function" ? pinyinTodayCard() : ""}
     ${beginner ? "" : placementOffer(lang)}
     ${s.welcomeBack ? `<div class="card celebrate">${mochi("small")}<div><h3>Content de te revoir !</h3><p class="muted">On reprend en douceur : ${CATCHUP_FIRST} révisions aujourd'hui, le reste plus tard, réparti sur les prochains jours. Pas de nouvelles cartes en attendant.</p></div></div>` : ""}
     ${all ? `<div class="card celebrate">${mochi("small", w.thisWeek >= WEEK_GOAL ? "proud" : "happy")}<div><h3>Séance du jour bouclée</h3><p class="muted">${w.thisWeek}/${WEEK_GOAL} jours cette semaine. Tu peux continuer, mais l'essentiel est fait.</p></div></div>`

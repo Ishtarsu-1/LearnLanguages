@@ -81,6 +81,14 @@ const PRODUCTION = {
     { id: "p-ko-6", who: "À un inconnu", register: "haeyo", prompt: "Dis que le film était vraiment bien.", target: "영화|가 정말 재미있었어요=재미있다.", accept: ["영화가 재미있었어요.", "영화 정말 재미있었어요.", "영화가 진짜 재미있었어요."], words: ["영화", "재미있다", "정말"], why: "Le sujet prend 가 après une voyelle (영화가). Passé poli : -었어요." },
     { id: "p-ko-7", who: "À ta prof", register: "haeyo", prompt: "Dis que ta famille compte quatre personnes.", target: "우리 가족|은 네=넷 명|이에요=이다.", accept: ["저희 가족은 네 명이에요.", "가족은 네 명이에요."], words: ["가족", "넷", "명"], why: "On compte les personnes avec les nombres natifs + 명. 넷 devient 네 devant un compteur." },
   ],
+  zh: [
+    { id: "p-zh-1", who: "Au serveur", prompt: "Demande un thé, poliment.", target: "我 要 一 杯 茶， 谢谢。", accept: ["我要一杯茶。", "请给我一杯茶。", "我要茶，谢谢。"], words: ["要", "杯"], why: "我要… = « je voudrais… ». Entre le nombre et le nom, il faut un classificateur : 一杯茶 (une tasse de thé)." },
+    { id: "p-zh-2", prompt: "Dis que tu es étudiant(e).", target: "我 是 学生。", accept: ["我是学生"], words: ["是", "学生"], why: "是 relie deux noms : 我是学生. Pas de conjugaison en chinois : 是 ne change jamais." },
+    { id: "p-zh-3", prompt: "Dis que tu aimes le café.", target: "我 喜欢 咖啡。", accept: ["我很喜欢咖啡。", "我喜欢喝咖啡。"], words: ["喜欢", "咖啡"], why: "Sujet + verbe + objet, comme en français. 很 (très) se place devant le verbe : 我很喜欢咖啡." },
+    { id: "p-zh-4", prompt: "Demande combien ça coûte.", target: "多少 钱？", accept: ["这个多少钱？", "多少钱"], words: ["多少", "钱"], why: "多少钱 ? = « combien d'argent ? ». C'est LA question pour un prix." },
+    { id: "p-zh-5", prompt: "Dis que tu habites à Pékin.", target: "我 住 在 @北京。", accept: ["我住北京。", "我在北京住。"], words: ["住", "在"], why: "住在 + lieu = habiter à. Le lieu vient après 在." },
+    { id: "p-zh-6", prompt: "Demande à quelqu'un s'il aime le sport.", target: "你 喜欢 运动 吗？", accept: ["你喜欢运动吗", "你喜不喜欢运动？"], words: ["喜欢", "运动", "吗"], why: "Pour une question oui/non, on garde la phrase telle quelle et on ajoute 吗 à la fin." },
+  ],
 };
 
 // ---------- Faux amis (§7) ----------
@@ -138,6 +146,29 @@ const EAR = {
     notes: [
       { t: "Enchaînement (연음)", lines: [["한국어", "se prononce [한구거] : la consonne finale glisse sur la voyelle suivante"], ["음악", "se prononce [으막]"], ["옷이", "se prononce [오시]"]] },
       { t: "ㄹ entre deux voyelles / en finale", lines: [["사랑", "ㄹ entre voyelles : un r battu léger"], ["물", "ㄹ en finale : un l"]] },
+    ],
+  },
+  zh: {
+    pairs: [
+      { label: "1er / 4e ton", items: ["妈", "骂"] },
+      { label: "2e / 3e ton", items: ["麻", "马"] },
+      { label: "3e / 4e ton", items: ["买", "卖"] },
+      { label: "1er / 2e ton", items: ["汤", "糖"] },
+      { label: "1er / 2e ton", items: ["书", "熟"] },
+      { label: "3e / 4e ton", items: ["水", "睡"] },
+      { label: "2e / 4e ton", items: ["时", "是"] },
+      { label: "1er / 3e ton", items: ["八", "把"] },
+      { label: "4e / 2e ton", items: ["大", "答"] },
+      { label: "zh / z", items: ["知", "资"] },
+      { label: "sh / s", items: ["是", "四"] },
+      { label: "q / ch", items: ["去", "处"] },
+      { label: "x / sh", items: ["西", "师"] },
+      { label: "Aspirée / non aspirée", items: ["爸", "怕"] },
+      { label: "Aspirée / non aspirée", items: ["大", "他"] },
+    ],
+    notes: [
+      { t: "Changements de ton", lines: [["你好", "deux 3es tons à la suite : le premier devient un 2e ton (ní hǎo)"], ["不是", "不 (bù) devient bú devant un 4e ton : bú shì"], ["一起", "一 (yī) devient yì devant les tons 1, 2 et 3 : yìqǐ"]] },
+      { t: "Consonnes soufflées", lines: [["爸 / 怕", "b n'est pas un vrai « b » français : c'est un p sans souffle ; p est soufflé"], ["大 / 他", "même chose : d = t sans souffle, t = t soufflé"]] },
     ],
   },
 };
@@ -279,6 +310,7 @@ const REGISTERS = {
 const LEVEL_HOURS = {
   ko: { label: "Coréen", steps: [["B1", 800, "≈ 700–900 h"], ["Pro (FSI)", 2200, "≈ 2 200 h de cours"]] },
   en: { label: "Anglais", steps: [["B1", 375, "≈ 350–400 h guidées"], ["B2", 550, "≈ 500–600 h guidées"]] },
+  zh: { label: "Chinois", steps: [["HSK 3 (≈ B1)", 900, "≈ 800–1 000 h"], ["Pro (FSI)", 2200, "≈ 2 200 h de cours"]] },
 };
 
 // ---------- Phrases libres (production ouverte, corrigée par le LLM, §4) ----------
@@ -300,5 +332,12 @@ const FREE_PROMPTS = {
     { prompt: "Dis ce que tu aimes faire le week-end.", who: "À un·e inconnu·e", register: "haeyo" },
     { prompt: "Parle d'un membre de ta famille.", who: "À ta professeure", register: "haeyo" },
     { prompt: "Dis où tu habites.", who: "À un·e collègue", register: "haeyo" },
+  ],
+  zh: [
+    { prompt: "Présente-toi (prénom, nationalité, études ou métier)." },
+    { prompt: "Dis ce que tu as mangé aujourd'hui." },
+    { prompt: "Commande quelque chose au café." },
+    { prompt: "Dis ce que tu aimes faire le week-end." },
+    { prompt: "Parle d'un membre de ta famille." },
   ],
 };

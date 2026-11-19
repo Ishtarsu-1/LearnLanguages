@@ -154,7 +154,9 @@ function viewReader(lang, textId) {
     const cls = st.includes("new") ? "new" : st.includes("learning") ? "learning" : st.includes("cognate") ? "cognate" : "known";
     const sel = R.sel && R.sel.s === si && R.sel.w === wi && R.sel.g === gi ? "sel" : "";
     const pt = seg.particle ? particleFn(seg.surface) : null;
-    return `<span class="w ${cls} ${pt ? `pt pt-${pt[0]}` : ""} ${sel}" data-act="word" data-s="${si}" data-w="${wi}" data-g="${gi}"${pt ? ` title="${pt[1]}"` : ""} tabindex="0" role="button">${esc(seg.surface)}</span>`;
+    // Chinois : pinyin au-dessus de chaque mot (ruby), désactivable
+    const txt = isZh(lang) && state.settings.pinyin ? `<ruby>${esc(seg.surface)}<rt>${esc(zhLemmaPy(seg.lemmas))}</rt></ruby>` : esc(seg.surface);
+    return `<span class="w ${cls} ${pt ? `pt pt-${pt[0]}` : ""} ${sel}" data-act="word" data-s="${si}" data-w="${wi}" data-g="${gi}"${pt ? ` title="${pt[1]}"` : ""} tabindex="0" role="button">${txt}</span>`;
   };
 
   let panel = "";
@@ -165,7 +167,7 @@ function viewReader(lang, textId) {
     const st = seg.lemmas.map((l) => lemmaStatus(lang, l, stab));
     panel = `<div class="wordpanel card">
       <button class="close-x" data-act="unsel" aria-label="Fermer">✕</button>
-      <div class="wp-word ${koCls(lang)}">${esc(seg.surface)} ${seg.surface !== lemma ? `<small class="muted">← ${esc(lemma)}</small>` : ""}</div>
+      <div class="wp-word ${koCls(lang)}">${esc(seg.surface)} ${seg.surface !== lemma && !isZh(lang) ? `<small class="muted">← ${esc(lemma)}</small>` : ""}</div>
       <div class="wp-fr">${esc(lexFr(lang, lemma))}</div>
       ${seg.particle ? `<small class="muted">Particule : elle se colle au mot précédent.</small>` : ""}
       <div class="wp-actions">
@@ -197,6 +199,7 @@ function viewReader(lang, textId) {
       <button class="choice small-choice ${R.hide ? "active" : ""}" data-act="toggle-hide">${R.hide ? "🙈 Texte masqué" : "👀 Texte affiché"}</button>
       <button class="choice small-choice ${R.shadow ? "active" : ""}" data-act="toggle-shadow">🎙️ Shadowing</button>
       ${isKo(lang) ? `<button class="choice small-choice ${state.settings.particleColors ? "active" : ""}" data-act="toggle-particles">🎨 Particules</button>` : ""}
+      ${isZh(lang) ? `<button class="choice small-choice ${state.settings.pinyin ? "active" : ""}" data-act="toggle-pinyin" aria-pressed="${!!state.settings.pinyin}">拼 Pinyin</button>` : ""}
     </div>
     ${R.shadow ? `<div class="card tip">🎙️ <b>Shadowing</b> : appuie sur 🎙️, répète <b>en même temps</b> que la voix, puis réécoute les deux. Vise le <b>rythme et l'intonation</b>, pas la perfection de chaque son.</div>` : ""}
 
@@ -209,7 +212,7 @@ function viewReader(lang, textId) {
             ${R.shadow ? `<button data-act="shadow" data-s="${si}" title="S'enregistrer">🎙️</button>` : ""}
           </div>
           <div class="s-body">
-            <p class="s-text ${koCls(lang)}">${s.words.map((w, wi) => esc(w.pre) + w.segs.map((g, gi) => segHtml(g, si, wi, gi)).join("") + esc(w.post)).join(" ")}</p>
+            <p class="s-text ${koCls(lang)}">${s.words.map((w, wi) => esc(w.pre) + w.segs.map((g, gi) => segHtml(g, si, wi, gi)).join("") + esc(w.post)).join(s.words.sep ?? " ")}</p>
             ${R.fr[si] ? `<p class="s-fr">${esc(s.fr)}</p>` : ""}
             ${ui.recordings[`${textId}:${si}`] ? `<div class="rec-row"><button class="choice small-choice" data-act="play-s" data-s="${si}">▶ Modèle</button><button class="choice small-choice" data-act="play-rec" data-s="${si}">▶ Moi</button><button class="choice small-choice" data-act="play-both" data-s="${si}">▶ Les deux</button></div>` : ""}
           </div>
@@ -343,7 +346,7 @@ function viewReviewSession(lang) {
       <p class="q-sentence ${k}">${blank(c)}</p><p class="muted">${esc(c.contextFr)}</p>`;
     if (!R.revealed) input = `<input class="input answer ${k}" id="answer" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Ta réponse…" value="${esc(R.typed)}" />`;
     else {
-      const ok = (isKo(lang) ? normKo(R.typed) === normKo(c.surface) : normEn(R.typed) === normEn(c.surface));
+      const ok = norm(lang, R.typed) === norm(lang, c.surface);
       const r = recast(R.typed || "—", c.surface, lang);
       back = `<p class="a-word ${k}">${ok ? "✅ " : ""}${r.tHtml}</p>${ok ? "" : `<p class="muted">Ta réponse : <span class="${k}">${r.uHtml}</span></p>`}<p class="q-sentence ${k}">${marked(c)}</p><p class="muted"><small>${esc(c.fr)}</small></p>${sayCtx}`;
     }
@@ -417,7 +420,7 @@ function tabProduce(lang) {
       ${ex.who ? `<div class="who"><span class="tag">👤 ${esc(ex.who)}</span>${isKo(lang) ? `<span class="tag">Registre : poli en -요</span>` : ""}</div>` : ""}
       <h2 class="mt-10 mb-14 mx-0">${esc(ex.prompt)}</h2>
       ${P.mode === "free" && recent.length ? `<p class="muted mt-n6 mb-12 mx-0">Essaie de réutiliser un de tes mots récents 👇</p>` : ""}
-      <textarea id="prod-text" class="input ${k}" rows="${P.mode === "free" ? 3 : 2}" maxlength="500" placeholder="${isKo(lang) ? "한국어로 써 보세요…" : "Write in English…"}" ${r || P.loading ? "disabled" : ""}>${esc(P.text)}</textarea>
+      <textarea id="prod-text" class="input ${k}" rows="${P.mode === "free" ? 3 : 2}" maxlength="500" placeholder="${{ ko: "한국어로 써 보세요…", zh: "用中文写（汉字或拼音）…" }[lang] || "Write in English…"}" ${r || P.loading ? "disabled" : ""}>${esc(P.text)}</textarea>
       ${recent.length ? `<p class="muted mt-10 mb-0 mx-0"><small>Tes mots récents : ${recent.map((w) => `<span class="tag ${k}">${esc(w)}</span>`).join(" ")}</small></p>` : ""}
       ${r || P.loading ? "" : `<div class="wp-actions"><button class="btn" data-act="check-prod">Vérifier</button><button class="btn ghost small" data-act="next-ex">Autre phrase</button></div>`}
     </div>
@@ -476,7 +479,7 @@ async function checkProduction(lang, text) {
   }
   checkProductionLocal(lang, text);
 }
-const norm = (lang, s) => (isKo(lang) ? normKo : normEn)(s);
+const norm = (lang, s) => normFor(lang)(s);
 
 function checkProductionLocal(lang, text) {
   const P = ui.prod, ex = P.ex;
@@ -652,7 +655,7 @@ function answerQuiz(ok, picked) {
   const Q = ui.quiz, q = Q.qs[Q.queue[0]];
   Q.answer = { ok, picked };
   if (!ok) Q.failed.add(Q.queue[0]);
-  if (q.audio && (ok || q.build)) speak(q.audio, "ko");
+  if (q.audio && (ok || q.build)) speak(q.audio, q.audioLang || "ko");
 }
 function nextQuiz() {
   const Q = ui.quiz, i = Q.queue.shift();

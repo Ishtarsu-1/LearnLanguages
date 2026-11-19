@@ -79,7 +79,13 @@ function checkText(t, ctx = {}) {
   sentences.forEach(([src, fr], i) => {
     if (L.plainText(src, lang).trim() === fr.trim()) blocking.push(`Format : phrase ${i + 1} non traduite`);
     if (/[\u3040-\u30ff\u3400-\u9fff\uac00-\ud7af]/u.test(fr)) blocking.push(`Format : phrase ${i + 1}, caractères asiatiques dans la traduction française`);
-    if (/[\u3040-\u30ff\u3400-\u9fff]/u.test(src)) blocking.push(`Format : phrase ${i + 1}, caractères chinois ou japonais dans le texte`);
+    if (lang !== "zh" && /[\u3040-\u30ff\u3400-\u9fff]/u.test(src)) blocking.push(`Format : phrase ${i + 1}, caractères chinois ou japonais dans le texte`);
+    if (lang === "zh") {
+      if (/[\uac00-\ud7af\u3040-\u30ff]/u.test(src)) blocking.push(`Format : phrase ${i + 1}, caractères coréens ou japonais dans un texte chinois`);
+      // Pas de pinyin ni de lettres latines dans le texte : le pinyin vient du lexique (sauf noms propres et sigles)
+      const latin = L.segments(src, lang).filter((g) => !g.proper && /[A-Za-zāáǎàēéěèīíǐìōóǒòūúǔù]/.test(g.surface) && !LATIN_OK.has(g.surface.toUpperCase()));
+      if (latin.length) blocking.push(`Romanisation : phrase ${i + 1}, lettres latines dans le chinois (${latin.map((g) => g.surface).join(", ")})`);
+    }
   });
   // Coréen : registre et romanisation
   const unit = t.unit && plan.units.find((u) => u.unit === t.unit);
@@ -91,7 +97,8 @@ function checkText(t, ctx = {}) {
   }
   // Longueur
   const [minS, maxS, maxW] = LENGTH[t.level] || LENGTH.A1;
-  const words = sentences.reduce((n, [src]) => n + L.plainText(src, lang).split(/\s+/).filter(Boolean).length, 0);
+  // Longueur en mots : en chinois, les mots annotés (le texte affiché n'a pas d'espaces)
+  const words = sentences.reduce((n, [src]) => n + (lang === "zh" ? L.segments(src, lang).length : L.plainText(src, lang).split(/\s+/).filter(Boolean).length), 0);
   stats.sentences = sentences.length; stats.wordsPerSentence = +(words / sentences.length).toFixed(1);
   if (sentences.length < minS || sentences.length > maxS) warnings.push(`Longueur : ${sentences.length} phrases (niveau ${t.level} : ${minS} à ${maxS})`);
   if (words / sentences.length > maxW) warnings.push(`Longueur : ${stats.wordsPerSentence} mots par phrase en moyenne (niveau ${t.level} : ${maxW} au plus)`);

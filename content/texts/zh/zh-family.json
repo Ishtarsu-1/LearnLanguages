@@ -1,0 +1,23 @@
+{
+  "id": "zh-family",
+  "lang": "zh",
+  "level": "A1",
+  "order": 30,
+  "themes": ["rencontre"],
+  "grammar": [],
+  "title": "Ma famille",
+  "icon": "👨‍👩‍👧",
+  "kind": "Monologue",
+  "status": "published",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "sentences": [
+    ["我 家 有 四 口 人。", "Dans ma famille, nous sommes quatre."],
+    ["爸爸、 妈妈、 姐姐 和 我。", "Papa, maman, ma grande sœur et moi."],
+    ["我 爸爸 是 医生。", "Mon père est médecin."],
+    ["我 妈妈 是 老师。", "Ma mère est professeure."],
+    ["我 姐姐 今年 二十=二+十 岁。", "Ma grande sœur a vingt ans cette année."],
+    ["周末 我们 一起 吃饭。", "Le week-end, nous mangeons ensemble."]
+  ],
+  "speakers": null,
+  "review": { "by": "nathan", "at": "2026-11-19" }
+}

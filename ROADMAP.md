@@ -50,7 +50,7 @@
 | **P3** | Classements entre amis, badges | 🟢 | 🆓 | amis |
 | **P3** | Import de contenus perso (articles, sous-titres) | 🔴 | 🆓 | analyseur |
 | **P3** | Tandem FR ↔ KO / FR ↔ EN | 🔴 | 🆓 | amis, modération |
-| **P3** | Nouvelles langues | 🔴 | 🆓 | contenu |
+| **P3** | Nouvelles langues (🟢 chinois ouvert : pinyin & tons, 9 textes A1 ; reste : plus de contenu chinois, plan et listes HSK ; japonais, français, italien annoncés) | 🔴 | 🆓 | contenu |
 | **P3** | Espace prof / classe | 🔴 | 🆓 | comptes |
 | **P3** | Accessibilité et traduction de l'interface | 🟡 | 🆓 | charte graphique |
 
@@ -304,7 +304,8 @@ Sous chaque champ de saisie coréen, un bouton « ⌨️ 한글 » ouvre un clav
 - **Classements entre amis** (heures, mots solides), toujours basés sur des indicateurs honnêtes, et **badges** (premier texte lu, Hangul terminé, 100 mots solides, phase 2 franchie, première saveur débloquée).
 - **Import de contenus perso** : coller un article, des sous-titres (.srt) ou des paroles, puis calculer la couverture et capturer les mots. Les paroles et sous-titres restent privés (droits d'auteur) : jamais partagés entre utilisateurs. La lecture des sous-titres en parallèle de la vidéo serait le Graal pour l'anglais.
 - **Tandem** *(nouveau)* : mettre en relation un francophone qui apprend le coréen avec un Coréen qui apprend le français, pour échanger des corrections de phrases (pas de chat libre au début, pour limiter la modération). Ça répond au besoin de pratique avec des humains, surtout pour les niveaux de langue coréens.
-- **Nouvelles langues** : chinois, français, japonais, italien sont **annoncés sur l'accueil** (cartes « 🔒 Bientôt », non cliquables, liste `COMING_SOON` dans `state.js`). Japonais : même logique d'alphabet d'abord que le Hangul (kana). Pour en ouvrir une : la passer de `COMING_SOON` à `LANGUAGES` avec son contenu. Le code est déjà prévu pour (`LANGUAGES`, `LEXICON`, `TEXTS`).
+- **Chinois** ✅ ouvert (novembre 2026) : module « Pinyin & tons » (`pinyin.js`), pinyin au-dessus des caractères, réponses en caractères ou en pinyin (`zh.js`), 9 textes A1, lexique avec pinyin, segmentation par le lexique dans `tools/annotate.js`, voix mandarin de Kokoro. Reste : liste de fréquence HSK et plan pour `content:gen`, livres et histoire, test de niveau.
+- **Nouvelles langues** : français, japonais, italien sont **annoncés sur l'accueil** (cartes « 🔒 Bientôt », non cliquables, liste `COMING_SOON` dans `state.js`). Japonais : même logique d'alphabet d'abord que le Hangul (kana). Pour en ouvrir une : la passer de `COMING_SOON` à `LANGUAGES` avec son contenu. Le code est déjà prévu pour (`LANGUAGES`, `LEXICON`, `TEXTS`).
 - **Espace prof / classe** : un prof crée une classe, assigne des textes et suit la progression.
 - **Accessibilité** : navigation au clavier complète, lecteurs d'écran, contraste (déjà calculé dans la charte), taille de texte réglable, police adaptée en option.
 - **Interface en plusieurs langues** (aujourd'hui seulement en français).

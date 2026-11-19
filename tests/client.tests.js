@@ -1,7 +1,7 @@
 let fails = 0;
 const ok = (c, m) => { if (!c) { fails++; console.log("FAIL", m); } };
 // 1. Tous les lemmes des textes / exercices / exemples sont dans le lexique
-for (const lang of ["en", "ko"]) {
+for (const lang of Object.keys(LANGUAGES)) {
   const srcs = [...TEXTS[lang].flatMap((t) => t.sentences.map((s) => s[0])), ...PRODUCTION[lang].map((p) => p.target), ...(lang === "ko" ? KO_GRAMMAR.flatMap((g) => g.examples) : [])];
   for (const s of srcs) for (const w of parseSentence(s, lang)) for (const g of w.segs) for (const l of g.lemmas) ok(LEXICON[lang][l], `${lang}: lemme manquant « ${l} » dans « ${s} »`);
   for (const p of PRODUCTION[lang]) for (const w of p.words) ok(LEXICON[lang][w], `${lang}: mot d'exercice inconnu ${w}`);
@@ -16,6 +16,25 @@ const sp = splitAround(s1.words, 1, 1);
 ok(sp.before === "저는 커피" && sp.after === " 좋아해요.", "splitAround " + JSON.stringify(sp));
 const s2 = toSentence("No, that's=that+be all.", "en");
 ok(s2.text === "No, that's all." && s2.words[1].segs[0].lemmas.join() === "that,be", "en contraction " + s2.text);
+// 2 bis. Chinois : pas d'espaces à l'affichage, pinyin, réponses en caractères ou en pinyin
+{
+  const z = toSentence("你好！ 我 要 一 杯 咖啡。", "zh");
+  ok(z.text === "你好！我要一杯咖啡。", "chinois sans espaces : " + z.text);
+  const zs = splitAround(z.words, 5, 0); ok(zs.before === "你好！我要一杯" && zs.after === "。", "splitAround chinois " + JSON.stringify(zs));
+  ok(zhPinyin("我要一杯咖啡。") === "wǒ yào yī bēi kāfēi。", "pinyin : " + zhPinyin("我要一杯咖啡。"));
+  for (const typed of ["我要一杯咖啡", "wo yao yi bei kafei", "wǒ yào yī bēi kāfēi", "wo3 yao4 yi1 bei1 ka1fei1", "Wo yao yibei kafei."]) ok(norm("zh", typed) === norm("zh", "我 要 一 杯 咖啡。".replace(/ /g, "")), "réponse acceptée : " + typed);
+  ok(norm("zh", "wo yao yi bei cha") !== norm("zh", "我要一杯咖啡"), "mauvaise réponse refusée");
+  ok(lexFr("zh", "咖啡") === "kāfēi · café", "traduction avec pinyin : " + lexFr("zh", "咖啡"));
+  ok(recast("wo yao kafei", "我要一杯咖啡。", "zh").tHtml.includes("kāfēi"), "recast en pinyin");
+  for (let d = 1; d <= PINYIN_DAYS.length; d++) for (const q of pinyinQuestions(d)) ok(q.options.includes(q.answer) && new Set(q.options).size === q.options.length && q.audioLang === "zh", `pinyin séance ${d} : options ${q.options}`);
+  ok(toneOf("mā") === 1 && toneOf("má") === 2 && toneOf("mǎ") === 3 && toneOf("mà") === 4 && toneOf("ma") === 5 && toneOf("nǚ") === 3, "tons");
+  location.hash = "#/lang/zh/lire/zh-cafe"; route();
+  const v = viewReader("zh", "zh-cafe");
+  ok(v.includes("<ruby>咖啡<rt>kāfēi</rt></ruby>") && v.includes('data-act="toggle-pinyin"') && !v.includes("Particules"), "lecteur : pinyin au-dessus des mots, bouton Pinyin");
+  state.settings.pinyin = false; ok(!viewReader("zh", "zh-cafe").includes("<ruby>"), "pinyin masquable"); state.settings.pinyin = true;
+  ok(!placementPending("zh") && !practiceTools("zh").some(([k]) => k === "niveau" || k === "fauxamis") && practiceTools("zh").some(([k]) => k === "pinyin"), "outils du chinois : pinyin, sans test de niveau ni faux amis");
+  ok(tabToday("zh").includes("Pinyin & tons"), "Aujourd'hui : les tons d'abord");
+}
 // 3. Hangul
 ok(composeHangul("ㄴ", "ㅏ") === "나" && decomposeHangul("져").join("") === "ㅈㅕ", "compose");
 for (let d = 1; d <= HANGUL_DAYS.length; d++) { const qs = hangulQuestions(d); ok(qs.length > 0, "hangul q " + d); for (const q of qs) if (q.type) ok(q.target && q.fr, "écriture " + d); else if (!q.build) ok(q.options.includes(q.answer) && new Set(q.options).size === q.options.length, `hangul day ${d} options ${q.options}`); else ok(q.leads.includes(q.target_l) && q.vowels.includes(q.target_v), "build opts"); }
@@ -33,7 +52,8 @@ ok(iss.register.length === 1 && !iss.register[0].ok && iss.particles.length === 
 iss = koChecks(ex, "저는 커피를 좋아합니다", parseSentence(ex.target, "ko")); ok(iss.register[0]?.ok, "합니다 soft");
 // 6. Rendu de toutes les routes + flux
 const routes = ["", "#/pourquoi", "#/profil", "#/learn", "#/nope"];
-for (const lang of ["en", "ko"]) for (const [t] of TABS[lang]) routes.push(`#/lang/${lang}/${t}`);
+for (const lang of Object.keys(LANGUAGES)) for (const [t] of TABS[lang]) routes.push(`#/lang/${lang}/${t}`);
+routes.push("#/lang/zh/pinyin/1", "#/lang/zh/pinyin/6", "#/lang/zh/lire/zh-cafe", "#/lang/zh/pratique", "#/lang/zh/histoire");
 const render1 = (h) => { location.hash = h; try { route(); } catch (e) { fails++; console.log("FAIL route", h, e.stack.split("\n").slice(0, 3).join(" | ")); } };
 routes.forEach(render1);
 // Flux anglais : lire → capturer → réviser → produire
@@ -206,7 +226,7 @@ ok(state.history[today()] && state.history[today()].en.rev > 0 && state.history[
 ok(activityCard().split('class="hm l').length - 1 >= 113, "heatmap cellules");
 console.log(fails ? `${fails} échec(s) (comptes)` : "OK : rendu comptes");
 // --- Exercices ---
-for (const lang of ["en", "ko"]) {
+for (const lang of Object.keys(LANGUAGES)) {
   state.langs.ko.hangulDone = true;
   for (const asked of [...Object.keys(EX_KINDS).filter((k) => EX_KINDS[k].langs.includes(lang)), "melange", "melange", "melange"]) {
     newExercise(lang, asked);
@@ -327,7 +347,7 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
   ui.admin = null; account = a; K.hangulDone = hd; K.hangulDays = days; K.grammarDone = gd;
 }
 { // Thèmes de situation et saveurs
-  for (const lang of ["en", "ko"]) {
+  for (const lang of Object.keys(LANGUAGES)) {
     const W = themeWords(lang);
     for (const th of THEMES) ok(W[th.id].length >= 8, `${lang}: thème ${th.id} trop pauvre (${W[th.id].length} mots)`);
     ok(!Object.values(W).flat().some((l) => KO_PARTICLES.has(l)), `${lang}: pas de particule dans les thèmes`);
@@ -565,8 +585,9 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
 }
 { // Langues en préparation : montrées, pas accessibles
   const h = viewHome();
-  for (const n of ["Chinois", "Français", "Japonais", "Italien"]) ok(h.includes(`data-name="${n}"`) && h.includes(`${n} : bientôt disponible`), `${n} affiché, verrouillé`);
-  ok(!h.includes('href="#/lang/zh') && !LANGUAGES.zh && !LANGUAGES.ja, "aucun lien, pas une vraie langue");
+  for (const n of ["Français", "Japonais", "Italien"]) ok(h.includes(`data-name="${n}"`) && h.includes(`${n} : bientôt disponible`), `${n} affiché, verrouillé`);
+  ok(!h.includes('href="#/lang/ja') && !LANGUAGES.ja, "aucun lien, pas une vraie langue");
+  ok(LANGUAGES.zh && !h.includes('data-name="Chinois"') && !h.includes("Chinois : bientôt"), "le chinois n'est plus « bientôt » : c'est une vraie langue");
   let msg = ""; const t0 = toast; toast = (m) => (msg = m);
   actions["lang-soon"]({ dataset: { name: "Japonais" } }); ok(/Japonais.*préparation/.test(msg), "clic : message « bientôt »");
   toast = t0;

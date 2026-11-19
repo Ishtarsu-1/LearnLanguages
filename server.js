@@ -599,13 +599,13 @@ async function api(req, res, url) {
     if (wait) return tooMany(res, wait);
     recordAttempt(`avis:${ip}`);
     const who = currentSession(req)?.user || null;
-    const page = typeof b.page === "string" ? b.page.slice(0, 200) : null, lang = ["en", "ko"].includes(b.lang) ? b.lang : null;
+    const page = typeof b.page === "string" ? b.page.slice(0, 200) : null, lang = ["en", "ko", "zh"].includes(b.lang) ? b.lang : null;
     const ua = String(req.headers["user-agent"] || "").slice(0, 300), at = now();
     const id = Number(db.prepare("INSERT INTO site_feedback (created_at, user_id, kind, rating, message, page, lang, contact, user_agent, parts) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
       .run(at, who?.id ?? null, kind, rating, message, page, lang, contact, ua, JSON.stringify(parts)).lastInsertRowid);
     const to = process.env.FEEDBACK_TO;
     if (to) {
-      const m = mailer.feedbackMail({ id, parts, rating, page, lang: lang && { en: "anglais", ko: "coréen" }[lang], contact, userAgent: ua, name: who?.name, email: who?.email,
+      const m = mailer.feedbackMail({ id, parts, rating, page, lang: lang && { en: "anglais", ko: "coréen", zh: "chinois" }[lang], contact, userAgent: ua, name: who?.name, email: who?.email,
         date: new Date(at).toLocaleString("fr-FR", { dateStyle: "full", timeStyle: "short", timeZone: "Europe/Paris" }) });
       mail.send({ to, ...m, replyTo: contact || who?.email || undefined })
         .then(() => db.prepare("UPDATE site_feedback SET mailed_at = ? WHERE id = ?").run(now(), id))
@@ -655,7 +655,7 @@ async function api(req, res, url) {
     if (!LLM_ON) return fail(res, 503, "Correcteur désactivé.");
     const b = await readJson(req);
     const str = (v, max) => typeof v === "string" && v.length <= max;
-    if (!["en", "ko"].includes(b.lang) || !str(b.prompt, 300) || !str(b.text, 500) || !b.text.trim()
+    if (!["en", "ko", "zh"].includes(b.lang) || !str(b.prompt, 300) || !str(b.text, 500) || !b.text.trim()
       || (b.who != null && !str(b.who, 80)) || (b.register != null && !str(b.register, 30)) || (b.reference != null && !str(b.reference, 300))) {
       return fail(res, 400, "Requête invalide.");
     }
@@ -876,6 +876,7 @@ const STATIC = {
   "/app.js": ["app.js", "text/javascript; charset=utf-8"],
   "/content.data.js": ["content.data.js", "text/javascript; charset=utf-8"],
   "/content.js": ["content.js", "text/javascript; charset=utf-8"],
+  "/zh.js": ["zh.js", "text/javascript; charset=utf-8"],
   "/exercises.js": ["exercises.js", "text/javascript; charset=utf-8"],
   "/placement.js": ["placement.js", "text/javascript; charset=utf-8"],
   "/library.js": ["library.js", "text/javascript; charset=utf-8"],
@@ -883,6 +884,7 @@ const STATIC = {
   "/story.js": ["story.js", "text/javascript; charset=utf-8"],
   "/keyboard.js": ["keyboard.js", "text/javascript; charset=utf-8"],
   "/hangul.js": ["hangul.js", "text/javascript; charset=utf-8"],
+  "/pinyin.js": ["pinyin.js", "text/javascript; charset=utf-8"],
   "/cosmetics.js": ["cosmetics.js", "text/javascript; charset=utf-8"],
   "/tour.js": ["tour.js", "text/javascript; charset=utf-8"],
   "/legal.js": ["legal.js", "text/javascript; charset=utf-8"],

@@ -155,7 +155,7 @@ function browserSpeak(text, lang, speed, who) {
     if (v) u.voice = v;
     else if (!warnedMute[lang]) {
       warnedMute[lang] = true;
-      toast(`Aucune voix ${lang === "ko" ? "coréenne" : "anglaise"} sur cet appareil : voir Profil › Audio`);
+      toast(`Aucune voix ${{ ko: "coréenne", zh: "chinoise" }[lang] || "anglaise"} sur cet appareil : voir Profil › Audio`);
     }
     if (who) u.pitch = who.pitch;
     u.rate = 0.9 * speed * (who ? who.rate : 1);

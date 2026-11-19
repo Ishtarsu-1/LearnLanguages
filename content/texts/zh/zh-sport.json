@@ -1,0 +1,23 @@
+{
+  "id": "zh-sport",
+  "lang": "zh",
+  "level": "A1",
+  "order": 60,
+  "themes": ["sport"],
+  "grammar": [],
+  "title": "Le sport",
+  "icon": "🏃",
+  "kind": "Monologue",
+  "status": "published",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "sentences": [
+    ["我 每天 早上 跑步。", "Je cours tous les matins."],
+    ["周末 我 和 朋友 踢 足球。", "Le week-end, je joue au foot avec des amis."],
+    ["踢 足球 很 累， 但是 很 有意思。", "Le foot, c'est fatigant, mais c'est très sympa."],
+    ["运动 以后， 我 喝 很 多 水。", "Après le sport, je bois beaucoup d'eau."],
+    ["身体 健康 最 重要！", "La santé, c'est le plus important !"],
+    ["你 也 喜欢 运动 吗？", "Et toi, tu aimes le sport aussi ?"]
+  ],
+  "speakers": null,
+  "review": { "by": "nathan", "at": "2026-11-19" }
+}

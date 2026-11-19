@@ -1,0 +1,23 @@
+{
+  "id": "zh-series",
+  "lang": "zh",
+  "level": "A1",
+  "order": 90,
+  "themes": ["series"],
+  "grammar": [],
+  "title": "Une série chinoise",
+  "icon": "📺",
+  "kind": "Monologue",
+  "status": "published",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0" },
+  "sentences": [
+    ["最近 我 在 看 一 个 中国 电视剧。", "En ce moment, je regarde une série chinoise."],
+    ["女主角 非常 漂亮。", "L'héroïne est très belle."],
+    ["故事 有点儿 难过。", "L'histoire est un peu triste."],
+    ["我 看 的 时候 哭 了。", "J'ai pleuré en la regardant."],
+    ["我 用 中文 字幕 看。", "Je la regarde avec les sous-titres en chinois."],
+    ["看 电视剧 学 中文 很 有意思！", "Apprendre le chinois avec les séries, c'est génial !"]
+  ],
+  "speakers": null,
+  "review": { "by": "nathan", "at": "2026-11-19" }
+}

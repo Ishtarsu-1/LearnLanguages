@@ -15,7 +15,7 @@ const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
   const before = L.readJSON(path.join(__dirname, "fixtures", "content-v0.json"));
   const site = loadSite();
   const now = plain(site.run("({ LEXICON, SEMANTIC_GROUPS, CONFUSABLE, BOOKS, STORIES, TEXTS: Object.fromEntries(Object.entries(TEXTS).map(([l, ts]) => [l, ts.map(({ parsed, ...t }) => t)])) })"));
-  for (const lang of L.LANGS) {
+  for (const lang of ["en", "ko"]) { // langues présentes avant la migration (lot C1)
     // Textes : mêmes identifiants (dans le même ordre), mêmes phrases, mêmes métadonnées d'affichage
     ok(same(now.TEXTS[lang].map((t) => t.id), before.texts[lang].map((t) => t.id)), `${lang} : mêmes textes, même ordre`);
     for (const old of before.texts[lang]) {
@@ -68,7 +68,7 @@ const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 // ---------- C3 : plan, fréquences, anti-interférence ----------
 {
   const P = require("../tools/plan-lib.js"), { suggest, groupOf } = require("../tools/plan-suggest.js");
-  for (const lang of L.LANGS) {
+  for (const lang of ["en", "ko"]) { // langues avec liste de fréquence et plan (chinois : à venir)
     const freq = L.loadFreq(lang), plan = L.loadPlan(lang);
     ok(freq.length > 3000 && freq.every((f, i) => f.rank === i + 1), `${lang} : liste de fréquence chargée et ordonnée (${freq.length})`);
     ok(plan.units.length >= 10 && plan.units.some((u) => u.legacy), `${lang} : plan avec socle et unités`);
@@ -187,6 +187,11 @@ const c6 = (async () => {
     ok(live.lemmaRate >= 0.95 && live.particleRate === 1, `annotation coréenne (Kiwi en direct) : ${(live.lemmaRate * 100).toFixed(1)} % / particules ${(live.particleRate * 100).toFixed(1)} %`);
     if (live.gaps.length) console.log(A.evalReport("ko", live));
   } else console.log("  (Kiwi non joignable : test en direct ignoré)");
+  // Chinois : segmentation par le lexique
+  const zh = await A.evaluate("zh");
+  ok(zh.lemmaRate >= 0.95, `annotation chinoise : ${(zh.lemmaRate * 100).toFixed(1)} % des lemmes (≥ 95 %)`);
+  if (zh.gaps.length) console.log(A.evalReport("zh", zh));
+  ok((await A.annotate(["我在北京喝茶，很好喝。"], "zh"))[0] === "我 在 @北京 喝 茶， 很 好 喝。", "chinois : mots, ponctuation, nom propre connu");
   // Cas particuliers
   const ctx = { lexicon: { "go": { fr: "" }, "cat": { fr: "" } }, freq: [] };
   const [s1] = await A.annotate(["Let's go! I don't know, it's Tom's cat."], "en", ctx);

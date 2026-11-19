@@ -11,7 +11,7 @@
 const L = require("./content-lib.js");
 
 const KIWI_URL = () => (process.env.KIWI_URL || "http://127.0.0.1:8882").replace(/\/+$/, "");
-const PUNCT_RE = /^([«"“(¿¡]*)(.*?)([.,!?…:;»"”)]*)$/;
+const PUNCT_RE = /^([«"“(¿¡「『（]*)(.*?)([.,!?…:;»"”)。，！？、：；」』）]*)$/u; // ponctuation latine et chinoise
 
 // ---------- Contexte : lexique, fréquences, noms propres connus ----------
 function context(lang, { lexicon, freq, proper } = {}) {
@@ -196,11 +196,33 @@ async function annotateKo(sentence, ctx, opts = {}) {
   return sentence.split(" ").map((w) => { const start = sentence.indexOf(w, pos); pos = start + w.length; return w ? annotateKoWord(w, start, tokens, ctx) : w; }).join(" ");
 }
 
+// ============================================================
+//  Chinois : segmentation par le lexique (le mot connu le plus long d'abord, 4 caractères au plus).
+//  Pas de flexion : le lemme est le mot lui-même. Mots séparés par des espaces dans la source
+//  (affichés sans espaces). Noms propres connus → @. Caractère inconnu : laissé seul (à relire).
+// ============================================================
+const ZH_PUNCT = /[，。！？、：；「」『』（）,.!?:;"“”]/u;
+function annotateZh(sentence, ctx) {
+  const str = sentence.replace(/\s+/g, ""), chars = [...str], out = [];
+  const known = (w) => ctx.lexicon[w] || ctx.known.has(w);
+  for (let i = 0; i < chars.length;) {
+    if (ZH_PUNCT.test(chars[i])) { if (out.length) out[out.length - 1] += chars[i]; else out.push(chars[i]); i++; continue; }
+    let w = null;
+    for (const p of ctx.proper) if (p && str.startsWith(p, chars.slice(0, i).join("").length) && (!w || [...p].length > [...w].length)) w = p;
+    if (w) { out.push(`@${w}`); i += [...w].length; continue; }
+    for (let n = Math.min(4, chars.length - i); n >= 1 && !w; n--) { const c = chars.slice(i, i + n).join(""); if (known(c)) w = c; }
+    w ||= chars[i];
+    out.push(w); i += [...w].length;
+  }
+  return out.join(" ");
+}
+
 // ---------- API ----------
 // Annote une liste de phrases brutes. opts : { lexicon, freq, proper, analyze (bouchon Kiwi) }
 async function annotate(sentences, lang, opts = {}) {
   const ctx = context(lang, opts);
   if (lang === "en") return sentences.map((s) => annotateEn(s.trim(), ctx));
+  if (lang === "zh") return sentences.map((s) => annotateZh(s.trim(), ctx));
   const out = [];
   for (const s of sentences) out.push(await annotateKo(s.trim().replace(/\s+/g, " "), ctx, opts));
   return out;
@@ -224,7 +246,7 @@ async function evaluate(lang, { texts, ...opts } = {}) {
   const r = { lemmas: { tot: 0, hit: 0 }, particles: { tot: 0, hit: 0 }, gaps: [] };
   for (const t of texts) for (const [src] of t.sentences) {
     const raw = L.plainText(src, lang);
-    const auto = lang === "en" ? annotateEn(raw, ctx) : await annotateKo(raw, ctx, opts);
+    const auto = lang === "en" ? annotateEn(raw, ctx) : lang === "zh" ? annotateZh(raw, ctx) : await annotateKo(raw, ctx, opts);
     const c = compare(src, auto, lang);
     for (const k of ["lemmas", "particles"]) { r[k].tot += c[k].tot; r[k].hit += c[k].hit; }
     if (c.lemmas.miss.length || c.particles.miss.length) r.gaps.push({ id: t.id, manual: src, auto, missing: [...c.lemmas.miss, ...c.particles.miss.map((p) => `particule ${p}`)] });
@@ -255,4 +277,4 @@ if (require.main === module) {
     for (const s of await annotate(sentences, lang)) console.log(s);
   })().catch((e) => { console.error(e.message); process.exit(1); });
 }
-module.exports = { annotate, annotateEn, annotateKo, enLemma, context, kiwiAnalyze, kiwiHealth, evaluate, evalReport, compare, KIWI_URL };
+module.exports = { annotate, annotateEn, annotateKo, annotateZh, enLemma, context, kiwiAnalyze, kiwiHealth, evaluate, evalReport, compare, KIWI_URL };

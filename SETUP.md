@@ -227,6 +227,9 @@ TTS_VOICES_EN=af_heart,af_bella,am_michael,am_fenrir,bf_emma,bm_george
 TTS_URL_KO=http://127.0.0.1:8881/v1
 TTS_VOICES_KO=KR
 TTS_MODEL_KO=melotts
+# Chinois : Kokoro a aussi des voix mandarin, dans le même conteneur que l'anglais
+TTS_URL_ZH=http://127.0.0.1:8880/v1
+TTS_VOICES_ZH=zf_xiaobei,zf_xiaoxiao,zm_yunxi,zm_yunjian
 ```
 
 Relance `npm start`. La ligne de démarrage affiche `voix : en ×4, ko ×1`, et le Profil › Audio indique « 🎙️ Voix neuronales du serveur ». Si le moteur ne répond pas, Mochi repasse automatiquement sur la voix du navigateur.
@@ -486,7 +489,7 @@ Le chemin côté serveur est `DATA_DIR/tts` (`./data/tts` par défaut). Ensuite,
 | `MOCHI_LLM_GLOBAL_DAILY` | `500` | Appels à l'IA max par jour pour tout le site ; au-delà, correcteur hors ligne |
 | `MOCHI_LLM` | activé | Mettre `off` pour couper le correcteur IA |
 | `TTS_URL`, `TTS_URL_EN`, `TTS_URL_KO` | — | Moteur de voix (section 6 ter) ; sans valeur, voix du navigateur |
-| `TTS_VOICES_EN`, `TTS_VOICES_KO` | — | Voix proposées, séparées par des virgules |
+| `TTS_VOICES_EN`, `TTS_VOICES_KO`, `TTS_VOICES_ZH` | — | Voix proposées, séparées par des virgules (chinois : voix `zf_…` / `zm_…` de Kokoro) |
 | `TTS_MODEL`, `TTS_MODEL_EN`, `TTS_MODEL_KO` | `kokoro` | Champ `model` envoyé au moteur |
 | `TTS_TIMEOUT_MS` | `15000` | Délai maximum d'une génération (une fois lancée) |
 | `RESEND_API_KEY` | — | Envoi réel des e-mails (section 6 quater) ; sans clé, ils s'affichent dans le terminal |

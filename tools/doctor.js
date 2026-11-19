@@ -35,7 +35,7 @@ const OS = { win32: "Windows", linux: "Linux", darwin: "macOS" };
     ["Docker", !r.docker.installed ? "❌ non installé" : !r.docker.running ? "⚠️ installé mais arrêté" : `✅ démarré${r.docker.nvidia ? " · carte graphique accessible" : ""}${r.docker.kokoroImage ? ` · Kokoro : ${r.docker.kokoroImage}` : ""}`],
     ["Python 3.10 / uv", `${r.python.py310 ? `✅ ${r.python.py310}` : "Python 3.10 : —"} · ${r.python.uv ? `✅ ${r.python.uv}` : "uv : ❌"}`],
     ["Ollama", r.ollama.up ? `✅ ${r.ollama.url} · ${r.ollama.models.length ? r.ollama.models.join(", ") : "aucun modèle"}${r.ollama.loaded.length ? ` · chargé : ${r.ollama.loaded.map((m) => `${m.name} (${m.gpuShare} % GPU)`).join(", ")}` : ""}` : `❌ ne répond pas sur ${r.ollama.url}`],
-    ...["en", "ko"].map((l) => [`Voix ${l === "en" ? "anglaises (Kokoro)" : "coréennes (MeloTTS)"}`, !r.voices[l].configured ? "— non configurées (voix du navigateur)" : r.voices[l].up ? `✅ ${r.voices[l].base} · une phrase courte en ${secs(r.voices[l].ms)}` : `❌ ${r.voices[l].base} ne répond pas (${r.voices[l].error})`]),
+    ...["en", "ko", "zh"].map((l) => [`Voix ${{ en: "anglaises (Kokoro)", ko: "coréennes (MeloTTS)", zh: "chinoises (Kokoro)" }[l]}`, !r.voices[l].configured ? "— non configurées (voix du navigateur)" : r.voices[l].up ? `✅ ${r.voices[l].base} · une phrase courte en ${secs(r.voices[l].ms)}` : `❌ ${r.voices[l].base} ne répond pas (${r.voices[l].error})`]),
     ["Analyseur coréen (Kiwi)", r.nlp.kiwiUp ? `✅ ${r.nlp.kiwiUrl} (production de contenu)` : `— ne répond pas sur ${r.nlp.kiwiUrl} (seulement utile pour produire du contenu coréen)`],
     ["Clé Anthropic", r.anthropicKey ? "✅ présente" : "— absente"],
   ];

@@ -84,7 +84,7 @@ async function detect({ execFileImpl, fetchImpl = fetch, env = process.env, ...b
   };
   // Moteurs de voix : une phrase courte, chronométrée
   r.voices = {};
-  for (const [lang, text] of [["en", "Hello there."], ["ko", "안녕하세요."]]) {
+  for (const [lang, text] of [["en", "Hello there."], ["ko", "안녕하세요."], ["zh", "你好。"]]) {
     const U = lang.toUpperCase(), base = (env[`TTS_URL_${U}`] || env.TTS_URL || "").replace(/\/+$/, "");
     const voice = String(env[`TTS_VOICES_${U}`] || "").split(",")[0]?.trim();
     if (!base || !voice) { r.voices[lang] = { configured: false }; continue; }
@@ -105,7 +105,7 @@ async function detect({ execFileImpl, fetchImpl = fetch, env = process.env, ...b
   const nlpVenv = env.NLP_VENV || path.join(os.homedir(), "mochi-nlp");
   r.nlp = { kiwiUrl, kiwiUp: !!(kh.ok && kh.data?.ok), venv: fs.existsSync(path.join(nlpVenv, platform === "win32" ? "Scripts" : "bin")) ? nlpVenv : null };
   r.anthropicKey = !!env.ANTHROPIC_API_KEY; // jamais la valeur
-  r.urls = Object.fromEntries(["TTS_URL", "TTS_URL_EN", "TTS_URL_KO", "OLLAMA_URL"].filter((k) => env[k]).map((k) => [k, env[k]]));
+  r.urls = Object.fromEntries(["TTS_URL", "TTS_URL_EN", "TTS_URL_KO", "TTS_URL_ZH", "OLLAMA_URL"].filter((k) => env[k]).map((k) => [k, env[k]]));
   return r;
 }
 
@@ -128,6 +128,7 @@ function chooseProfile(r) {
 }
 
 const VOICES_EN = "af_heart,af_bella,am_michael,am_fenrir,bf_emma,bm_george";
+const VOICES_ZH = "zf_xiaobei,zf_xiaoxiao,zm_yunxi,zm_yunjian"; // voix mandarin de Kokoro (même conteneur que l'anglais)
 const MODEL_BY_PROFILE = { "gpu-large": "qwen2.5:14b-instruct", "gpu-small": "qwen2.5:7b-instruct", apple: "qwen2.5:7b-instruct", cpu: "qwen2.5:7b-instruct" };
 
 // Variables à écrire, commandes à copier (adaptées au système), avertissements
@@ -135,7 +136,7 @@ function recommend(r, profile = chooseProfile(r)) {
   const win = r.system.platform === "win32", gpu = profile.startsWith("gpu"), ram = r.ram.total / GB;
   const env = {}, commands = [], warnings = [], notes = [];
   const voicesOn = profile !== "light";
-  if (voicesOn) Object.assign(env, { TTS_URL_EN: "http://127.0.0.1:8880/v1", TTS_VOICES_EN: VOICES_EN, TTS_URL_KO: "http://127.0.0.1:8881/v1", TTS_VOICES_KO: "KR", TTS_MODEL_KO: "melotts" });
+  if (voicesOn) Object.assign(env, { TTS_URL_EN: "http://127.0.0.1:8880/v1", TTS_VOICES_EN: VOICES_EN, TTS_URL_KO: "http://127.0.0.1:8881/v1", TTS_VOICES_KO: "KR", TTS_MODEL_KO: "melotts", TTS_URL_ZH: "http://127.0.0.1:8880/v1", TTS_VOICES_ZH: VOICES_ZH });
   // Correcteur IA
   const model = MODEL_BY_PROFILE[profile];
   if (gpu || profile === "apple") Object.assign(env, { MOCHI_LLM_PROVIDER: "ollama", MOCHI_MODEL: model, OLLAMA_URL: "http://127.0.0.1:11434" });

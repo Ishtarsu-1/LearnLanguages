@@ -29,7 +29,7 @@ const costOf = (usage) => {
 let client = null;
 const getClient = () => (client ||= new Anthropic({ timeout: 60_000, maxRetries: 2 }));
 
-const LANG_NAMES = { en: "English", ko: "Korean" };
+const LANG_NAMES = { en: "English", ko: "Korean", zh: "Mandarin Chinese (simplified characters)" };
 
 const FeedbackSchema = z.object({
   verdict: z.enum(["correct", "acceptable", "errors"]),
@@ -46,7 +46,7 @@ const FeedbackSchema = z.object({
 });
 
 // Prompt système figé (préfixe stable pour le cache)
-const SYSTEM = `You are the writing tutor of Mochi, a language-learning site for French speakers learning English or Korean.
+const SYSTEM = `You are the writing tutor of Mochi, a language-learning site for French speakers learning English, Korean or Mandarin Chinese.
 The learner wrote one short sentence for an exercise. Give corrective feedback the way research on second-language acquisition recommends: a recast.
 
 How to correct:
@@ -57,6 +57,7 @@ How to correct:
   - "vocabulaire": wrong or unnatural word choice.
   - "registre": the politeness level does not fit the person the learner is talking to. For Korean this is crucial: check the sentence ending (-요 for polite 해요체, -ㅂ니다 for formal, plain endings for 반말) against the interlocutor given in the exercise. Formal 합니다체 where polite 해요체 is expected is acceptable, not an error. For English, flag only clear mismatches (very rude or very stiff wording).
   - "orthographe": spelling, spacing (띄어쓰기), capitalization or punctuation that matters.
+- Chinese: the learner may write in characters OR in pinyin (with or without tone marks) because they may not have a Chinese keyboard. Pinyin is acceptable input, never an error in itself: correct the Chinese, and give "recast" in simplified characters. Check word order, measure words (个, 杯, 口…), 了/的/吗 and the choice of words.
 - "original" is the exact faulty fragment from the learner's sentence (empty string if something is missing), "correction" is the corrected fragment exactly as it appears in recast.
 - "particle": if the error is a wrong or missing Korean particle, the correct particle alone (for example "를"); otherwise null.
 - Write every "explanation" in simple French, one short sentence, for a beginner, without jargon.
@@ -212,7 +213,7 @@ const RoleplaySchema = z.object({
   hint_fr: z.string(),        // piste en français pour la suite (sans donner la phrase entière)
   goal_reached: z.boolean(),
 });
-const ROLEPLAY_SYSTEM = `You play a character in a short role-play on Mochi, a site where French speakers learn English or Korean (level A1-A2).
+const ROLEPLAY_SYSTEM = `You play a character in a short role-play on Mochi, a site where French speakers learn English, Korean or Mandarin Chinese (level A1-A2).
 
 Rules:
 - Stay in character. "reply" is your next line, ONLY in the target language, 1 or 2 short sentences, simple everyday words a beginner can understand. Use the register given in the scenario.

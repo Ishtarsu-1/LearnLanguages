@@ -161,6 +161,16 @@ Règles pour le gérer :
 
 ---
 
+## 6 bis. Règles spécifiques au CHINOIS (mandarin, caractères simplifiés)
+
+**Pourquoi :** le chinois a deux murs pour un francophone : les **tons** (le ton change le sens : 妈 mā « maman », 马 mǎ « cheval ») et l'**écriture** (des milliers de caractères, aucun lien direct avec la prononciation). Le FSI le classe, comme le coréen, parmi les langues les plus longues pour un anglophone (~2 200 h).
+
+- **Les tons d'abord** : module « Pinyin & tons » (6 courtes séances : les 4 tons, les initiales, les finales, les changements de ton), avec l'audio en premier et des repères écrits **pour des francophones** (b = p sans souffle, q ≈ « tch » soufflé, ü = « u » de « lune »). Il est mis en avant dans « Aujourd'hui » mais **ne bloque pas** la lecture (contrairement au Hangul) : apprendre les caractères prend des années, on ne peut pas attendre de « savoir lire ».
+- **Pinyin au-dessus des caractères** dans les textes (désactivable) : il sert d'échafaudage, comme les glossaires, et doit pouvoir disparaître quand l'apprenant progresse.
+- **Écrire sans clavier chinois** : partout où l'on écrit, le pinyin (avec ou sans tons) est accepté au même titre que les caractères. On ne pénalise pas l'absence de méthode de saisie.
+- **Écoute** : paires minimales de tons (妈/骂, 买/卖, 汤/糖…) et de consonnes difficiles (zh/z, q/ch, aspirées) dans « Oreille », sur plusieurs voix (§14).
+- Pas de conjugaison : l'exercice « la bonne forme » ne s'applique pas ; la grammaire passe par l'ordre des mots, les classificateurs (个, 杯, 口) et les particules (了, 吗, 吧, 的).
+
 ## 7. Règles spécifiques à l'ANGLAIS (pour francophones)
 
 - Exploiter les **mots transparents** (cognats FR/EN) pour proposer du vrai contenu très tôt : les compter comme « probablement connus » dans le calcul de couverture du §3 (pondération réglable), mais permettre à l'utilisateur de les marquer inconnus.
