@@ -1063,6 +1063,17 @@ img.friend-av { object-fit: cover; }
 .mo-heart { fill: var(--sakura-500); }
 .mo-flavor { stroke: none; }
 .mo-note { fill: var(--ink-muted); }
+/* Saveurs vivantes (M5) */
+.mo-fx path, .mo-fx circle, .mo-fx ellipse { transform-box: fill-box; transform-origin: center; }
+.mo-petal { fill: #F6C1D3; stroke: var(--sakura-500); stroke-width: .8; }
+.mo-bubble { fill: #B9DDB0; stroke: #6E9E63; stroke-width: .8; }
+.mo-berry { fill: #5A6FB8; stroke: var(--mochi-ink); stroke-width: .8; }
+.mo-steam { fill: none; stroke: var(--ink-muted); stroke-width: 1.6; stroke-linecap: round; }
+.mo-glint { fill: #FFFFFF; stroke: var(--yuzu-400); stroke-width: .6; }
+.mo-seed { fill: #FBF4EA; }
+.mo-powder { fill: #C9A86A; }
+.flavor-choice { display: inline-flex; align-items: center; gap: 8px; }
+.flavor-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--dot); border: 1px solid var(--border); flex: none; }
 /* Petit Mochi dans les vues d'apprentissage (mode calme) */
 .mochi-dock { flex: none; display: inline-flex; margin-left: 4px; }
 .mochi.dock { width: 40px; height: auto; }

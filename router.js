@@ -83,6 +83,7 @@ function route() {
   ui.lastHash = location.hash;
   if (typeof enhanceKoInputs === "function") enhanceKoInputs($app); // clavier coréen (keyboard.js)
   if (typeof checkNewAccessories === "function") checkNewAccessories(); // accessoires gagnés (cosmetics.js)
+  if (typeof applyFlavor === "function") applyFlavor(); // saveur portée par Mochi (cosmetics.js)
   if (typeof mochiAttach === "function") { mochiAttach($app); if (lang) mochiCheckFlavors(lang); } // Mochi vivant (mochi-live.js)
   if (typeof maybeBetaNotice === "function") maybeBetaNotice(); // versions portables : « version de test, tous droits réservés » (legal.js)
   if (typeof maybeStartTour === "function") maybeStartTour(); // visite guidée de la première visite (tour.js)

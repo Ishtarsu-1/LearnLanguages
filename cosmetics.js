@@ -58,6 +58,35 @@ function mochiAccessories(mood, slots = null) {
   }).join("");
 }
 
+// ---------- Saveur portée (MOCHI.md M5 « saveurs vivantes ») ----------
+// La saveur se débloque par thème (lessons.js, themeProgress) ; on peut porter n'importe quelle
+// saveur débloquée dans une des langues. « nature » = la couleur d'origine.
+function flavorsUnlocked() {
+  if (typeof themeProgress !== "function" || typeof THEMES === "undefined") return [];
+  const ids = new Set();
+  for (const lang of Object.keys(state.langs || {})) {
+    if (!LANGUAGES[lang]) continue;
+    try { for (const p of themeProgress(lang)) if (p.unlocked) ids.add(p.id); } catch { /* langue sans contenu */ }
+  }
+  return THEMES.filter((t) => isAdmin() || ids.has(t.id));
+}
+const wornFlavor = () => (typeof THEMES !== "undefined" && THEMES.find((t) => t.id === state.settings.flavor)) || null;
+// Couleur de la saveur portée : variables CSS sur <html> (CSSOM, autorisé par la CSP)
+function applyFlavor() {
+  const root = document.documentElement, th = wornFlavor();
+  if (typeof root?.style?.setProperty !== "function" || typeof root.style.removeProperty !== "function") return;
+  if (th) { root.style.setProperty("--mochi-fill", th.fill); if (th.dark) root.style.setProperty("--mochi-ink", "#FBF4EA"); else root.style.removeProperty("--mochi-ink"); }
+  else { root.style.removeProperty("--mochi-fill"); root.style.removeProperty("--mochi-ink"); }
+  root.dataset.flavor = th ? th.id : "";
+}
+function flavorRow() {
+  const got = flavorsUnlocked(), cur = state.settings.flavor || "";
+  const opts = [{ id: "", flavor: "Nature", fill: "#FBF4EA" }, ...got];
+  return `<p class="mt-14 mb-4 mx-0"><b>Saveur</b></p>
+    <div class="choice-row" role="radiogroup" aria-label="Saveur de Mochi">${opts.map((t) => `<button class="choice flavor-choice ${cur === t.id ? "active" : ""}" role="radio" aria-checked="${cur === t.id}" data-act="mochi-flavor" data-v="${t.id}"><span class="flavor-dot" data-vars="--dot:${t.fill}"></span>${esc(t.flavor)}</button>`).join("")}</div>
+    <p class="muted mt-4 mb-12 mx-0"><small>${got.length ? "Chaque saveur a son petit détail animé." : "Débloque une saveur avec les mots solides d'un thème (onglet Thèmes)."}</small></p>`;
+}
+
 // Profil › Ma Mochi
 function lookCard() {
   const st = lookStats(), look = myLook();
@@ -78,6 +107,7 @@ function lookCard() {
             </button>`;
           }).join("")}
         </div>
+        ${flavorRow()}
         <p class="mt-14 mb-4 mx-0"><b>Animation</b></p>
         <div class="choice-row" role="radiogroup" aria-label="Animation de Mochi">${[["live", "✨ Vivante"], ["calm", "🍃 Discrète"], ["still", "🪨 Immobile"]].map(([v, l]) => `<button class="choice ${(state.settings.mochiMode || "live") === v ? "active" : ""}" role="radio" aria-checked="${(state.settings.mochiMode || "live") === v}" data-act="mochi-mode" data-v="${v}">${l}</button>`).join("")}</div>
         <p class="muted mt-4 mb-12 mx-0"><small>Discrète : elle respire et réagit à tes réponses, sans gestes au hasard. Touche-la, caresse-la ou tire-la un peu : elle aime ça.</small></p>
@@ -105,6 +135,13 @@ Object.assign(actions, {
     const look = { ...myLook() };
     if (look[a.slot] === a.id) delete look[a.slot]; else look[a.slot] = a.id;
     state.settings.look = look; save(); render();
+  },
+  "mochi-flavor": (el) => {
+    const id = el.dataset.v || "";
+    if (id && !flavorsUnlocked().some((t) => t.id === id)) return;
+    if (id) state.settings.flavor = id; else delete state.settings.flavor;
+    save(); applyFlavor(); render();
+    if (id && typeof mochiBus !== "undefined") setTimeout(() => mochiBus.emit("flavor:worn", { id }), 0);
   },
   "acc-locked": (el) => { const a = accessoryById(el.dataset.id); toast(`🔒 ${a.need[2]}`); },
 });

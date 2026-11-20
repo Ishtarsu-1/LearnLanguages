@@ -21,7 +21,8 @@ const MOCHI_REACTIONS = {
   celebrate: { prio: 3, ms: 1200 }, milestone: { prio: 3, ms: 1500 }, accessory: { prio: 3, ms: 800 },
   welcome: { prio: 2, ms: 1000 }, right: { prio: 2, ms: 500 }, streak: { prio: 2, ms: 700 }, wrong: { prio: 2, ms: 600 },
   capture: { prio: 2, ms: 600 }, tap: { prio: 2, ms: 450 }, laugh: { prio: 2, ms: 1600 }, pet: { prio: 2, ms: 900 },
-  gesture: { prio: 1, ms: 900 },
+  flavor: { prio: 2, ms: 900 },
+  gesture: { prio: 1, ms: 900 }, detail: { prio: 1, ms: 600 },
 };
 const MOCHI_IDLE_SLEEP_MS = 2 * 60 * 1000, MOCHI_BUBBLE_GAP_MS = 2 * 60 * 1000, MOCHI_QUEUE_MAX = 3;
 const MOCHI_FX_COLORS = ["#F6C1D3", "#B9DDB0", "#F9DE8A", "#CDB8EE", "#B9CBF3", "#F7C29A"]; // saveurs (§8)
@@ -96,19 +97,26 @@ function mochiTilt(deg = -8, ms = 600) {
 }
 
 // ---------- Effets (groupe .mo-fx) ----------
+// Le placement (attribut transform) va sur un groupe parent : une animation WAAPI de
+// « transform » remplace l'attribut transform de l'élément animé, qui se retrouverait en (0, 0).
 function mochiFx(tag, attrs, text) {
   const fx = moPart(".mo-fx");
   if (!fx || typeof document.createElementNS !== "function") return null;
   const n = document.createElementNS(SVGNS, tag);
-  for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
+  const { transform, ...rest } = attrs;
+  for (const [k, v] of Object.entries(rest)) n.setAttribute(k, v);
   if (text) n.textContent = text;
-  fx.appendChild(n);
+  if (transform) {
+    const g = document.createElementNS(SVGNS, "g");
+    g.setAttribute("transform", transform); g.appendChild(n); fx.appendChild(g);
+    n.moWrap = g;
+  } else fx.appendChild(n);
   return n;
 }
 function mochiFxAnim(n, frames, opts) {
   if (!n) return;
-  const a = mochiAnimate(n, frames, opts);
-  if (a) a.finished?.then(() => n.remove(), () => n.remove()); else n.remove();
+  const a = mochiAnimate(n, frames, opts), drop = () => (n.moWrap || n).remove();
+  if (a) a.finished?.then(drop, drop); else drop();
 }
 const STAR_D = "M0 -6 L1.6 -1.6 L6 0 L1.6 1.6 L0 6 L-1.6 1.6 L-6 0 L-1.6 -1.6 Z";
 function mochiSparkles(n = 1) {
@@ -239,7 +247,9 @@ const MOCHI_PLAY = {
     mochiSetMood("happy"); mochiHeart();
     [...(MochiLive.el?.querySelectorAll?.(".mo-cheek") || [])].forEach((c) => mochiAnimate(c, [{ opacity: 1, transform: "scale(1)" }, { opacity: 1, transform: "scale(1.3)", offset: 0.3 }, { opacity: 1, transform: "scale(1.3)", offset: 0.8 }, { transform: "scale(1)" }], { duration: 900 }));
   },
+  flavor: (d) => { mochiSetMood("proud"); mochiJump(12, 600); mochiFlavorDetail(d.id); mochiBubble(mochiLine("flavor"), { important: true }); },
   gesture: (d) => MOCHI_GESTURES[d.name]?.(),
+  detail: () => mochiFlavorDetail(),
 };
 
 // Pastille qui vole du mot capturé jusqu'à Mochi (en arc)
@@ -282,6 +292,23 @@ const MOCHI_GESTURES = {
   look: () => mochiAnimate(moPart(".mo-face"), [{ transform: "translate(0,0)" }, { transform: "translate(-3px,0)", offset: 0.25 }, { transform: "translate(-3px,0)", offset: 0.4 }, { transform: "translate(3px,0)", offset: 0.6 }, { transform: "translate(3px,0)", offset: 0.8 }, { transform: "translate(0,0)" }], { duration: 1400, easing: "ease-in-out" }),
   hop: () => mochiJump(8, 450),
   tilt: () => mochiTilt(Math.random() < 0.5 ? -6 : 6, 900),
+  // Se trémousse : petites rotations alternées, avec un léger écrasement
+  wiggle: () => {
+    mochiAnimate(moPart(".mo-rig"), [{ transform: "rotate(0deg)" }, { transform: "rotate(-4deg)", offset: 0.2 }, { transform: "rotate(4deg)", offset: 0.45 }, { transform: "rotate(-3deg)", offset: 0.7 }, { transform: "rotate(0deg)" }], { duration: 750, easing: "ease-in-out" });
+    mochiAnimate(moPart(".mo-squash"), [{ transform: "scale(1,1)" }, { transform: "scale(1.04,0.97)", offset: 0.3 }, { transform: "scale(0.98,1.02)", offset: 0.6 }, { transform: "scale(1,1)" }], { duration: 750, easing: "ease-in-out" });
+  },
+  // S'étire vers le haut (volume constant), puis se tasse et revient
+  stretch: () => {
+    mochiAnimate(moPart(".mo-squash"), [{ transform: "scale(1,1)" }, { transform: "scale(0.92,1.1)", offset: 0.35 }, { transform: "scale(0.92,1.1)", offset: 0.55 }, { transform: "scale(1.08,0.93)", offset: 0.75 }, { transform: "scale(1,1)" }], { duration: 1300, easing: "ease-in-out" });
+    mochiAnimate(moPart(".mo-acc"), [{ transform: "translateY(0)" }, { transform: "translateY(-9px)", offset: 0.4 }, { transform: "translateY(-9px)", offset: 0.58 }, { transform: "translateY(4px)", offset: 0.78 }, { transform: "translateY(0)" }], { duration: 1300, delay: 50, easing: "ease-in-out" });
+  },
+  // Lève les yeux au ciel (un nuage ? un oiseau ?), puis revient
+  lookUp: () => mochiAnimate(moPart(".mo-face"), [{ transform: "translate(0,0)" }, { transform: "translate(1px,-3px)", offset: 0.25 }, { transform: "translate(1px,-3px)", offset: 0.75 }, { transform: "translate(0,0)" }], { duration: 1500, easing: "ease-in-out" }),
+  // Fredonne : deux notes et un balancement
+  hum: () => {
+    mochiNote(); mochiLater("hum2", mochiNote, 600);
+    mochiAnimate(moPart(".mo-rig"), [{ transform: "rotate(0deg)" }, { transform: "rotate(3deg)", offset: 0.25 }, { transform: "rotate(-3deg)", offset: 0.75 }, { transform: "rotate(0deg)" }], { duration: 1600, easing: "ease-in-out" });
+  },
   yawn: () => {
     mochiSetMood("surprised");
     mochiAnimate(moPart(".mo-squash"), [{ transform: "scale(1,1)" }, { transform: "scale(0.96,1.05)", offset: 0.5 }, { transform: "scale(1,1)" }], { duration: 900, easing: "ease-in-out" });
@@ -303,10 +330,64 @@ function mochiBlink() {
 function mochiGesture() {
   if (mochiActive() && mochiLevel() === "full" && MochiLive.state === "idle" && !MochiLive.audio && !MochiLive.typing) {
     const h = new Date().getHours(), night = h >= 22 || h < 5;
-    const names = night ? ["yawn", "yawn", "look", "tilt"] : ["look", "hop", "tilt"];
+    const morning = h >= 6 && h < 11;
+    const names = night ? ["yawn", "yawn", "look", "tilt", "lookUp"] : ["look", "hop", "tilt", "wiggle", "lookUp", "hum", ...(morning ? ["stretch", "stretch"] : ["stretch"])];
     mochiReact("gesture", { name: names[Math.floor(Math.random() * names.length)] });
   }
   mochiLater("gesture", mochiGesture, rand(20000, 40000));
+}
+// ---------- Saveurs vivantes (M5) : chaque saveur portée a son petit détail ----------
+// Effets dans .mo-fx (repère 140 × 120), uniquement transform / opacity, retirés à la fin.
+function mochiFlyFx(n, frames, ms, delay = 0) { mochiFxAnim(n, frames, { duration: ms, delay, easing: "ease-in-out", fill: "backwards" }); }
+const MOCHI_FLAVOR_FX = {
+  // Sakura : un pétale tombe en se balançant
+  rencontre: () => {
+    const x = rand(30, 110), p = mochiFx("path", { d: "M0 0 C-4 -3 -4 -8 0 -9 C4 -8 4 -3 0 0 Z", class: "mo-petal", transform: `translate(${x} 6)` });
+    mochiFlyFx(p, [{ transform: "translate(0,0) rotate(0deg)", opacity: 0 }, { opacity: 1, offset: 0.15 }, { transform: "translate(10px,40px) rotate(120deg)", offset: 0.5 }, { transform: "translate(-6px,92px) rotate(260deg)", opacity: 0 }], 3200);
+  },
+  // Matcha : trois bulles montent du haut de la tête
+  cafe: () => [0, 1, 2].forEach((i) => {
+    const b = mochiFx("circle", { cx: 60 + i * 9, cy: 26, r: 2.5 + (i % 2), class: "mo-bubble" });
+    mochiFlyFx(b, [{ transform: "translate(0,0) scale(0.4)", opacity: 0 }, { opacity: 0.9, offset: 0.25 }, { transform: `translate(${rand(-4, 4)}px,-24px) scale(1)`, opacity: 0 }], 1600, i * 280);
+  }),
+  // Myrtille : une petite myrtille roule jusqu'à Mochi
+  transports: () => {
+    const b = mochiFx("circle", { cx: 150, cy: 104, r: 4, class: "mo-berry" });
+    mochiFlyFx(b, [{ transform: "translate(0,0)", opacity: 0 }, { opacity: 1, offset: 0.15 }, { transform: "translate(-26px,0)", offset: 0.7 }, { transform: "translate(-24px,-3px)", offset: 0.82 }, { transform: "translate(-26px,0)", opacity: 0 }], 1800);
+  },
+  // Kaki (cuisine) : deux filets de vapeur
+  cuisine: () => [0, 1].forEach((i) => {
+    const w = mochiFx("path", { d: "M0 0 c-3 -4 3 -6 0 -10 c-3 -4 3 -6 0 -10", class: "mo-steam", transform: `translate(${62 + i * 16} 28)` });
+    mochiFlyFx(w, [{ transform: "translate(0,0)", opacity: 0 }, { opacity: 0.8, offset: 0.35 }, { transform: "translate(0,-12px)", opacity: 0 }], 1800, i * 350);
+  }),
+  // Yuzu (sport) : un reflet brille sur le haut du corps
+  sport: () => {
+    const g = mochiFx("path", { d: STAR_D, class: "mo-glint", transform: "translate(42 50)" });
+    mochiFlyFx(g, [{ transform: "scale(0.2) rotate(0deg)", opacity: 0 }, { transform: "scale(1.1) rotate(45deg)", opacity: 1, offset: 0.4 }, { transform: "scale(0.3) rotate(90deg)", opacity: 0 }], 900);
+  },
+  // Ube (séries) : deux petites étoiles scintillent autour
+  series: () => [[18, 40], [122, 56]].forEach(([x, y], i) => {
+    const st = mochiFx("path", { d: STAR_D, class: "mo-star", transform: `translate(${x} ${y})` });
+    mochiFlyFx(st, [{ transform: "scale(0.2)", opacity: 0 }, { transform: "scale(0.9)", opacity: 1, offset: 0.4 }, { transform: "scale(0.2)", opacity: 0 }], 1000, i * 400);
+  }),
+  // Sésame noir (gaming) : une graine de sésame brille
+  gaming: () => {
+    const g = mochiFx("ellipse", { cx: rand(48, 92), cy: rand(52, 64), rx: 1.6, ry: 3, class: "mo-seed" });
+    mochiFlyFx(g, [{ opacity: 0, transform: "scale(0.5)" }, { opacity: 1, transform: "scale(1.4)", offset: 0.35 }, { opacity: 1, transform: "scale(1)", offset: 0.6 }, { opacity: 0, transform: "scale(0.8)" }], 1400);
+  },
+  // Injeolmi (travail) : un peu de poudre de soja tombe
+  travail: () => [0, 1, 2, 3, 4].forEach((i) => {
+    const d = mochiFx("circle", { cx: 34 + i * 18, cy: 98, r: 1.4, class: "mo-powder" });
+    mochiFlyFx(d, [{ transform: "translate(0,0)", opacity: 0 }, { opacity: 0.9, offset: 0.2 }, { transform: `translate(${rand(-3, 3)}px,10px)`, opacity: 0 }], 1100, i * 120);
+  }),
+};
+function mochiFlavorDetail(id = state.settings.flavor) {
+  if (mochiLevel() !== "full" || !MochiLive.el || MochiLive.el.dataset?.bare) return;
+  MOCHI_FLAVOR_FX[id]?.();
+}
+function mochiFlavorLoop() {
+  if (mochiActive() && MochiLive.state === "idle" && !MochiLive.audio && !MochiLive.typing && state.settings.flavor) mochiReact("detail");
+  mochiLater("flavor", mochiFlavorLoop, rand(18000, 35000));
 }
 function mochiSleepCheck() {
   if (mochiActive() && mochiLevel() === "full" && MochiLive.state === "idle" && !MochiLive.audio && Date.now() - MochiLive.lastInput > MOCHI_IDLE_SLEEP_MS) mochiSleep();
@@ -481,7 +562,8 @@ function mochiArm() {
   if (mochiLevel() === "full") {
     if (!MochiLive.timers.gesture) mochiLater("gesture", mochiGesture, rand(20000, 40000));
     if (!MochiLive.timers.sleep) mochiLater("sleep", mochiSleepCheck, 15000);
-  } else mochiClearTimers(["blink", "reaction", "munch", "welcome2", "tap2", "pout", "laugh0", "laugh1", "laugh2", "drop", "wake", "yawn2"]);
+    if (!MochiLive.timers.flavor) mochiLater("flavor", mochiFlavorLoop, rand(8000, 16000));
+  } else mochiClearTimers(["blink", "reaction", "munch", "welcome2", "tap2", "pout", "laugh0", "laugh1", "laugh2", "drop", "wake", "yawn2", "hum2"]);
 }
 // Entrées en scène déclarées par la page (data-intro) : une fois par jour
 function mochiIntro(el) {
@@ -515,6 +597,7 @@ mochiBus.on("word:captured", (d) => mochiReact("capture", d));
 mochiBus.on("session:done", () => mochiReact("celebrate"));
 mochiBus.on("milestone", (d) => mochiReact("milestone", d));
 mochiBus.on("accessory:new", (d) => mochiReact("accessory", d));
+mochiBus.on("flavor:worn", (d) => mochiReact("flavor", d));
 mochiBus.on("audio:start", () => {
   MochiLive.audio++;
   if (mochiLevel() !== "full" || MochiLive.timers.sway) return;

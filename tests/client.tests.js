@@ -732,7 +732,11 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
 { // Textes légaux, consentement, cookies
   for (const p of ["mentions", "cgu", "confidentialite", "cookies", "credits"]) { location.hash = `#/legal/${p}`; ok(viewLegal(p).includes(LEGAL_PAGES[p]) && viewLegal(p).includes("Dernière mise à jour"), `page ${p}`); }
   ok(legalCredits().includes("국립국어원") && legalCredits().includes("wordfreq") && legalCredits().includes("Kiwi"), "crédits : sources des listes et de l'analyseur");
-  ok(viewLegal("confidentialite").includes("mark class=\"todo\"") && viewLegal("mentions").includes("à compléter"), "champs à compléter signalés");
+  { // Indépendant des vraies valeurs de LEGAL_INFO : on simule un champ non rempli
+    const host0 = LEGAL_INFO.host; LEGAL_INFO.host = "[À COMPLÉTER : hébergeur]";
+    ok(viewLegal("confidentialite").includes("mark class=\"todo\"") && viewLegal("mentions").includes("à compléter"), "champs à compléter signalés");
+    LEGAL_INFO.host = host0;
+  }
   const f0 = features;
   features = { llm: true, engine: "Claude", tts: {}, mail: "console" };
   ok(/Anthropic/.test(legalPrivacy()) && !/Resend/.test(legalPrivacy().replace("aucun service d'envoi", "")) && /Transferts hors/.test(legalPrivacy()), "confidentialité : Claude actif → Anthropic + transfert");
@@ -925,5 +929,15 @@ ok(num1(1.5) === "1,5" && num1(0) === "0,0" && num0(1234).replace(/\s/g, " ") ==
   ok(!Object.keys(MochiLive.timers).length && !anims.length, "Mochi immobile : aucun minuteur, aucune animation");
   ok(mochiLine("wrong") !== mochiLine("wrong") || MOCHI_LINES.wrong.length < 2, "répliques : jamais deux fois la même de suite");
   ok(Object.values(MOCHI_LINES).flat().every((l) => l.split(/\s+/).filter((w) => /[\p{L}\p{N}]/u.test(w)).length <= 8), "répliques de 8 mots au plus");
+  // Nouveaux gestes et saveurs vivantes (M5)
+  state.settings.mochiMode = "live";
+  for (const g of ["wiggle", "stretch", "lookUp", "hum"]) { reset(); MOCHI_GESTURES[g](); ok(anims.some((a) => a.frames.some((f) => "transform" in f)), `geste ${g} animé`); }
+  ok(THEMES.every((t) => typeof MOCHI_FLAVOR_FX[t.id] === "function"), "chaque saveur a son détail animé");
+  reset(); window.matchMedia = () => ({ matches: true }); MochiLive.el.dataset.bare = ""; mochiFlavorDetail("rencontre"); MOCHI_GESTURES.wiggle();
+  ok(!anims.length, "mouvement réduit : ni geste ni détail de saveur"); window.matchMedia = () => ({ matches: false });
+  reset(); mochiBus.emit("flavor:worn", { id: "cafe" }); ok(MochiLive.current?.kind === "flavor", "nouvelle saveur portée → réaction");
+  { const f0 = state.settings.flavor, adm0 = globalThis.isAdmin; globalThis.isAdmin = () => false; state.settings.flavor = undefined;
+    const fake = { dataset: { v: "gaming" } }; if (!flavorsUnlocked().some((t) => t.id === "gaming")) { actions["mochi-flavor"](fake); ok(!state.settings.flavor, "saveur verrouillée : refusée"); }
+    globalThis.isAdmin = adm0; state.settings.flavor = f0; }
   reset(); MochiLive.el = null; state.settings.mochiMode = mode0; window.matchMedia = mm0; globalThis.mochiSetMood = setMood0;
 }

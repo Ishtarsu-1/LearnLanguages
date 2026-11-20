@@ -47,3 +47,29 @@ test("Mochi vivant : mouvement réduit respecté", async ({ page }) => {
   expect(moved).toEqual([]);
   expect(errors).toEqual([]);
 });
+
+// Saveurs vivantes (M5) : la saveur portée colore Mochi ; les effets restent à côté de Mochi
+test("Mochi vivant : saveur portée et effets bien placés", async ({ page }) => {
+  const errors = await prepare(page);
+  await page.goto("/#/"); await settle(page);
+  const live = page.locator(".hero .mochi.live");
+  await expect(live).toHaveCount(1);
+  await page.evaluate(() => { state.settings.flavor = "cafe"; applyFlavor(); });
+  const fill = await live.locator(".mo-body").evaluate((n) => getComputedStyle(n).fill);
+  expect(fill).toBe("rgb(185, 221, 176)");
+  // Une étoile (placée par un groupe) doit apparaître près du coin haut droit de Mochi, pas en (0, 0)
+  const pos = await page.evaluate(async () => {
+    mochiSparkles(1);
+    await new Promise((r) => setTimeout(r, 250));
+    const s = MochiLive.el.querySelector(".mo-star"), b = MochiLive.el.getBoundingClientRect(), r = s.getBoundingClientRect();
+    return { x: (r.left + r.width / 2 - b.left) / b.width, y: (r.top + r.height / 2 - b.top) / b.height };
+  });
+  expect(pos.x).toBeGreaterThan(0.6); expect(pos.y).toBeLessThan(0.45);
+  // Chaque détail de saveur s'exécute sans erreur
+  await page.evaluate(() => { for (const id of Object.keys(MOCHI_FLAVOR_FX)) mochiFlavorDetail(id); for (const g of Object.keys(MOCHI_GESTURES)) MOCHI_GESTURES[g](); });
+  await page.waitForTimeout(400);
+  await live.screenshot({ path: "test-results/mochi-saveur.png" });
+  await page.evaluate(() => { delete state.settings.flavor; applyFlavor(); });
+  expect(errors).toEqual([]);
+  expect(await page.evaluate(() => window.__csp)).toEqual([]);
+});

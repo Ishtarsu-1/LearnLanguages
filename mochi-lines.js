@@ -19,6 +19,7 @@ const MOCHI_LINES = {
   chapter: ["Chapitre terminé, bravo !"],
   week: ["Semaine régulière réussie !"],
   accessory: ["Oh, un nouvel accessoire !"],
+  flavor: ["Miam, nouvelle saveur !", "Elle me va bien, non ?", "Je me sens tout neuf !"],
   tease: ["Hé !"],
   pet: ["Hihi, ça chatouille."],
 };
