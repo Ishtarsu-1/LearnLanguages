@@ -1,0 +1,52 @@
+{
+  "id": "ko-a1-13-1",
+  "lang": "ko",
+  "level": "A1",
+  "unit": "ko-A1-13",
+  "themes": ["travail"],
+  "grammar": ["go-sipda"],
+  "title": "Avant la réunion",
+  "icon": "💼",
+  "kind": "Dialogue",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["오늘 회의|는 누구|하고 해요=하다?", "Avec qui tu as la réunion aujourd'hui ?"],
+    ["동료|들|하고 해요=하다. 회의 전|에 커피|를 마시고=마시다 싶어요=싶다.", "Avec mes collègues. Avant la réunion, j'ai envie d'un café."],
+    ["저|도 그래요=그렇다! 사실 오늘|은 너무 바빠요=바쁘다.", "Moi aussi ! En fait, aujourd'hui, je suis débordée."],
+    ["매일 이렇게=이렇다 바빠요=바쁘다?", "Tu es aussi débordée tous les jours ?"],
+    ["네, 요즘|은 매일 이래요=이렇다. 집|에 일찍 가고=가다 싶어요=싶다.", "Oui, en ce moment, c'est tous les jours comme ça. J'ai envie de rentrer tôt."],
+    ["회의 전|에 누구|를 만나요=만나다?", "Tu vois qui avant la réunion ?"],
+    ["동료 한=하나 명|을 만나요=만나다. 회의|에서 좋은=좋다 점|을 말하고=말하다 싶어요=싶다.", "Un collègue. En réunion, je veux parler des points positifs."],
+    ["좋은=좋다 생각|이에요=이다! 사실 우리 팀|은 좋은=좋다 점|이 많아요=많다.", "Bonne idée ! En fait, notre équipe a beaucoup de points forts."],
+    ["회의 전|에 커피 한=하나 잔 같이 마셔요=마시다!", "On boit un café ensemble avant la réunion !"]
+  ],
+  "speakers": null,
+  "questions": [
+    { "q": "Que veut faire la personne avant la réunion ?", "options": ["Boire un café", "Rentrer chez elle", "Manger"] },
+    { "q": "De quoi veut-elle parler en réunion ?", "options": ["Des points positifs", "De son salaire", "Du week-end"] }
+  ],
+  "gen": {
+    "engine": "Claude (écrit à la main en session)",
+    "model": "claude-opus-5-5",
+    "prompt_version": "manuel",
+    "at": "2026-11-20T14:24:30.908Z"
+  },
+  "ai_review": { "engine": null, "model": null, "ran": false, "error": "pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin" },
+  "checks": {
+    "blocking": [],
+    "warnings": ["Relecture critique : non faite (pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin)"],
+    "stats": {
+      "sentences": 9,
+      "wordsPerSentence": 6.2,
+      "lexiconMissing": [],
+      "coverage": 93.3,
+      "tokens": 75,
+      "newWords": ["누구", "전", "사실", "이렇다", "점"],
+      "outside": [],
+      "grammar:go-sipda": 3
+    },
+    "status": "orange",
+    "at": "2026-11-20T14:24:31.910Z"
+  }
+}

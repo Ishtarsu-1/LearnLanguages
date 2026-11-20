@@ -1,0 +1,53 @@
+{
+  "id": "ko-a1-12-1",
+  "lang": "ko",
+  "level": "A1",
+  "unit": "ko-A1-12",
+  "themes": ["gaming"],
+  "grammar": ["neg"],
+  "title": "Juste une heure !",
+  "icon": "🎮",
+  "kind": "Dialogue",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["오늘 함께 게임|을 해요=하다!", "Aujourd'hui, on joue ensemble !"],
+    ["좋아요=좋다! 하지만 시간|이 조금 없어요=없다.", "D'accord ! Mais je n'ai pas beaucoup de temps."],
+    ["한=하나 시간|만 해요=하다.", "On joue juste une heure."],
+    ["어떤 게임|을 하고=하다 싶어요=싶다?", "À quel jeu tu veux jouer ?"],
+    ["축구 게임|을 하고=하다 싶어요=싶다.", "J'ai envie de jouer à un jeu de foot."],
+    ["저|는 축구 게임|을 잘 안 해요=하다.", "Moi, je ne joue pas souvent aux jeux de foot."],
+    ["괜찮아요=괜찮다. 함께 하면=하다 재미있어요=재미있다.", "Pas grave. À deux, c'est amusant."],
+    ["게임|은 정말 재미있어요=재미있다. 하지만 제=저+의 팀|이 안 보여요=보이다!", "Le jeu est vraiment amusant. Mais je ne vois pas mon équipe !"],
+    ["인터넷|이 느리지=느리다 않아요=않다?", "Internet n'est pas lent ?"],
+    ["지금 보여요=보이다! 한=하나 시간 함께 해요=하다!", "Maintenant, je la vois ! Une heure ensemble, c'est parti !"]
+  ],
+  "speakers": null,
+  "questions": [
+    { "q": "Combien de temps vont-ils jouer ?", "options": ["Une heure", "Toute la nuit", "Dix minutes"] },
+    { "q": "Quel est le problème ?", "options": ["On ne voit pas son équipe", "Le jeu est trop cher", "Il n'y a pas de manette"] }
+  ],
+  "gen": {
+    "engine": "Claude (écrit à la main en session)",
+    "model": "claude-opus-5-5",
+    "prompt_version": "manuel",
+    "at": "2026-11-20T14:24:30.893Z"
+  },
+  "ai_review": { "engine": null, "model": null, "ran": false, "error": "pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin" },
+  "checks": {
+    "blocking": [],
+    "warnings": ["Relecture critique : non faite (pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin)"],
+    "stats": {
+      "sentences": 10,
+      "wordsPerSentence": 4.7,
+      "lexiconMissing": [],
+      "coverage": 93.1,
+      "tokens": 58,
+      "newWords": ["함께", "시간", "싶다", "보이다"],
+      "outside": [],
+      "grammar:neg": 3
+    },
+    "status": "orange",
+    "at": "2026-11-20T14:24:31.896Z"
+  }
+}

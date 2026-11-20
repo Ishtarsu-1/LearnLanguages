@@ -1,0 +1,53 @@
+{
+  "id": "en-a1-13-1",
+  "lang": "en",
+  "level": "A1",
+  "unit": "en-A1-13",
+  "themes": ["sport"],
+  "grammar": ["going-to"],
+  "title": "Mon premier marathon",
+  "icon": "🏃",
+  "kind": "Dialogue",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["Are=be you going=go to do the marathon on Sunday?", "Tu vas faire le marathon dimanche ?"],
+    ["Yes! It's=it+be my first marathon, so I'm=i+be still a bit nervous.", "Oui ! C'est mon premier marathon, alors je suis encore un peu nerveuse."],
+    ["Why? You play tennis and football!", "Pourquoi ? Tu joues au tennis et au foot !"],
+    ["Yes, but I never do long races=race.", "Oui, mais je ne fais jamais de longues courses."],
+    ["Are=be you still going=go to play tennis on Saturday?", "Tu vas quand même jouer au tennis samedi ?"],
+    ["Of course! Tennis is=be my life.", "Bien sûr ! Le tennis, c'est ma vie."],
+    ["Why not rest before the race?", "Pourquoi ne pas te reposer avant la course ?"],
+    ["You're=you+be right. I'm=i+be going=go to rest. I never forget a good idea!", "Tu as raison. Je vais me reposer. Je n'oublie jamais une bonne idée !"],
+    ["Good! Rest is=be a great part of life.", "Bien ! Le repos, c'est aussi une belle partie de la vie."]
+  ],
+  "speakers": null,
+  "questions": [
+    { "q": "Que va faire la personne dimanche ?", "options": ["Un marathon", "Un match de tennis", "Un match de foot"] },
+    { "q": "Que lui conseille son ami avant la course ?", "options": ["Se reposer", "Jouer au tennis", "Manger beaucoup"] }
+  ],
+  "gen": {
+    "engine": "Claude (écrit à la main en session)",
+    "model": "claude-opus-5-5",
+    "prompt_version": "manuel",
+    "at": "2026-11-20T14:23:17.178Z"
+  },
+  "ai_review": { "engine": null, "model": null, "ran": false, "error": "pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin" },
+  "checks": {
+    "blocking": [],
+    "warnings": ["Relecture critique : non faite (pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin)"],
+    "stats": {
+      "sentences": 9,
+      "wordsPerSentence": 8.2,
+      "lexiconMissing": [],
+      "coverage": 94.9,
+      "tokens": 78,
+      "newWords": ["still", "why", "never", "life"],
+      "outside": [],
+      "grammar:going-to": 3,
+      "cognateShare": 33
+    },
+    "status": "orange",
+    "at": "2026-11-20T14:24:31.656Z"
+  }
+}

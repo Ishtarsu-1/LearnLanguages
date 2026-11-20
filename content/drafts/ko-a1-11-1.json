@@ -1,0 +1,53 @@
+{
+  "id": "ko-a1-11-1",
+  "lang": "ko",
+  "level": "A1",
+  "unit": "ko-A1-11",
+  "themes": ["sport"],
+  "grammar": ["neg"],
+  "title": "Ma course du matin",
+  "icon": "🏃",
+  "kind": "Monologue",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["저|는 매일 아침 공원|에서 달려요=달리다.", "Tous les matins, je cours au parc."],
+    ["보통 삼십=삼+십 분 정도 달려요=달리다.", "D'habitude, je cours une trentaine de minutes."],
+    ["오늘|은 너무 힘들었어요=힘들다.", "Aujourd'hui, c'était trop dur."],
+    ["그래서 십 분 정도 뒤|에 물|을 좀 마셨어요=마시다.", "Alors, au bout de dix minutes, j'ai bu un peu d'eau."],
+    ["그리고 다시 달렸어요=달리다.", "Et puis je suis repartie."],
+    ["하지만 오늘|은 공원|을 다 안 달렸어요=달리다.", "Mais aujourd'hui, je n'ai pas fait tout le tour du parc."],
+    ["운동 뒤|에|는 친구|하고 김치찌개|를 먹었어요=먹다.", "Après le sport, j'ai mangé un kimchi-jjigae avec une amie."],
+    ["김치찌개|는 맵지=맵다 않았어요=않다. 정말 좋았어요=좋다!", "Le kimchi-jjigae n'était pas épicé. C'était vraiment bon !"],
+    ["다음 주|에 다시 다 달릴=달리다 거예요=것+이다.", "La semaine prochaine, je referai le tour complet."],
+    ["운동|은 힘들지=힘들다 않아요=않다. 좀 재미있어요=재미있다!", "Le sport, ce n'est pas si dur. C'est même plutôt amusant !"]
+  ],
+  "speakers": null,
+  "questions": [
+    { "q": "Combien de temps court-elle d'habitude ?", "options": ["Une trentaine de minutes", "Une heure", "Dix minutes"] },
+    { "q": "Qu'a-t-elle fait après dix minutes ?", "options": ["Elle a bu de l'eau", "Elle est rentrée", "Elle a mangé"] }
+  ],
+  "gen": {
+    "engine": "Claude (écrit à la main en session)",
+    "model": "claude-opus-5-5",
+    "prompt_version": "manuel",
+    "at": "2026-11-20T14:24:30.864Z"
+  },
+  "ai_review": { "engine": null, "model": null, "ran": false, "error": "pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin" },
+  "checks": {
+    "blocking": [],
+    "warnings": ["Relecture critique : non faite (pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin)"],
+    "stats": {
+      "sentences": 10,
+      "wordsPerSentence": 5.1,
+      "lexiconMissing": [],
+      "coverage": 92.5,
+      "tokens": 67,
+      "newWords": ["정도", "뒤", "좀", "다시", "다"],
+      "outside": [],
+      "grammar:neg": 3
+    },
+    "status": "orange",
+    "at": "2026-11-20T14:24:31.883Z"
+  }
+}

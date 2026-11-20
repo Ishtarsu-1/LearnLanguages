@@ -1,0 +1,52 @@
+{
+  "id": "en-a1-16-2",
+  "lang": "en",
+  "level": "A1",
+  "unit": "en-A1-16",
+  "themes": ["rencontre"],
+  "grammar": ["would-like"],
+  "title": "Invitation",
+  "icon": "✉️",
+  "kind": "Message",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["Hi @Nina! It was=be so nice to see you.", "Salut Nina ! C'était tellement bien de te voir."],
+    ["Would you like to come to my place on Sunday?", "Tu voudrais venir chez moi dimanche ?"],
+    ["Each Sunday, I make pasta for my cousins=cousin.", "Chaque dimanche, je fais des pâtes pour mes cousins."],
+    ["I'd=i+would like to cook another thing for you: a dessert!", "J'aimerais te cuisiner autre chose : un dessert !"],
+    ["Under my window, there's=there+be a little park.", "Sous ma fenêtre, il y a un petit parc."],
+    ["During lunch, we could eat in the park.", "Pendant le déjeuner, on pourrait manger dans le parc."],
+    ["Another thing: each cousin is=be going=go to cook something!", "Autre chose : chaque cousin va cuisiner quelque chose !"],
+    ["Would you like that? See you on Sunday! @Leo", "Ça te dirait ? À dimanche ! Léo"]
+  ],
+  "speakers": null,
+  "questions": [
+    { "q": "Que veut montrer Léo ?", "options": ["Le jardin et de vieilles photos", "Sa voiture", "Son bureau"] },
+    { "q": "Que fait Léo chaque dimanche ?", "options": ["Des pâtes", "Du sport", "Des courses"] }
+  ],
+  "gen": {
+    "engine": "Claude (écrit à la main en session)",
+    "model": "claude-opus-5-5",
+    "prompt_version": "manuel",
+    "at": "2026-11-20T14:23:17.560Z"
+  },
+  "ai_review": { "engine": null, "model": null, "ran": false, "error": "pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin" },
+  "checks": {
+    "blocking": [],
+    "warnings": ["Répétition : vu une seule fois (under, during) — chaque mot nouveau au moins 2 fois", "Relecture critique : non faite (pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin)"],
+    "stats": {
+      "sentences": 8,
+      "wordsPerSentence": 8.8,
+      "lexiconMissing": [],
+      "coverage": 92.9,
+      "tokens": 70,
+      "newWords": ["each", "another", "thing", "under", "during"],
+      "outside": [],
+      "grammar:would-like": 3,
+      "cognateShare": 17
+    },
+    "status": "orange",
+    "at": "2026-11-20T14:24:31.715Z"
+  }
+}

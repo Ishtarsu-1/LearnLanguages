@@ -1,0 +1,53 @@
+{
+  "id": "en-a1-14-1",
+  "lang": "en",
+  "level": "A1",
+  "unit": "en-A1-14",
+  "themes": ["gaming"],
+  "grammar": ["will"],
+  "title": "Ce soir, on joue en ligne",
+  "icon": "🎮",
+  "kind": "Monologue",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["Tonight, I will play online with my team.", "Ce soir, je vais jouer en ligne avec mon équipe."],
+    ["We will use the same team as last Saturday.", "On va prendre la même équipe que samedi dernier."],
+    ["First, I'll=i+will look at the city in the game.", "D'abord, je vais regarder la ville dans le jeu."],
+    ["Then I will look for something secret in the station.", "Puis je vais chercher quelque chose de secret dans la gare."],
+    ["While I look, my cousin will stay near the door.", "Pendant que je cherche, mon cousin restera près de la porte."],
+    ["He will use his phone to watch the street.", "Il utilisera son téléphone pour surveiller la rue."],
+    ["While we play, my sister will watch a movie.", "Pendant qu'on joue, ma sœur regardera un film."],
+    ["We will use the same idea as last time.", "On va reprendre la même idée que la dernière fois."],
+    ["I think we will win something tonight!", "Je crois qu'on va gagner quelque chose ce soir !"]
+  ],
+  "speakers": null,
+  "questions": [
+    { "q": "Avec qui joue la personne ?", "options": ["Avec son équipe", "Avec sa sœur", "Seule"] },
+    { "q": "Que va chercher l'homme ?", "options": ["Quelque chose de secret", "Un ticket", "Un café"] }
+  ],
+  "gen": {
+    "engine": "Claude (écrit à la main en session)",
+    "model": "claude-opus-5-5",
+    "prompt_version": "manuel",
+    "at": "2026-11-20T14:23:17.300Z"
+  },
+  "ai_review": { "engine": null, "model": null, "ran": false, "error": "pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin" },
+  "checks": {
+    "blocking": [],
+    "warnings": ["Relecture critique : non faite (pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin)"],
+    "stats": {
+      "sentences": 9,
+      "wordsPerSentence": 8.9,
+      "lexiconMissing": [],
+      "coverage": 93.8,
+      "tokens": 81,
+      "newWords": ["use", "same", "look", "something", "while"],
+      "outside": [],
+      "grammar:will": 9,
+      "cognateShare": 15
+    },
+    "status": "orange",
+    "at": "2026-11-20T14:24:31.671Z"
+  }
+}

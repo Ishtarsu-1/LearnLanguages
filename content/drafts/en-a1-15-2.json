@@ -1,0 +1,53 @@
+{
+  "id": "en-a1-15-2",
+  "lang": "en",
+  "level": "A1",
+  "unit": "en-A1-15",
+  "themes": ["cafe"],
+  "grammar": ["will"],
+  "title": "Le barista du matin",
+  "icon": "🥐",
+  "kind": "Récit",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["@Sam opens=open his cafe early in the morning.", "Sam ouvre son café tôt le matin."],
+    ["Students=student come and look for a table.", "Des étudiants arrivent et cherchent une table."],
+    ["They find a table and work around the window.", "Ils trouvent une table et travaillent autour de la fenêtre."],
+    ["Today, a new student comes=come in. She looks=look around.", "Aujourd'hui, une nouvelle étudiante entre. Elle regarde autour d'elle."],
+    ["\"Can you help me? I can't=can+not find a calm place.\"", "« Vous pouvez m'aider ? Je ne trouve pas d'endroit calme. »"],
+    ["@Sam helps=help the student: \"Take this table, it's=it+be calm.\"", "Sam aide l'étudiante : « Prenez cette table, elle est calme. »"],
+    ["\"Will it be OK? The table is=be very high!\"", "« Ça ira ? La table est très haute ! »"],
+    ["\"Don't=do+not worry, I'll=i+will find a high chair for you.\"", "« Ne vous inquiétez pas, je vais vous trouver une chaise haute. »"],
+    ["Now the student comes=come every day. She will never forget his help.", "Maintenant, l'étudiante vient tous les jours. Elle n'oubliera jamais son aide."]
+  ],
+  "speakers": null,
+  "questions": [
+    { "q": "À quelle heure ouvre le café ?", "options": ["À sept heures", "À neuf heures", "À midi"] },
+    { "q": "Que cherche la nouvelle étudiante ?", "options": ["Un endroit calme", "Un croissant", "Un ami"] }
+  ],
+  "gen": {
+    "engine": "Claude (écrit à la main en session)",
+    "model": "claude-opus-5-5",
+    "prompt_version": "manuel",
+    "at": "2026-11-20T14:23:17.456Z"
+  },
+  "ai_review": { "engine": null, "model": null, "ran": false, "error": "pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin" },
+  "checks": {
+    "blocking": [],
+    "warnings": ["Longueur : 9.1 mots par phrase en moyenne (niveau A1 : 9 au plus)", "Répétition : vu une seule fois (every) — chaque mot nouveau au moins 2 fois", "Relecture critique : non faite (pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin)"],
+    "stats": {
+      "sentences": 9,
+      "wordsPerSentence": 9.1,
+      "lexiconMissing": [],
+      "coverage": 92.9,
+      "tokens": 84,
+      "newWords": ["come", "find", "around", "help", "high", "every"],
+      "outside": [],
+      "grammar:will": 3,
+      "cognateShare": 34
+    },
+    "status": "orange",
+    "at": "2026-11-20T14:24:31.696Z"
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "id": "en-a1-13-2",
+  "lang": "en",
+  "level": "A1",
+  "unit": "en-A1-13",
+  "themes": ["sport"],
+  "grammar": ["going-to"],
+  "title": "Message du coach",
+  "icon": "⚽",
+  "kind": "Message",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["Hi team! Saturday is=be our final. Why is=be it important?", "Salut l'équipe ! Samedi, c'est notre finale. Pourquoi est-ce important ?"],
+    ["Why? Because our club never won=win a final!", "Pourquoi ? Parce que notre club n'a jamais gagné de finale !"],
+    ["We're=we+be going=go to meet at the park at ten.", "On va se retrouver au parc à dix heures."],
+    ["Some of you are=be still nervous. That's=that+be OK!", "Certains d'entre vous sont encore nerveux. Ce n'est pas grave !"],
+    ["We're=we+be going=go to play together, and we never stop!", "On va jouer ensemble, et on ne lâche jamais rien !"],
+    ["Football is=be not the world, but it's=it+be a great part of our life.", "Le foot, ce n'est pas tout, mais c'est une belle partie de notre vie."],
+    ["After the match, we're=we+be going=go to eat pizza at the cafe.", "Après le match, on va manger une pizza au café."],
+    ["Win or not, you're=you+be my favorite team in the world!", "Victoire ou pas, vous êtes mon équipe préférée au monde !"],
+    ["Your coach, @Tom", "Votre coach, Tom"]
+  ],
+  "speakers": null,
+  "questions": [
+    { "q": "Pourquoi le match de samedi est-il important ?", "options": ["C'est la finale", "C'est le premier match", "Le coach part"] },
+    { "q": "Que vont-ils faire après le match ?", "options": ["Manger une pizza", "Regarder un film", "Rentrer dormir"] }
+  ],
+  "gen": {
+    "engine": "Claude (écrit à la main en session)",
+    "model": "claude-opus-5-5",
+    "prompt_version": "manuel",
+    "at": "2026-11-20T14:23:17.245Z"
+  },
+  "ai_review": { "engine": null, "model": null, "ran": false, "error": "pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin" },
+  "checks": {
+    "blocking": [],
+    "warnings": ["Répétition : vu une seule fois (still, life) — chaque mot nouveau au moins 2 fois", "Relecture critique : non faite (pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin)"],
+    "stats": {
+      "sentences": 9,
+      "wordsPerSentence": 9,
+      "lexiconMissing": [],
+      "coverage": 94.2,
+      "tokens": 86,
+      "newWords": ["why", "never", "still", "world", "life"],
+      "outside": [],
+      "grammar:going-to": 3,
+      "cognateShare": 34
+    },
+    "status": "orange",
+    "at": "2026-11-20T14:24:31.664Z"
+  }
+}

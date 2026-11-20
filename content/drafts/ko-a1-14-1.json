@@ -1,0 +1,53 @@
+{
+  "id": "ko-a1-14-1",
+  "lang": "ko",
+  "level": "A1",
+  "unit": "ko-A1-14",
+  "themes": ["rencontre"],
+  "grammar": ["go-sipda"],
+  "title": "Sophie se présente",
+  "icon": "👋",
+  "kind": "Monologue",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["안녕하세요! 저|는 @소피|예요=이다.", "Bonjour ! Je m'appelle Sophie."],
+    ["저|는 @파리|에서 왔어요=오다.", "Je viens de Paris."],
+    ["지금|은 @서울|에 있는=있다 학교|에서 한국어|를 공부해요=공부하다.", "En ce moment, j'étudie le coréen dans une école à Séoul."],
+    ["이 학교|에|는 세계|의 학생|들|이 있어요=있다.", "Dans cette école, il y a des étudiants du monde entier."],
+    ["학교|에서 여러 친구|를 만났어요=만나다. 더 만나고=만나다 싶어요=싶다!", "À l'école, j'ai rencontré plein d'amis. J'ai envie d'en rencontrer encore plus !"],
+    ["학교 카페|는 제일 위 층|에 있어요=있다. 위|에서 공원|이 보여요=보이다.", "Le café de l'école est au dernier étage. De là-haut, on voit le parc."],
+    ["이 곳|이 학교|에서 가장 좋아요=좋다.", "C'est l'endroit que je préfère dans l'école."],
+    ["저|는 한국|에서 여러 곳|에 가고=가다 싶어요=싶다.", "J'ai envie d'aller dans plein d'endroits en Corée."],
+    ["한국 떡볶이|가 세계|에서 가장 맛있어요=맛있다!", "Les tteokbokki coréens sont les meilleurs du monde !"],
+    ["매일 떡볶이|를 먹고=먹다 싶어요=싶다!", "J'ai envie d'en manger tous les jours !"]
+  ],
+  "speakers": null,
+  "questions": [
+    { "q": "D'où vient Sophie ?", "options": ["De Paris", "De Séoul", "De Londres"] },
+    { "q": "Où est le café de l'école ?", "options": ["Au dernier étage", "Au rez-de-chaussée", "Dans la rue"] }
+  ],
+  "gen": {
+    "engine": "Claude (écrit à la main en session)",
+    "model": "claude-opus-5-5",
+    "prompt_version": "manuel",
+    "at": "2026-11-20T14:24:30.923Z"
+  },
+  "ai_review": { "engine": null, "model": null, "ran": false, "error": "pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin" },
+  "checks": {
+    "blocking": [],
+    "warnings": ["Relecture critique : non faite (pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin)"],
+    "stats": {
+      "sentences": 10,
+      "wordsPerSentence": 5.3,
+      "lexiconMissing": [],
+      "coverage": 92.2,
+      "tokens": 77,
+      "newWords": ["학교", "세계", "여러", "위", "곳", "가장"],
+      "outside": [],
+      "grammar:go-sipda": 3
+    },
+    "status": "orange",
+    "at": "2026-11-20T14:24:31.925Z"
+  }
+}

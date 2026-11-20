@@ -1,0 +1,53 @@
+{
+  "id": "en-a1-14-2",
+  "lang": "en",
+  "level": "A1",
+  "unit": "en-A1-14",
+  "themes": ["gaming"],
+  "grammar": ["will"],
+  "title": "Le nouveau jeu",
+  "icon": "🕹️",
+  "kind": "Dialogue",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["Look! The new game is=be out today.", "Regarde ! Le nouveau jeu sort aujourd'hui."],
+    ["Is=be it like the last game?", "Il est comme le dernier jeu ?"],
+    ["No, it's=it+be a new story. You will love it.", "Non, c'est une nouvelle histoire. Tu vas adorer."],
+    ["Will you play it tonight?", "Tu vas y jouer ce soir ?"],
+    ["Yes. Look at this man in the video!", "Oui. Regarde cet homme dans la vidéo !"],
+    ["The man goes=go down the street and through the park.", "L'homme descend la rue et traverse le parc."],
+    ["Then he goes=go down into the station, through the train!", "Puis il descend dans la gare, à travers le train !"],
+    ["Such a cool game! I'll=i+will buy it too.", "Quel jeu génial ! Je vais l'acheter aussi."],
+    ["Such a good idea! We will play together tonight.", "Super idée ! On jouera ensemble ce soir."]
+  ],
+  "speakers": null,
+  "questions": [
+    { "q": "Quand sort le jeu ?", "options": ["Aujourd'hui", "L'an prochain", "Samedi"] },
+    { "q": "Où la personne va-t-elle jouer ?", "options": ["Dans le bus", "Au café", "Au bureau"] }
+  ],
+  "gen": {
+    "engine": "Claude (écrit à la main en session)",
+    "model": "claude-opus-5-5",
+    "prompt_version": "manuel",
+    "at": "2026-11-20T14:23:17.350Z"
+  },
+  "ai_review": { "engine": null, "model": null, "ran": false, "error": "pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin" },
+  "checks": {
+    "blocking": [],
+    "warnings": ["Relecture critique : non faite (pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin)"],
+    "stats": {
+      "sentences": 9,
+      "wordsPerSentence": 8,
+      "lexiconMissing": [],
+      "coverage": 93.2,
+      "tokens": 74,
+      "newWords": ["look", "man", "down", "through", "such"],
+      "outside": [],
+      "grammar:will": 4,
+      "cognateShare": 14
+    },
+    "status": "orange",
+    "at": "2026-11-20T14:24:31.678Z"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "id": "ko-a1-14-2",
+  "lang": "ko",
+  "level": "A1",
+  "unit": "ko-A1-14",
+  "themes": ["rencontre"],
+  "grammar": ["go-sipda"],
+  "title": "Le meilleur marché du monde",
+  "icon": "🧺",
+  "kind": "Dialogue",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["안녕하세요! 이 학교 학생|이에요=이다?", "Bonjour ! Tu es étudiant dans cette école ?"],
+    ["네, 저|는 @캐나다|에서 왔어요=오다.", "Oui, je viens du Canada."],
+    ["반가워요=반갑다! 한국|에서 어떤 곳|에 가고=가다 싶어요=싶다?", "Enchantée ! En Corée, tu as envie d'aller où ?"],
+    ["저|는 시장|이 가장 좋아요=좋다. 떡볶이|가 세계|에서 제일 맛있어요=맛있다!", "Moi, ce que je préfère, ce sont les marchés. Leurs tteokbokki sont les meilleurs du monde !"],
+    ["여러 시장|에 갔어요=가다?", "Tu es allé dans plusieurs marchés ?"],
+    ["네, 여러 시장|에 갔어요=가다. 다섯 곳|이에요=이다.", "Oui, je suis allé dans plusieurs marchés. Cinq en tout."],
+    ["정말 멋있어요=멋있다! 저|도 학교 앞 시장|에 가고=가다 싶어요=싶다.", "Génial ! Moi aussi, j'ai envie d'aller au marché devant l'école."],
+    ["같이 가요=가다! 학교 앞 시장|은 세계|에서 가장 좋아요=좋다!", "Allons-y ensemble ! Le marché devant l'école, c'est le meilleur du monde !"],
+    ["좋아요=좋다! 저|는 떡볶이|를 먹고=먹다 싶어요=싶다!", "D'accord ! Moi, je veux manger des tteokbokki !"]
+  ],
+  "speakers": null,
+  "questions": [
+    { "q": "D'où vient l'étudiant ?", "options": ["Du Canada", "De France", "Du Japon"] },
+    { "q": "Dans combien de marchés est-il allé ?", "options": ["Cinq", "Deux", "Dix"] }
+  ],
+  "gen": {
+    "engine": "Claude (écrit à la main en session)",
+    "model": "claude-opus-5-5",
+    "prompt_version": "manuel",
+    "at": "2026-11-20T14:24:30.931Z"
+  },
+  "ai_review": { "engine": null, "model": null, "ran": false, "error": "pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin" },
+  "checks": {
+    "blocking": [],
+    "warnings": ["Relecture critique : non faite (pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin)"],
+    "stats": {
+      "sentences": 9,
+      "wordsPerSentence": 5.8,
+      "lexiconMissing": [],
+      "coverage": 92.8,
+      "tokens": 69,
+      "newWords": ["학교", "곳", "가장", "세계", "여러"],
+      "outside": [],
+      "grammar:go-sipda": 3
+    },
+    "status": "orange",
+    "at": "2026-11-20T14:24:31.932Z"
+  }
+}

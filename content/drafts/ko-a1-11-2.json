@@ -1,0 +1,53 @@
+{
+  "id": "ko-a1-11-2",
+  "lang": "ko",
+  "level": "A1",
+  "unit": "ko-A1-11",
+  "themes": ["sport"],
+  "grammar": ["neg"],
+  "title": "Un match de foot féminin",
+  "icon": "⚽",
+  "kind": "Dialogue",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["이번 토요일|에 축구 경기|가 있어요=있다. 같이 봐요=보다!", "Ce samedi, il y a un match de foot. On le regarde ensemble !"],
+    ["어떤 경기|예요=이다?", "C'est quel match ?"],
+    ["여자 축구 경기|예요=이다. 한국 팀|이 정말 멋있어요=멋있다.", "C'est du foot féminin. L'équipe de Corée est vraiment géniale."],
+    ["저|도 이 경기 이야기|를 들었어요=듣다!", "Moi aussi, j'ai entendu parler de ce match !"],
+    ["하지만 저|는 이런 경기|를 안 봤어요=보다.", "Mais je n'ai jamais regardé ce genre de match."],
+    ["괜찮아요=괜찮다! 이런 경기|는 힘들지=힘들다 않아요=않다. 정말 재미있어요=재미있다.", "Pas grave ! Ce genre de match, ce n'est pas compliqué. C'est vraiment amusant."],
+    ["다른 친구|들|도 와요=오다?", "D'autres amis viennent aussi ?"],
+    ["네, 다른 친구 다섯 명|이 와요=오다. 다 여자 친구|들|이에요=이다.", "Oui, cinq autres amies viennent. Ce sont toutes des filles."],
+    ["좋아요=좋다! 경기 후|에 떡볶이|를 좀 먹어요=먹다!", "Super ! Après le match, on mange des tteokbokki !"],
+    ["네! 이번|에|는 안 늦을=늦다 거예요=것+이다.", "Oui ! Cette fois, je ne serai pas en retard."]
+  ],
+  "speakers": null,
+  "questions": [
+    { "q": "Quel match vont-ils regarder ?", "options": ["Du foot féminin", "Du basket", "Du tennis"] },
+    { "q": "Combien d'autres amies viennent ?", "options": ["Cinq", "Deux", "Dix"] }
+  ],
+  "gen": {
+    "engine": "Claude (écrit à la main en session)",
+    "model": "claude-opus-5-5",
+    "prompt_version": "manuel",
+    "at": "2026-11-20T14:24:30.882Z"
+  },
+  "ai_review": { "engine": null, "model": null, "ran": false, "error": "pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin" },
+  "checks": {
+    "blocking": [],
+    "warnings": ["Répétition : vu une seule fois (듣다, 다, 좀) — chaque mot nouveau au moins 2 fois", "Relecture critique : non faite (pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin)"],
+    "stats": {
+      "sentences": 10,
+      "wordsPerSentence": 5.7,
+      "lexiconMissing": [],
+      "coverage": 92.2,
+      "tokens": 77,
+      "newWords": ["여자", "듣다", "이런", "다른", "다", "좀"],
+      "outside": [],
+      "grammar:neg": 3
+    },
+    "status": "orange",
+    "at": "2026-11-20T14:24:31.890Z"
+  }
+}

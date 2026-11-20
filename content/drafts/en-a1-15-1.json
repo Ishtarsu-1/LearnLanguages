@@ -1,0 +1,53 @@
+{
+  "id": "en-a1-15-1",
+  "lang": "en",
+  "level": "A1",
+  "unit": "en-A1-15",
+  "themes": ["cafe"],
+  "grammar": ["will"],
+  "title": "Le café du coin",
+  "icon": "☕",
+  "kind": "Dialogue",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["Hi! Will you come to the cafe with me?", "Salut ! Tu viens au café avec moi ?"],
+    ["Sure! The one between the library and the museum?", "Bien sûr ! Celui qui est entre la bibliothèque et le musée ?"],
+    ["Yes! I always go there.", "Oui ! J'y vais tout le temps."],
+    ["Every morning, I take a coffee and a croissant.", "Tous les matins, je prends un café et un croissant."],
+    ["Their cookies=cookie are=be excellent too. I always want one!", "Leurs cookies sont excellents aussi. J'en veux toujours un !"],
+    ["Then I will take both: a croissant and a cookie!", "Alors je vais prendre les deux : un croissant et un cookie !"],
+    ["Both? Then you will come every day!", "Les deux ? Alors tu vas venir tous les jours !"],
+    ["Between us, I come every day!", "Entre nous, j'y viens tous les jours !"],
+    ["Then I will come with you every morning.", "Alors je viendrai avec toi tous les matins."]
+  ],
+  "speakers": null,
+  "questions": [
+    { "q": "Où est le café ?", "options": ["Entre la banque et le musée", "À la gare", "Près du parc"] },
+    { "q": "Que prend toujours l'ami ?", "options": ["Deux gâteaux", "Un thé", "Un sandwich"] }
+  ],
+  "gen": {
+    "engine": "Claude (écrit à la main en session)",
+    "model": "claude-opus-5-5",
+    "prompt_version": "manuel",
+    "at": "2026-11-20T14:23:17.402Z"
+  },
+  "ai_review": { "engine": null, "model": null, "ran": false, "error": "pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin" },
+  "checks": {
+    "blocking": [],
+    "warnings": ["Relecture critique : non faite (pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin)"],
+    "stats": {
+      "sentences": 9,
+      "wordsPerSentence": 8,
+      "lexiconMissing": [],
+      "coverage": 93.1,
+      "tokens": 72,
+      "newWords": ["come", "between", "always", "every", "both"],
+      "outside": [],
+      "grammar:will": 4,
+      "cognateShare": 22
+    },
+    "status": "orange",
+    "at": "2026-11-20T14:24:31.686Z"
+  }
+}
