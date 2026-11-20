@@ -9,7 +9,8 @@ test("Mochi vivant : respire, réagit, se met en pause", async ({ page }) => {
   await expect(live).toHaveCount(1);
   await expect(live).toHaveClass(/breathe/);
 
-  // Tap : il s'écrase puis passe par « surprised »
+  // Tap : il s'écrase puis passe par « surprised » (et ne déclenche rien d'autre : pas de requête)
+  const posts = []; page.on("request", (r) => { if (r.method() === "POST") posts.push(r.url()); });
   await live.click();
   await expect(live).toHaveAttribute("data-mood", "surprised");
   await expect(live).toHaveAttribute("data-mood", "happy", { timeout: 2000 });
@@ -30,6 +31,7 @@ test("Mochi vivant : respire, réagit, se met en pause", async ({ page }) => {
   await expect(live).not.toHaveClass(/breathe/);
   expect(await page.evaluate(() => Object.keys(MochiLive.timers).length)).toBe(0);
 
+  expect(posts.filter((u) => /\/api\/live\//.test(u))).toEqual([]);
   expect(errors).toEqual([]);
   expect(await page.evaluate(() => window.__csp)).toEqual([]);
 });

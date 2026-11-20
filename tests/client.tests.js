@@ -880,12 +880,12 @@ ok(num1(1.5) === "1,5" && num1(0) === "0,0" && num0(1234).replace(/\s/g, " ") ==
   const groups = ["mo-shadow", "mo-rig", "mo-tilt", "mo-squash", "mo-body", "mo-cheeks", "mo-face", "mo-eyes", "mo-mouth", "mo-acc", "mo-marks", "mo-fx"];
   for (const m of MOCHI_MOODS) {
     const s = mochi("small", m);
-    ok(groups.every((g) => s.includes(`class="${g}"`)) && s.includes(`data-mood="${m}"`) && !s.includes("data-live"), `mochi ${m} : groupes nommés, statique par défaut`);
+    ok(groups.every((g) => s.includes(`class="${g}"`)) && s.includes(`data-mood="${m}"`) && !s.includes("data-mochi-live"), `mochi ${m} : groupes nommés, statique par défaut`);
     ok((s.match(/<g\b/g) || []).length === (s.match(/<\/g>/g) || []).length && (s.match(/<svg\b/g) || []).length === 1, `mochi ${m} : balises équilibrées`);
     ok(/<g class="mo-eyes">\S/.test(s) && /<g class="mo-mouth">\S/.test(s), `mochi ${m} : yeux et bouche séparés`);
   }
   ok(mochi("", "inconnue").includes('data-mood="happy"'), "humeur inconnue → contente");
-  ok(mochi("", "happy", true, { live: true, intro: "done" }).includes('data-live="1" data-intro="done"') && mochi("", "happy", true, { live: true }).includes('class="mochi mochi-happy live '), "option live");
+  ok(mochi("", "happy", true, { live: true, intro: "done" }).includes('data-mochi-live="1" data-intro="done"') && mochi("", "happy", true, { live: true }).includes('class="mochi mochi-happy live '), "option live");
   const look0 = state.settings.look, rt0 = state.langs.en.readTexts, bk0 = state.langs.en.books;
   state.settings.look = { face: "glasses", head: "bow" };
   state.langs.en.readTexts = Object.fromEntries([...Array(10)].map((_, i) => [`t${i}`, true])); state.langs.en.books = { "b:1:mission": true };
@@ -899,7 +899,7 @@ ok(num1(1.5) === "1,5" && num1(0) === "0,0" && num0(1234).replace(/\s/g, " ") ==
   const anims = [];
   const node = () => ({ dataset: {}, style: { setProperty() {}, removeProperty() {}, getPropertyValue: () => "" }, classList: { add() {}, remove() {}, toggle() {} }, setAttribute() {}, removeAttribute() {}, innerHTML: "",
     animate(frames, opts) { const a = { frames, opts, cancel() {}, finished: { then() {} } }; anims.push(a); return a; }, querySelectorAll: () => [] });
-  const parts = {}, el = { ...node(), dataset: { mood: "happy", live: "1" }, querySelector: (sel) => (parts[sel] ||= node()), querySelectorAll: () => [] };
+  const parts = {}, el = { ...node(), dataset: { mood: "happy", mochiLive: "1" }, querySelector: (sel) => (parts[sel] ||= node()), querySelectorAll: () => [] };
   const moods = [], setMood0 = mochiSetMood;
   const reset = () => { mochiClearTimers(); MochiLive.current = null; MochiLive.queue = []; MochiLive.state = "idle"; MochiLive.streak = 0; anims.length = 0; moods.length = 0; };
   Object.assign(MochiLive, { el, visible: true, baseMood: "happy" });

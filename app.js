@@ -10,7 +10,11 @@ const LAST_ACCOUNT = "mochi-last-account";
 const rememberAccount = (d) => { try { if (d) localStorage.setItem(LAST_ACCOUNT, JSON.stringify(d)); else localStorage.removeItem(LAST_ACCOUNT); } catch {} };
 (async function boot() {
   // Version mobile : pas de serveur. On demande au navigateur de garder la progression.
-  if (features.static) { try { navigator.storage?.persist?.(); } catch {} }
+  // Premier rendu une fois TOUS les scripts chargés (legal.js, mochi-live.js… viennent après app.js)
+  if (features.static) {
+    try { navigator.storage?.persist?.(); } catch {}
+    if (document.readyState === "loading") await new Promise((r) => document.addEventListener("DOMContentLoaded", r, { once: true }));
+  }
   else try {
     const r = await fetch("/api/me", { credentials: "same-origin" });
     if (r.ok && (r.headers.get("content-type") || "").includes("json")) {

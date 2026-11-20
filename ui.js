@@ -90,7 +90,7 @@ function mochiParts(mood, dressed = true) {
 function mochi(cls = "", mood = "happy", dressed = true, opts = {}) {
   if (!MOCHI_FACES[mood]) mood = "happy";
   const p = mochiParts(mood, dressed);
-  const data = opts.live ? ` data-live="1"${opts.intro ? ` data-intro="${opts.intro}"` : ""}${dressed ? "" : ' data-bare="1"'}` : "";
+  const data = opts.live ? ` data-mochi-live="1"${opts.intro ? ` data-intro="${opts.intro}"` : ""}${dressed ? "" : ' data-bare="1"'}` : "";
   return `<svg class="mochi mochi-${mood}${opts.live ? " live" : ""} ${cls}" data-mood="${mood}"${data} viewBox="0 0 140 120" aria-hidden="true">
     <ellipse cx="70" cy="110" rx="50" ry="6" class="mo-shadow"/>
     <g class="mo-rig"><g class="mo-tilt"${p.tilt ? ` transform="${p.tilt}"` : ""}>
