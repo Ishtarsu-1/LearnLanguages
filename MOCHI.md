@@ -180,5 +180,5 @@ idle → celebrating (palier) → idle
 - [x] M2 : uniquement `transform` / `opacity`, pause hors écran et onglet caché
 - [x] M3 : mouvement réduit, mode calme pendant l'apprentissage, réglages « vivant / discret / immobile »
 - [x] M4 : bulles contextuelles, répliques variées, Mochi qui parle avec des mots connus
-- [ ] M5 (facultatif) : ✅ sons (Web Audio, sans fichier) ; reste : saveurs vivantes, intégrations Mochi Café (F2) et carte à partager (F4), qui n'existent pas encore
+- [ ] M5 (facultatif) : ✅ sons (Web Audio, sans fichier) ; ✅ saveurs vivantes (saveur portée, Profil › Ma Mochi) ; reste : intégrations Mochi Café (F2) et carte à partager (F4), qui n'existent pas encore
 - [x] Tests unitaires et e2e, `FEATURES.md` et `ROADMAP.md` à jour
