@@ -134,6 +134,7 @@ const actions = {
     const text = document.getElementById("prod-text").value.trim();
     if (!text) return toast("Écris d'abord une phrase ✍️");
     await checkProduction(currentLang(), text); render();
+    if (ui.prod.result && typeof mochiBus !== "undefined") mochiBus.emit(ui.prod.result.perfect ? "answer:right" : "answer:wrong");
   },
   "next-ex": () => {
     const P = ui.prod, lang = currentLang();
@@ -182,6 +183,7 @@ const actions = {
     const S = state.langs[G.lang].earStats, key = earKey(EAR[G.lang].pairs[G.i]);
     S[key] = { n: (S[key]?.n || 0) + 1, ok: (S[key]?.ok || 0) + (good ? 1 : 0) };
     track(G.lang, "ex"); track(G.lang, "ear"); save(); render();
+    if (typeof mochiBus !== "undefined") mochiBus.emit(good ? "answer:right" : "answer:wrong");
   },
   "quest-claim": (el) => {
     const L = state.langs[el.dataset.l], q = weekQuests(el.dataset.l).find((x) => x.key === el.dataset.k);

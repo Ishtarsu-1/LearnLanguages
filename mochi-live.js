@@ -523,7 +523,7 @@ function mochiPointerUp() {
 function mochiAttach(root) {
   if (!root?.querySelector) return;
   let cand = root.querySelector(".mochi.live");
-  const top = !cand && root.querySelector(".lesson-shell .lesson-top, .reader > .lesson-top");
+  const top = !cand && root.querySelector(".lesson-shell .lesson-top, .reader > .lesson-top, .ex-tab .lang-header .right");
   if (!cand && top && mochiMode() !== "still") {
     const old = MochiLive.el?.dataset?.calm ? MochiLive.el : null;
     if (old && old.isConnected === false) { const holder = document.createElement("span"); holder.className = "mochi-dock"; holder.appendChild(old); top.appendChild(holder); cand = old; }

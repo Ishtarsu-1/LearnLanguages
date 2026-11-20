@@ -125,7 +125,9 @@ render1("#/lang/ko/oreille"); actions["ear-play"](); render1("#/lang/ko/oreille"
 { // HVPT : au moins 4 voix, score par contraste, contraste faible plus fréquent
   ok(speakers("ko").length >= 4, "au moins 4 voix");
   const G = ui.ear, key = EAR.ko.pairs[G.i].label;
+  MochiLive.missed = false;
   actions["ear-pick"]({ dataset: { w: EAR.ko.pairs[G.i].items.find((w) => w !== G.target) } });
+  ok(MochiLive.missed && viewLanguage("ko", "oreille").includes("ex-tab") && viewLanguage("ko", "produire").includes("ex-tab"), "Mochi présent et prévenu dans l'écoute et l'écriture");
   ok(state.langs.ko.earStats[key].n === 1 && state.langs.ko.earStats[key].ok === 0, "score par contraste");
   ok(tabEar("ko").includes("Réécoute les deux") && tabEar("ko").includes("Mes scores par son"), "réécoute + scores");
   state.langs.ko.earStats[key] = { n: 20, ok: 2 };
