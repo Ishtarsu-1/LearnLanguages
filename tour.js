@@ -169,6 +169,7 @@ document.addEventListener("keydown", (e) => { if (ui.tour && e.key === "Escape")
 addEventListener("resize", () => ui.tour && tourDraw());
 // Première visite : la visite s'ouvre d'elle-même (pas sur les pages de compte)
 function maybeStartTour() {
+  if (typeof betaNoticePending === "function" && betaNoticePending()) return; // la fenêtre d'accueil d'abord (legal.js)
   if (ui.tour || ui.tourOffered || !tourShouldShow() || /^#\/(connexion|inscription|reinitialiser|verifier|mot-de-passe|legal)/.test(location.hash)) return;
   ui.tourOffered = true;
   setTimeout(() => { if (tourShouldShow() && !ui.tour) openTour(); }, 400);

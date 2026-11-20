@@ -218,3 +218,36 @@ function legalFooter() {
 }
 // Ancien bandeau (« OK ») : on nettoie la clé qu'il laissait
 try { localStorage.removeItem("mochi-notice"); } catch {}
+
+// ---------- Fenêtre d'accueil des versions portables (ordinateur et mobile) ----------
+// Prévient que c'est une version de test et que Mochi appartient à son auteur.
+// Une seule fois par appareil (à nouveau si BETA_NOTICE_KEY change) ; la visite guidée attend.
+const BETA_NOTICE_KEY = "mochi-beta-notice-1";
+const betaNoticePending = () => { if (!features.portable) return false; try { return !localStorage.getItem(BETA_NOTICE_KEY); } catch { return true; } };
+function maybeBetaNotice() {
+  if (!betaNoticePending() || typeof document === "undefined" || document.getElementById("beta-notice") || /^#\/legal/.test(location.hash)) return;
+  const d = document.createElement("dialog");
+  d.id = "beta-notice"; d.className = "beta-notice"; d.setAttribute("aria-labelledby", "beta-notice-title");
+  d.innerHTML = `<div class="beta-notice-mochi">${mochi("small", "happy")}</div>
+    <h2 id="beta-notice-title">Bienvenue sur Mochi 🍡</h2>
+    <p class="beta-notice-tag">Version de test</p>
+    <ul>
+      <li><b>Mochi est en cours de développement.</b> Tu peux croiser des bugs, des textes pas encore relus ou des fonctions qui changent d'une version à l'autre. Ta progression peut être perdue lors d'une mise à jour.</li>
+      <li><b>Tous droits réservés © ${new Date().getFullYear()} Nathan Dubuis.</b> Le code, les exercices, les illustrations (dont la mascotte Mochi) et le nom « Mochi » m'appartiennent. Pas de copie, de revente ni de diffusion sans mon accord. Les textes de lecture sont sous licence CC BY-NC 4.0.</li>
+      <li><b>Cette version t'est confiée personnellement :</b> merci de ne pas la partager sans me demander.</li>
+      <li><b>Ton avis compte :</b> un bug, une idée ? Le bouton « Bêta · ton avis 💬 », en haut du site.</li>
+    </ul>
+    <p class="muted"><small>Détails : <a class="lnk" href="#/legal/mentions" data-beta-notice="later">mentions légales</a> · <a class="lnk" href="#/legal/cgu" data-beta-notice="later">conditions d'utilisation</a></small></p>
+    <button class="btn" type="button" data-beta-notice="ok">J'ai compris, c'est parti !</button>`;
+  // Échap ne ferme pas : il faut lire et accepter (un lien légal ferme sans enregistrer)
+  d.addEventListener("cancel", (e) => e.preventDefault());
+  d.addEventListener("click", (e) => {
+    const b = e.target.closest?.("[data-beta-notice]"); if (!b) return;
+    if (b.dataset.betaNotice === "ok") { try { localStorage.setItem(BETA_NOTICE_KEY, String(Date.now())); } catch {} }
+    d.close(); d.remove();
+    if (b.dataset.betaNotice === "ok" && typeof maybeStartTour === "function") maybeStartTour();
+  });
+  document.body.appendChild(d);
+  if (d.showModal) d.showModal(); else d.setAttribute("open", "");
+  d.querySelector('[data-beta-notice="ok"]')?.focus?.();
+}
