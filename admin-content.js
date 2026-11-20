@@ -117,13 +117,13 @@ function caLexicon() {
   const langs = Object.entries(S.d.lexicon).filter(([l, x]) => x.proposals.length || isStable(l));
   return `<p class="muted">Traductions proposées par <code>npm run content:lexicon</code>. Corrige si besoin, puis valide : le mot entre dans le lexique (et le site est reconstruit). Objectif : 1 000 lemmes par langue.</p>
     ${langs.map(([l, x]) => {
-      const page = x.proposals.slice(0, CA_PAGE);
+      const page = x.proposals.slice(0, CA_PAGE), nChecked = x.proposals.filter((p) => p.checked).length;
       return `<h2 class="section-title">${LANGUAGES[l]?.flag || ""} ${LANGUAGES[l]?.name || l} · ${num0(x.size)} lemmes · ${num0(x.proposals.length)} à relire</h2>
       ${page.length ? `<div class="card table-scroll"><table class="admin-table ca-lex-table"><tbody>${page.map((p) => `<tr>
-        <th scope="row" class="${koCls(l)}">${esc(p.lemma)}${p.unit ? ` <small class="muted">${esc(p.unit)}</small>` : ""}</th>
+        <th scope="row" class="${koCls(l)}">${esc(p.lemma)}${p.unit ? ` <small class="muted">${esc(p.unit)}</small>` : ""}${p.checked ? ` <small class="muted" title="Traduction relue par ${esc(p.checked)}">✓ relu</small>` : ""}</th>
         <td><input class="input ca-lex" data-lexl="${l}" data-lemma="${esc(p.lemma)}" maxlength="120" value="${esc(p.fr)}" aria-label="Traduction de ${esc(p.lemma)}"/></td>
         <td class="ca-lex-acts"><button class="btn small" data-act="lex-one" data-l="${l}" data-lemma="${esc(p.lemma)}" title="Valider">✓</button><button class="btn ghost small" data-act="lex-skip" data-l="${l}" data-lemma="${esc(p.lemma)}" title="Ignorer (ne pas ajouter)">✕</button></td></tr>`).join("")}</tbody></table>
-        <p class="mt-12"><button class="btn" data-act="lex-page" data-l="${l}">✓ Valider les ${page.length} affichés</button></p></div>` : `<div class="card"><p class="muted m-0">Rien à relire. ${x.size < 1000 ? "Lance <code>npm run content:lexicon -- --lang " + l + "</code> pour en proposer d'autres." : "Objectif atteint ✓"}</p></div>`}`;
+        <p class="mt-12"><button class="btn" data-act="lex-page" data-l="${l}">✓ Valider les ${page.length} affichés</button>${nChecked ? ` <button class="btn ghost" data-act="lex-checked" data-l="${l}" data-n="${nChecked}">✓ Valider les ${num0(nChecked)} déjà relus</button>` : ""}</p></div>` : `<div class="card"><p class="muted m-0">Rien à relire. ${x.size < 1000 ? "Lance <code>npm run content:lexicon -- --lang " + l + "</code> pour en proposer d'autres." : "Objectif atteint ✓"}</p></div>`}`;
     }).join("")}`;
 }
 const lexInputs = (l, lemma) => [...document.querySelectorAll(`input[data-lexl="${l}"]`)].filter((i) => !lemma || i.dataset.lemma === lemma).map((i) => ({ lemma: i.dataset.lemma, fr: i.value }));
@@ -134,6 +134,7 @@ async function lexPost(body, msg) {
 Object.assign(actions, {
   "lex-one": (el) => lexPost({ lang: el.dataset.l, action: "accept", items: lexInputs(el.dataset.l, el.dataset.lemma) }, () => "Ajouté au lexique ✓"),
   "lex-skip": (el) => lexPost({ lang: el.dataset.l, action: "skip", items: [{ lemma: el.dataset.lemma }] }, () => "Ignoré"),
+  "lex-checked": (el) => { if (confirm(`Ajouter au lexique les ${el.dataset.n} traductions déjà relues, telles quelles ?`)) lexPost({ lang: el.dataset.l, action: "accept-checked" }, (n) => `${plural(n, "mot ajouté", "mots ajoutés")} ✓`); },
   "lex-page": (el) => { if (confirm("Ajouter ces traductions au lexique, telles qu'elles sont affichées ?")) lexPost({ lang: el.dataset.l, action: "accept", items: lexInputs(el.dataset.l) }, (n) => `${plural(n, "mot ajouté", "mots ajoutés")} ✓`); },
 });
 

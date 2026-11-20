@@ -190,6 +190,11 @@ const c6 = (async () => {
   ok(!L.readJSON(path.join(tmp, "lexicon", "en.json")).inventé && fs.readFileSync(out, "utf8").includes("bouilloire (électrique)"), "lexique : rien d'inventé, site reconstruit");
   lx = CA.lexiconAct({ lang: "en", action: "skip", items: [{ lemma: "teapot" }] });
   ok(lx.proposals.length === 0 && !L.readJSON(path.join(tmp, "lexicon", "en.json")).teapot, "lexique : mot ignoré retiré des propositions");
+  // Validation en bloc des traductions déjà relues (checked) : les autres restent à relire
+  L.writeJSON(path.join(tmp, "lexicon", "en.proposals.json"), { "spoon": { fr: "cuillère", todo_review: true, checked: "claude" }, "fork": { fr: "fourchette", todo_review: true } });
+  lx = CA.lexiconAct({ lang: "en", action: "accept-checked" });
+  ok(lx.done === 1 && L.readJSON(path.join(tmp, "lexicon", "en.json")).spoon?.fr === "cuillère" && lx.proposals.length === 1 && lx.proposals[0].lemma === "fork", "lexique : validation des traductions relues, les autres restent");
+  ok(require("../tools/content-lexicon.js").wanted("en", { dir: tmp }).every((w) => w.lemma.length > 1 && w.lemma !== "playe"), "lexique : pas de lettres seules ni de lemmes mal coupés");
   await Promise.resolve().then(() => CA.lexiconAct({ lang: "xx", action: "accept", items: [] })).then(() => ok(false, "langue inconnue"), (e) => ok(e.status === 400, "lexique : langue inconnue refusée"));
   // Jamais de chemin fourni par le client
   for (const bad of ["../texts/en/en-cafe", "en-cafe/../../x", "/etc/passwd", "en-x.json"]) await Promise.resolve().then(() => CA.act(bad, { action: "meta", title: "x" })).then(() => ok(false, "chemin accepté : " + bad), (e) => ok(e.status === 400, "identifiant refusé : " + bad));

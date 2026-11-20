@@ -141,13 +141,16 @@ function create({ dir = L.CONTENT_DIR, out, analyze, onPublished = () => {}, spa
   const readProps = (lang) => { try { return L.readJSON(propFile(lang)); } catch { return {}; } };
   function lexiconView() {
     const lex = L.loadLexicon(dir);
-    return Object.fromEntries(L.LANGS.map((l) => [l, { size: Object.keys(lex[l]).length, proposals: Object.entries(readProps(l)).map(([lemma, v]) => ({ lemma, fr: v.fr, unit: v.unit || null })) }]));
+    return Object.fromEntries(L.LANGS.map((l) => [l, { size: Object.keys(lex[l]).length, proposals: Object.entries(readProps(l)).map(([lemma, v]) => ({ lemma, fr: v.fr, unit: v.unit || null, checked: v.checked || null })) }]));
   }
   function lexiconAct(b) {
     if (!L.LANGS.includes(b.lang)) throw httpError(400, "Langue inconnue.");
-    if (!["accept", "skip"].includes(b.action)) throw httpError(400, "Action inconnue.");
-    const items = Array.isArray(b.items) ? b.items.slice(0, 200) : [];
+    if (!["accept", "skip", "accept-checked"].includes(b.action)) throw httpError(400, "Action inconnue.");
     const props = readProps(b.lang), lexFile = path.join(dir, "lexicon", `${b.lang}.json`), lex = L.readJSON(lexFile);
+    // « accept-checked » : toutes les propositions déjà relues (checked), telles quelles
+    const items = b.action === "accept-checked" ? Object.keys(props).filter((k) => props[k].checked).map((lemma) => ({ lemma }))
+      : Array.isArray(b.items) ? b.items.slice(0, 200) : [];
+    if (b.action === "accept-checked") b = { ...b, action: "accept" };
     let n = 0;
     for (const it of items) {
       const lemma = String(it?.lemma || "");

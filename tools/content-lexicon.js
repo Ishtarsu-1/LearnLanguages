@@ -25,12 +25,15 @@ Never invent: if a lemma is unclear, give its most frequent meaning. Return ever
 const proposalsFile = (lang, dir = L.CONTENT_DIR) => path.join(dir, "lexicon", `${lang}.proposals.json`);
 function loadProposals(lang, dir) { try { return L.readJSON(proposalsFile(lang, dir)); } catch { return {}; } }
 
+const EN_JUNK = new Set(["al", "gan", "de", "re", "co", "la", "non", "playe", "thinke", "develope", "growe"]);
 // Mots à traduire, dans l'ordre : plan d'abord, puis fréquence
 function wanted(lang, { target = 1000, dir = L.CONTENT_DIR } = {}) {
   const lex = L.loadLexicon(dir)[lang], prop = loadProposals(lang, dir), plan = L.loadPlan(lang, dir);
   const have = (w) => lex[w] || prop[w] || P.BASE[lang]?.has(w);
   const out = [], seen = new Set();
-  const push = (w, unit) => { if (!w || seen.has(w) || have(w)) return; seen.add(w); out.push({ lemma: w, unit }); };
+  // Anglais : pas de lettres seules ni de lemmes mal coupés par la liste de fréquence (« playe », « thinke »…)
+  const junk = (w) => lang === "en" && (w.length < 2 || EN_JUNK.has(w));
+  const push = (w, unit) => { if (!w || seen.has(w) || have(w) || junk(w)) return; seen.add(w); out.push({ lemma: w, unit }); };
   for (const u of plan.units) for (const w of [...(u.new_words || []), ...(u.review_words || [])]) push(w, u.unit);
   const room = Math.max(0, target - Object.keys(lex).length - Object.keys(prop).length);
   for (const f of L.loadFreq(lang, dir)) { if (out.length >= room) break; if (!(lang === "en" && f.cog)) push(f.lemma, null); }
