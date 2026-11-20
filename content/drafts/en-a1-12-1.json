@@ -1,0 +1,54 @@
+{
+  "id": "en-a1-12-1",
+  "lang": "en",
+  "level": "A1",
+  "unit": "en-A1-12",
+  "themes": ["cuisine"],
+  "grammar": ["going-to"],
+  "title": "Le dîner du nouvel an",
+  "icon": "🍝",
+  "kind": "Dialogue",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["What are=be you going=go to cook for the party?", "Qu'est-ce que tu vas cuisiner pour la fête ?"],
+    ["I'm=i+be going=go to make pasta with tomato sauce.", "Je vais faire des pâtes à la sauce tomate."],
+    ["Great idea! Is=be it for the new year?", "Bonne idée ! C'est pour le nouvel an ?"],
+    ["Yes, right. This year, we're=we+be going=go to be twelve!", "Oui, c'est ça. Cette année, on va être douze !"],
+    ["Twelve people! May I cook with you?", "Douze personnes ! Je peux cuisiner avec toi ?"],
+    ["Sure, I have the day off. Before we start, cut the onions=onion.", "Bien sûr, j'ai ma journée. Avant de commencer, coupe les oignons."],
+    ["Before dinner, I'm=i+be going=go to buy bread and olives=olive.", "Avant le dîner, je vais acheter du pain et des olives."],
+    ["Right. And you may need a dessert.", "D'accord. Et il te faudra peut-être un dessert."],
+    ["You're=you+be right! I'm=i+be going=go to make a chocolate dessert.", "Tu as raison ! Je vais faire un dessert au chocolat."],
+    ["This year is=be going=go to be great. Have a good day off!", "Cette année va être géniale. Bonne journée de repos !"]
+  ],
+  "speakers": null,
+  "questions": [
+    { "q": "Que va préparer la personne ?", "options": ["Un gâteau au chocolat", "Des pâtes", "Une soupe"] },
+    { "q": "Pourquoi ?", "options": ["C'est l'anniversaire de sa mère", "C'est Noël", "Pour un examen"] }
+  ],
+  "gen": {
+    "engine": "Claude (écrit à la main en session)",
+    "model": "claude-opus-5-5",
+    "prompt_version": "manuel",
+    "at": "2026-11-20T11:14:28.393Z"
+  },
+  "ai_review": { "engine": null, "model": null, "ran": false, "error": "pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin" },
+  "checks": {
+    "blocking": [],
+    "warnings": ["Relecture critique : non faite (pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin)"],
+    "stats": {
+      "sentences": 10,
+      "wordsPerSentence": 9,
+      "lexiconMissing": [],
+      "coverage": 94.7,
+      "tokens": 95,
+      "newWords": ["year", "right", "may", "off", "before"],
+      "outside": [],
+      "grammar:going-to": 6,
+      "cognateShare": 21
+    },
+    "status": "orange",
+    "at": "2026-11-20T11:20:37.836Z"
+  }
+}

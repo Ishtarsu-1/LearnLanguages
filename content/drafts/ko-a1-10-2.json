@@ -1,0 +1,53 @@
+{
+  "id": "ko-a1-10-2",
+  "lang": "ko",
+  "level": "A1",
+  "unit": "ko-A1-10",
+  "themes": ["transports"],
+  "grammar": ["future"],
+  "title": "Pour venir chez moi",
+  "icon": "🗺️",
+  "kind": "Message",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["토요일|에 우리 집|에 어떻게 올=오다 거예요=것+이다?", "Comment tu vas venir chez moi samedi ?"],
+    ["지하철|이 제일 좋은=좋다 생각|이에요=이다.", "Le métro, c'est la meilleure idée."],
+    ["이호선|을 타고=타다 다섯 정거장 가요=가다.", "Tu prends la ligne 2 et tu fais cinq stations."],
+    ["우리 집|은 정거장 앞|이에요=이다. 오 분 걸려요=걸리다.", "J'habite devant la station. C'est à cinq minutes."],
+    ["지하철|은 소리|가 커요=크다. 하지만 이십 분|만 걸려요=걸리다.", "Le métro est bruyant. Mais ça ne prend que vingt minutes."],
+    ["우리 집|은 칠 층|이에요=이다. 소리|가 없어요=없다!", "J'habite au septième étage. Il n'y a pas de bruit !"],
+    ["같이 김치찌개|를 만들=만들다 거예요=것+이다.", "On fera un kimchi-jjigae ensemble."],
+    ["김치찌개|는 어때요=어떻다? 떡볶이|도 괜찮아요=괜찮다.", "Un kimchi-jjigae, ça te va ? Des tteokbokki, ça marche aussi."],
+    ["늦어도=늦다 괜찮아요=괜찮다! 저|는 집|에서 기다릴=기다리다 거예요=것+이다.", "Ce n'est pas grave si tu es en retard ! Je t'attendrai à la maison."],
+    ["제=저+의 생각|은 어때요=어떻다?", "Qu'est-ce que tu penses de mon idée ?"]
+  ],
+  "speakers": null,
+  "questions": [
+    { "q": "Quelle ligne de métro faut-il prendre ?", "options": ["La ligne 2", "La ligne 5", "La ligne 7"] },
+    { "q": "À quel étage habite la personne ?", "options": ["Au septième", "Au deuxième", "Au cinquième"] }
+  ],
+  "gen": {
+    "engine": "Claude (écrit à la main en session)",
+    "model": "claude-opus-5-5",
+    "prompt_version": "manuel",
+    "at": "2026-11-20T11:18:52.423Z"
+  },
+  "ai_review": { "engine": null, "model": null, "ran": false, "error": "pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin" },
+  "checks": {
+    "blocking": [],
+    "warnings": ["Relecture critique : non faite (pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin)"],
+    "stats": {
+      "sentences": 10,
+      "wordsPerSentence": 5.2,
+      "lexiconMissing": [],
+      "coverage": 96,
+      "tokens": 75,
+      "newWords": ["생각", "소리", "어떻다"],
+      "outside": [],
+      "grammar:future": 3
+    },
+    "status": "orange",
+    "at": "2026-11-20T11:20:37.903Z"
+  }
+}

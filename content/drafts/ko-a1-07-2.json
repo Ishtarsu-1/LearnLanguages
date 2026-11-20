@@ -1,0 +1,52 @@
+{
+  "id": "ko-a1-07-2",
+  "lang": "ko",
+  "level": "A1",
+  "unit": "ko-A1-07",
+  "themes": ["cuisine"],
+  "grammar": ["sino"],
+  "title": "Au secours, c'est trop épicé !",
+  "icon": "🌶️",
+  "kind": "Message",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["안녕하세요! 오늘 김치찌개|를 만들었어요=만들다.", "Coucou ! Aujourd'hui, j'ai fait un kimchi-jjigae."],
+    ["하지만 문제|가 있었어요=있다. 김치|를 너무 많이 넣었어요=넣다.", "Mais il y a eu un problème. J'ai mis beaucoup trop de kimchi."],
+    ["그래서 물|을 더 넣고=넣다 이십 분 끓였어요=끓이다.", "Alors j'ai rajouté de l'eau et j'ai fait bouillir vingt minutes."],
+    ["그래도 조금 매워요=맵다. 저|는 정말 몰라요=모르다.", "C'est quand même un peu épicé. Je ne sais vraiment pas quoi faire."],
+    ["두부|를 더 넣어요=넣다? 저|는 그렇게=그렇다 생각해요=생각하다.", "Je rajoute du tofu ? Moi, je pense que oui."],
+    ["@민지|는 그런 것|을 알아요=알다? 저|는 그런 것|을 못해요=못하다.", "Minji, tu sais ce genre de choses ? Moi, je n'y arrive pas."],
+    ["토요일|에 우리 집|에 와요=오다! 우리 집|은 칠 층|이에요=이다.", "Viens chez moi samedi ! J'habite au septième étage."],
+    ["지하철|에서 오 분 걸려요=걸리다.", "C'est à cinq minutes du métro."],
+    ["같이 만들어요=만들다! 문제|는 같이 생각해요=생각하다!", "On cuisine ensemble ! Les problèmes, on y réfléchira ensemble !"]
+  ],
+  "speakers": null,
+  "questions": [
+    { "q": "Quel est le problème du plat ?", "options": ["Il est trop épicé", "Il est trop salé", "Il est brûlé"] },
+    { "q": "À quel étage habite la personne ?", "options": ["Au septième", "Au troisième", "Au cinquième"] }
+  ],
+  "gen": {
+    "engine": "Claude (écrit à la main en session)",
+    "model": "claude-opus-5-5",
+    "prompt_version": "manuel",
+    "at": "2026-11-20T11:18:52.399Z"
+  },
+  "ai_review": { "engine": null, "model": null, "ran": false, "error": "pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin" },
+  "checks": {
+    "blocking": [],
+    "warnings": ["Répétition : vu une seule fois (모르다, 못하다) — chaque mot nouveau au moins 2 fois", "Relecture critique : non faite (pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin)"],
+    "stats": {
+      "sentences": 9,
+      "wordsPerSentence": 6.1,
+      "lexiconMissing": [],
+      "coverage": 93,
+      "tokens": 71,
+      "newWords": ["문제", "모르다", "생각하다", "그런", "못하다"],
+      "outside": [],
+      "grammar:sino": 3
+    },
+    "status": "orange",
+    "at": "2026-11-20T11:20:37.881Z"
+  }
+}

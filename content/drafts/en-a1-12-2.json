@@ -1,0 +1,53 @@
+{
+  "id": "en-a1-12-2",
+  "lang": "en",
+  "level": "A1",
+  "unit": "en-A1-12",
+  "themes": ["cuisine"],
+  "grammar": ["going-to"],
+  "title": "Ma sœur aux fourneaux",
+  "icon": "🥘",
+  "kind": "Récit",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["This year, my sister is=be going=go to cook for the new year.", "Cette année, ma sœur va cuisiner pour le nouvel an."],
+    ["Before the party, she's=she+be going=go to go to the market.", "Avant la fête, elle va aller au marché."],
+    ["She may buy olives=olive, garlic and tomatoes=tomato.", "Elle va peut-être acheter des olives, de l'ail et des tomates."],
+    ["I think she's=she+be right: that market is=be very good.", "Je crois qu'elle a raison : ce marché est très bien."],
+    ["I'm=i+be off on Saturday, so I'm=i+be going=go to make a dessert.", "Je ne travaille pas samedi, alors je vais faire un dessert."],
+    ["We may take the day off before the party.", "On va peut-être prendre notre journée avant la fête."],
+    ["My cousin is=be going=go to arrive at five.", "Mon cousin va arriver à cinq heures."],
+    ["He may play the piano after dinner.", "Il jouera peut-être du piano après le dîner."],
+    ["Yes, right: this year is=be going=go to be great!", "Oui, c'est sûr : cette année va être géniale !"]
+  ],
+  "speakers": null,
+  "questions": [
+    { "q": "Qui cuisine d'habitude ?", "options": ["Le père", "La mère", "La sœur"] },
+    { "q": "Où va la narratrice avant la fête ?", "options": ["Au marché", "Au cinéma", "Au bureau"] }
+  ],
+  "gen": {
+    "engine": "Claude (écrit à la main en session)",
+    "model": "claude-opus-5-5",
+    "prompt_version": "manuel",
+    "at": "2026-11-20T11:14:28.417Z"
+  },
+  "ai_review": { "engine": null, "model": null, "ran": false, "error": "pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin" },
+  "checks": {
+    "blocking": [],
+    "warnings": ["Longueur : 9.1 mots par phrase en moyenne (niveau A1 : 9 au plus)", "Relecture critique : non faite (pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin)"],
+    "stats": {
+      "sentences": 9,
+      "wordsPerSentence": 9.1,
+      "lexiconMissing": [],
+      "coverage": 94.2,
+      "tokens": 86,
+      "newWords": ["year", "before", "may", "right", "off"],
+      "outside": [],
+      "grammar:going-to": 5,
+      "cognateShare": 24
+    },
+    "status": "orange",
+    "at": "2026-11-20T11:20:37.839Z"
+  }
+}

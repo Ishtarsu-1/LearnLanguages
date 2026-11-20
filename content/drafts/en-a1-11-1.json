@@ -1,0 +1,55 @@
+{
+  "id": "en-a1-11-1",
+  "lang": "en",
+  "level": "A1",
+  "unit": "en-A1-11",
+  "themes": ["travail"],
+  "grammar": ["past-simple"],
+  "title": "Mon premier jour de barista",
+  "icon": "💼",
+  "kind": "Monologue",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["Last Sunday, I started=start as a barista in a cafe.", "Dimanche dernier, j'ai commencé comme barista dans un café."],
+    ["I was=be very nervous, but the team was=be friendly.", "J'étais très nerveuse, mais l'équipe était sympa."],
+    ["The chef said=say: \"You should take your time.\"", "La cheffe m'a dit : « Tu devrais prendre ton temps. »"],
+    ["Most people ordered=order a cappuccino or a croissant.", "La plupart des gens ont commandé un cappuccino ou un croissant."],
+    ["One client even ordered=order ten cookies=cookie!", "Un client a même commandé dix cookies !"],
+    ["At lunch, I forgot=forget the sugar in a coffee.", "Au déjeuner, j'ai oublié le sucre dans un café."],
+    ["But the client said=say: \"No problem, it's=it+be good that way.\"", "Mais le client a dit : « Pas de problème, c'est bon comme ça. »"],
+    ["Most clients=client were=be nice, and even the chef said=say I was=be great.", "La plupart des clients étaient gentils, et même la cheffe a dit que j'étais super."],
+    ["It was=be a good way to start.", "C'était une bonne façon de commencer."],
+    ["Next Sunday, I should arrive early!", "Dimanche prochain, je devrais arriver tôt !"]
+  ],
+  "speakers": null,
+  "questions": [
+    { "q": "Qu'a commencé la narratrice ?", "options": ["Un nouveau travail", "Un cours de cuisine", "Un voyage"] },
+    { "q": "Que s'est-il passé mercredi ?", "options": ["Elle s'est perdue", "Elle était malade", "Elle a fini tôt"] },
+    { "q": "Qui lui a montré le chemin ?", "options": ["Un designer", "Sa cheffe", "Un client"] }
+  ],
+  "gen": {
+    "engine": "Claude (écrit à la main en session)",
+    "model": "claude-opus-5-5",
+    "prompt_version": "manuel",
+    "at": "2026-11-20T11:14:28.334Z"
+  },
+  "ai_review": { "engine": null, "model": null, "ran": false, "error": "pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin" },
+  "checks": {
+    "blocking": [],
+    "warnings": ["Relecture critique : non faite (pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin)"],
+    "stats": {
+      "sentences": 10,
+      "wordsPerSentence": 8.5,
+      "lexiconMissing": [],
+      "coverage": 94.2,
+      "tokens": 86,
+      "newWords": ["say", "should", "most", "even", "way"],
+      "outside": [],
+      "grammar:past-simple": 8,
+      "cognateShare": 35
+    },
+    "status": "orange",
+    "at": "2026-11-20T11:20:37.829Z"
+  }
+}

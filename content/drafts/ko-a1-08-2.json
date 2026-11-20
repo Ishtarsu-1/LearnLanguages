@@ -1,0 +1,53 @@
+{
+  "id": "ko-a1-08-2",
+  "lang": "ko",
+  "level": "A1",
+  "unit": "ko-A1-08",
+  "themes": ["series"],
+  "grammar": ["past"],
+  "title": "Tu as vu la suite ?",
+  "icon": "🎬",
+  "kind": "Dialogue",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["드라마 다음 이야기|를 봤어요=보다?", "Tu as vu la suite du drama ?"],
+    ["네, 지하철|에서 봤어요=보다!", "Oui, je l'ai regardée dans le métro !"],
+    ["드라마 속 주인공|이 회사 앞|에서 울었어요=울다.", "Dans le drama, le personnage principal a pleuré devant son bureau."],
+    ["그런 경우|에|는 저|도 울어요=울다.", "Dans ce genre de situation, moi aussi je pleure."],
+    ["드라마 속 동료|도 정말 멋있었어요=멋있다.", "La collègue du drama était géniale, elle aussi."],
+    ["네, 동료 중|에서 제일 멋있어요=멋있다.", "Oui, c'est la plus géniale de ses collègues."],
+    ["다음 주|에|는 어떻게 돼요=되다?", "Qu'est-ce qui se passe la semaine prochaine ?"],
+    ["저|도 몰라요=모르다. 같이 봐요=보다!", "Je ne sais pas non plus. Regardons ensemble !"],
+    ["좋아요=좋다! 우리 집 앞|에서 만나요=만나다.", "D'accord ! On se retrouve devant chez moi."],
+    ["드라마|를 보는=보다 중|에 떡볶이|도 먹어요=먹다!", "Et pendant le drama, on mange des tteokbokki !"]
+  ],
+  "speakers": null,
+  "questions": [
+    { "q": "Où a-t-on regardé la suite ?", "options": ["Dans le métro", "Au café", "Au bureau"] },
+    { "q": "Que vont-ils manger en regardant ?", "options": ["Des tteokbokki", "Un kimchi-jjigae", "Du tofu"] }
+  ],
+  "gen": {
+    "engine": "Claude (écrit à la main en session)",
+    "model": "claude-opus-5-5",
+    "prompt_version": "manuel",
+    "at": "2026-11-20T11:18:52.407Z"
+  },
+  "ai_review": { "engine": null, "model": null, "ran": false, "error": "pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin" },
+  "checks": {
+    "blocking": [],
+    "warnings": ["Répétition : vu une seule fois (경우) — chaque mot nouveau au moins 2 fois", "Relecture critique : non faite (pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin)"],
+    "stats": {
+      "sentences": 10,
+      "wordsPerSentence": 4.5,
+      "lexiconMissing": [],
+      "coverage": 93.4,
+      "tokens": 61,
+      "newWords": ["속", "앞", "경우", "중"],
+      "outside": [],
+      "grammar:past": 4
+    },
+    "status": "orange",
+    "at": "2026-11-20T11:20:37.889Z"
+  }
+}

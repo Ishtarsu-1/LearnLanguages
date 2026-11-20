@@ -1,0 +1,53 @@
+{
+  "id": "en-a1-11-2",
+  "lang": "en",
+  "level": "A1",
+  "unit": "en-A1-11",
+  "themes": ["travail"],
+  "grammar": ["past-simple"],
+  "title": "Une longue réunion",
+  "icon": "🗓️",
+  "kind": "Dialogue",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["How was=be the meeting this morning?", "Comment s'est passée la réunion ce matin ?"],
+    ["It was=be very long, like most meetings=meeting!", "Elle était très longue, comme la plupart des réunions !"],
+    ["It started=start at ten and it was=be over at twelve.", "Elle a commencé à dix heures et elle a fini à midi."],
+    ["What did=do the director say?", "Qu'est-ce que la directrice a dit ?"],
+    ["She said=say we should work on Saturday.", "Elle a dit qu'on devrait travailler samedi."],
+    ["No way! Most people play football or rest on Saturday.", "Pas question ! Le samedi, la plupart des gens jouent au foot ou se reposent."],
+    ["I know. Even the designer said=say no.", "Je sais. Même le designer a dit non."],
+    ["Then the director even said=say: \"OK, we can work online.\"", "Alors la directrice a même dit : « D'accord, on peut travailler en ligne. »"],
+    ["That's=that+be a good way! Now you should eat lunch.", "C'est une bonne solution ! Maintenant, tu devrais aller déjeuner."]
+  ],
+  "speakers": null,
+  "questions": [
+    { "q": "Combien de temps a parlé le chef ?", "options": ["Deux heures", "Dix minutes", "Toute la journée"] },
+    { "q": "Que voulait le chef ?", "options": ["Travailler samedi", "Changer de bureau", "Une nouvelle équipe"] }
+  ],
+  "gen": {
+    "engine": "Claude (écrit à la main en session)",
+    "model": "claude-opus-5-5",
+    "prompt_version": "manuel",
+    "at": "2026-11-20T11:14:28.359Z"
+  },
+  "ai_review": { "engine": null, "model": null, "ran": false, "error": "pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin" },
+  "checks": {
+    "blocking": [],
+    "warnings": ["Relecture critique : non faite (pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin)"],
+    "stats": {
+      "sentences": 9,
+      "wordsPerSentence": 7.9,
+      "lexiconMissing": [],
+      "coverage": 93.1,
+      "tokens": 72,
+      "newWords": ["most", "say", "should", "way", "even"],
+      "outside": [],
+      "grammar:past-simple": 7,
+      "cognateShare": 15
+    },
+    "status": "orange",
+    "at": "2026-11-20T11:20:37.832Z"
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "id": "en-a1-10-2",
+  "lang": "en",
+  "level": "A1",
+  "unit": "en-A1-10",
+  "themes": ["series"],
+  "grammar": ["present-continuous"],
+  "title": "Message de Sam",
+  "icon": "💬",
+  "kind": "Message",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["Hi @Mia! I'm=i+be watching=watch your favorite series, because you love it!", "Salut Mia ! Je regarde ta série préférée, parce que tu l'adores !"],
+    ["It's=it+be very good, and the story is=be really interesting.", "Elle est très bien, et l'histoire est vraiment intéressante."],
+    ["Now, two students=student are=be going=go back to their school.", "En ce moment, deux étudiants retournent dans leur école."],
+    ["The school has=have a secret, because the professor is=be a monster!", "L'école a un secret, parce que le professeur est un monstre !"],
+    ["Well, then the episode is=be over...", "Bon, et puis l'épisode est fini…"],
+    ["Could we watch the next episode together tonight?", "On pourrait regarder l'épisode suivant ensemble ce soir ?"],
+    ["Well, I'm=i+be back home at five, and I'm=i+be making=make pasta.", "Bon, je rentre à la maison à cinq heures, et je fais des pâtes."],
+    ["Then you could eat with us! @Sam", "Comme ça, tu pourrais manger avec nous ! Sam"]
+  ],
+  "speakers": null,
+  "questions": [
+    { "q": "Pourquoi Sam écrit-il ?", "options": ["Il regarde la série de Mia", "Il a un problème au travail", "Il part en voyage"] },
+    { "q": "Que propose Sam ?", "options": ["Regarder l'épisode suivant ensemble", "Aller au cinéma", "Jouer au football"] }
+  ],
+  "gen": {
+    "engine": "Claude (écrit à la main en session)",
+    "model": "claude-opus-5-5",
+    "prompt_version": "manuel",
+    "at": "2026-11-20T11:14:28.308Z"
+  },
+  "ai_review": { "engine": null, "model": null, "ran": false, "error": "pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin" },
+  "checks": {
+    "blocking": [],
+    "warnings": ["Relecture critique : non faite (pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin)"],
+    "stats": {
+      "sentences": 8,
+      "wordsPerSentence": 8.9,
+      "lexiconMissing": [],
+      "coverage": 93.2,
+      "tokens": 73,
+      "newWords": ["because", "back", "well", "then", "could"],
+      "outside": [],
+      "grammar:present-continuous": 3,
+      "cognateShare": 23
+    },
+    "status": "orange",
+    "at": "2026-11-20T11:20:37.825Z"
+  }
+}

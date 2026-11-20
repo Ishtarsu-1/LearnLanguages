@@ -1,0 +1,54 @@
+{
+  "id": "en-a1-09-2",
+  "lang": "en",
+  "level": "A1",
+  "unit": "en-A1-09",
+  "themes": ["transports"],
+  "grammar": ["present-continuous"],
+  "title": "Le bus du samedi",
+  "icon": "🚌",
+  "kind": "Récit",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["It's=it+be Saturday, and I'm=i+be taking=take the bus to the market.", "C'est samedi, et je prends le bus pour aller au marché."],
+    ["The bus is=be slow today, so I'm=i+be watching=watch the people.", "Le bus est lent aujourd'hui, alors je regarde les gens."],
+    ["Two students=student are=be playing=play a game on a phone.", "Deux étudiants jouent à un jeu sur un téléphone."],
+    ["A nurse is=be eating=eat a croissant near the window.", "Une infirmière mange un croissant près de la fenêtre."],
+    ["I know that nurse: she lives=live in our street.", "Je connais cette infirmière : elle habite dans notre rue."],
+    ["Over there, a barista is=be opening=open his cafe.", "Là-bas, un barista ouvre son café."],
+    ["I know the barista too: his coffee is=be excellent.", "Je connais aussi le barista : son café est excellent."],
+    ["Now the game on the phone is=be over.", "Maintenant, la partie sur le téléphone est finie."],
+    ["Our stop! I need two onions=onion and some bread.", "Notre arrêt ! Il me faut deux oignons et du pain."]
+  ],
+  "speakers": null,
+  "questions": [
+    { "q": "Comment va la narratrice au travail ?", "options": ["En bus", "En train", "En taxi"] },
+    { "q": "Que font les deux étudiants ?", "options": ["Ils jouent sur un téléphone", "Ils lisent", "Ils dorment"] },
+    { "q": "Où est le café de l'homme ?", "options": ["À côté du bureau", "Dans le bus", "À la gare"] }
+  ],
+  "gen": {
+    "engine": "Claude (écrit à la main en session)",
+    "model": "claude-opus-5-5",
+    "prompt_version": "manuel",
+    "at": "2026-11-20T11:14:28.260Z"
+  },
+  "ai_review": { "engine": null, "model": null, "ran": false, "error": "pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin" },
+  "checks": {
+    "blocking": [],
+    "warnings": ["Relecture critique : non faite (pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin)"],
+    "stats": {
+      "sentences": 9,
+      "wordsPerSentence": 9,
+      "lexiconMissing": [],
+      "coverage": 95.2,
+      "tokens": 84,
+      "newWords": ["two", "know", "our", "over"],
+      "outside": [],
+      "grammar:present-continuous": 5,
+      "cognateShare": 33
+    },
+    "status": "orange",
+    "at": "2026-11-20T11:20:37.818Z"
+  }
+}

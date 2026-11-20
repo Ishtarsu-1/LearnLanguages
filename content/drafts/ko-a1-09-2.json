@@ -1,0 +1,53 @@
+{
+  "id": "ko-a1-09-2",
+  "lang": "ko",
+  "level": "A1",
+  "unit": "ko-A1-09",
+  "themes": ["cafe"],
+  "grammar": ["future"],
+  "title": "Le café de ma grande sœur",
+  "icon": "🏪",
+  "kind": "Récit",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["제=저+의 언니|는 카페|에서 일해요=일하다.", "Ma grande sœur travaille dans un café."],
+    ["언니|는 커피|를 정말 잘 만들어요=만들다.", "Elle fait vraiment bien le café."],
+    ["다음 주|부터 언니|는 자신|의 카페|에서 일할=일하다 거예요=것+이다.", "À partir de la semaine prochaine, elle travaillera dans son propre café."],
+    ["카페 이름|은 @모찌|예요=이다.", "Le café s'appelle Mochi."],
+    ["언니|는 매일 아침 일찍 출근할=출근하다 거예요=것+이다.", "Elle commencera tôt tous les matins."],
+    ["저|는 주말|에 언니|하고 같이 일할=일하다 거예요=것+이다.", "Le week-end, je travaillerai avec elle."],
+    ["언니|는 어떤 커피|를 만들=만들다 거예요=것+이다?", "Quel café va-t-elle faire ?"],
+    ["저|는 잘 몰라요=모르다. 하지만 정말 맛있을=맛있다 거예요=것+이다!", "Je ne sais pas trop. Mais ce sera sûrement délicieux !"],
+    ["언니|는 자신|의 커피|를 제일 좋아해요=좋아하다.", "Ma sœur préfère son propre café à tous les autres."],
+    ["언니|는 어떤 사람|이에요=이다? 정말 멋있는=멋있다 사람|이에요=이다!", "Quel genre de personne est ma sœur ? Quelqu'un de vraiment génial !"]
+  ],
+  "speakers": null,
+  "questions": [
+    { "q": "Où travaillera la grande sœur ?", "options": ["Dans son propre café", "Dans un bureau", "Au marché"] },
+    { "q": "Comment s'appelle le café ?", "options": ["Mochi", "Kimchi", "Séoul"] }
+  ],
+  "gen": {
+    "engine": "Claude (écrit à la main en session)",
+    "model": "claude-opus-5-5",
+    "prompt_version": "manuel",
+    "at": "2026-11-20T11:18:52.414Z"
+  },
+  "ai_review": { "engine": null, "model": null, "ran": false, "error": "pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin" },
+  "checks": {
+    "blocking": [],
+    "warnings": ["Relecture critique : non faite (pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin)"],
+    "stats": {
+      "sentences": 10,
+      "wordsPerSentence": 5.4,
+      "lexiconMissing": [],
+      "coverage": 96.3,
+      "tokens": 82,
+      "newWords": ["잘", "자신", "어떤"],
+      "outside": [],
+      "grammar:future": 5
+    },
+    "status": "orange",
+    "at": "2026-11-20T11:20:37.896Z"
+  }
+}

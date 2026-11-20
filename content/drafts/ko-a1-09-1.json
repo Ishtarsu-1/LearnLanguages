@@ -1,0 +1,52 @@
+{
+  "id": "ko-a1-09-1",
+  "lang": "ko",
+  "level": "A1",
+  "unit": "ko-A1-09",
+  "themes": ["cafe"],
+  "grammar": ["future"],
+  "title": "Quel café tu prends ?",
+  "icon": "☕",
+  "kind": "Dialogue",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["어떤 커피|를 마실=마시다 거예요=것+이다?", "Quel café tu vas prendre ?"],
+    ["저|는 아메리카노|를 마실=마시다 거예요=것+이다.", "Moi, je vais prendre un americano."],
+    ["이 카페|는 커피|가 정말 맛있어요=맛있다.", "Dans ce café, le café est vraiment bon."],
+    ["네, 여기|는 커피|를 잘 만들어요=만들다.", "Oui, ici, ils font bien le café."],
+    ["토요일|에|는 어떤 영화|를 볼=보다 거예요=것+이다?", "Quel film tu vas voir samedi ?"],
+    ["한국 영화|를 볼=보다 거예요=것+이다. 한국 문화|를 정말 좋아해요=좋아하다.", "Je vais voir un film coréen. J'adore la culture coréenne."],
+    ["저|도 한국 문화|를 좋아해요=좋아하다! 같이 가요=가다!", "Moi aussi, j'aime la culture coréenne ! Allons-y ensemble !"],
+    ["좋아요=좋다! 영화 후|에 떡볶이|도 먹을=먹다 거예요=것+이다.", "D'accord ! Après le film, on mangera aussi des tteokbokki."],
+    ["저|는 매운=맵다 것|도 잘 먹어요=먹다!", "Moi, je mange bien épicé aussi !"]
+  ],
+  "speakers": null,
+  "questions": [
+    { "q": "Que va boire la personne ?", "options": ["Un americano", "Un thé", "Un jus"] },
+    { "q": "Que vont-ils faire samedi ?", "options": ["Voir un film coréen", "Aller au marché", "Jouer au football"] }
+  ],
+  "gen": {
+    "engine": "Claude (écrit à la main en session)",
+    "model": "claude-opus-5-5",
+    "prompt_version": "manuel",
+    "at": "2026-11-20T11:18:52.411Z"
+  },
+  "ai_review": { "engine": null, "model": null, "ran": false, "error": "pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin" },
+  "checks": {
+    "blocking": [],
+    "warnings": ["Relecture critique : non faite (pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin)"],
+    "stats": {
+      "sentences": 9,
+      "wordsPerSentence": 5.3,
+      "lexiconMissing": [],
+      "coverage": 95.8,
+      "tokens": 71,
+      "newWords": ["어떤", "잘", "문화"],
+      "outside": [],
+      "grammar:future": 5
+    },
+    "status": "orange",
+    "at": "2026-11-20T11:20:37.893Z"
+  }
+}

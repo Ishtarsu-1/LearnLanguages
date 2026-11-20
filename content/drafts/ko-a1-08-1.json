@@ -1,0 +1,54 @@
+{
+  "id": "ko-a1-08-1",
+  "lang": "ko",
+  "level": "A1",
+  "unit": "ko-A1-08",
+  "themes": ["series"],
+  "grammar": ["past"],
+  "title": "Mon drama du samedi",
+  "icon": "📺",
+  "kind": "Monologue",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["토요일|에 집|에서 드라마|를 봤어요=보다.", "Samedi, j'ai regardé un drama à la maison."],
+    ["저|는 밥|도 먹었어요=먹다.", "J'ai mangé en même temps."],
+    ["드라마 속 주인공|은 회사원|이었어요=이다.", "Dans le drama, le personnage principal était employé de bureau."],
+    ["주인공|은 회사|에서 정말 바빴어요=바쁘다.", "Au bureau, il était vraiment débordé."],
+    ["동료 중|에 한=하나 명|이 주인공|을 좋아했어요=좋아하다.", "Parmi ses collègues, l'une d'elles l'aimait bien."],
+    ["동료|는 매일 아침 회사 앞|에서 커피|를 줬어요=주다.", "Cette collègue lui donnait un café tous les matins devant le bureau."],
+    ["하지만 주인공|은 몰랐어요=모르다!", "Mais lui, il ne se doutait de rien !"],
+    ["드라마 속 이야기|가 너무 재미있었어요=재미있다.", "L'histoire du drama était super intéressante."],
+    ["저|는 집 앞 공원|에서|도 생각했어요=생각하다.", "J'y ai repensé même au parc devant chez moi."],
+    ["요즘 드라마 중|에서 제일 좋아요=좋다.", "C'est mon préféré parmi les dramas du moment."]
+  ],
+  "speakers": null,
+  "questions": [
+    { "q": "Que fait le personnage principal ?", "options": ["Il est employé de bureau", "Il est étudiant", "Il est professeur"] },
+    { "q": "Que donne la collègue chaque matin ?", "options": ["Un café", "Un gâteau", "Une lettre"] },
+    { "q": "Le personnage principal le sait-il ?", "options": ["Non, il ne sait pas", "Oui, il le sait", "On ne sait pas"] }
+  ],
+  "gen": {
+    "engine": "Claude (écrit à la main en session)",
+    "model": "claude-opus-5-5",
+    "prompt_version": "manuel",
+    "at": "2026-11-20T11:18:52.404Z"
+  },
+  "ai_review": { "engine": null, "model": null, "ran": false, "error": "pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin" },
+  "checks": {
+    "blocking": [],
+    "warnings": ["Relecture critique : non faite (pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin)"],
+    "stats": {
+      "sentences": 10,
+      "wordsPerSentence": 4.6,
+      "lexiconMissing": [],
+      "coverage": 95.5,
+      "tokens": 67,
+      "newWords": ["속", "중", "앞"],
+      "outside": [],
+      "grammar:past": 6
+    },
+    "status": "orange",
+    "at": "2026-11-20T11:20:37.885Z"
+  }
+}

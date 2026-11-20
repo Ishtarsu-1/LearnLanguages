@@ -1,0 +1,53 @@
+{
+  "id": "en-a1-10-1",
+  "lang": "en",
+  "level": "A1",
+  "unit": "en-A1-10",
+  "themes": ["series"],
+  "grammar": ["present-continuous"],
+  "title": "Le dernier épisode",
+  "icon": "📺",
+  "kind": "Dialogue",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["What are=be you watching=watch?", "Tu regardes quoi ?"],
+    ["I'm=i+be watching=watch the last episode of my favorite series.", "Je regarde le dernier épisode de ma série préférée."],
+    ["Could I watch it with you?", "Je pourrais le regarder avec toi ?"],
+    ["Sure! Well, it's=it+be a little sad.", "Bien sûr ! Bon, c'est un peu triste."],
+    ["A nurse is=be going=go back to Italy, because she wants=want to live there.", "Une infirmière repart en Italie, parce qu'elle veut vivre là-bas."],
+    ["Then the doctor is=be going=go back to Italy too!", "Et puis le médecin repart en Italie, lui aussi !"],
+    ["Well, I think it's=it+be because they're=they+be in love.", "Eh bien, je crois que c'est parce qu'ils sont amoureux."],
+    ["That's=that+be amazing! Could we watch the next episode tonight?", "C'est génial ! On pourrait regarder l'épisode suivant ce soir ?"],
+    ["Sure, then we can make pasta!", "Bien sûr, et puis on peut faire des pâtes !"]
+  ],
+  "speakers": null,
+  "questions": [
+    { "q": "Que regarde la personne ?", "options": ["Le dernier épisode de sa série", "Un match de football", "Un film d'horreur"] },
+    { "q": "Pourquoi la femme pleure-t-elle ?", "options": ["Son amie ne revient pas", "Elle a perdu son téléphone", "Elle est fatiguée"] }
+  ],
+  "gen": {
+    "engine": "Claude (écrit à la main en session)",
+    "model": "claude-opus-5-5",
+    "prompt_version": "manuel",
+    "at": "2026-11-20T11:14:28.286Z"
+  },
+  "ai_review": { "engine": null, "model": null, "ran": false, "error": "pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin" },
+  "checks": {
+    "blocking": [],
+    "warnings": ["Relecture critique : non faite (pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin)"],
+    "stats": {
+      "sentences": 9,
+      "wordsPerSentence": 7.8,
+      "lexiconMissing": [],
+      "coverage": 93.3,
+      "tokens": 75,
+      "newWords": ["could", "well", "back", "because", "then"],
+      "outside": [],
+      "grammar:present-continuous": 4,
+      "cognateShare": 19
+    },
+    "status": "orange",
+    "at": "2026-11-20T11:20:37.821Z"
+  }
+}

@@ -246,5 +246,22 @@
   "삼": {"fr":"trois (sino-coréen)"},
   "오": {"fr":"cinq (sino-coréen)"},
   "칠": {"fr":"sept (sino-coréen)"},
-  "천": {"fr":"mille"}
+  "천": {"fr":"mille"},
+  "문제": {"fr":"problème"},
+  "그런": {"fr":"ce genre de, tel (그런 것 : ce genre de chose)"},
+  "못하다": {"fr":"ne pas savoir faire, ne pas y arriver"},
+  "모르다": {"fr":"ne pas savoir, ne pas connaître (contraire : 알다)"},
+  "생각하다": {"fr":"penser, réfléchir"},
+  "속": {"fr":"intérieur, dans (드라마 속 : dans le drama)"},
+  "경우": {"fr":"cas, situation (그런 경우 : dans ce cas)"},
+  "중": {"fr":"parmi, pendant (동료 중 : parmi les collègues ; 보는 중 : en train de regarder)"},
+  "어떤": {"fr":"quel, quel genre de"},
+  "잘": {"fr":"bien (잘 만들다 : bien faire)"},
+  "자신": {"fr":"soi-même (자신의 카페 : son propre café)"},
+  "문화": {"fr":"culture"},
+  "생각": {"fr":"pensée, idée (좋은 생각 : bonne idée)"},
+  "어떻다": {"fr":"être comment (어때요? : c'est comment ? ça te dit ?)"},
+  "그러다": {"fr":"faire ainsi (그래요! : d'accord, faisons ça)"},
+  "소리": {"fr":"son, bruit"},
+  "부터": {"fr":"à partir de (particule : 다음 주부터)"}
 }

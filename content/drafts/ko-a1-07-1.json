@@ -1,0 +1,53 @@
+{
+  "id": "ko-a1-07-1",
+  "lang": "ko",
+  "level": "A1",
+  "unit": "ko-A1-07",
+  "themes": ["cuisine"],
+  "grammar": ["sino"],
+  "title": "Notre premier kimchi-jjigae",
+  "icon": "🍲",
+  "kind": "Dialogue",
+  "status": "draft",
+  "source": { "type": "original", "author": "Mochi", "license": "CC BY 4.0", "note": "Écrit avec Claude (Anthropic), à relire" },
+  "sentences": [
+    ["오늘 같이 김치찌개|를 만들어요=만들다!", "Aujourd'hui, on fait un kimchi-jjigae ensemble !"],
+    ["좋아요=좋다! 하지만 저|는 그런 것|을 못해요=못하다.", "D'accord ! Mais moi, je ne sais pas faire ce genre de choses."],
+    ["문제 없어요=없다! 이십 분|만 걸려요=걸리다. 먼저 김치|를 잘라요=자르다.", "Pas de problème ! Ça ne prend que vingt minutes. D'abord, coupe le kimchi."],
+    ["돼지고기|도 넣어요=넣다? 저|는 몰라요=모르다.", "On met aussi du porc ? Je ne sais pas."],
+    ["네, 돼지고기|하고 물|을 넣어요=넣다. 그리고 십 분 끓여요=끓이다.", "Oui, on met le porc et l'eau. Puis on fait bouillir dix minutes."],
+    ["두부|도 지금 넣어요=넣다? 그것|도 몰라요=모르다.", "On met le tofu maintenant aussi ? Ça non plus, je ne sais pas."],
+    ["아니에요=아니다. 두부|는 오 분 후|에 넣어요=넣다.", "Non. Le tofu, on le met cinq minutes après."],
+    ["정말 맛있어요=맛있다! 문제|가 하나|도 없어요=없다.", "C'est vraiment bon ! Il n'y a aucun problème."],
+    ["봐요=보다! 그런 것|도 할=하다 수 있어요=있다.", "Tu vois ! Tu sais faire ce genre de choses, toi aussi."],
+    ["저|는 못한다고=못하다 생각했어요=생각하다. 다음|에|는 떡볶이|를 만들어요=만들다!", "Je pensais que je n'y arriverais pas. La prochaine fois, on fait des tteokbokki !"]
+  ],
+  "speakers": null,
+  "questions": [
+    { "q": "Que préparent-ils ?", "options": ["Un kimchi-jjigae", "Des tteokbokki", "Du riz frit"] },
+    { "q": "Quand met-on le tofu ?", "options": ["Cinq minutes après", "Au tout début", "Vingt minutes après"] }
+  ],
+  "gen": {
+    "engine": "Claude (écrit à la main en session)",
+    "model": "claude-opus-5-5",
+    "prompt_version": "manuel",
+    "at": "2026-11-20T11:18:52.390Z"
+  },
+  "ai_review": { "engine": null, "model": null, "ran": false, "error": "pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin" },
+  "checks": {
+    "blocking": [],
+    "warnings": ["Répétition : vu une seule fois (생각하다) — chaque mot nouveau au moins 2 fois", "Relecture critique : non faite (pas encore relu par Ollama (en pause) : relis-le toi-même dans l'admin)"],
+    "stats": {
+      "sentences": 10,
+      "wordsPerSentence": 5.8,
+      "lexiconMissing": [],
+      "coverage": 93.6,
+      "tokens": 78,
+      "newWords": ["그런", "못하다", "문제", "모르다", "생각하다"],
+      "outside": [],
+      "grammar:sino": 3
+    },
+    "status": "orange",
+    "at": "2026-11-20T11:20:37.878Z"
+  }
+}
