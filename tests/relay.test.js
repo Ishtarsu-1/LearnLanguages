@@ -15,9 +15,11 @@ ok(throws(() => assertNoSecrets({ FOO: "re_123abc" })) && throws(() => assertNoS
 ok(!throws(() => assertNoSecrets({ MOCHI_PORTABLE: "1", FEEDBACK_ENDPOINT: "https://beta.example", TTS_VOICES_EN: "af_heart", MOCHI_CTF_FLAGS: "abc" })), "réglages normaux acceptés");
 process.env.FEEDBACK_ENDPOINT = "https://beta.example/"; ok(feedbackEndpoint() === "https://beta.example", "adresse du site de bêta normalisée");
 process.env.FEEDBACK_ENDPOINT = "https://beta.example/api?key=1"; ok(throws(feedbackEndpoint), "adresse avec chemin refusée");
-// Le constructeur ne copie plus jamais la clé Resend
+// Le constructeur ne copie la clé Resend que sur demande explicite (--with-mail-key), jamais pour le mobile
 const src = fs.readFileSync(path.join(__dirname, "..", "tools", "portable.js"), "utf8");
-ok(!/RESEND_API_KEY:\s*process\.env/.test(src) && !/FEEDBACK_TO:\s*process\.env/.test(src), "tools/portable.js ne copie ni RESEND_API_KEY ni FEEDBACK_TO");
+const outside = src.replace(/if \(o\.mailKey\) \{[\s\S]*?\n  \}\n/, "");
+ok(outside !== src && !/RESEND_API_KEY:\s*process\.env/.test(outside) && !/FEEDBACK_TO:\s*process\.env/.test(outside), "tools/portable.js ne copie RESEND_API_KEY / FEEDBACK_TO qu'avec --with-mail-key");
+ok(/o\.os === "mobile" && o\.mailKey\) throw/.test(src), "--with-mail-key refusé pour la version mobile");
 
 server.listen(0, "127.0.0.1", async () => {
   const base = `http://127.0.0.1:${server.address().port}`;

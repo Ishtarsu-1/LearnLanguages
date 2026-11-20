@@ -63,12 +63,14 @@ npm run portable                          # Windows → dist/Mochi-portable-win.
 npm run portable -- --os mac              # macOS (Apple Silicon)
 npm run portable -- --os linux            # Linux
 npm run portable -- --with-feedback       # les avis sont relayés à ton site de bêta (FEEDBACK_ENDPOINT), qui t'écrit
+npm run portable -- --with-mail-key       # la clé Resend est DANS le paquet : les avis t'arrivent par e-mail sans site de bêta
 ```
 
 - **Dedans** : Node.js, le site, l'**audio pré-généré** des voix configurées (licence libre, au moins la moitié des phrases faites ; sinon voix de l'ordinateur), un lanceur et une notice (`LISEZMOI.txt`). Environ 90 Mo zippé avec l'audio chinois et russe, davantage avec l'anglais et le coréen.
 - **Ce qui marche** : tout le parcours (lire, réviser, exercices, écrire avec le correcteur hors ligne, Hangul, pinyin, alphabet cyrillique, thèmes, livres, histoire). La progression est dans le dossier `donnees`.
 - **Ce qui ne marche pas** : comptes, amis, défis, duels, correcteur IA ; et **tu ne vois pas leurs chiffres** dans ton admin (entonnoir, rétention). Pour ces retours-là, le tunnel reste mieux.
 - **`--with-feedback`** met seulement l'**adresse** de ton site de bêta dans le paquet (`FEEDBACK_ENDPOINT=https://…` dans `.env`) : les avis y sont envoyés, et c'est ce site qui t'écrit avec **sa** clé. **Aucune clé n'est jamais mise dans un paquet** : le build échoue si un réglage ressemble à un secret (`*_KEY`, `*_TOKEN`, `*_SECRET`, `WEBHOOK_URL`). Site éteint ou ami hors ligne : l'avis est gardé et repart tout seul (au démarrage, puis toutes les 10 minutes). Sans `--with-feedback`, les avis restent sur son ordinateur : bouton « 📤 Exporter mes avis » (fichier à t'envoyer).
+- **`--with-mail-key`** (choix assumé, sans site de bêta) : copie `RESEND_API_KEY`, `FEEDBACK_TO` (et `MAIL_FROM`) du `.env` dans le paquet ; l'ordinateur de ton ami t'envoie chaque avis par e-mail. ⚠️ Toute personne qui a le zip peut lire la clé : ne le donne qu'à des proches, et révoque la clé sur resend.com s'il circule. Refusé pour `--os mobile`.
 - ⚠️ **Ancien paquet `--with-feedback`** (avant le 20 novembre 2026) : il contenait ta clé Resend. Si tu en as envoyé un, **révoque la clé** sur resend.com et crée-en une nouvelle.
 - **Windows** affiche « Windows a protégé votre ordinateur » (lanceur non signé) : « Informations complémentaires » › « Exécuter quand même ». **macOS** : clic droit › Ouvrir la première fois.
 - **Nouvelle version** : renvoie le zip ; ton ami recopie son dossier `donnees` dans le nouveau.

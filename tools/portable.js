@@ -5,6 +5,7 @@
 //    npm run portable                          Windows (x64)
 //    npm run portable -- --os linux            Linux (x64)       --os mac   macOS (Apple Silicon)
 //    npm run portable -- --with-feedback       les avis des testeurs sont relayés à ton site de bêta (FEEDBACK_ENDPOINT)
+//    npm run portable -- --with-mail-key       la clé Resend du .env est mise dans le paquet : les avis t'arrivent par e-mail directement
 //    npm run portable -- --no-audio            sans l'audio pré-généré (paquet beaucoup plus léger)
 //    npm run portable -- --os mobile           iPhone et Android (audio réencodé en MP3 --kbps 40, 0 = tel quel) : un site sans serveur à héberger
 //      (Netlify Drop, Cloudflare Pages…), puis « Ajouter à l'écran d'accueil » : appli hors ligne.
@@ -18,6 +19,9 @@
 //  dans le paquet. Les avis y sont envoyés (route /api/feedback-site, limitée par IP), et c'est ce site
 //  qui t'écrit avec SA clé. JAMAIS de clé, jeton ou secret dans un paquet distribué : n'importe qui
 //  ayant le zip pourrait la lire (assertNoSecrets fait échouer le build).
+//  Seule exception, choisie en connaissance de cause : --with-mail-key copie RESEND_API_KEY et
+//  FEEDBACK_TO (et MAIL_FROM). Ne donner ce zip qu'à des proches, et révoquer la clé sur resend.com
+//  s'il circule. Refusé pour --os mobile (la clé serait publique sur le site).
 // ============================================================
 const fs = require("node:fs"), path = require("node:path"), os = require("node:os");
 const { execFileSync, execFile } = require("node:child_process");
@@ -41,9 +45,10 @@ const EXCLUDE = [/^tools\/portable\.js$/, /^tests\//, /^docs\//, /^deploy\//, /^
 
 function args(argv) {
   const get = (k, d) => { const i = argv.indexOf(k); return i >= 0 ? argv[i + 1] : d; };
-  const o = { ctf: argv.includes("--ctf"), os: get("--os", "win"), out: path.resolve(get("--out", path.join(ROOT, "dist"))), feedback: argv.includes("--with-feedback"), audio: !argv.includes("--no-audio"), kbps: Number(get("--kbps", 40)), zip: !argv.includes("--no-zip") };
+  const o = { ctf: argv.includes("--ctf"), os: get("--os", "win"), out: path.resolve(get("--out", path.join(ROOT, "dist"))), feedback: argv.includes("--with-feedback"), mailKey: argv.includes("--with-mail-key"), audio: !argv.includes("--no-audio"), kbps: Number(get("--kbps", 40)), zip: !argv.includes("--no-zip") };
   if (!TARGETS[o.os] && o.os !== "mobile") throw new Error("--os win | linux | mac | mobile");
   if (o.os === "mobile" && o.ctf) throw new Error("--ctf : seulement pour la version ordinateur (le défi a besoin du serveur)");
+  if (o.os === "mobile" && o.mailKey) throw new Error("--with-mail-key : pas pour la version mobile (la clé serait lisible par tous sur le site). Utilise --with-feedback.");
   return o;
 }
 const log = (s) => console.log(s);
@@ -254,7 +259,7 @@ Tout se passe dans le navigateur (de préférence Chrome ou Firefox) : interdit 
 les fichiers du dossier « app », ce serait trop facile. Bonus : une vraie faille trouvée
 dans Mochi ? Envoie-la avec le bouton 💬 (type « Un bug »).
 
-` : ""}Un avis, un bug, une idée ? Bouton « ${o.ctf ? "💬" : "Bêta · ton avis 💬"} » en haut du site.${o.feedback ? "\n(Sans internet, ton avis est gardé sur ton ordinateur et part tout seul plus tard.)" : "\n(Dans cette version, les avis restent sur ton ordinateur : bouton « Exporter mes avis » pour me les envoyer.)"}
+` : ""}Un avis, un bug, une idée ? Bouton « ${o.ctf ? "💬" : "Bêta · ton avis 💬"} » en haut du site.${o.mailKey ? "\n(Il m'arrive directement par e-mail.)" : o.feedback ? "\n(Sans internet, ton avis est gardé sur ton ordinateur et part tout seul plus tard.)" : "\n(Dans cette version, les avis restent sur ton ordinateur : bouton « Exporter mes avis » pour me les envoyer.)"}
 Merci de tester Mochi ! 🍡
 
 (Node.js ${nodeV}, licence MIT. Contenus de Mochi : CC BY-NC 4.0 (pas d'usage commercial). Crédits complets dans le site.)
@@ -299,6 +304,11 @@ async function build(o) {
     log(`  Avis relayés à ${env.FEEDBACK_ENDPOINT} (aucune clé dans le paquet)`);
   }
   assertNoSecrets(env);
+  if (o.mailKey) {
+    if (!/^re_/.test(process.env.RESEND_API_KEY || "") || !process.env.FEEDBACK_TO) throw new Error("--with-mail-key : mets RESEND_API_KEY=re_… et FEEDBACK_TO=ton@adresse dans ton .env");
+    Object.assign(env, { RESEND_API_KEY: process.env.RESEND_API_KEY, FEEDBACK_TO: process.env.FEEDBACK_TO, ...(process.env.MAIL_FROM ? { MAIL_FROM: process.env.MAIL_FROM } : {}) });
+    log("  ⚠️  Clé Resend DANS le paquet : avis envoyés par e-mail à FEEDBACK_TO. Ne donne ce zip qu'à des proches.");
+  }
   fs.writeFileSync(path.join(app, "portable.env"), `# Réglages de la version portable (générés par tools/portable.js)\n${Object.entries(env).map(([k, v]) => `${k}=${v}`).join("\n")}\n`);
   // 6. Lanceur et notice
   if (o.os === "win") fs.writeFileSync(path.join(dir, "Lancer Mochi.bat"), BAT);
