@@ -46,6 +46,7 @@ Fait (`AMELIORATIONS-v0.5.md`) : recentrage sur l'anglais et le coréen (chinois
 | **P1** | Bibliothèque de lectures graduées (lecture + écoute) (🟢 moteur + 2 livres, ✅ surlignage mot à mot ; reste : volume) | 🔴 | 🆓 | contenu, voix |
 | **P1** | Génération de textes calibrés par LLM (🟢 chaîne `content:gen` + vérification + relecture faite ; reste : textes à la demande par utilisateur) | 🔴 | 🆓/💶 | LLM + analyseur |
 | ~~**P2**~~ | ~~Mochi, la mascotte, et la collection de Mochis~~ ✅ (saveurs par thème + accessoires) | 🟡 | 🆓 | charte graphique |
+| ~~**P2**~~ | ~~Mochi vivant (`MOCHI.md`)~~ ✅ M1 à M4 + sons (respiration, regard, réactions, tap/caresse/étirement, bulles, réglages vivant/discret/immobile) ; reste M5 : saveurs animées, Mochi dans le Mochi Café (F2) et la carte à partager (F4) | 🟡 | 🆓 | mascotte |
 | ~~**P2**~~ | ~~Série flexible + quêtes hebdomadaires~~ ✅ fait (reste : récompenses cosmétiques) | 🟡 | 🆓 | — |
 | **P2** | Mode histoire (🟢 moteur + 5 chapitres par langue ; reste : la suite de l'histoire) | 🔴 | 🆓 | bibliothèque |
 | ~~**P2**~~ | ~~Application installable (PWA) + hors ligne~~ ✅ fait | 🟡 | 🆓 | — |

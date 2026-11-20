@@ -64,7 +64,7 @@ function lookCard() {
   const got = ACCESSORIES.filter((a) => accUnlocked(a, st)).length;
   return `<h2 class="section-title">Ma Mochi</h2>
     <div class="card look-card">
-      <div class="look-preview">${mochi("", "happy")}</div>
+      <div class="look-preview">${mochi("", "happy", true, { live: true })}</div>
       <div class="grow minw-240">
         <p class="mt-0 mb-4 mx-0"><b>${got} / ${ACCESSORIES.length} accessoires</b></p>
         <p class="muted mt-0 mb-12 mx-0"><small>Ils se gagnent avec les bonnes habitudes, jamais en payant. Un accessoire par emplacement (${Object.values(SLOTS).join(", ").toLowerCase()}).</small></p>
@@ -78,6 +78,10 @@ function lookCard() {
             </button>`;
           }).join("")}
         </div>
+        <p class="mt-14 mb-4 mx-0"><b>Animation</b></p>
+        <div class="choice-row" role="radiogroup" aria-label="Animation de Mochi">${[["live", "✨ Vivante"], ["calm", "🍃 Discrète"], ["still", "🪨 Immobile"]].map(([v, l]) => `<button class="choice ${(state.settings.mochiMode || "live") === v ? "active" : ""}" role="radio" aria-checked="${(state.settings.mochiMode || "live") === v}" data-act="mochi-mode" data-v="${v}">${l}</button>`).join("")}</div>
+        <p class="muted mt-4 mb-12 mx-0"><small>Discrète : elle respire et réagit à tes réponses, sans gestes au hasard. Touche-la, caresse-la ou tire-la un peu : elle aime ça.</small></p>
+        <label class="row"><input type="checkbox" ${state.settings.mochiSound ? "checked" : ""} data-set="mochiSound" /> Petits sons de Mochi (quand on la touche, capture, fin de séance)</label>
       </div>
     </div>`;
 }
@@ -90,6 +94,7 @@ function checkNewAccessories() {
   if (!fresh.length) return;
   state.settings.lookSeen = [...seen, ...fresh.map((a) => a.id)];
   save();
+  if (typeof mochiBus !== "undefined") setTimeout(() => mochiBus.emit("accessory:new", { id: fresh[0].id }), 0); // après le rendu en cours
   toast(fresh.length === 1 ? `🎁 Nouvel accessoire pour Mochi : ${fresh[0].name} ! (Profil › Ma Mochi)` : `🎁 ${fresh.length} nouveaux accessoires pour Mochi ! (Profil › Ma Mochi)`);
 }
 

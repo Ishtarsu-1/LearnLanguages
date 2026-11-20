@@ -894,3 +894,36 @@ ok(num1(1.5) === "1,5" && num1(0) === "0,0" && num0(1234).replace(/\s/g, " ") ==
   ok(!mochi("", "happy", false).includes("acc-"), "dressed=false : sans accessoires");
   state.settings.look = look0; state.langs.en.readTexts = rt0; state.langs.en.books = bk0;
 }
+// Mochi vivant (mochi-live.js, MOCHI.md §7) : machine à états, jamais triste, mouvement réduit, immobile
+{
+  const anims = [];
+  const node = () => ({ dataset: {}, style: { setProperty() {}, removeProperty() {}, getPropertyValue: () => "" }, classList: { add() {}, remove() {}, toggle() {} }, setAttribute() {}, removeAttribute() {}, innerHTML: "",
+    animate(frames, opts) { const a = { frames, opts, cancel() {}, finished: { then() {} } }; anims.push(a); return a; }, querySelectorAll: () => [] });
+  const parts = {}, el = { ...node(), dataset: { mood: "happy", live: "1" }, querySelector: (sel) => (parts[sel] ||= node()), querySelectorAll: () => [] };
+  const moods = [], setMood0 = mochiSetMood;
+  const reset = () => { mochiClearTimers(); MochiLive.current = null; MochiLive.queue = []; MochiLive.state = "idle"; MochiLive.streak = 0; anims.length = 0; moods.length = 0; };
+  Object.assign(MochiLive, { el, visible: true, baseMood: "happy" });
+  globalThis.mochiSetMood = (m, o) => { moods.push(m); return setMood0(m, o); };
+  const mode0 = state.settings.mochiMode, mm0 = window.matchMedia;
+  state.settings.mochiMode = "live"; window.matchMedia = () => ({ matches: false });
+
+  reset(); mochiBus.emit("answer:right");
+  ok(MochiLive.state === "reacting" && MochiLive.current?.kind === "right", "bonne réponse → reacting");
+  ok(anims.some((a) => a.frames.some((f) => "transform" in f)), "bonne réponse → petit saut");
+  mochiReactionEnd(); ok(MochiLive.state === "idle" && !MochiLive.current, "fin de réaction → idle");
+  reset(); mochiBus.emit("answer:wrong"); mochiReactionEnd();
+  ok(moods.length && moods.every((m) => ["curious", "focused", "happy"].includes(m)), "mauvaise réponse : jamais triste (" + moods + ")");
+  reset(); mochiBus.emit("session:done"); mochiBus.emit("answer:right");
+  ok(MochiLive.current.kind === "celebrate" && MochiLive.queue.length === 1, "une réponse n'interrompt pas une célébration (mise en file)");
+  for (let i = 0; i < 5; i++) mochiReact("gesture", { name: "look" });
+  ok(MochiLive.queue.length <= MOCHI_QUEUE_MAX, "file d'attente limitée à " + MOCHI_QUEUE_MAX);
+  reset(); window.matchMedia = () => ({ matches: true });
+  mochiBus.emit("answer:right"); mochiBus.emit("session:done");
+  ok(!anims.some((a) => a.frames.some((f) => "transform" in f)), "mouvement réduit : aucune animation de mouvement");
+  reset(); window.matchMedia = () => ({ matches: false }); state.settings.mochiMode = "still";
+  mochiArm(); mochiBus.emit("answer:right"); mochiClearTimers(["reaction"]); mochiArm();
+  ok(!Object.keys(MochiLive.timers).length && !anims.length, "Mochi immobile : aucun minuteur, aucune animation");
+  ok(mochiLine("wrong") !== mochiLine("wrong") || MOCHI_LINES.wrong.length < 2, "répliques : jamais deux fois la même de suite");
+  ok(Object.values(MOCHI_LINES).flat().every((l) => l.split(/\s+/).filter((w) => /[\p{L}\p{N}]/u.test(w)).length <= 8), "répliques de 8 mots au plus");
+  reset(); MochiLive.el = null; state.settings.mochiMode = mode0; window.matchMedia = mm0; globalThis.mochiSetMood = setMood0;
+}

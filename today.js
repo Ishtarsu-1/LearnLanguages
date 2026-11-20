@@ -188,7 +188,7 @@ function viewHome() {
   return `
   <section class="view">
     <div class="hero">
-      ${mochi()}
+      ${mochi("", "happy", true, { live: true, intro: "hello" })}
       <div>
         <span class="bubble">${greeting()} ! Je suis Mochi 🍡</span>
         <h1 class="mt-14">Quelle langue veux-tu <em>apprendre</em> aujourd'hui ?</h1>
@@ -439,9 +439,9 @@ function tabToday(lang) {
     ${isZh(lang) && typeof pinyinTodayCard === "function" ? pinyinTodayCard() : ""}
     ${lang === "ru" && typeof cyrillicTodayCard === "function" ? cyrillicTodayCard() : ""}
     ${beginner ? "" : placementOffer(lang)}
-    ${s.welcomeBack ? `<div class="card celebrate">${mochi("small")}<div><h3>Content de te revoir !</h3><p class="muted">On reprend en douceur : ${CATCHUP_FIRST} révisions aujourd'hui, le reste plus tard, réparti sur les prochains jours. Pas de nouvelles cartes en attendant.</p></div></div>` : ""}
-    ${all ? `<div class="card celebrate">${mochi("small", w.thisWeek >= WEEK_GOAL ? "proud" : "happy")}<div><h3>Séance du jour bouclée</h3><p class="muted">${w.thisWeek}/${WEEK_GOAL} jours cette semaine. Tu peux continuer, mais l'essentiel est fait.</p></div></div>`
-      : w.resting ? `<div class="card celebrate">${mochi("small", "sleepy")}<div><h3>Jour de repos possible</h3><p class="muted">Objectif de la semaine atteint. Mochi fait la sieste, ta série est en sécurité. Tu peux quand même pratiquer si tu en as envie.</p></div></div>` : ""}
+    ${s.welcomeBack ? `<div class="card celebrate">${mochi("small", "happy", true, { live: true, intro: "welcome" })}<div><h3>Content de te revoir !</h3><p class="muted">On reprend en douceur : ${CATCHUP_FIRST} révisions aujourd'hui, le reste plus tard, réparti sur les prochains jours. Pas de nouvelles cartes en attendant.</p></div></div>` : ""}
+    ${all ? `<div class="card celebrate">${mochi("small", w.thisWeek >= WEEK_GOAL ? "proud" : "happy", true, { live: true, intro: "done" })}<div><h3>Séance du jour bouclée</h3><p class="muted">${w.thisWeek}/${WEEK_GOAL} jours cette semaine. Tu peux continuer, mais l'essentiel est fait.</p></div></div>`
+      : w.resting ? `<div class="card celebrate">${mochi("small", "sleepy", true, { live: true, intro: "rest" })}<div><h3>Jour de repos possible</h3><p class="muted">Objectif de la semaine atteint. Mochi fait la sieste, ta série est en sécurité. Tu peux quand même pratiquer si tu en as envie.</p></div></div>` : ""}
     ${step1}
     ${stepCard(2, "🫳", "Capturer", s.captured > 0, s.captured ? `${plural(s.captured, "mot capturé", "mots capturés")} aujourd'hui.` : "Pendant la lecture, touche un mot inconnu pour l'ajouter.", "")}
     ${stepCard(3, "🧠", "Réviser", reviewDone && hasCards, !hasCards ? "Pas encore de cartes : elles arrivent avec tes premiers mots." : due + fresh ? `${plural(due, "carte", "cartes")} à revoir, ${plural(fresh, "nouvelle", "nouvelles")}.` : "Rien à réviser pour l'instant.",

@@ -52,7 +52,10 @@ const actions = {
   unsel: () => { ui.reader.sel = null; render(); },
   capture: () => {
     const lang = currentLang(), R = ui.reader, t = textById(lang, R.id);
-    if (captureSeg(lang, t.parsed[R.sel.s], R.sel.w, R.sel.g, t.id)) toast("Ajouté aux révisions ✓");
+    if (captureSeg(lang, t.parsed[R.sel.s], R.sel.w, R.sel.g, t.id)) {
+      toast("Ajouté aux révisions ✓");
+      if (typeof mochiBus !== "undefined") mochiBus.emit("word:captured", { from: document.querySelector?.(".w.sel")?.getBoundingClientRect?.() });
+    }
     render();
   },
   "capture-all": () => {
@@ -116,6 +119,7 @@ const actions = {
   rate: (el) => {
     const R = ui.review, id = R.queue.shift();
     const card = rateCard(id, +el.dataset.g);
+    if (typeof mochiBus !== "undefined") mochiBus.emit(+el.dataset.g === 1 ? "answer:wrong" : "answer:right", { hard: +el.dataset.g === 2 });
     if (card.due - new Date() < 20 * 60 * 1000) R.queue.push(id); // réapparaît dans la même séance
     else R.done++;
     R.revealed = false; R.typed = "";

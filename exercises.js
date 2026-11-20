@@ -171,6 +171,7 @@ function exDone(lang, ok) {
   const L = state.langs[lang];
   if (typeof noteExercise === "function") noteExercise(lang, ui.ex?.q, ok, ui.ex?.picked); // carnet d'erreurs (mistakes.js)
   if (ok) L.xp += 1;
+  if (typeof mochiBus !== "undefined") mochiBus.emit(ok ? "answer:right" : "answer:wrong");
   track(lang, "ex");
   save();
 }

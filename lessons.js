@@ -334,7 +334,7 @@ function viewReviewSession(lang) {
   if (!R.queue.length) {
     if (R.done) bumpSession(lang, "review");
     const ex = currentExercise(lang);
-    return `<section class="view lesson-shell">${top}<div class="card empty mt-30">${mochi()}
+    return `<section class="view lesson-shell">${top}<div class="card empty mt-30">${mochi("", "happy", true, { live: true, intro: "done" })}
       <h2>Révisions terminées !</h2><p class="muted">${plural(R.done, "carte revue", "cartes revues")}. FSRS a planifié les prochaines juste avant que tu les oublies.</p>
       <a class="btn" href="#/lang/${lang}/produire">Maintenant, produis une phrase 💬</a>
       <p class="muted mt-14"><small>Prochain exercice : « ${esc(ex.prompt)} »</small></p></div></section>`;
@@ -628,7 +628,7 @@ function viewQuiz(backHref, title) {
   if (!Q.queue.length) {
     const score = Q.total - Q.failed.size;
     if (!Q.finished) { Q.finished = true; Q.onDone(score); }
-    return `<section class="view lesson-shell">${top}<div class="card empty mt-30">${mochi()}
+    return `<section class="view lesson-shell">${top}<div class="card empty mt-30">${mochi("", "happy", true, { live: true, intro: "done" })}
       <h2>${esc(title)} : terminé !</h2><p class="muted">${score} / ${Q.total} du premier coup. Les erreurs ont été reposées jusqu'à la bonne réponse.</p>
       <a class="btn" href="${backHref}">Continuer</a></div></section>`;
   }
@@ -666,6 +666,7 @@ function answerQuiz(ok, picked) {
   const Q = ui.quiz, q = Q.qs[Q.queue[0]];
   Q.answer = { ok, picked };
   if (!ok) Q.failed.add(Q.queue[0]);
+  if (typeof mochiBus !== "undefined") mochiBus.emit(ok ? "answer:right" : "answer:wrong");
   if (q.audio && (ok || q.build)) speak(q.audio, q.audioLang || "ko");
 }
 function nextQuiz() {
