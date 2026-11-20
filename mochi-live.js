@@ -518,16 +518,19 @@ function mochiPointerUp() {
 }
 
 // ---------- Rattachement après chaque rendu ----------
-// Choisit le Mochi vivant de la page ; sinon, dans une vue d'apprentissage, ajoute un petit
-// Mochi en haut de page. Garde le même élément d'un rendu à l'autre quand c'est possible.
+// Choisit le Mochi vivant de la page ; sinon en ajoute un : à gauche de l'exercice (marge
+// sur grand écran) dans les exos, petit dans la barre du haut pendant la lecture.
+// Garde le même élément d'un rendu à l'autre quand c'est possible.
 function mochiAttach(root) {
   if (!root?.querySelector) return;
   let cand = root.querySelector(".mochi.live");
-  const top = !cand && root.querySelector(".lesson-shell .lesson-top, .reader > .lesson-top, .ex-tab .lang-header .right");
-  if (!cand && top && mochiMode() !== "still") {
-    const old = MochiLive.el?.dataset?.calm ? MochiLive.el : null;
-    if (old && old.isConnected === false) { const holder = document.createElement("span"); holder.className = "mochi-dock"; holder.appendChild(old); top.appendChild(holder); cand = old; }
-    else { top.insertAdjacentHTML("beforeend", `<span class="mochi-dock">${mochi("dock", "happy", true, { live: true })}</span>`); cand = top.querySelector(".mochi.live"); cand.dataset.calm = "1"; }
+  const side = !cand && (root.querySelector(".mochi-spot") || root.querySelector(".lesson-shell > .lesson-top"));
+  const host = side || (!cand && root.querySelector(".reader > .lesson-top"));
+  if (!cand && host && mochiMode() !== "still") {
+    const cls = side ? "side" : "dock", where = host.classList.contains("lesson-top") && side ? "afterend" : "beforeend";
+    const old = MochiLive.el?.dataset?.calm && MochiLive.el.classList.contains(cls) ? MochiLive.el : null;
+    if (old && old.isConnected === false) { const holder = document.createElement("span"); holder.className = `mochi-${cls}`; holder.appendChild(old); host.insertAdjacentElement(where, holder); cand = old; }
+    else { host.insertAdjacentHTML(where, `<span class="mochi-${cls}">${mochi(cls, "happy", true, { live: true })}</span>`); cand = root.querySelector(".mochi.live"); cand.dataset.calm = "1"; }
   }
   if (!cand) return mochiDetach();
   // La clé inclut les accessoires portés : si on vient d'en changer, on garde le nouveau dessin

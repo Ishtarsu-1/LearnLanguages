@@ -1098,6 +1098,13 @@ html[data-flavor="travail"] .mochi:not(.avatar-mochi):not(.flavor .mochi) { --mo
 /* Petit Mochi dans les vues d'apprentissage (mode calme) */
 .mochi-dock { flex: none; display: inline-flex; margin-left: 4px; }
 .mochi.dock { width: 40px; height: auto; }
+/* Mochi des exercices : au-dessus de l'exo, puis dans la marge gauche dès qu'il y a la place.
+   Sans « top », la position absolue garde la hauteur de l'exo. */
+.lesson-shell, .ex-tab .dash-grid > div:first-child { position: relative; }
+.mochi-side { display: flex; margin: 8px 0 4px; }
+.mochi.side { width: 64px; height: auto; max-width: none; } /* max-width 100 % l'écraserait à 0 en position absolue */
+@media (min-width: 1000px) { .lesson-shell > .mochi-side { position: absolute; right: calc(100% + 28px); margin: 24px 0 0; } .lesson-shell .mochi.side { width: 120px; } }
+@media (min-width: 1240px) { .ex-tab .mochi-side { position: absolute; right: calc(100% + 28px); margin: 0; } .ex-tab .mochi.side { width: 120px; } }
 /* Bulle de Mochi */
 .mochi-say { position: fixed; z-index: 900; max-width: min(260px, calc(100vw - 16px)); padding: 8px 12px; border-radius: var(--radius-md); background: var(--surface); color: var(--ink); box-shadow: var(--shadow-2); border: 1px solid var(--border); font-size: var(--text-sm); font-weight: 600; pointer-events: none; }
 /* Mot capturé qui vole jusqu'à Mochi */

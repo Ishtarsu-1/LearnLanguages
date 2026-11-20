@@ -225,7 +225,7 @@ const TABS = {
 // Vues des onglets (d'autres fichiers, comme exercises.js, peuvent en ajouter)
 const TAB_VIEWS = {};
 const GATED_TABS = ["lire", "revisions", "produire", "mots"]; // coréen : après le Hangul
-const EX_TABS = ["exercices", "produire", "oreille"]; // Mochi se pose dans l'en-tête (mochi-live.js)
+const EX_TABS = ["exercices", "produire", "oreille"]; // Mochi se pose à gauche de l'exo (mochi-live.js)
 // Admin (tools/admin.js) : toutes les leçons sont ouvertes, sans prérequis
 const isAdmin = () => !!account?.is_admin;
 const hangulGate = (lang) => isKo(lang) && !state.langs.ko.hangulDone && !isAdmin();
@@ -299,6 +299,7 @@ function viewLanguage(lang, tab) {
       <div>
         ${langNav(lang, tab)}
         ${fsrsWarning()}
+        ${EX_TABS.includes(tab) && !gated ? '<span class="mochi-spot"></span>' : ""}
         ${body}
       </div>
       <aside class="side">
