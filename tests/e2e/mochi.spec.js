@@ -76,3 +76,27 @@ test("Mochi vivant : saveur portée et effets bien placés", async ({ page }) =>
   expect(errors).toEqual([]);
   expect(await page.evaluate(() => window.__csp)).toEqual([]);
 });
+
+// Accessoires : porter un accessoire dans le profil l'affiche tout de suite sur Mochi
+// (régression : le Mochi vivant d'avant le rendu, sans l'accessoire, était remis en place)
+test("Mochi : un accessoire porté s'affiche tout de suite", async ({ page }) => {
+  const all = ["bow", "beanie", "scarf", "cap", "crown", "glasses", "headphones", "chef", "hanbok"];
+  const errors = await prepare(page, { settings: { tourDone: true, lookSeen: all } });
+  await page.goto("/#/profil"); await settle(page);
+  const preview = page.locator(".look-preview .mochi");
+  await page.locator('[data-act="acc-wear"][data-id="beanie"]').click();
+  await expect(preview.locator(".mo-acc .acc-beanie")).toHaveCount(1);
+  await page.locator('[data-act="acc-wear"][data-id="glasses"]').click();
+  await expect(preview.locator(".mo-face-acc .acc-glasses")).toHaveCount(1);
+  await expect(preview.locator(".mo-acc .acc-beanie")).toHaveCount(1);
+  await page.waitForTimeout(900);
+  await preview.screenshot({ path: "test-results/mochi-accessoires.png" });
+  // Retirer : il disparaît
+  await page.locator('[data-act="acc-wear"][data-id="beanie"]').click();
+  await expect(preview.locator(".acc-beanie")).toHaveCount(0);
+  // Sur l'accueil aussi
+  await page.goto("/#/"); await settle(page);
+  await expect(page.locator(".hero .mochi.live .acc-glasses")).toHaveCount(1);
+  expect(errors).toEqual([]);
+  expect(await page.evaluate(() => window.__csp)).toEqual([]);
+});

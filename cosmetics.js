@@ -21,40 +21,79 @@ function lookStats() {
 }
 
 // slot : un accessoire par emplacement. need : [statistique, seuil, libellé]
+// Dessins dans le repère de mochi() (140 × 120) : le haut de la tête est en (70, 24), les yeux
+// vers y = 79, le bas du corps en y = 106. Aplats + contour à l'encre de Mochi (charte §8).
+const ACC_KNIT = [30, 38, 46, 54, 62, 70, 78, 86, 94, 102, 110].map((x) => `M${x} 42 v9`).join(" ");
+const accFlower = (x, y, petal, i) => [0, 72, 144, 216, 288].map((a) => {
+  const r = ((a + i * 20) * Math.PI) / 180;
+  return `<circle cx="${(x + Math.cos(r) * 4.3).toFixed(1)}" cy="${(y + Math.sin(r) * 4.3).toFixed(1)}" r="3.9" class="${petal}"/>`;
+}).join("") + `<circle cx="${x}" cy="${y}" r="2.7" class="acc-yuzu"/>`;
+const CROWN_SPOTS = [[27, 46], [39, 33], [54, 25.5], [70, 23], [86, 25.5], [101, 33], [113, 46]];
 const ACCESSORIES = [
   { id: "bow", slot: "head", name: "Nœud", need: ["missions", 1, "Réussis une mission du mode histoire"],
-    svg: `<path d="M30 40 l14 -8 l-2 14 z M30 40 l-14 -8 l2 14 z" class="acc-pink"/><circle cx="30" cy="40" r="4" class="acc-pink-dark"/>` },
+    svg: `<g transform="translate(98 34) rotate(16)">
+      <path d="M-2 4 L-9 17 L-4.5 15.5 L-2.5 19.5 Z M2 4 L9 17 L4.5 15.5 L2.5 19.5 Z" class="acc-pink-dark"/>
+      <path d="M0 0 C-5 -12 -22 -12 -20 0 C-22 12 -5 12 0 0 Z M0 0 C5 -12 22 -12 20 0 C22 12 5 12 0 0 Z" class="acc-pink"/>
+      <path d="M-6 -3 C-10 -6 -14 -5 -15.5 -1.5 M6 -3 C10 -6 14 -5 15.5 -1.5" class="acc-line"/>
+      <rect x="-4.5" y="-5.5" width="9" height="11" rx="3.5" class="acc-pink-dark"/></g>` },
   { id: "beanie", slot: "head", name: "Bonnet", need: ["quests", 1, "Réussis une quête de la semaine"],
-    svg: `<path d="M34 42 C36 12 104 12 106 42 Z" class="acc-pink"/><rect x="30" y="38" width="80" height="11" rx="5.5" class="acc-pink-dark"/><circle cx="70" cy="13" r="7" class="acc-cream"/>` },
+    svg: `<path d="M27 46 C24 2 116 2 113 46 Z" class="acc-pink"/>
+      <path d="M50 43 C47 28 52 17 60 11 M70 43 V8 M90 43 C93 28 88 17 80 11" class="acc-knit"/>
+      <rect x="22" y="39" width="96" height="14" rx="7" class="acc-pink-dark"/><path d="${ACC_KNIT}" class="acc-line-light"/>
+      <circle cx="70" cy="7" r="8" class="acc-cream"/><path d="M66 4 q2 -2 4 0 M69 9 q2 -2 4 0" class="acc-line-soft"/>` },
   { id: "scarf", slot: "neck", name: "Écharpe", need: ["quests", 3, "Réussis 3 quêtes de la semaine"],
-    svg: `<path d="M16 94 C40 101 100 101 124 94 L123 102 C100 110 40 110 17 102 Z" class="acc-kaki"/><path d="M92 102 l5 15 h10 l-3 -16 z" class="acc-kaki"/><path d="M93 108 h11 M95 113 h10" class="acc-line-light"/>` },
+    svg: `<path d="M97 100 L101 118 L113 116.5 L106 99 Z" class="acc-kaki"/><path d="M102.5 118 v3.5 M106.5 117.5 v3.5 M110.5 117 v3.5" class="acc-line"/>
+      <path d="M100 106 l9 -1.4 M101.4 112 l9.4 -1.4" class="acc-line-light"/>
+      <path d="M13 90 C40 99 100 99 127 90 L127 100.5 C100 109.5 40 109.5 13 100.5 Z" class="acc-kaki"/>
+      <path d="M13 95.2 C40 104.2 100 104.2 127 95.2" class="acc-line-light"/>
+      <ellipse cx="100" cy="102" rx="7" ry="6" class="acc-kaki-dark"/>` },
   { id: "cap", slot: "head", name: "Casquette", need: ["quests", 6, "Réussis 6 quêtes de la semaine"],
-    svg: `<path d="M40 40 C42 16 98 16 100 40 Z" class="acc-blue"/><path d="M95 37 C110 35 124 39 129 46 C116 47 104 45 95 43 Z" class="acc-blue-dark"/><circle cx="70" cy="19" r="3" class="acc-blue-dark"/>` },
+    svg: `<path d="M94 39 C111 34 128 38 133 46 C119 49.5 106 48 94 45 Z" class="acc-blue-deep"/>
+      <path d="M33 44 C31 10 109 10 107 44 Z" class="acc-blue"/>
+      <path d="M70 15 V44 M52 19 C47 28 46 36 47 44 M88 19 C93 28 94 36 93 44" class="acc-line-light"/>
+      <circle cx="70" cy="15" r="3.5" class="acc-blue-deep"/><path d="M70 27 l1.8 3.6 4 .6 -2.9 2.8 .7 4 -3.6 -1.9 -3.6 1.9 .7 -4 -2.9 -2.8 4 -.6z" class="acc-yuzu"/>` },
   { id: "crown", slot: "head", name: "Couronne de fleurs", need: ["weeks", 1, "Réussis une semaine régulière (5 jours sur 7)"],
-    svg: [[34, 44], [50, 33], [70, 28], [90, 33], [106, 44]].map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="6.5" class="${i % 2 ? "acc-cream" : "acc-pink"}"/><circle cx="${x}" cy="${y}" r="2.4" class="acc-yuzu"/>`).join("") },
+    svg: `<path d="M23 50 C29 27 50 20 70 20 C90 20 111 27 117 50" class="acc-vine"/>`
+      + [[33, 38, -40], [47, 28, -22], [62, 22, -8], [78, 22, 8], [93, 28, 22], [107, 38, 40]].map(([x, y, r]) => `<ellipse cx="${x}" cy="${y}" rx="4.5" ry="2.2" transform="rotate(${r} ${x} ${y})" class="acc-leaf"/>`).join("")
+      + CROWN_SPOTS.map(([x, y], i) => accFlower(x, y - 1, ["acc-pink-soft", "acc-cream", "acc-ube-soft"][i % 3], i)).join("") },
   { id: "glasses", slot: "face", name: "Lunettes rondes", need: ["reads", 10, "Lis 10 textes ou chapitres"],
-    svg: `<circle cx="57" cy="79" r="9" class="acc-frame"/><circle cx="83" cy="79" r="9" class="acc-frame"/><path d="M66 79 h8 M48 77 l-8 -3 M92 77 l8 -3" class="acc-frame"/>` },
+    svg: `<circle cx="57" cy="79" r="9.5" class="acc-lens"/><circle cx="83" cy="79" r="9.5" class="acc-lens"/>
+      <path d="M51.5 74.5 q2.5 -3 6 -3 M77.5 74.5 q2.5 -3 6 -3" class="acc-shine"/>
+      <circle cx="57" cy="79" r="9.5" class="acc-frame"/><circle cx="83" cy="79" r="9.5" class="acc-frame"/>
+      <path d="M66.5 78 q3.5 -3.5 7 0 M47.5 77 L38 72.5 M92.5 77 L102 72.5" class="acc-frame"/>` },
   { id: "headphones", slot: "head", name: "Casque audio", need: ["ear", 100, "Fais 100 essais de paires de sons"],
-    svg: `<path d="M22 72 C20 22 120 22 118 72" class="acc-band"/><rect x="12" y="60" width="16" height="24" rx="7" class="acc-ube"/><rect x="112" y="60" width="16" height="24" rx="7" class="acc-ube"/>` },
+    svg: `<path d="M19 70 C14 10 126 10 121 70" class="acc-band"/><path d="M19 70 C14 10 126 10 121 70" class="acc-band-in"/>
+      <rect x="8" y="57" width="17" height="28" rx="8" class="acc-ube"/><rect x="115" y="57" width="17" height="28" rx="8" class="acc-ube"/>
+      <rect x="20" y="61" width="6" height="20" rx="3" class="acc-ube-soft"/><rect x="114" y="61" width="6" height="20" rx="3" class="acc-ube-soft"/>
+      <circle cx="15" cy="71" r="2.6" class="acc-yuzu"/><circle cx="125" cy="71" r="2.6" class="acc-yuzu"/>` },
   { id: "chef", slot: "head", name: "Toque de chef", need: ["prod", 30, "Écris 30 phrases (onglet Produire)"],
-    svg: `<rect x="44" y="30" width="52" height="14" rx="3" class="acc-cream"/><path d="M44 32 C30 30 30 8 50 12 C54 0 86 0 90 12 C110 8 110 30 96 32 Z" class="acc-cream"/>` },
+    svg: `<path d="M43 37 C27 35 27 9 48 12 C50 -4 90 -4 92 12 C113 9 113 35 97 37 Z" class="acc-cream"/>
+      <path d="M57 36 C55 28 56 20 59 14 M70 36 V10 M83 36 C85 28 84 20 81 14" class="acc-line-soft"/>
+      <rect x="41" y="33" width="58" height="13" rx="4" class="acc-cream"/><path d="M45 39.5 H95" class="acc-line-soft"/>` },
   { id: "hanbok", slot: "neck", name: "Col de hanbok", need: ["hangul", 1, "Termine le module Hangul"],
-    svg: `<path d="M18 95 C40 102 100 102 122 95 L121 104 C100 111 40 111 19 104 Z" class="acc-ube"/><path d="M50 97 L70 108 L90 97" class="acc-line-light"/><path d="M82 103 L77 119 M82 103 L89 118" class="acc-ribbon"/><path d="M82 103 C74 96 67 101 72 106 C76 109 80 106 82 103 Z M82 103 C88 97 95 101 91 106 C88 109 84 106 82 103 Z" class="acc-pink"/>` },
+    svg: `<path d="M15 92 C40 100.5 100 100.5 125 92 L124 102.5 C100 111 40 111 16 102.5 Z" class="acc-ube"/>
+      <path d="M50 97.5 L70 112 L90 97.5 L84 97 L70 106.5 L56 97 Z" class="acc-cream"/>
+      <path d="M84 104 L79 120 M84 104 L92 119" class="acc-ribbon"/>
+      <path d="M84 104 C75 95 66 101 73 107.5 C77 110.5 81.5 107.5 84 104 Z M84 104 C90 96.5 98 100.5 94 106.5 C91 110 86.5 107.5 84 104 Z" class="acc-pink"/>
+      <circle cx="84" cy="104" r="2.6" class="acc-pink-dark"/>` },
 ];
 const SLOTS = { head: "Tête", neck: "Cou", face: "Visage" };
 const accessoryById = (id) => ACCESSORIES.find((a) => a.id === id);
-const accUnlocked = (a, st = lookStats()) => isAdmin() || st[a.need[0]] >= a.need[1];
+// Un accessoire gagné le reste (lookSeen), même si la statistique redescend (série de semaines cassée…)
+const accUnlocked = (a, st = lookStats()) => isAdmin() || (state.settings.lookSeen || []).includes(a.id) || st[a.need[0]] >= a.need[1];
 const myLook = () => state.settings.look || {};
 
 // Calque d'accessoires ajouté par mochi() (ui.js). La tête suit la forme de Mochi selon l'humeur.
-const HEAD_DY = { proud: -6, sleepy: 15 };
+// Décalages calés sur MOCHI_BODY (ui.js) : tête à y = 16 (fière), 24 (normale), 40 (endormie)
+const HEAD_DY = { proud: -8, sleepy: 16 };
 function mochiAccessories(mood, slots = null) {
   const look = myLook(), st = lookStats();
   return Object.entries(look).map(([slot, id]) => {
     const a = accessoryById(id);
     if (!a || a.slot !== slot || (slots && !slots.includes(slot)) || !accUnlocked(a, st)) return "";
     const dy = slot === "head" ? HEAD_DY[mood] || 0 : mood === "sleepy" ? 4 : 0;
-    return `<g class="acc acc-${a.id}" transform="translate(0 ${dy})">${a.svg}</g>`;
+    // Groupe extérieur : placement selon l'humeur ; groupe intérieur : animations (mochi-live.js)
+    return `<g class="acc acc-${a.id}" transform="translate(0 ${dy})"><g class="acc-in">${a.svg}</g></g>`;
   }).join("");
 }
 
@@ -99,7 +138,7 @@ function lookCard() {
           ${ACCESSORIES.map((a) => {
             const ok = accUnlocked(a, st), worn = look[a.slot] === a.id, [k, n, label] = a.need;
             return `<button class="acc-item ${worn ? "worn" : ""} ${ok ? "" : "locked"}" data-act="${ok ? "acc-wear" : "acc-locked"}" data-id="${a.id}" aria-pressed="${worn}" title="${esc(ok ? (worn ? "Retirer" : "Porter") : label)}">
-              <svg viewBox="0 0 140 120" aria-hidden="true"><path d="M12 84 C12 40 38 24 70 24 C102 24 128 40 128 84 C128 104 106 106 70 106 C34 106 12 104 12 84 Z" class="acc-ghost"/><g class="acc">${a.svg}</g></svg>
+              <svg viewBox="0 -6 140 128" aria-hidden="true"><path d="${MOCHI_BODY.base}" class="mo-body"/>${MOCHI_FACES.happy.eyes}${MOCHI_FACES.happy.mouth}<g class="acc">${a.svg}</g></svg>
               <b>${esc(a.name)}</b>
               <small class="muted">${ok ? (worn ? "Porté ✓" : SLOTS[a.slot]) : `🔒 ${Math.min(st[k], n)} / ${n}`}</small>
             </button>`;
@@ -131,8 +170,10 @@ Object.assign(actions, {
     const a = accessoryById(el.dataset.id);
     if (!a || !accUnlocked(a)) return;
     const look = { ...myLook() };
-    if (look[a.slot] === a.id) delete look[a.slot]; else look[a.slot] = a.id;
+    const wearing = look[a.slot] !== a.id;
+    if (wearing) look[a.slot] = a.id; else delete look[a.slot];
     state.settings.look = look; save(); render();
+    if (wearing && typeof mochiBus !== "undefined") setTimeout(() => mochiBus.emit("accessory:worn", { id: a.id }), 0);
   },
   "mochi-flavor": (el) => {
     const id = el.dataset.v || "";

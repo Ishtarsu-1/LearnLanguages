@@ -21,7 +21,7 @@ const MOCHI_REACTIONS = {
   celebrate: { prio: 3, ms: 1200 }, milestone: { prio: 3, ms: 1500 }, accessory: { prio: 3, ms: 800 },
   welcome: { prio: 2, ms: 1000 }, right: { prio: 2, ms: 500 }, streak: { prio: 2, ms: 700 }, wrong: { prio: 2, ms: 600 },
   capture: { prio: 2, ms: 600 }, tap: { prio: 2, ms: 450 }, laugh: { prio: 2, ms: 1600 }, pet: { prio: 2, ms: 900 },
-  flavor: { prio: 2, ms: 900 },
+  flavor: { prio: 2, ms: 900 }, worn: { prio: 2, ms: 900 },
   gesture: { prio: 1, ms: 900 }, detail: { prio: 1, ms: 600 },
 };
 const MOCHI_IDLE_SLEEP_MS = 2 * 60 * 1000, MOCHI_BUBBLE_GAP_MS = 2 * 60 * 1000, MOCHI_QUEUE_MAX = 3;
@@ -230,6 +230,7 @@ const MOCHI_PLAY = {
     if (d.fill) mochiFlavorFade(d.fill);
     mochiBubble(mochiLine(d.line || "milestone"), { important: true });
   },
+  worn: (d) => { mochiSetMood("happy"); mochiDropAccessory(d.id, true); mochiSound("tap"); mochiBubble(mochiLine("worn"), { important: true }); },
   accessory: (d) => { mochiSetMood("surprised"); mochiDropAccessory(d.id); mochiBubble(mochiLine("accessory"), { important: true }); },
   welcome: () => {
     mochiSetMood("surprised");
@@ -276,14 +277,27 @@ function mochiFlavorFade(fill) {
   if (a) a.finished.then(() => over.remove(), () => over.remove()); else over.remove();
 }
 // Nouvel accessoire : il tombe du haut et rebondit sur la tête
-function mochiDropAccessory(id) {
+// L'accessoire tombe du haut et rebondit sur la tête. worn : il est déjà dessiné (on vient de le
+// mettre), on anime son groupe intérieur ; sinon (déblocage) on l'affiche le temps de l'animation.
+function mochiDropAccessory(id, worn = false) {
   const a = typeof accessoryById === "function" && accessoryById(id), acc = moPart(".mo-acc");
   if (!a || !acc || typeof document.createElementNS !== "function") return;
-  const g = document.createElementNS(SVGNS, "g");
-  g.setAttribute("class", `acc acc-${a.id}`); g.innerHTML = a.svg;
-  (a.slot === "face" ? moPart(".mo-face-acc") || acc : acc).appendChild(g);
-  const an = mochiAnimate(g, [{ transform: "translateY(-80px)", opacity: 0 }, { transform: "translateY(4px)", opacity: 1, offset: 0.6 }, { transform: "translateY(-6px)", offset: 0.8 }, { transform: "translateY(0)" }], { duration: 800, easing: "ease-in" });
-  mochiLater("drop", () => { g.remove(); mochiSetMood("proud"); mochiSetMood("happy"); }, 900);
+  const fall = a.slot === "face"
+    ? [{ transform: "translateY(-14px) scale(1.15)", opacity: 0 }, { transform: "translateY(2px) scale(0.97)", opacity: 1, offset: 0.6 }, { transform: "translateY(0) scale(1)" }]
+    : a.slot === "neck"
+      ? [{ transform: "scaleX(1.25)", opacity: 0 }, { transform: "scaleX(0.94)", opacity: 1, offset: 0.55 }, { transform: "scaleX(1.03)", offset: 0.8 }, { transform: "scaleX(1)" }]
+      : [{ transform: "translateY(-80px)", opacity: 0 }, { transform: "translateY(4px)", opacity: 1, offset: 0.6 }, { transform: "translateY(-6px)", offset: 0.8 }, { transform: "translateY(0)" }];
+  let g = worn ? MochiLive.el?.querySelector?.(`.acc-${a.id} .acc-in`) : null;
+  if (!g) {
+    if (worn) return;
+    g = document.createElementNS(SVGNS, "g");
+    g.setAttribute("class", `acc acc-${a.id}`); g.innerHTML = a.svg;
+    (a.slot === "face" ? moPart(".mo-face-acc") || acc : acc).appendChild(g);
+    mochiLater("drop", () => { g.remove(); mochiSetMood("proud"); mochiSetMood("happy"); }, 900);
+  }
+  const an = mochiAnimate(g, fall, { duration: 800, easing: "ease-in" });
+  // Atterrissage : Mochi s'écrase un peu sous le choc
+  if (a.slot === "head") mochiAnimate(moPart(".mo-squash"), [{ transform: "scale(1,1)" }, { transform: "scale(1,1)", offset: 0.55 }, { transform: "scale(1.08,0.92)", offset: 0.7 }, { transform: "scale(1,1)" }], { duration: 800, easing: SQUISH });
   if (!an) mochiAnimate(g, [{ opacity: 0 }, { opacity: 1 }], { duration: 150 });
 }
 
@@ -516,7 +530,9 @@ function mochiAttach(root) {
     else { top.insertAdjacentHTML("beforeend", `<span class="mochi-dock">${mochi("dock", "happy", true, { live: true })}</span>`); cand = top.querySelector(".mochi.live"); cand.dataset.calm = "1"; }
   }
   if (!cand) return mochiDetach();
-  const key = [...cand.classList].filter((c) => !c.startsWith("mochi-") && c !== "breathe" && c !== "paused").join(" ") + (cand.dataset.intro || "");
+  // La clé inclut les accessoires portés : si on vient d'en changer, on garde le nouveau dessin
+  const key = [...cand.classList].filter((c) => !c.startsWith("mochi-") && c !== "breathe" && c !== "paused").join(" ") + (cand.dataset.intro || "")
+    + (cand.dataset.bare ? "" : `|${JSON.stringify(state.settings.look || {})}`);
   const base = cand.dataset.mood || "happy";
   if (MochiLive.el && MochiLive.el !== cand && MochiLive.key === key && !MochiLive.el.isConnected && !cand.dataset.calm) {
     cand.replaceWith(MochiLive.el); // même Mochi qu'avant le rendu : ses animations continuent
@@ -598,6 +614,7 @@ mochiBus.on("session:done", () => mochiReact("celebrate"));
 mochiBus.on("milestone", (d) => mochiReact("milestone", d));
 mochiBus.on("accessory:new", (d) => mochiReact("accessory", d));
 mochiBus.on("flavor:worn", (d) => mochiReact("flavor", d));
+mochiBus.on("accessory:worn", (d) => mochiReact("worn", d));
 mochiBus.on("audio:start", () => {
   MochiLive.audio++;
   if (mochiLevel() !== "full" || MochiLive.timers.sway) return;

@@ -578,7 +578,13 @@ console.log(fails ? `${fails} échec(s) (exercices)` : "OK : exercices");
   actions["acc-wear"]({ dataset: { id: "beanie" } });
   ok(state.settings.look.head === "beanie" && mochi("", "happy").includes("acc-beanie"), "bonnet porté partout");
   ok(!mochi("", "happy", false).includes("acc-beanie"), "pas sur les Mochis de collection");
-  ok(mochi("", "sleepy").includes("translate(0 15)"), "le chapeau suit la forme (endormie)");
+  ok(mochi("", "sleepy").includes(`translate(0 ${HEAD_DY.sleepy})`), "le chapeau suit la forme (endormie)");
+  { // Un accessoire gagné reste débloqué même si la statistique redescend
+    const seen0 = state.settings.lookSeen, adm = globalThis.isAdmin; globalThis.isAdmin = () => false;
+    state.settings.lookSeen = ["crown"]; ok(accUnlocked(accessoryById("crown"), { weeks: 0 }), "accessoire gagné : reste débloqué");
+    state.settings.lookSeen = []; ok(!accUnlocked(accessoryById("crown"), { weeks: 0 }), "accessoire jamais gagné : verrouillé");
+    state.settings.lookSeen = seen0; globalThis.isAdmin = adm;
+  }
   // Un seul accessoire par emplacement
   L.quests["2026-11-16:prod"] = true; L.quests["2026-11-16:ear"] = true; L.quests["2026-11-23:read"] = true; L.quests["2026-11-23:rev"] = true; L.quests["2026-11-23:min"] = true;
   actions["acc-wear"]({ dataset: { id: "cap" } });

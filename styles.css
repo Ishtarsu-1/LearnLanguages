@@ -750,16 +750,28 @@ code { background: var(--surface-2); padding: 2px 6px; border-radius: var(--radi
 .type-form { max-width: 360px; margin: 16px auto 0; }
 
 /* Accessoires de Mochi (cosmetics.js) : aplats + contour encre fin, comme Mochi (charte §8) */
-.acc path, .acc rect, .acc circle { stroke: var(--mochi-ink); stroke-width: 1.5; stroke-linejoin: round; }
-.acc-pink { fill: var(--sakura-500); } .acc-pink-dark { fill: var(--sakura-600); }
-.acc-cream { fill: var(--acc-cream); } .acc-yuzu { fill: var(--yuzu-400); stroke: none !important; }
-.acc-kaki { fill: var(--kaki-700); } .acc-blue { fill: var(--blue-600); } .acc-blue-dark { fill: var(--mochi-ink); }
-.acc-ube { fill: var(--ube-600); }
-.acc-frame { fill: none; stroke-width: 2.5 !important; }
-.acc-band { fill: none; stroke-width: 5 !important; stroke-linecap: round; }
-.acc-line-light { fill: none; stroke: var(--acc-cream) !important; stroke-width: 2 !important; stroke-linecap: round; }
-.acc-ribbon { fill: none; stroke: var(--sakura-500) !important; stroke-width: 3 !important; stroke-linecap: round; }
+.acc path, .acc rect, .acc circle, .acc ellipse { stroke: var(--mochi-ink); stroke-width: 1.5; stroke-linejoin: round; stroke-linecap: round; }
+.acc-pink { fill: var(--sakura-500); } .acc-pink-dark { fill: var(--sakura-600); } .acc-pink-soft { fill: #F6C1D3; }
+.acc-cream { fill: var(--acc-cream); } .acc-yuzu { fill: var(--yuzu-400); }
+.acc-kaki { fill: var(--kaki-700); } .acc-kaki-dark { fill: #7E3608; }
+.acc-blue { fill: var(--blue-600); } .acc-blue-deep { fill: #1F3F86; }
+.acc-ube { fill: var(--ube-600); } .acc-ube-soft { fill: #CDB8EE; }
+.acc-leaf { fill: #8CC27E; }
+.acc-lens { fill: #DDEBFF; fill-opacity: .45; stroke: none !important; }
+.acc-shine { fill: none; stroke: #FFFFFF !important; stroke-width: 1.6 !important; opacity: .9; }
+.acc-frame { fill: none; stroke-width: 2.6 !important; }
+.acc-band { fill: none; stroke-width: 6 !important; }
+.acc-band-in { fill: none; stroke: var(--ube-600) !important; stroke-width: 3 !important; }
+.acc-vine { fill: none; stroke: var(--matcha-700) !important; stroke-width: 2 !important; }
+.acc-knit { fill: none; stroke: var(--sakura-600) !important; stroke-width: 1.4 !important; opacity: .7; }
+.acc-line { fill: none; }
+.acc-line-soft { fill: none; stroke-opacity: .35; stroke-width: 1.3 !important; }
+.acc-line-light { fill: none; stroke: var(--acc-cream) !important; stroke-width: 1.8 !important; opacity: .85; }
+.acc-ribbon { fill: none; stroke: var(--sakura-500) !important; stroke-width: 3 !important; }
 .mochi { overflow: visible; } /* les chapeaux peuvent dépasser du cadre */
+.acc-in { transform-box: view-box; transform-origin: 70px 80px; }
+.acc-item svg { overflow: visible; }
+.acc-item .mo-body { fill: var(--mochi-fill); }
 .look-card { display: flex; gap: var(--space-5); flex-wrap: wrap; align-items: flex-start; }
 .look-preview .mochi { width: 160px; height: auto; }
 .acc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 8px; }
