@@ -142,7 +142,7 @@ idle → celebrating (palier) → idle
   - mauvaise réponse : « Presque ! On la reverra. » ;
   - longue série de bonnes réponses : « Tu es en feu (comme du kimchi). » ;
   - bonne réponse à une carte difficile : « Celle-là, elle était coriace ! ».
-- Au maximum **1 bulle toutes les 2 minutes** hors événements importants, et aucune pendant la lecture d'un texte ou l'écoute d'un audio.
+- Au maximum **1 bulle toutes les 2 minutes** hors événements importants (pendant les exercices, les bulles de réponse « Bien joué ! », « Pas loin ! », « Tu t'améliores ! » après une erreur : 1 toutes les 20 s), et aucune pendant la lecture d'un texte ou l'écoute d'un audio.
 - **Mochi parle la langue apprise** de temps en temps, avec des mots déjà connus de l'utilisateur seulement (« 잘했어요! » si 잘하다 est connu), avec la traduction au survol.
 - **Interdits (charte §8)** : tristesse, colère, chantage affectif, compte à rebours, « tu m'as manqué » culpabilisant.
 

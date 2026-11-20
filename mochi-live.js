@@ -24,13 +24,13 @@ const MOCHI_REACTIONS = {
   flavor: { prio: 2, ms: 900 }, worn: { prio: 2, ms: 900 },
   gesture: { prio: 1, ms: 900 }, detail: { prio: 1, ms: 600 },
 };
-const MOCHI_IDLE_SLEEP_MS = 2 * 60 * 1000, MOCHI_BUBBLE_GAP_MS = 2 * 60 * 1000, MOCHI_QUEUE_MAX = 3;
+const MOCHI_IDLE_SLEEP_MS = 2 * 60 * 1000, MOCHI_BUBBLE_GAP_MS = 2 * 60 * 1000, MOCHI_ANSWER_GAP_MS = 20 * 1000, MOCHI_QUEUE_MAX = 3;
 const MOCHI_FX_COLORS = ["#F6C1D3", "#B9DDB0", "#F9DE8A", "#CDB8EE", "#B9CBF3", "#F7C29A"]; // saveurs (§8)
 
 const MochiLive = {
   el: null, key: "", state: "idle", baseMood: "happy", mood: "happy",
   current: null, queue: [], timers: {}, anims: new Set(),
-  visible: true, audio: 0, llm: 0, typing: false, streak: 0,
+  visible: true, audio: 0, llm: 0, typing: false, streak: 0, missed: false,
   lastInput: Date.now(), lastBubble: 0, played: {}, flavorsChecked: 0,
   gaze: { x: 0, y: 0, tx: 0, ty: 0, raf: 0, until: 0 },
   press: null,
@@ -210,10 +210,10 @@ function mochiReactionEnd() {
 // En mode immobile : seulement l'humeur, sans mouvement
 const MOCHI_STILL_MOOD = { right: "happy", streak: "happy", wrong: "curious", celebrate: "proud", milestone: "proud", welcome: "happy" };
 const MOCHI_PLAY = {
-  right: (d) => { mochiSetMood(d.hard ? "surprised" : "happy"); mochiJump(10, 500); mochiSparkles(1); if (d.hard) mochiBubble(mochiLine("hardRight")); },
-  streak: () => { mochiSetMood("happy"); mochiJump(20, 700); mochiSparkles(3); mochiBubble(mochiLine("streak")); },
+  right: (d) => { mochiSetMood(d.hard ? "surprised" : "happy"); mochiJump(10, 500); mochiSparkles(1); mochiBubble(mochiLine(d.hard ? "hardRight" : d.back ? "comeback" : "right"), { gap: MOCHI_ANSWER_GAP_MS }); },
+  streak: () => { mochiSetMood("happy"); mochiJump(20, 700); mochiSparkles(3); mochiBubble(mochiLine("streak"), { gap: MOCHI_ANSWER_GAP_MS }); },
   // Mauvaise réponse : neutre et curieuse, jamais triste (charte §8)
-  wrong: () => { mochiSetMood("curious"); mochiTilt(-7, 600); mochiBubble(mochiLine("wrong")); },
+  wrong: () => { mochiSetMood("curious"); mochiTilt(-7, 600); mochiBubble(mochiLine("wrong"), { gap: MOCHI_ANSWER_GAP_MS }); },
   capture: (d) => {
     mochiFlyCrumb(d.from);
     mochiLater("munch", () => {
@@ -454,10 +454,10 @@ function mochiGazeLoop() {
 // Au plus une bulle toutes les 2 minutes (sauf événement important), aucune pendant la
 // lecture d'un texte ou un audio. Les bulles importantes sont aussi lues par les lecteurs d'écran.
 function mochiReading() { return /\/lire\/[^/]+$/.test(location.hash) || /\/livre\//.test(location.hash); }
-function mochiBubble(text, { important = false, force = false, title = "" } = {}) {
+function mochiBubble(text, { important = false, force = false, title = "", gap = MOCHI_BUBBLE_GAP_MS } = {}) {
   if (!text || mochiLevel() === "still" && !important) return false;
   const now = Date.now();
-  if (!force && !important && (now - MochiLive.lastBubble < MOCHI_BUBBLE_GAP_MS || MochiLive.audio || mochiReading())) return false;
+  if (!force && !important && (now - MochiLive.lastBubble < gap || MochiLive.audio || mochiReading())) return false;
   MochiLive.lastBubble = now;
   if (important) { const sr = document.getElementById("mochi-sr"); if (sr) sr.textContent = text; }
   const el = MochiLive.el;
@@ -607,8 +607,8 @@ function mochiCheckFlavors(lang) {
 }
 
 // ---------- Branchements : événements de l'app ----------
-mochiBus.on("answer:right", (d) => { MochiLive.streak++; mochiReact(MochiLive.streak % 3 === 0 ? "streak" : "right", d); });
-mochiBus.on("answer:wrong", () => { MochiLive.streak = 0; mochiReact("wrong"); });
+mochiBus.on("answer:right", (d) => { MochiLive.streak++; mochiReact(MochiLive.streak % 3 === 0 ? "streak" : "right", { ...d, back: MochiLive.missed }); MochiLive.missed = false; });
+mochiBus.on("answer:wrong", () => { MochiLive.streak = 0; MochiLive.missed = true; mochiReact("wrong"); });
 mochiBus.on("word:captured", (d) => mochiReact("capture", d));
 mochiBus.on("session:done", () => mochiReact("celebrate"));
 mochiBus.on("milestone", (d) => mochiReact("milestone", d));

@@ -935,8 +935,15 @@ ok(num1(1.5) === "1,5" && num1(0) === "0,0" && num0(1234).replace(/\s/g, " ") ==
   ok(!Object.keys(MochiLive.timers).length && !anims.length, "Mochi immobile : aucun minuteur, aucune animation");
   ok(mochiLine("wrong") !== mochiLine("wrong") || MOCHI_LINES.wrong.length < 2, "répliques : jamais deux fois la même de suite");
   ok(Object.values(MOCHI_LINES).flat().every((l) => l.split(/\s+/).filter((w) => /[\p{L}\p{N}]/u.test(w)).length <= 8), "répliques de 8 mots au plus");
-  // Nouveaux gestes et saveurs vivantes (M5)
+  // Bulles d'encouragement pendant les exercices : 1 toutes les 20 s, « Tu t'améliores » après une erreur
   state.settings.mochiMode = "live";
+  reset(); MochiLive.audio = 0; MochiLive.missed = false; MochiLive.lastBubble = Date.now() - 30000; mochiBus.emit("answer:right");
+  const t1 = MochiLive.lastBubble; ok(Date.now() - t1 < 1000, "bonne réponse : bulle après 20 s de calme");
+  reset(); mochiBus.emit("answer:wrong");
+  ok(MochiLive.lastBubble === t1, "pas de nouvelle bulle avant 20 s");
+  reset(); mochiBus.emit("answer:right");
+  ok(MochiLive.current.data.back === true && !MochiLive.missed, "bonne réponse après une erreur → réplique « comeback »");
+  // Nouveaux gestes et saveurs vivantes (M5)
   for (const g of ["wiggle", "stretch", "lookUp", "hum"]) { reset(); MOCHI_GESTURES[g](); ok(anims.some((a) => a.frames.some((f) => "transform" in f)), `geste ${g} animé`); }
   ok(THEMES.every((t) => typeof MOCHI_FLAVOR_FX[t.id] === "function"), "chaque saveur a son détail animé");
   reset(); window.matchMedia = () => ({ matches: true }); MochiLive.el.dataset.bare = ""; mochiFlavorDetail("rencontre"); MOCHI_GESTURES.wiggle();
