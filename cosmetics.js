@@ -71,13 +71,11 @@ function flavorsUnlocked() {
   return THEMES.filter((t) => isAdmin() || ids.has(t.id));
 }
 const wornFlavor = () => (typeof THEMES !== "undefined" && THEMES.find((t) => t.id === state.settings.flavor)) || null;
-// Couleur de la saveur portée : variables CSS sur <html> (CSSOM, autorisé par la CSP)
+// Couleur de la saveur portée : attribut data-flavor sur <html>, les couleurs sont dans styles.css
+// (seulement les Mochi : ni le logo, ni les avatars, ni la collection de saveurs)
 function applyFlavor() {
   const root = document.documentElement, th = wornFlavor();
-  if (typeof root?.style?.setProperty !== "function" || typeof root.style.removeProperty !== "function") return;
-  if (th) { root.style.setProperty("--mochi-fill", th.fill); if (th.dark) root.style.setProperty("--mochi-ink", "#FBF4EA"); else root.style.removeProperty("--mochi-ink"); }
-  else { root.style.removeProperty("--mochi-fill"); root.style.removeProperty("--mochi-ink"); }
-  root.dataset.flavor = th ? th.id : "";
+  if (root?.dataset) root.dataset.flavor = th ? th.id : "";
 }
 function flavorRow() {
   const got = flavorsUnlocked(), cur = state.settings.flavor || "";

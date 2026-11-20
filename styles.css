@@ -1072,6 +1072,15 @@ img.friend-av { object-fit: cover; }
 .mo-glint { fill: #FFFFFF; stroke: var(--yuzu-400); stroke-width: .6; }
 .mo-seed { fill: #FBF4EA; }
 .mo-powder { fill: #C9A86A; }
+/* Saveur portée (Profil › Ma Mochi) : couleurs de THEMES (content.js) */
+html[data-flavor="cafe"] .mochi:not(.avatar-mochi):not(.flavor .mochi) { --mochi-fill: #B9DDB0; }
+html[data-flavor="rencontre"] .mochi:not(.avatar-mochi):not(.flavor .mochi) { --mochi-fill: #F6C1D3; }
+html[data-flavor="transports"] .mochi:not(.avatar-mochi):not(.flavor .mochi) { --mochi-fill: #B9CBF3; }
+html[data-flavor="cuisine"] .mochi:not(.avatar-mochi):not(.flavor .mochi) { --mochi-fill: #F7C29A; }
+html[data-flavor="sport"] .mochi:not(.avatar-mochi):not(.flavor .mochi) { --mochi-fill: #F9DE8A; }
+html[data-flavor="series"] .mochi:not(.avatar-mochi):not(.flavor .mochi) { --mochi-fill: #CDB8EE; }
+html[data-flavor="gaming"] .mochi:not(.avatar-mochi):not(.flavor .mochi) { --mochi-fill: #5B5160; --mochi-ink: #FBF4EA; }
+html[data-flavor="travail"] .mochi:not(.avatar-mochi):not(.flavor .mochi) { --mochi-fill: #E7CC98; }
 .flavor-choice { display: inline-flex; align-items: center; gap: 8px; }
 .flavor-dot { width: 14px; height: 14px; border-radius: 50%; background: var(--dot); border: 1px solid var(--border); flex: none; }
 /* Petit Mochi dans les vues d'apprentissage (mode calme) */

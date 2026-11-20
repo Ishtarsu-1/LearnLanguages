@@ -57,6 +57,9 @@ test("Mochi vivant : saveur portée et effets bien placés", async ({ page }) =>
   await page.evaluate(() => { state.settings.flavor = "cafe"; applyFlavor(); });
   const fill = await live.locator(".mo-body").evaluate((n) => getComputedStyle(n).fill);
   expect(fill).toBe("rgb(185, 221, 176)");
+  // Ni le logo, ni la collection de saveurs ne prennent la saveur portée
+  const logo = await page.locator("#logo-o .mo-body").evaluate((n) => getComputedStyle(n).fill);
+  expect(logo).not.toBe("rgb(185, 221, 176)");
   // Une étoile (placée par un groupe) doit apparaître près du coin haut droit de Mochi, pas en (0, 0)
   const pos = await page.evaluate(async () => {
     mochiSparkles(1);
